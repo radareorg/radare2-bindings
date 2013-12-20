@@ -86,10 +86,10 @@ w32dist:
 .PHONY: w32dist dist w32 check check-w32 vdoc vdoc_pkg
 
 dist:
-	PKG=r2-bindings-${VERSION} ; \
+	PKG=radare2-bindings-${VERSION} ; \
 	DIR=`basename $$PWD` ; \
-	FILES=`git ls-files | sed -e s,^,r2-bindings-${VERSION}/,` ; \
-	CXXFILES=`cd .. ; find r2-bindings | grep -e cxx$$ -e py$$ | sed -e "s,r2-bindings/,$${PKG}/,"` ; \
+	FILES=`git ls-files | sed -e s,^,radare2-bindings-${VERSION}/,` ; \
+	CXXFILES=`cd .. ; find radare2-bindings | grep -e cxx$$ -e py$$ | sed -e "s,radare2-bindings/,$${PKG}/,"` ; \
 	cd .. && mv $${DIR} $${PKG} && \
 	echo $$FILES ; \
 	${TAR} $${PKG}.tar.xz $${FILES} $${CXXFILES} ; \

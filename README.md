@@ -30,7 +30,7 @@ rules used to generate all interactive html documentation found at:
 Dependencies
 ============
 
-To build r2-bindings from repository you need the following programs installed:
+To build radare2-bindings from repository you need the following programs installed:
 
   * swig: enables support for python, perl, lua, java and many other
   * vala: if you want to have Vala or Genie bindings
@@ -91,7 +91,7 @@ and valabind from git/hg.
    $ sudo make install PREFIX=/usr
 
 
-r2-bindings
+radare2-bindings
 ===========
 
 If you compile from the repo you need the latest version of valabind and then:
