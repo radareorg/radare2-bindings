@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
-require 'libr'
+require 'r_core'
 
-core = Libr::RCore.new
-core.file_open("/bin/ls", 0);
+core = R_core::RCore.new
+core.file_open("/bin/ls", 0, 0);
 print core.cmd_str("pd 20");

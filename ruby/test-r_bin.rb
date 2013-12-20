@@ -1,9 +1,9 @@
 #!/usr/bin/ruby
 
-require 'r2/r_bin'
+require 'r_bin'
 
 bin = R_bin::RBin.new
-bin.load("/bin/ls", nil)
+bin.load("/bin/ls", false)
 baddr = bin.get_baddr
 puts "-> Sections"
 for i in bin.get_sections()
