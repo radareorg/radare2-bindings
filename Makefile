@@ -161,6 +161,14 @@ install-python:
 	: > ${PYTHON_INSTALL_DIR}/__init__.py ; \
 	cp -rf python/r_*.py python/*.$$E ${PYTHON_INSTALL_DIR}
 
+install-ctypes:
+	[ -e ctypes/_r_core.${SOEXT} ] && true
+	E=${SOEXT} ; [ `uname` = Darwin ] && E=so ; \
+	echo "Installing python${PYTHON_VERSION} r2 modules in ${PYTHON_INSTALL_DIR}" ; \
+	mkdir -p ${PYTHON_INSTALL_DIR} ; \
+	: > ${PYTHON_INSTALL_DIR}/__init__.py ; \
+	cp -rf ctypes/r_*.py ctypes/*.$$E ${PYTHON_INSTALL_DIR}
+
 LUAPATH=$(shell strings `../sys/whereis.sh lua`| grep lib/lua | cut -d ';' -f 2 | grep '.so'  | cut -d '?' -f 1)
 
 LUAPKG=$(shell pkg-config --list-all|awk '/lua|lua-/{print $$1;}')
