@@ -321,7 +321,7 @@ if [ -x "${VALABIND}" ]; then
 	FIND=${VALABIND}
 else
 	FIND=""
-	set IFS=:
+	IFS=:
 	for A in ${PATH} ; do
 		if [ -x "${A}/valabind" ]; then
 			FIND="${A}/valabind"
@@ -343,7 +343,7 @@ if [ -x "${SWIG}" ]; then
 	FIND=${SWIG}
 else
 	FIND=""
-	set IFS=:
+	IFS=:
 	for A in ${PATH} ; do
 		if [ -x "${A}/swig" ]; then
 			FIND="${A}/swig"
@@ -365,7 +365,7 @@ if [ -x "${GIRCOMPILER}" ]; then
 	FIND=${GIRCOMPILER}
 else
 	FIND=""
-	set IFS=:
+	IFS=:
 	for A in ${PATH} ; do
 		if [ -x "${A}/g-ir-compiler" ]; then
 			FIND="${A}/g-ir-compiler"
