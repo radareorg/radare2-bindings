@@ -79,8 +79,8 @@ w32dist:
 	cp -f python/r_*.py ${DST}
 	:> ${DST}/__init__.py
 	cd ${DST} ; for a in *.dll ; do mv $$a `echo $$a | sed -e s,dll,pyd,g` ; done
-	#Copying over libr_*.dll libs as bindings need them in same dir as .py	
-	for a in `find $$PWD/../libr -name libr*.dll | grep -e dll$$`; do cp $$a ${DST} ; done	
+	#Copying over libr_*.dll libs as bindings need them in same dir as .py
+	for a in `find $$PWD/../libr -name libr*.dll | grep -e dll$$`; do cp $$a ${DST} ; done
 	cd .. ; zip -r $(DSTNAME).zip $(DSTNAME)
 
 .PHONY: w32dist dist w32 check check-w32 vdoc vdoc_pkg
@@ -162,7 +162,7 @@ install-python:
 	cp -rf python/r_*.py python/*.$$E ${PYTHON_INSTALL_DIR}
 
 install-ctypes:
-	[ -e ctypes/r_core.py} ] && true
+	[ -e ctypes/r_core.py ] && true
 	echo "Installing python${PYTHON_VERSION} r2 modules in ${PYTHON_INSTALL_DIR}" ; \
 	mkdir -p ${PYTHON_INSTALL_DIR} ; \
 	: > ${PYTHON_INSTALL_DIR}/__init__.py ; \
