@@ -168,13 +168,20 @@ install-ctypes:
 
 LUAPATH=$(shell strings `../sys/whereis.sh lua`| grep lib/lua | cut -d ';' -f 2 | grep '.so'  | cut -d '?' -f 1)
 
-LUAPKG=$(shell pkg-config --list-all|awk '/lua|lua-/{print $$1;}')
+LUAPKG=$(shell pkg-config --list-all | awk '/^lua[^a-zA-Z]/{printf($$1 "|");}' | sed -e s/\|$$//)
 ifneq (${LUAPKG},)
-LUADIR=$(shell pkg-config --variable=INSTALL_CMOD ${LUAPKG})
+
 lua-install install-lua:
-	@mkdir -p ${DESTDIR}${LUADIR} ; \
-	echo "Installing lua r2 modules... ${DESTDIR}${LUADIR}" ; \
-	cp -rf lua/*.so ${DESTDIR}${LUADIR}/
+	for lua_pkg in `echo "${LUAPKG}" | sed -e s/\|/\\\n/`; do \
+		_LUADIR=`pkg-config --variable=INSTALL_CMOD $$lua_pkg`; \
+		_LUAVER=`pkg-config --variable=V $$lua_pkg`; \
+		mkdir -p ${DESTDIR}$$_LUADIR ; \
+		echo "Installing lua r2 modules... ${DESTDIR}$$_LUADIR" ; \
+		for f in `ls lua/*so*$$_LUAVER`; do \
+			tmp=$${f%%.*}; \
+			cp -rf $$f ${DESTDIR}$$_LUADIR/$${tmp##*/}.so; \
+		done; \
+	done
 else
 lua-install install-lua:
 endif
