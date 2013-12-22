@@ -43,9 +43,13 @@ endif
 	  (cd .. && RELEASE=$(RELEASE) \
 		sh do-swig.sh ${LANG} `echo $@ | sed -e s,.${SOEXT},,`) || exit 0 ; \
 		[ "${LANG}`uname`" = pythonDarwin ] && cp _${LIBPFX}$@ _`echo $@|sed -e s,.${SOEXT},.so,` ; \
+		[ "${LANG}" = java ] && cp $@ lib$@ ; \
 		true
 	@echo ... $@
 endif
+endif
+ifneq ($(POSTDEP),)
+	$(MAKE) $(POSTDEP)
 endif
 
 install:

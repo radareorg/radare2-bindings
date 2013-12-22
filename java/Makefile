@@ -8,20 +8,23 @@ JAVA_INSTALL_JNI_SO=${JAVA_INSTALL_JNI}/lib
 JAVA_INSTALL_JNI_JAR=${JAVA_INSTALL_JNI}/jar
 JAR=jar cf
 
+POSTDEP=build
 include ../rules.mk
 
-install:
-	echo "Compiling java classes"
+build:
 	javac ${R2_JAVA_DIR}/*.java
-	echo "Creating radare2.jar"
 	${JAR} radare2.jar ${R2_JAVA_DIR}/*.class
+
+install: build
 	${INSTALL_DIR} ${JAVA_INSTALL_JNI_SO}
 	${INSTALL_DIR} ${JAVA_INSTALL_JNI_JAR}
 	${INSTALL_DATA} radare2.jar ${JAVA_INSTALL_JNI_JAR}
-	echo "Installing so libraries"
 	for i in `ls *.${SOEXT}`; do \
 		${INSTALL_LIB} $${i} ${JAVA_INSTALL_JNI_SO}/lib$$i; \
 	done
+
+run:
+	java -cp . -Djava.library.path=$(shell pwd) TestRBin
 
 purge:
 	rm -rf ${JAVA_INSTALL_DIR}
