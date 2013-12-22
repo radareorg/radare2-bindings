@@ -18,6 +18,7 @@ INSTALL_TARGETS=install-vapi
 else
 INSTALL_TARGETS=
 endif
+INSTALL_TARGETS+=install-plugins
 
 LANGS=
 # Experimental:
@@ -40,21 +41,15 @@ $(foreach p,${ALANGS},$(eval $(call ADD_lang,$(p))))
 
 .PHONY: ${INSTALL_TARGETS} ${INSTALL_EXAMPLE_TARGETS} ${LANG}
 
-ifeq ($(DEVEL_MODE),1)
 LANGS=$(shell cat supported.langs 2>/dev/null)
 all: supported.langs
+	$(MAKE) -C libr/lang/p
 	@for a in ${LANGS} ; do \
 		[ $$a = valac ] && continue; \
 		(cd $$a && ${MAKE} ) ; done
 
 supported.langs:
 	CC=${CC} CXX=${CXX} sh check-langs.sh
-else
-# compile more
-all: supported.langs python lua gir
-supported.langs:
-	CC=${CC} CXX=${CXX} sh check-langs.sh force-all
-endif
 
 check:
 	rm -f supported.langs
@@ -138,9 +133,12 @@ PYTHON_VERSION?=`${PYTHON} --version 2>&1 | cut -d ' ' -f 2 | cut -d . -f 1,2`
 PYTHON_PKGDIR=$(shell ${PYTHON} mp.py)
 PYTHON_INSTALL_DIR=${DESTDIR}/${PYTHON_PKGDIR}/r2
 
-.PHONY: purge purge-python install-cxx
+.PHONY: purge purge-python install-cxx install-plugins
 
 purge: purge-python purge-java
+
+install-plugins:
+	$(MAKE) -C libr/lang/p install
 
 install-cxx:
 	@echo TODO: install-cxx
@@ -154,7 +152,7 @@ purge-python:
 	rm -rf ${PYTHON_INSTALL_DIR}
 
 install-python:
-	[ -e python/_r_core.${SOEXT} ] && true
+	test -f python/_r_core.${SOEXT}
 	E=${SOEXT} ; [ `uname` = Darwin ] && E=so ; \
 	echo "Installing python${PYTHON_VERSION} r2 modules in ${PYTHON_INSTALL_DIR}" ; \
 	mkdir -p ${PYTHON_INSTALL_DIR} ; \
@@ -162,7 +160,7 @@ install-python:
 	cp -rf python/r_*.py python/*.$$E ${PYTHON_INSTALL_DIR}
 
 install-ctypes:
-	[ -e ctypes/r_core.py ] && true
+	test -f ctypes/r_core.py
 	echo "Installing python${PYTHON_VERSION} r2 modules in ${PYTHON_INSTALL_DIR}" ; \
 	mkdir -p ${PYTHON_INSTALL_DIR} ; \
 	: > ${PYTHON_INSTALL_DIR}/__init__.py ; \
@@ -249,6 +247,7 @@ oldtest:
 	python test.py
 
 clean:
+	$(MAKE) -C libr/lang/p clean
 	@for a in $(LANGS); do \
 		if [ -d $$a ]; then \
 		echo "Cleaning $$a " ; \
