@@ -79,8 +79,8 @@ w32dist:
 	cp -f python/r_*.py ${DST}
 	:> ${DST}/__init__.py
 	cd ${DST} ; for a in *.dll ; do mv $$a `echo $$a | sed -e s,dll,pyd,g` ; done
-	#Copying over libr_*.dll libs as bindings need them in same dir as .py	
-	for a in `find $$PWD/../libr -name libr*.dll | grep -e dll$$`; do cp $$a ${DST} ; done	
+	#Copying over libr_*.dll libs as bindings need them in same dir as .py
+	for a in `find $$PWD/../libr -name libr*.dll | grep -e dll$$`; do cp $$a ${DST} ; done
 	cd .. ; zip -r $(DSTNAME).zip $(DSTNAME)
 
 .PHONY: w32dist dist w32 check check-w32 vdoc vdoc_pkg
@@ -163,13 +163,20 @@ install-python:
 
 LUAPATH=$(shell strings `../sys/whereis.sh lua`| grep lib/lua | cut -d ';' -f 2 | grep '.so'  | cut -d '?' -f 1)
 
-LUAPKG=$(shell pkg-config --list-all|awk '/lua|lua-/{print $$1;}')
+LUAPKG=$(shell pkg-config --list-all | awk '/^lua[^a-zA-Z]/{printf($$1 "|");}' | sed -e s/\|$$//)
 ifneq (${LUAPKG},)
-LUADIR=$(shell pkg-config --variable=INSTALL_CMOD ${LUAPKG})
+
 lua-install install-lua:
-	@mkdir -p ${DESTDIR}${LUADIR} ; \
-	echo "Installing lua r2 modules... ${DESTDIR}${LUADIR}" ; \
-	cp -rf lua/*.so ${DESTDIR}${LUADIR}/
+	for lua_pkg in `echo "${LUAPKG}" | sed -e s/\|/\\\n/`; do \
+		_LUADIR=`pkg-config --variable=INSTALL_CMOD $$lua_pkg`; \
+		_LUAVER=`pkg-config --variable=V $$lua_pkg`; \
+		mkdir -p ${DESTDIR}$$_LUADIR ; \
+		echo "Installing lua r2 modules... ${DESTDIR}$$_LUADIR" ; \
+		for f in `ls lua/*so*$$_LUAVER`; do \
+			tmp=$${f%%.*}; \
+			cp -rf $$f ${DESTDIR}$$_LUADIR/$${tmp##*/}.so; \
+		done; \
+	done
 else
 lua-install install-lua:
 endif
