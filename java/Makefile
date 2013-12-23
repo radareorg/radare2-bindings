@@ -20,7 +20,7 @@ install: build
 	${INSTALL_DIR} ${JAVA_INSTALL_JNI_JAR}
 	${INSTALL_DATA} radare2.jar ${JAVA_INSTALL_JNI_JAR}
 	for i in `ls *.${SOEXT}`; do \
-		${INSTALL_LIB} $${i} ${JAVA_INSTALL_JNI_SO}/lib$$i; \
+		${INSTALL_LIB} $${i} ${JAVA_INSTALL_JNI_SO}/libj$$i; \
 	done
 
 run:
