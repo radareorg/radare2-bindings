@@ -5,7 +5,7 @@ import org.radare.radare2.*;
 
 class TestRBin {
 	static {
-		System.loadLibrary("r_bin");
+		System.loadLibrary("jr_bin");
 	}
 	public static void main (String args[]) {
 		RBin b;
