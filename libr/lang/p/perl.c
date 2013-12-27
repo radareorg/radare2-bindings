@@ -25,11 +25,11 @@ static void perl_radare_cmd(pTHX_ CV* cv) {
 	char *cmd;
 	char *str;
 	dXSARGS;
-	cmd = sv_pv(ST(0));
-	str = r_core_cmd_str(core, cmd);
-	ST(0) = newSVpvn(str, strlen(str));
-	free(str);
-	XSRETURN(1);
+	cmd = sv_pv (ST (0));
+	str = r_core_cmd_str (core, cmd);
+	ST(0) = newSVpvn (str, strlen(str));
+	free (str);
+	XSRETURN (1);
 	str = (char *)(size_t)items; /* dummy unreachable code */
 }
 
@@ -47,7 +47,6 @@ static int init(struct r_lang_t *lang) {
 	}
 	perl_construct (my_perl);
 	perl_parse (my_perl, xs_init, 3, perl_embed, (char **)NULL);
-
 	return R_TRUE;
 }
 
@@ -55,7 +54,6 @@ static int fini(void *user) {
 	perl_destruct (my_perl);
 	perl_free (my_perl);
 	my_perl = NULL;
-
 	return R_TRUE;
 }
 

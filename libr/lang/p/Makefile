@@ -67,7 +67,8 @@ lang_perl.${EXT_SO}:
 	-${CC} ${CFLAGS} -I/usr/lib/perl/5.10/CORE/ \
 		-fPIC ${LDFLAGS_LIB} -o lang_perl.${EXT_SO} perl.c \
 		`perl -MExtUtils::Embed -e ccopts | sed -e 's/-arch [^\s]* //g'` \
-		`perl -MExtUtils::Embed -e ldopts | sed -e 's/-arch [^\s]* //g'` -lncurses
+		`perl -MExtUtils::Embed -e ldopts | sed -e 's/-arch [^\s]* //g'`
+# -lncurses
 
 mrproper clean:
 	-rm -f *.${EXT_SO} *.${EXT_AR} *.o
