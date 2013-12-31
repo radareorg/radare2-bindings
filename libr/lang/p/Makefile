@@ -21,7 +21,7 @@ LUA_LDFLAGS+=$(shell pkg-config --libs ${LUAPKG})
 endif
 
 BINDEPS=
-
+LDFLAGS_LIB=-lr_core -lr_util -shared
 
 LANGS=$(shell ./getlangs.sh ${EXT_SO})
 #LANGS=lang_python.${EXT_SO} lang_perl.${EXT_SO}
@@ -41,11 +41,11 @@ ifeq ($(OSTYPE),windows)
 lang_python.${EXT_SO}:
 	${CC} ${CFLAGS} -I${HOME}/.wine/drive_c/Python27/include \
 	-L${HOME}/.wine/drive_c/Python27/libs -L../../core/ -lr_core \
-	${LDFLAGS_LIB} -shared -o lang_python.${EXT_SO} python.c -lpython27
+	${LDFLAGS_LIB} -o lang_python.${EXT_SO} python.c -lpython27
 else
 PYCFG=../../../python-config-wrapper
 PYCFLAGS=$(shell ${PYCFG} --cflags)
-PYLDFLAGS=$(shell ${PYCFG} --libs) -L$(shell ${PYCFG} --prefix)/lib
+PYLDFLAGS=$(shell ${PYCFG} --libs) -L$(shell ${PYCFG} --prefix)/lib ${LDFLAGS_LIB}
 
 lang_python.${EXT_SO}:
 	${CC} python.c ${CFLAGS} ${PYCFLAGS} ${PYLDFLAGS} \
