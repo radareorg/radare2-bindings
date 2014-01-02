@@ -1,9 +1,19 @@
-/* radare - LGPL - Copyright 2010-2013 pancake<@nopcode.org> */
+/* radare - LGPL - Copyright 2010-2014 - pancake */
 
 /* this vapi is broken as shit... we need to rename some stuff here ..
    if we can just avoid to use cname CCode attribute... */
 
 namespace Radare {
+/* radare - LGPL - Copyright 2010-2014 - pancake */
+
+namespace Radare {
+	[Compact]
+	[CCode (cheader_filename="r_sign.h", cprefix="r_sign_", lower_case_cprefix="r_sign_", cname="RSign", free_function="r_sign_free")]
+	public class RSign {
+		public RSign ();
+		/* TODO */
+	}
+
 	[Compact]
 	[CCode (cheader_filename="r_anal.h,r_list.h,r_types_base.h", cprefix="r_anal_", lowercase_c_prefix="r_anal_", free_function="r_anal_free", cname="RAnal")]
 	public class RAnal {

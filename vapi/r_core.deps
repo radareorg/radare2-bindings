@@ -18,7 +18,6 @@ r_asm
 r_bin
 r_parse
 r_lang
-r_sign
 r_print
 r_fs
 r_magic
