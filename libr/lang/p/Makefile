@@ -21,7 +21,7 @@ LUA_LDFLAGS+=$(shell pkg-config --libs ${LUAPKG})
 endif
 
 BINDEPS=
-LDFLAGS_LIB=-lr_core -lr_util -shared
+LDFLAGS_LIB=$(shell pkg-config --libs-only-L r_core) -lr_core -lr_util -shared
 
 LANGS=$(shell ./getlangs.sh ${EXT_SO})
 #LANGS=lang_python.${EXT_SO} lang_perl.${EXT_SO}
@@ -63,8 +63,9 @@ lang_lua.${EXT_SO}: lua.o
 lang_ruby.${EXT_SO}:
 	-env CFLAGS="${CFLAGS}" ruby mkruby.rb
 
+PERLINC=$(shell perl -MConfig -e 'print $$Config{archlib}')/CORE/
 lang_perl.${EXT_SO}:
-	-${CC} ${CFLAGS} -I/usr/lib/perl/5.10/CORE/ \
+	-${CC} ${CFLAGS} -I$(PERLINC) \
 		-fPIC ${LDFLAGS_LIB} -o lang_perl.${EXT_SO} perl.c \
 		`perl -MExtUtils::Embed -e ccopts | sed -e 's/-arch [^\s]* //g'` \
 		`perl -MExtUtils::Embed -e ldopts | sed -e 's/-arch [^\s]* //g'`

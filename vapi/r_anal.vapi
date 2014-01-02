@@ -4,15 +4,6 @@
    if we can just avoid to use cname CCode attribute... */
 
 namespace Radare {
-/* radare - LGPL - Copyright 2010-2014 - pancake */
-
-namespace Radare {
-	[Compact]
-	[CCode (cheader_filename="r_sign.h", cprefix="r_sign_", lower_case_cprefix="r_sign_", cname="RSign", free_function="r_sign_free")]
-	public class RSign {
-		public RSign ();
-		/* TODO */
-	}
 
 	[Compact]
 	[CCode (cheader_filename="r_anal.h,r_list.h,r_types_base.h", cprefix="r_anal_", lowercase_c_prefix="r_anal_", free_function="r_anal_free", cname="RAnal")]
@@ -394,5 +385,11 @@ namespace Radare {
 		public bool cleanup (uint64 from, uint64 to);
 		public static unowned string type_to_string(RMeta.Type type);
 		public int list(RMeta.Type type, uint64 rad);
+	}
+	[Compact]
+	[CCode (cheader_filename="r_sign.h", cprefix="r_sign_", lower_case_cprefix="r_sign_", cname="RSign", free_function="r_sign_free")]
+	public class RSign {
+		public RSign ();
+		/* TODO */
 	}
 }
