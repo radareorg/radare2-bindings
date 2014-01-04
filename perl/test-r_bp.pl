@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-require 'r_bp.pm';
+use r_bp;
 
 $a = new r_bp::RBreakpoint ();
 $a->use ("x86");

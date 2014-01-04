@@ -5,7 +5,7 @@ except:
 
 b = RBin ()
 b.load ("/bin/ls", False)
-baddr= b.get_baddr ()
+baddr = b.get_baddr ()
 print '-> Sections'
 for i in b.get_sections ():
 	print 'offset=0x%08x va=0x%08x size=%05i %s' % (
