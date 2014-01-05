@@ -6,7 +6,7 @@
 namespace Radare {
 
 	[Compact]
-	[CCode (cheader_filename="r_anal.h,r_list.h,r_types_base.h", cprefix="r_anal_", lowercase_c_prefix="r_anal_", free_function="r_anal_free", cname="RAnal")]
+	[CCode (cheader_filename="r_anal_ex.h,r_anal.h,r_list.h,r_types_base.h", cprefix="r_anal_", lowercase_c_prefix="r_anal_", free_function="r_anal_free", cname="RAnal")]
 	public class RAnal {
 		public int bits;
 		public bool big_endian;
@@ -36,6 +36,30 @@ namespace Radare {
 		public RList<RAnal.Function> get_fcns();
 		public Function get_fcn_at (uint64 addr);
 		public void trace_bb (uint64 addr);
+		
+		[Compact]
+		[CCode (cprefix="r_anal_case_", free_function="free", cname="RAnalCaseOp")]
+		public class CaseOp {
+			public uint64 addr;
+			public uint64 jump;
+			public uint64 value;
+			public uint32 cond;
+			public uint64 bb_ref_to;
+			public uint64 bb_ref_from;
+		}
+		
+		[Compact]
+		[CCode (cprefix="r_anal_switch_op_", free_function="r_anal_switch_op_free", cname="RAnalSwitchOp")]
+		public class SwitchOp {
+			public uint64 addr;
+			public uint64 min_val;
+			public uint64 def_val;
+			public uint32 max_val;
+			public RList<RAnal.CaseOp> cases;
+			
+			public SwitchOp(uint64 addr, uint64 min_val, uint64 max_val);
+			public CaseOp add_case(uint64 addr, uint64 jump, uint64 value);
+		}
 
 		[Compact]
 		[CCode (cname="RAnalValue")]
@@ -51,14 +75,12 @@ namespace Radare {
 			public RReg.Item regdelta;
 		}
 
-/*
 		[Compact]
 		[CCode (cname="RAnalCond")]
 		public class Cond {
 			public int type;
 			public Value arg[2];
 		}
-*/
 
 		[CCode (cname="int", cprefix="R_ANAL_COND_")]
 		public enum Cnd {
@@ -67,7 +89,51 @@ namespace Radare {
 			GE,
 			GT,
 			LE,
-			LT
+			LT,
+			AL,
+			NV
+		}
+
+		[Compact]
+		//[CCode (cprefix="r_anal_state_", cname="RAnalState")]
+		[CCode (cprefix="r_anal_state_", free_function="r_anal_state_free", cname="RAnalState")]
+		public class State {
+
+			public uint64 start;
+			public uint64 end;
+			public uint8 *buffer;
+			public uint64 len;
+
+			public uint64 bytes_consumed;
+			public uint64 last_addr;
+			public uint64 current_addr;
+			public uint64 next_addr;
+
+			public RList<RAnal.Block> bbs;
+			//public RHashTable64 ht;
+			public uint64 ht_sz;
+
+			public Function current_fcn;
+			public Op current_op;
+			public Block current_bb;
+			public Block current_bb_head;
+
+			public uint8 done;
+			public int anal_ret_val;
+			public uint32 current_depth;
+			public uint32 max_depth;
+			
+			public void *user_state;
+			
+			public State(uint64 start, uint8 * buffer, uint64 len);
+			public void insert_bb (RAnal.Block *bb);
+			//public int need_rehash (RAnal.Block *bb);
+			public Block search_bb (uint64 addr);
+			public uint64 get_len (uint64 addr);
+			//public uint8* get_buf_by_addr (uint64 addr);
+			public int addr_is_valid (uint64 addr);
+			//public void merge_bb_list (RList<RAnal.Block> bbs);
+			public void set_depth(uint32 depth);
 		}
 
 /*
@@ -97,7 +163,16 @@ namespace Radare {
 			BODY,
 			LAST,
 			FOOT,
-			SWITCH
+			SWITCH,
+			RET,  
+			JMP,  
+			COND, 
+			CALL, 
+			CMP,  
+			LD,   
+			ST,   
+			BINOP,
+			TAIL 
 		}
 
 		[CCode (cname="int", cprefix="R_ANAL_DIFF_TYPE_")]
@@ -192,28 +267,47 @@ namespace Radare {
 			LOAD,
 			LEA,
 			LEAVE,
+			ROR,
+			ROL,
+			XCHG,
+			MOD,
+			SWITCH,
 			//LAST
 		}
 
 		[Compact]
 		[CCode (cprefix="r_anal_bb_", cname="RAnalBlock")]
 		public class Block {
+			public char* name;
 			public uint64 addr;
 			public uint64 size;
 			public uint64 jump;
+			public uint64 type2;
 			public uint64 fail;
 			public BlockType type;
 			public int ninstr;
 			public bool returnbb;
 			public bool conditional;
 			public bool traced;
-			public uint8* fingerprint;
+			public char* label;
+			public uint8 * fingerprint;
 			public Diff diff;
+			public Cond cond;
+			public SwitchOp switch_op;
+			public uint8 * op_bytes;
+			public uint8 op_sz;
+			uint64 eflags;
+			public Block head;
+			public Block tail;
+			public Block next;
+			public Block prev;
+			public Block failbb;
+			public Block jumpbb;
 			//public RList<RAnal.Op> ops;
 		}
 
 		public void bb (Block bb, uint64 addr, uint8 *buf, uint64 len, bool head);
-		public Block* bb_from_offset (uint64 addr);
+		public Block bb_from_offset (uint64 addr);
 
 		[Compact]
 		[CCode (cprefix="r_anal_op_", cname="RAnalOp")]
@@ -273,7 +367,7 @@ namespace Radare {
 			// MUST BE deprecated public VarSub varsubs[32];
 
 			public Diff diff;
-			public uint8* fingerprint;
+			public uint8 * fingerprint;
 			//public FunctionType type;
 			public RList<RAnal.Block> bbs;
 			public RList<RAnal.Block> get_bbs();
@@ -386,10 +480,171 @@ namespace Radare {
 		public static unowned string type_to_string(RMeta.Type type);
 		public int list(RMeta.Type type, uint64 rad);
 	}
+
+
+
+
+
 	[Compact]
 	[CCode (cheader_filename="r_sign.h", cprefix="r_sign_", lower_case_cprefix="r_sign_", cname="RSign", free_function="r_sign_free")]
 	public class RSign {
 		public RSign ();
 		/* TODO */
 	}
+
+	/* r_anal_ex.h */
+	[CCode (cname="uint64", cprefix="R_ANAL_EX_")]
+	public enum ExOpType {
+		ILL_OP,
+		NULL_OP,
+		NOP,
+		STORE_OP,
+		LOAD_OP,
+		REG_OP,
+		OBJ_OP,
+		STACK_OP,
+		BIN_OP,
+		CODE_OP,
+		DATA_OP,
+		UNK_OP,
+		REP_OP,
+		COND_OP,
+	}
+	
+	[CCode (cname="uint64", cprefix="R_ANAL_EX_TYPE_")]
+	public enum ExDataType {
+		REF_NULL,
+		UNK_REF,
+		REF,
+		SIGNED,
+		PRIM,
+		CONST,
+		STATIC,
+		VOLATILE,
+		PUBLIC,
+		BOOL,
+		BYTE,
+		SHORT,
+		INT32,
+		INT64,
+		FLOAT,
+		DOUBLE,
+	}
+
+	[CCode (cname="uint64", cprefix="R_ANAL_EX_CODEOP_")]
+	public enum ExCodeOp {
+		JMP,
+		CALL,
+		RET,
+		TRAP,
+		SWI,
+		IO,
+		LEAVE,
+		SWITCH,
+		CJMP,
+		EOB,
+		UCALL,
+		UJMP,
+	}
+
+	[CCode (cname="uint64", cprefix="R_ANAL_EX_BINOP_")]
+	public enum ExBinOp {
+		XCHG,
+		CMP,
+		ADD,
+		SUB,
+		MUL,
+		DIV,
+		SHR,
+		SHL,
+		SAL,
+		SAR,
+		OR,
+		AND,
+		XOR,
+		NOT,
+		MOD,
+		ROR,
+		ROL,
+	}
+
+	[CCode (cname="uint64", cprefix="R_ANAL_EX_OBJOP_")]
+	public enum ExObjOp {
+		CAST,
+		CHECK,
+		NEW,
+		DEL,
+		SIZE,
+	}
+	
+	[CCode (cname="uint64", cprefix="R_ANAL_EX_LDST_")]
+	public enum ExLdStOp {
+		FROM_REF,
+		FROM_MEM,
+		FROM_REG,
+		FROM_STACK,
+		FROM_CONST,
+		FROM_VAR,
+		INDIRECT_REF,
+		INDIRECT_MEM,
+		INDIRECT_REG,
+		INDIRECT_STACK,
+		INDIRECT_IDX,
+		INDIRECT_VAR,
+		TO_REF,
+		TO_MEM,
+		TO_REG,
+		TO_STACK,
+		TO_VAR,
+		OP_PUSH,
+		OP_POP,
+		OP_MOV,
+		OP_EFF_ADDR,
+		OP_UPOP,
+		OP_UPUSH,
+		LOAD_FROM_CONST_REF_TO_STACK,
+		LOAD_FROM_CONST_TO_STACK,
+		LOAD_FROM_CONST_INDIRECT_TO_STACK,
+		LOAD_FROM_VAR_INDIRECT_TO_STACK,
+		LOAD_FROM_VAR_INDIRECT_TO_STACK_REF,
+		LOAD_FROM_VAR_TO_STACK,
+		LOAD_FROM_VAR_TO_STACK_REF,
+		LOAD_FROM_REF_INDIRECT_TO_STACK,
+		LOAD_FROM_REF_INDIRECT_TO_STACK_REF,
+		STORE_FROM_STACK_INDIRECT_TO_VAR,
+		STORE_FROM_STACK_INDIRECT_TO_VAR_REF,
+		STORE_FROM_STACK_TO_VAR,
+		STORE_FROM_STACK_TO_VAR_REF,
+		STORE_FROM_STACK_INDIRECT_TO_REF,
+		STORE_FROM_STACK_INDIRECT_TO_REF_REF,
+		LOAD_FROM_REF_TO_STACK,
+		LOAD_FROM_PRIM_VAR_TO_STACK,
+		LOAD_GET_STATIC,
+		STORE_PUT_STATIC,
+		LOAD_GET_FIELD,
+		STORE_PUT_FIELD,
+	}
+
+	[CCode (cname="uint64", cprefix="R_ANAL_EX_FMT_")]
+	public enum ExFmt {
+		EXEC,
+		DATA,
+		MIXED,
+	}
+
+	public static uint64 ex_map_anal_ex_to_anal_op_type(uint64 ranal2_op_type);
+	public static int ex_is_op_type_eop(uint64 x);
+	public static uint32 ex_map_anal_ex_to_anal_bb_type (uint64 ranal2_op_type);
+	public static void ex_clone_op_switch_to_bb (RAnal.Block *bb, RAnal.Op *op);
+	public static void ex_update_bb_cfg_head_tail( RAnal.Block start, RAnal.Block head, RAnal.Block tail );
+	
+	public static int ex_bb_head_comparator(RAnal.Block a, RAnal.Block b);
+	public static int ex_bb_address_comparator(RAnal.Block a, RAnal.Block b);
+
+//	public RList<RAnal.Block> ex_analyze( RAnal.State state, uint64 addr);
+//	public RList<RAnal.Block> ex_analysis_driver( RAnal.State state, uint64 addr);
+//	public void ex_op_to_bb(RAnal.State state, RAnal.Block bb, RAnal.Op op);
+//	public RAnal.Op ex_get_op(RAnal.State state, uint64 addr);
+//	public RAnal.Block ex_get_bb(RAnal.State state, uint64 addr);
+
 }
