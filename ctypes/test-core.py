@@ -11,7 +11,7 @@ def flush2(c):
 c = RCore ()
 
 h = c.file_open ("/bin/ls", 0, 0);
-c.bin_load (None)
+c.bin_load (None, 0)
 print (c.cmd_str ("px"))
 c.cmd0 ("pd 10 @ entry0")
 c.cmd0 ("px 20 @ 0")
