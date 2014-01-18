@@ -56,8 +56,6 @@ namespace Radare {
 			public int size;
 			public uint64 offset;
 			public RBin.Object o;
-			/** string?? this is hack coz swig dislikes void* */
-			public weak string bin_obj;
 			public Plugin curplugin;
 		}
 
