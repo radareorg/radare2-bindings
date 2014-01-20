@@ -13,7 +13,7 @@ namespace Radare {
 			LAST
 		}
 		public unowned string file;
-		public RBin.Arch cur;
+		public RBin.File cur;
 		public int narch;
 
 		public RBin();
@@ -49,8 +49,9 @@ namespace Radare {
 		public string meta_get_source_line(uint64 addr);
 		public RBin.Object get_object ();
 
-		[CCode (cname="RBinArch", free_function="", ref_function="", unref_function="")]
-		public struct Arch {
+		[Compact]
+		[CCode (cname="RBinFile", free_function="", ref_function="", unref_function="")]
+		public class File {
 			RBuffer buf;
 			public unowned string file;
 			public int size;
