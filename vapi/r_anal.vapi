@@ -12,9 +12,9 @@ namespace Radare {
 		public bool big_endian;
 		public bool split;
 		public void *user;
-		public RList<RAnal.Function> fcns;
-//		public RList<RAnal.VarType> vartypes;
-		public RMeta meta;
+		public RList<Function> fcns;
+//		public RList<VarType> vartypes;
+		public RList<MetaItem> meta;
 		public RReg reg;
 		public RSyscall syscall;
 
@@ -436,53 +436,49 @@ namespace Radare {
 			public uint64 to;
 			public int index;
 		}
-	}
 
 	/* meta */
 	[Compact]
-	[CCode (cname="RMeta", free_function="r_meta_free", cprefix="r_meta_")]
-	public class RMeta {
-		[Compact]
-		[CCode (cname="RMetaItem")]
-		public class Item {
-			public uint64 from;
-			public uint64 to;
-			public uint64 size;
-			public int type;
-			public string str;
-		}
-
-		public RList<RMeta.Item> data;
-
-		[CCode (cname="int", cprefix="R_META_WHERE_")]
-		public enum Where {
-			PREV,
-			HERE,
-			NEXT
-		}
-
-		[CCode (cname="int", cprefix="R_META_TYPE_")]
-		public enum Type {
-			ANY,
-			DATA,
-			CODE,
-			STRING,
-			COMMENT
-		}
-
-		//public int count (RMeta.Type type, uint64 from, uint64 to,
-		//public string get_string(RMeta.Type, uint64 addr);
-		public bool @add(RMeta.Type type, uint64 from, uint64 size, string str);
-		public bool del(RMeta.Type type, uint64 from, uint64 size, string str);
-		public RMeta.Item find(uint64 off, RMeta.Type type, RMeta.Where where);
-		public bool cleanup (uint64 from, uint64 to);
-		public static unowned string type_to_string(RMeta.Type type);
-		public int list(RMeta.Type type, uint64 rad);
+	[CCode (cname="RAnalMetaItem",cprefix="r_anal_meta_item_", free_function="r_meta_item_free")]
+	public class MetaItem {
+		public uint64 from;
+		public uint64 to;
+		public uint64 size;
+		public int type;
+		public string str;
 	}
 
+	[CCode (cname="int", cprefix="R_META_WHERE_")]
+	public enum MetaWhere {
+		PREV,
+		HERE,
+		NEXT
+	}
 
+	[CCode (cname="int", cprefix="R_META_TYPE_")]
+	public enum MetaType {
+		ANY,
+		DATA,
+		CODE,
+		STRING,
+		COMMENT
+	}
 
-
+	//public int count (MetaType type, uint64 from, uint64 to,
+	//public string get_string(MetaType, uint64 addr);
+	[CCode (cname="r_meta_add")]
+	public bool meta_add(MetaType type, uint64 from, uint64 size, string str);
+	[CCode (cname="r_meta_del")]
+	public bool meta_del(MetaType type, uint64 from, uint64 size, string str);
+	[CCode (cname="r_meta_find")]
+	public MetaItem meta_find(uint64 off, MetaType type, MetaWhere where);
+	[CCode (cname="r_meta_cleanup")]
+	public bool meta_cleanup (uint64 from, uint64 to);
+	[CCode (cname="r_meta_type_to_string")]
+	public static unowned string meta_type_to_string(MetaType type);
+	[CCode (cname="r_meta_list")]
+	public int meta_list(MetaType type, uint64 rad);
+	}
 
 	[Compact]
 	[CCode (cheader_filename="r_sign.h", cprefix="r_sign_", lower_case_cprefix="r_sign_", cname="RSign", free_function="r_sign_free")]

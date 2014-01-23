@@ -4,7 +4,7 @@ except:
 	from r2.r_bin import *
 
 b = RBin ()
-b.load ("/bin/ls", False)
+b.load ("/bin/ls", 0, 0, False)
 baddr = b.get_baddr ()
 print '-> Sections'
 for i in b.get_sections ():
