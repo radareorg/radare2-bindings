@@ -3,7 +3,7 @@ from r_bin import *
 import ctypes
 
 a = RBin()
-if not a.load("/bin/ls", False):
+if not a.load("/bin/ls", 0, 0, False):
 	print "Fuck. cannot load /bin/ls"
 	exit(1)
 

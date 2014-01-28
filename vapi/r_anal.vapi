@@ -285,6 +285,7 @@ namespace Radare {
 			public uint64 type2;
 			public uint64 fail;
 			public BlockType type;
+			public BlockType type_ex;
 			public int ninstr;
 			public bool returnbb;
 			public bool conditional;
@@ -296,6 +297,7 @@ namespace Radare {
 			public SwitchOp switch_op;
 			public uint8 op_bytes[30];
 			public uint8 op_sz;
+			public uint64 eflags;
 			public Block head;
 			public Block tail;
 			public Block next;
