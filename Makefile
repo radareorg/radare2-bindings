@@ -87,8 +87,9 @@ dist:
 	CXXFILES=`cd .. ; find radare2-bindings | grep -e cxx$$ -e py$$ | sed -e "s,radare2-bindings/,$${PKG}/,"` ; \
 	cd .. && mv $${DIR} $${PKG} && \
 	echo $$FILES ; \
-	${TAR} $${PKG}.tar.xz $${FILES} $${CXXFILES} ; \
+	${TAR} $${PKG}.tar.xz $${FILES} ; \
 	mv $${PKG} $${DIR}
+#$${CXXFILES} ; 
 
 # TODO: valadoc
 vdoc:
