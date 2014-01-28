@@ -98,7 +98,6 @@ namespace Radare {
 		//[CCode (cprefix="r_anal_state_", cname="RAnalState")]
 		[CCode (cprefix="r_anal_state_", free_function="r_anal_state_free", cname="RAnalState")]
 		public class State {
-
 			public uint64 start;
 			public uint64 end;
 			public uint8 *buffer;
@@ -298,12 +297,20 @@ namespace Radare {
 			public uint8 op_bytes[30];
 			public uint8 op_sz;
 			public uint64 eflags;
+			public void* head;
+			public void* tail;
+			public void* next;
+			public void* prev;
+			public void* failbb;
+			public void* jumpbb;
+/*
 			public Block head;
 			public Block tail;
 			public Block next;
 			public Block prev;
 			public Block failbb;
 			public Block jumpbb;
+*/
 			//public RList<RAnal.Op> ops;
 		}
 
