@@ -297,20 +297,21 @@ namespace Radare {
 			public uint8 op_bytes[30];
 			public uint8 op_sz;
 			public uint64 eflags;
+#if VALABIND_CTYPES
 			public void* head;
 			public void* tail;
 			public void* next;
 			public void* prev;
 			public void* failbb;
 			public void* jumpbb;
-/*
+#else
 			public Block head;
 			public Block tail;
 			public Block next;
 			public Block prev;
 			public Block failbb;
 			public Block jumpbb;
-*/
+#endif
 			//public RList<RAnal.Op> ops;
 		}
 
