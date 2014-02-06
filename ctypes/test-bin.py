@@ -3,17 +3,17 @@ from r_bin import *
 import ctypes
 
 a = RBin()
-if not a.load("/bin/ls", 0, 0, False):
-	print "Fuck. cannot load /bin/ls"
+if not a.load(b"/bin/ls", 0, 0, False):
+	print("Fuck. cannot load /bin/ls")
 	exit(1)
 
 print ("------")
 info = a.get_info ()
-print ("type: "+info.type)
-print ("arch: "+info.arch)
-print ("mach: "+info.machine)
-print ("os: "+info.os)
-print ("subsys: "+info.subsystem)
+print ("type: "+info.type.decode())
+print ("arch: "+info.arch.decode())
+print ("mach: "+info.machine.decode())
+print ("os: "+info.os.decode())
+print ("subsys: "+info.subsystem.decode())
 
 print ("------")
 
@@ -25,6 +25,6 @@ print ("base address: "+str(baddr))
 print ("------")
 
 for s in a.get_sections():
-	print (s.name,s.rva)
+	print("%s %d" % (s.name.decode(),s.rva))
 
 exit(0)
