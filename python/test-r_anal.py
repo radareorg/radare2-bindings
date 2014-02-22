@@ -18,6 +18,7 @@ for f in funcs:
 		print("---[ Block @ 0x%x ]---" % (b.addr))
 		print("   | size:        %d" % (b.size))
 		print("   | jump:        0x%x" % (b.jump))
+		print("   | fail:        0x%x" % (b.fail))
 		print("   | conditional: %d" % (b.conditional))
 		print("   | return:      %d" % (b.returnbb))
 
@@ -26,12 +27,12 @@ for f in funcs:
 
 		while (cur_byte < end_byte):
 			#anal_op = rc.op_anal(cur_byte)
-			asm_op = rc.disassemble(cur_byte)
+			asm_op = rc.disassemble (cur_byte)
 
-			if asm_op.inst_len == 0:
+			if asm_op.size == 0:
 				print("Bogus op")
 				break
 
-			#print("0x%x %s" % (anal_op.addr, anal_op.mnemonic))
-			print("0x%x %s %s" % (cur_byte, asm_op.buf_hex, asm_op.buf_asm))
-			cur_byte += asm_op.inst_len
+			print("0x%x %s" % (cur_byte, asm_op.buf_asm))
+			#print("0x%x %s %s" % (cur_byte, asm_op.buf_hex, asm_op.buf_asm))
+			cur_byte += asm_op.size
