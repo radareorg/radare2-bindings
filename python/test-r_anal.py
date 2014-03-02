@@ -16,6 +16,7 @@ for f in funcs:
 
 	for b in blocks:
 		print("---[ Block @ 0x%x ]---" % (b.addr))
+		print("   | type:        %x" % (b.type))
 		print("   | size:        %d" % (b.size))
 		print("   | jump:        0x%x" % (b.jump))
 		print("   | fail:        0x%x" % (b.fail))

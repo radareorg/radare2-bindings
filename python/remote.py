@@ -200,9 +200,16 @@ class RapClient():
 		buf = self.fd.recv(5)
 		(c,l) = unpack(">Bi", buf)
 		if c != RAP_CMD | RAP_REPLY:
+			print c
 			print "rmt-cmd: Invalid response packet"
 			return ""
-		buf = self.fd.recv(l)
+		buf = ""
+		if l>0:
+			read = 0
+			while read<l:
+				rbuf = self.fd.recv(l-read)
+				read += len(rbuf)
+				buf += rbuf
 		return buf
 
 	def system(self, cmd):
