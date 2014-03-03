@@ -1,7 +1,7 @@
 var r2 = require('../r_bin')
 
 var b = new r2.RBin(), fileName = process.argv[2] || '/bin/ls';
-if(!b.load(fileName, false))
+if(!b.load(fileName, 0, 0, false))
 	console.error('Cannot open '+fileName), process.exit(1);
 
 console.log('Base address:', b.get_baddr().toString(16));
@@ -19,9 +19,8 @@ b.get_symbols().forEach (function(x) {
 });
 console.log('Imports:');
 b.get_imports().forEach(function(x) {
-	console.log('  %s: bind=%s type=%s rva=%d offset=%s ordinal=%d hint=%d',
-		x.name, x.bind, x.type, x.rva,
-		x.offset.toString(16), x.ordinal, x.hint);
+	console.log('  %s: bind=%s type=%s rva=%d ordinal=%d hint=%d',
+		x.name, x.bind, x.type, x.rva, x.ordinal, x.hint);
 });
 console.log('Strings:');
 b.get_strings().forEach(function(x) {
