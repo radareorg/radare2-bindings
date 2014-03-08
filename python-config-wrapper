@@ -30,6 +30,6 @@ if [ "$1" = "-n" ]; then
 	exit 0
 fi
 
-${PYCFG} $@ | sed -e 's/-arch [^\s]*//g' | \
+${PYCFG} $@ | sed -e 's/-arch [^\ ]*//g' | \
 	sed 's, s ,,g' | \
 	sed s,-Wstrict-prototypes,,g 2>/dev/null
