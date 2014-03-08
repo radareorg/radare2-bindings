@@ -19,15 +19,16 @@ namespace Radare {
 	//	public int push(ref uint8* buf);
 	//	public uint8 *pop();
 	}
+/*
 	[Compact]
 	[CCode (cheader_filename="r_db.h", cname="RPair", free_function="r_pair_free", cprefix="r_pair_")]
 	public class RPair {
-		/* lifecycle */
+		// lifecycle
 		public RPair();
 		public RPair.from_file(string file);
 		public void free();
 
-		/* storage */
+		// storage 
 		public void delete(string k);
 		public string get(string k);
 		public void set (string k, string v);
@@ -35,4 +36,5 @@ namespace Radare {
 		public void sync();
 		public void reset();
 	}
+*/
 }

@@ -1,4 +1,6 @@
-/* radare - LGPL - Copyright 2009-2013 - pancake */
+/* radare - LGPL - Copyright 2009-2014 - pancake */
+
+using SDB;
 
 namespace Radare {
 [Compact]
@@ -43,9 +45,9 @@ public class RCore {
 	 */
 	public RCons cons;
 	/**
-	 * KeyValue database instance
+	 * Entrypoint for the global Sdb namespace
 	 */
-	public RPair kv;
+	public Sdb sdb;
 	/**
 	 * RIO instance
 	 */
