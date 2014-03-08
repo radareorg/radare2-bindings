@@ -215,7 +215,7 @@ install-perl:
 	fi ; \
 	mkdir -p $$target/r2 ; \
 	echo "Installing perl r2 modules..." ; \
-	cp -rf perl/*.so $$target/r2 ; \
+	cp -rf perl/*.${SOEXT} $$target/r2 ; \
 	cp -rf perl/*.pm $$target/r2
 
 install-vapi:
