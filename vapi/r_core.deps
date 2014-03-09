@@ -1,4 +1,3 @@
-sdb
 r_cmd
 r_cons
 r_anal
@@ -21,3 +20,4 @@ r_lang
 r_print
 r_fs
 r_magic
+r_db
