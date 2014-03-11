@@ -45,8 +45,8 @@ namespace Radare {
 		public int has_dbg_linenums();
 		public int has_dbg_syms();
 		public int has_dbg_relocs();
-		public int meta_get_line(uint64 addr, ref string file, int len, out int line);
-		public string meta_get_source_line(uint64 addr);
+		public int addr2line(uint64 addr, ref string file, int len, out int line);
+		public string addr2text(uint64 addr);
 		public RBin.Object get_object ();
 
 		[Compact]
