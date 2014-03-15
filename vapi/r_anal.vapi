@@ -14,7 +14,7 @@ namespace Radare {
 		public void *user;
 		public RList<Function> fcns;
 //		public RList<VarType> vartypes;
-		public RList<MetaItem> meta;
+//		public RList<MetaItem> meta;
 		public RReg reg;
 		public RSyscall syscall;
 
