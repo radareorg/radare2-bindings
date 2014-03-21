@@ -34,7 +34,6 @@ public class RCore {
 	public int ffio;
 	public int oobi_len;
 	public RBuffer *yank_buf;
-	public uint64 yank_off;
 	public int tmpseek;
 	public bool vmode;
 	public int interrupted;
