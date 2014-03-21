@@ -33,8 +33,7 @@ public class RCore {
 	public uint8 *oobi;
 	public int ffio;
 	public int oobi_len;
-	public uint8 *yank_buf;
-	public int yank_len;
+	public RBuffer *yank_buf;
 	public uint64 yank_off;
 	public int tmpseek;
 	public bool vmode;
