@@ -3,8 +3,8 @@
 #include "r_lib.h"
 #include "r_core.h"
 #include "r_lang.h"
-#include "duk/duktape.h"
-#include "duk/duktape.c"
+#include "./duk/duktape.h"
+#include "./duk/duktape.c"
 
 static int lang_duktape_file(RLang *lang, const char *file);
 

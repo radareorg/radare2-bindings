@@ -2,7 +2,7 @@ BINDEPS=foo
 include ../../../config.mk
 
 CFLAGS+=$(shell pkg-config --cflags r_core)
-CFLAGS+=-Wall -DPREFIX=\"${PREFIX}\"
+CFLAGS+=-Wall -DPREFIX=\"${PREFIX}\" -I.
 
 ifeq ($(OSTYPE),darwin)
 CFLAGS+=-undefined dynamic_lookup
@@ -95,4 +95,4 @@ duktape-sync:
 	wget -O $(DUKTAPE_FILE) $(DUKTAPE_URL)
 	tar xJvf $(DUKTAPE_FILE)
 	cp -f duktape-$(DUKTAPE_VER)/src/duktape.* duk/
-	rm -rf $(DUKTAPE_FILE)
+	rm -rf $(DUKTAPE_FILE) duktape-$(DUKTYPE_VER)
