@@ -34,6 +34,8 @@ ifeq ($(HAVE_LIB_LUA5_1),1)
 LANGS+=lang_lua.${EXT_SO}
 endif
 
+LANGS+=lang_duktape.$(EXT_SO)
+
 all: ${LANGS}
 	@echo "LANG ${LANGS}"
 
@@ -56,6 +58,9 @@ ifeq ($(HAVE_LIB_TCC),1)
 lang_tcc.${EXT_SO}: tcc.o
 	-${CC} ${CFLAGS} -fPIC ${LDFLAGS_LIB} -o lang_tcc.${EXT_SO} tcc.c -ldl -ltcc
 endif
+
+lang_duktape.$(EXT_SO): duktape.o
+	-$(CC) $(CFLAGS) -fPIC $(LDFLAGS_LIB) -o lang_duktape.$(EXT_SO) duktape.o
 
 lang_lua.${EXT_SO}: lua.o
 	-${CC} ${CFLAGS} -fPIC ${LDFLAGS_LIB} -o lang_lua.${EXT_SO} lua.c ${LUA_LDFLAGS}
