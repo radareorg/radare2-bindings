@@ -8626,11 +8626,6 @@ extern int duk_debug_summary_idx;
 #endif  /* DUK_USE_GCC_PRAGMAS */
 #endif  /* DUK_PANIC_HANDLER */
 
-#undef DUK_PANIC_HANDLER
-#define DUK_PANIC_HANDLER(code,msg) do { \
-		DUK_PANIC_PRINTMSG((code),(msg)); \
-	} while (0)
-
 /*
  *  Assertion helpers
  */

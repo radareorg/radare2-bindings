@@ -85,3 +85,14 @@ R2_PLUGIN_PATH=$(shell r2 -hh| grep PLUGINS|awk '{print $$2}')
 install:
 	mkdir -p $(DESTDIR)/$(R2_PLUGIN_PATH)
 	[ -n "`ls *.$(EXT_SO)`" ] && cp -f *.$(EXT_SO) $(DESTDIR)/$(R2_PLUGIN_PATH) || true
+
+DUKTAPE_VER=0.9.0
+DUKTAPE_FILE=duktape-$(DUKTAPE_VER).tar.xz
+DUKTAPE_URL=http://duktape.org/$(DUKTAPE_FILE)
+
+duktape-sync:
+	rm -f $(DUKTAPE_FILE)
+	wget -O $(DUKTAPE_FILE) $(DUKTAPE_URL)
+	tar xJvf $(DUKTAPE_FILE)
+	cp -f duktape-$(DUKTAPE_VER)/src/duktape.* duk/
+	rm -rf $(DUKTAPE_FILE)
