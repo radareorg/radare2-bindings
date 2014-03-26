@@ -60,7 +60,8 @@ lang_tcc.${EXT_SO}: tcc.o
 endif
 
 lang_duktape.$(EXT_SO): duktape.o
-	-$(CC) $(CFLAGS) -fPIC $(LDFLAGS_LIB) -o lang_duktape.$(EXT_SO) duktape.o
+	-$(CC) -std=c99 $(CFLAGS) -fPIC $(LDFLAGS_LIB) \
+		-o lang_duktape.$(EXT_SO) duktape.o
 
 lang_lua.${EXT_SO}: lua.o
 	-${CC} ${CFLAGS} -fPIC ${LDFLAGS_LIB} -o lang_lua.${EXT_SO} lua.c ${LUA_LDFLAGS}
