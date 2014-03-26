@@ -2,7 +2,7 @@ BINDEPS=foo
 include ../../../config.mk
 
 CFLAGS+=$(shell pkg-config --cflags r_core)
-CFLAGS+=-Wall -DPREFIX=\"${PREFIX}\" -I.
+CFLAGS+=-Wall -DPREFIX=\"${PREFIX}\" -I. -Iduk
 
 ifeq ($(OSTYPE),darwin)
 CFLAGS+=-undefined dynamic_lookup
