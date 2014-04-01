@@ -26,8 +26,8 @@ namespace Radare {
 	}
 
 
-	[CCode (cheader_filename="r_cmd.h", cname="RCmdPlugin", free_function="", destroy_function="")]
-	public struct RCmdPlugin {
+	[CCode (cheader_filename="r_cmd.h", cname="RCorePlugin", free_function="", destroy_function="")]
+	public struct RCorePlugin {
 		string name;
 		string desc;
 		RCmdCallback call;
@@ -43,7 +43,7 @@ namespace Radare {
 		public void set_data (void *data);
 		public bool @add (string cmd, string desc, Callback cb);
 		public bool add_long (string cmd, string scmd, string desc);
-		public bool del (string cmd);
+		//public bool del (string cmd);
 		public bool call (string cmd);
 		public bool call_long (string cmd);
 	}
