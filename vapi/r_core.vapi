@@ -43,10 +43,6 @@ public class RCore {
 	 */
 	public RCons cons;
 	/**
-	 * Entrypoint for the global Sdb namespace
-	 */
-	public Sdb sdb;
-	/**
 	 * RIO instance
 	 */
 	public RIO io;
@@ -83,6 +79,14 @@ public class RCore {
 	public string lastcmd;
 	public int cmdrepeat;
 	public uint64 inc;
+	/**
+	 * Entrypoint for the global Sdb namespace
+	 */
+#if VALABIND_CTYPES
+	public void *sdb;
+#else
+	public Sdb sdb;
+#endif
 // rtr_n ...
 	// TODO: public RVm vm;
 	/* lifecycle */
