@@ -136,7 +136,7 @@ namespace Radare {
 			public char name[512]; // FIXME proper static strings w/o hardcoded size
 			public char bind[512]; // FIXME proper static strings w/o hardcoded size
 			public char type[512]; // FIXME proper static strings w/o hardcoded size
-			public char classname512]; // FIXME proper static strings w/o hardcoded size
+			public char classname[512]; // FIXME proper static strings w/o hardcoded size
 			public char descriptor[512]; // FIXME proper static strings w/o hardcoded size
 			public uint64 ordinal;
 		}
