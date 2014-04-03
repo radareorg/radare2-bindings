@@ -96,7 +96,7 @@ public class RCore {
 
 	public static unowned RCore ncast(uint64 ptr);
 	public static unowned RCore cast(void *p);
-	public bool loadlibs();
+	public bool loadlibs(int where, string path);
 	/* commands */
 	public int prompt(bool sync);
 	public void prompt_loop ();
