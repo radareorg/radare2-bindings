@@ -190,6 +190,8 @@ public class RCore {
 		public int rwx;
 		public bool dbg;
 		public RIO.Desc fd;
+		RCore core;
+		uint8 alive;
 	}
 
 	[CCode (cname="RCoreAsmHit", free_function="", ref_function="", unref_function="")]

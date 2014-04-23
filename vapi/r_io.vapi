@@ -141,6 +141,7 @@ namespace Radare {
 			public int fd;
 			public int flags;
 			public string name;
+			RIO io;
 		}
 		// int perms -> RIOPerm ?
 		public void desc_add(RIO.Desc *desc);
