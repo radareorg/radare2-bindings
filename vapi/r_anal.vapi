@@ -398,7 +398,7 @@ namespace Radare {
 		}
 
 		[Compact]
-		[CCode (cname="RAnalVarAccess")]
+		[CCode (cname="RAnalVarAccess", free_function="")]
 		public class VarAccess {
 			public uint64 addr;
 			public bool @set;
