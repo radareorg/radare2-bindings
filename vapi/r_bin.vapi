@@ -22,11 +22,11 @@ namespace Radare {
 		public int wr_rpath_del ();
 		public int wr_output (string filename);
 
-		public int load(string file, uint64 baddr, uint64 laddr, bool dummy);
+		public int load(string file, uint64 baddr, uint64 laddr, int xtr_idx, int fd, int rawstr);
 		public RBuffer create(uint8 *code, int codelen, uint8 *data, int datalen);
 		public int use_arch(string arch, int bits, string name);
 		public int select(string arch, int bits, string name);
-		public int select_idx(int idx);
+		public int select_idx(string? name, int idx);
 		public int list();
 		public uint64 get_baddr();
 		public RBin.Addr get_sym(int sym); // XXX: use RBin.Sym here ?
