@@ -103,8 +103,8 @@ namespace Radare {
 
 		[CCode (cname="RBinAddr", free_function="", ref_function="", unref_function="")]
 		public class Addr {
-			public uint64 rva;
-			public uint64 offset;
+			public uint64 vaddr;
+			public uint64 paddr;
 		}
 
 		[CCode (cname="RBinSection", free_function="", ref_function="", unref_function="")]
@@ -112,8 +112,8 @@ namespace Radare {
 			public char name[512]; // FIXME proper static strings w/o hardcoded size
 			public uint64 size;
 			public uint64 vsize;
-			public uint64 rva;
-			public uint64 offset;
+			public uint64 vaddr;
+			public uint64 paddr;
 			public uint64 srwx;
 		}
 
@@ -125,8 +125,8 @@ namespace Radare {
 			public char type[512]; // FIXME proper static strings w/o hardcoded size
 			public char classname[512]; // FIXME proper static strings w/o hardcoded size
 			public char descriptor[512]; // FIXME proper static strings w/o hardcoded size
-			public uint64 rva;
-			public uint64 offset;
+			public uint64 vaddr;
+			public uint64 paddr;
 			public uint64 size;
 			public uint64 ordinal;
 		}
@@ -155,8 +155,8 @@ namespace Radare {
 			public uint8 additive;
 			public RBin.Import import;
 			public int64 addend;
-			public uint64 rva;
-			public uint64 offset;
+			public uint64 vaddr;
+			public uint64 paddr;
 		}
 
 		[CCode (cname="RBinInfo", free_function="", ref_function="", unref_function="")]
@@ -181,8 +181,8 @@ namespace Radare {
 		[CCode (cname="RBinString", free_function="", ref_function="", unref_function="")]
 		public class String {
 			public char @string[512]; // FIXME proper static strings w/o hardcoded size
-			public uint64 rva;
-			public uint64 offset;
+			public uint64 vaddr;
+			public uint64 paddr;
 			public uint64 ordinal;
 			public uint64 size;
 		}
@@ -190,8 +190,8 @@ namespace Radare {
 		[CCode (cname="RBinField", free_function="", ref_function="", unref_function="")]
 		public class Field {
 			public char name[512]; // FIXME proper static strings w/o hardcoded size
-			public uint64 rva;
-			public uint64 offset;
+			public uint64 vaddr;
+			public uint64 paddr;
 		}
 	}
 }
