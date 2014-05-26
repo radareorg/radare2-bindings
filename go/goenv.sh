@@ -16,9 +16,9 @@ case "${HOST_ARCH}" in
 	;;
 esac
 
-GOC=${GO_N}g
-GOL=${GO_N}l
-GOCC=${GO_N}c
+GOC="go tool ${GO_N}g"
+GOL="go tool ${GO_N}l"
+GOCC="go tool ${GO_N}c"
 GOOS=`uname | tr 'A-Z' 'a-z'`
 GOROOT=/usr/lib/go
 export GOC GOL GOARCH GO_FLAGS GOOS GO_N GOROOT
