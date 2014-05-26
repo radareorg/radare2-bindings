@@ -189,7 +189,7 @@ public class RCore {
 		public RIO.Map map;
 		public int rwx;
 		public bool dbg;
-		public RIO.Desc fd;
+		public RIO.Desc desc;
 		RCore core;
 		uint8 alive;
 	}

@@ -4,7 +4,7 @@ namespace Radare {
 	[Compact]
 	[CCode (cheader_filename="r_io.h", cname="RIO", free_function="r_io_free", cprefix="r_io_")]
 	public class RIO {
-		public Desc fd;
+		public Desc desc;
 		public bool cached;
 		public bool cached_read;
 		public bool enforce_rwx;
@@ -42,7 +42,8 @@ namespace Radare {
 		public RIO.Desc open(string uri, int flags, int mode);
 		public RIO.Desc open_as(string urihandler, string path, int flags, int mode);
 		public int redirect(string uri);
-		public int set_fd(RIO.Desc fd);
+		public void use_fd(int fd);
+		public void use_desc(RIO.Desc desc);
 		public int read(out uint8 *buf, int len);
 		public int read_at(uint64 addr, uint8 *buf, int len);
 		public RBuffer *read_buf(uint64 addr, int len);
