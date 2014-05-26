@@ -21,11 +21,23 @@ echo "Build ${MOD} `pkg-config --libs ${MOD}`"
 case "${LNG}" in
 *node*|ctypes)
 	VBMODE=''
-	;;
+;;
 java)
-        export SWIGFLAGS="-package org.radare.radare2 -outdir ${R2_JAVA_DIR}"
-        VBMODE=--swig
-        ;;
+	export SWIGFLAGS="-package org.radare.radare2 -outdir ${R2_JAVA_DIR}"
+	VBMODE=--swig
+	;;
+go)
+	case $(uname -m) in
+	*86)
+		export SWIGFLAGS="-intgosize 32"
+		VBMODE=--swig
+		;;
+	*64*)
+		export SWIGFLAGS="-intgosize 64"
+		VBMODE=--swig
+		;;
+	esac
+	;;
 *)
 	VBMODE=--swig
 	;;
