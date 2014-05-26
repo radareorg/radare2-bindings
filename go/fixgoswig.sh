@@ -25,3 +25,4 @@ $ {
 }
 ' $FILE > $FILE.fix
 mv -f $FILE.fix $FILE
+sed -i -e "s/Char/byte/g" "$FILE"
