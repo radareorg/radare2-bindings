@@ -8,7 +8,6 @@ case "${HOST_ARCH}" in
 *64*)
 	GO_N=6
 	GOARCH=amd64
-	GO_FLAGS=-D_64BIT
 	;;
 *arm*)
 	GO_N=5
