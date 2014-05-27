@@ -19,6 +19,7 @@ esac
 GOC=${GO_N}g
 GOL=${GO_N}l
 GOCC=${GO_N}c
+GOPACK="go tool pack"
 GOOS=`uname | tr 'A-Z' 'a-z'`
 GOROOT=/usr/lib/go
 export GOC GOL GOARCH GO_FLAGS GOOS GO_N GOROOT
