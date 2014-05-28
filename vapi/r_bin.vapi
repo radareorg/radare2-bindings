@@ -17,6 +17,7 @@ namespace Radare {
 		public int narch;
 
 		public RBin();
+		public void iobind (RIO io);
 
 		public uint64 wr_scn_resize (string name, uint64 size);
 		public int wr_rpath_del ();
