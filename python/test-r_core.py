@@ -15,7 +15,7 @@ core = RCore()
 # Detect sub-bins in fatmach0
 path="/tmp/fatmach0-3true"
 path="/bin/ls"
-core.bin.load (path, 0, 0, 0)
+core.bin.load (path, 0, 0, 0, 0, 0)
 print ("Supported archs: %d"%core.bin.narch)
 
 if core.bin.narch>1:
@@ -36,3 +36,4 @@ core.bin_load ("", 0)
 
 # show entrypoint
 print ("Entrypoint : 0x%x"%(core.num.get ("entry0")))
+print (core.cmd_str ("pd 12 @ entry0"))
