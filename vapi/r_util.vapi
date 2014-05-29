@@ -243,7 +243,6 @@ namespace Radare {
 		SYSCALL,
 		FASTCALL,
 		CRYPTO,
-		CMD,
 		LAST
 	}
 }
