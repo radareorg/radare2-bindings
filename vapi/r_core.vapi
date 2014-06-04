@@ -31,7 +31,6 @@ public class RCore {
 	 */
 	public uint8 *block;
 	public uint8 *oobi;
-	public int ffio;
 	public int oobi_len;
 	public RBuffer *yank_buf;
 	public int tmpseek;

@@ -37,8 +37,6 @@ public class Radare.RSearch {
 	[Compact]
 	[CCode (cname="RSearchKeyword", free_function="free", cprefix="r_search_keyword_")]
 	public class Keyword {
-		public char keyword[128]; // FIXME proper static strings w/o hardcoded size
-		public char binmask[128]; // FIXME proper static strings w/o hardcoded size
 		public uint8 bin_keyword[128]; // FIXME proper static buffers w/o hardcoded size
 		public uint8 bin_binmask[128]; // FIXME proper static buffers w/o hardcoded size
 		public int keyword_length;
