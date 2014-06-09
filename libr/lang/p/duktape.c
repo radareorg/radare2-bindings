@@ -81,7 +81,7 @@ static int lang_duktape_safe_eval(duk_context *ctx, const char *code) {
 	int rc;
 	duk_push_lstring (ctx, code, strlen (code));
 	duk_push_string (ctx, "input");
-	rc = duk_safe_call (ctx, wrapped_compile_execute, 2, 1, DUK_INVALID_INDEX);
+	rc = duk_safe_call (ctx, wrapped_compile_execute, 2, 1); //, DUK_INVALID_INDEX);
 	if (rc != DUK_EXEC_SUCCESS) {
 		print_error(ctx, stderr);
 		rc = R_FALSE;
@@ -110,8 +110,20 @@ static int lang_duktape_file(RLang *lang, const char *file) {
 	int ret = -1;
 	char *code = r_file_slurp (file, NULL); 
 	if (code) {
-		lang_duktape_safe_eval (ctx, code);
+		if (!is_init) {
+			ctx = duk_create_heap_default();
+			is_init = 1;
+			register_r2cmd_duktape (lang, ctx);
+		}
+		duk_push_lstring (ctx, code, strlen (code));
+		duk_push_string (ctx,file);
 		free (code);
+		ret = duk_safe_call (ctx, wrapped_compile_execute, 2, 1);
+		if (ret != DUK_EXEC_SUCCESS) {
+			eprintf ("duktape error");
+		} else {
+			duk_pop(ctx);
+		}
 	}
 	return ret;
 }
