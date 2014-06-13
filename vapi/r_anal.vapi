@@ -279,10 +279,10 @@ namespace Radare {
 		public class Block {
 			public char* name;
 			public uint64 addr;
-			public uint64 size;
 			public uint64 jump;
 			public uint64 type2;
 			public uint64 fail;
+			public int size;
 			public BlockType type;
 			public BlockType type_ex;
 			public int ninstr;
