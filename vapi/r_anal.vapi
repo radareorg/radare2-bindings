@@ -26,7 +26,7 @@ namespace Radare {
 
 		public RAnal ();
 		public bool op_hexstr(uint64 addr, string hexstr);
-		public bool esil_eval (string str);
+		//public bool esil_eval (string str);
 		public bool set_bits (int bits);
 		public bool set_big_endian (bool big);
 		//public bool set_pc (uint64 addr);
@@ -344,8 +344,10 @@ namespace Radare {
 			//TODO public uint64 ref;
 		}
 
+/*
 		public string op_to_string(Op op);
 		public unowned string op_to_esil_string(Op op);
+*/
 
 		[Compact]
 		[CCode (cprefix="r_anal_diff_", cname="RAnalDiff")]
