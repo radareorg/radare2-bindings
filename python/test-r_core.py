@@ -34,6 +34,8 @@ f = core.file_open(path, False, 0)
 #core.bin_load (None)
 core.bin_load ("", 0)
 
+print ("33+3 = ",core.num.math("33+3"));
+
 # show entrypoint
 print ("Entrypoint : 0x%x"%(core.num.get ("entry0")))
 print (core.cmd_str ("pd 12 @ entry0"))
