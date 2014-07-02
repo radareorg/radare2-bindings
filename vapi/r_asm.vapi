@@ -154,6 +154,7 @@ public class RAsm {
 	 * The list of active plugins.
 	 */
 	public RList<RAsm.Plugin> plugins;
+	public RList<RAsm.Plugin> get_plugins();
 
 	public RAsm();
 	public bool use(string name);
