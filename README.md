@@ -15,7 +15,7 @@ favourite language.
 
 It supports a large list of programming languages:
 
-  - Vala, Genie, Java, Go, Python, Ruby, Perl, LUA, NewLisp, Guile
+  - Python, JavaScript, Java, Vala, Go, Ruby, Perl, Lua, NewLisp, Guile, OCaml
 
 And some other experimental bindings are for:
 
@@ -41,11 +41,11 @@ no extra dependencies apart from the language libraries and C++ compiler.
 
 To get install all dependencies do the following steps in order:
 
-  * Install swig and mercurial from repository
+  * Install swig and git from repository
     (ensure you don't have vala installed from package)
 
-       arch$ sudo pacman -S swig mercurial git
-       deb$ sudo apt-get install swig mercurial
+       arch$ sudo pacman -S swig git
+       deb$ sudo apt-get install swig git
 
   * Install latest release of Vala from tarball
 
@@ -65,7 +65,7 @@ To get install all dependencies do the following steps in order:
 
   * Fetch valabind from the repository:
  
-      $ hg clone http://hg.youterm.com/valabind
+      $ git clone git://github.com/radare/valabind.git
       $ cd valabind
       $ make
       $ sudo make install PREFIX=/usr
@@ -86,7 +86,7 @@ and valabind from git/hg.
    $ sudo make install
 
    $ cd ../valabind
-   $ hg pull -u
+   $ git pull
    $ make
    $ sudo make install PREFIX=/usr
 
