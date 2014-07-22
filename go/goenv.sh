@@ -18,6 +18,7 @@ esac
 GOC="go tool ${GO_N}g"
 GOL="go tool ${GO_N}l"
 GOCC="go tool ${GO_N}c"
+GOPACK="go tool pack"
 GOOS=`uname | tr 'A-Z' 'a-z'`
 if ! "$GOROOT"; then
 	echo "Warning, setting \$GOROOT to '/usr/lib/go', but this should probably be set elsewhere";

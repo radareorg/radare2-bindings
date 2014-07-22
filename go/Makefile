@@ -21,13 +21,13 @@ include ../rules.mk
 	  $${GOC} `echo $@ | sed -e s,.so,.go,` ; \
 	  echo $${GOCC} $${GO_FLAGS} -I ${GOROOT}/pkg/$${GOOS}_$${GOARCH} `echo $@ | sed -e s,.so,_gc.c,` ; \
 	  $${GOCC} $${GO_FLAGS} -I ${GOROOT}/pkg/$${GOOS}_$${GOARCH} `echo $@ | sed -e s,.so,_gc.c,` ; \
-	  gopack grc `echo $@ | sed -e s,.so,.a,` `echo $@ | sed -e s,.so,.$${GO_N},` `echo $@ | sed -e s,.so,_gc.$${GO_N},` ; \
+	  $${GOPACK} grc `echo $@ | sed -e s,.so,.a,` `echo $@ | sed -e s,.so,.$${GO_N},` `echo $@ | sed -e s,.so,_gc.$${GO_N},` ; \
 	fi
 
 rbintest:
 	. ./goenv.sh ; \
-	$${GOC} -I. test-r_bin.go ; \
-	$${GOL} -L. test-r_bin.$${GO_N} ; \
+	$${GOC} -I . test-r_bin.go ; \
+	$${GOL} -L . test-r_bin.$${GO_N} ; \
 	LD_LIBRARY_PATH=. ./$${GO_N}.out /bin/ls
 
 ibintest:
