@@ -53,9 +53,10 @@ done
 root=`dirname -- $0`
 sh $root/check-langs.sh
 if [ -n "${ENABLE}" ]; then
-	mv supported.langs .sl
-	cat .sl | grep -e `echo ${ENABLE} | sed -e 's/,/ -e/g'` > supported.langs
-	rm -f .sl
+	echo ${ENABLE} | sed -e 's/,/\n/g' > supported.langs
+	#mv supported.langs .sl
+	#cat .sl | grep -e `echo ${ENABLE} | sed -e 's/,/ -e/g'` > supported.langs
+	#rm -f .sl
 fi
 if [ -n "${DISABLE}" ]; then
 	mv supported.langs .sl

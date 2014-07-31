@@ -2,7 +2,7 @@
 # Check bindings supported by valabind
 # pancake // radare.org - 2010-2012
 
-SUP_LANGS=""
+SUP_LANGS="duktape"
 LANGS="python perl ruby lua go java guile php5 node-ffi ctypes ocaml"
 [ -z "${CC}" ] && CC=gcc
 [ -z "${CXX}" ] && CXX=g++
@@ -33,7 +33,6 @@ if [ $? = 0 ]; then
   # GIR IS EXPERIMENTAL #
   #echo " - gir: yes"
   #SUP_LANGS="gir ${SUP_LANGS}"
-  SUP_LANGS=""
   for a in ${LANGS}; do
     printf " - $a: "
     CC=${CC} CXX=${CXX} valabind-cc --test $a
@@ -75,3 +74,8 @@ done
 for a in ${SUP_LANGS}; do
   echo $a >> supported.langs
 done
+
+mv supported.langs .sl
+sort -u < .sl > supported.langs
+rm -f .sl
+
