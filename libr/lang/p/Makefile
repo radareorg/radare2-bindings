@@ -88,6 +88,11 @@ install:
 	mkdir -p $(DESTDIR)/$(R2_PLUGIN_PATH)
 	[ -n "`ls *.$(EXT_SO)`" ] && cp -f *.$(EXT_SO) $(DESTDIR)/$(R2_PLUGIN_PATH) || true
 
+install-home:
+	mkdir -p ~/.config/radare2/plugins
+	[ -n "`ls *.$(EXT_SO)`" ] && \
+		cp -f *.$(EXT_SO) ~/.config/radare2/plugins || true
+
 DUKTAPE_VER=0.9.0
 DUKTAPE_FILE=duktape-$(DUKTAPE_VER).tar.xz
 DUKTAPE_URL=http://duktape.org/$(DUKTAPE_FILE)
