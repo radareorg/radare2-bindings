@@ -81,7 +81,8 @@ mrproper clean:
 	-rm -f *.${EXT_SO} *.${EXT_AR} *.o
 	-rm -rf *.dSYM
 
-R2_PLUGIN_PATH=$(shell r2 -hh| grep PLUGINS|awk '{print $$2}')
+#R2_PLUGIN_PATH=$(shell r2 -hh| grep PLUGINS|awk '{print $$2}')
+R2_PLUGIN_PATH=$(shell r2 -nqc 'e dir.plugins' -)
 
 install:
 	mkdir -p $(DESTDIR)/$(R2_PLUGIN_PATH)
