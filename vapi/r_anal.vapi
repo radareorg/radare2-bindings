@@ -521,7 +521,7 @@ namespace Radare {
 	[CCode (cname="uint64", cprefix="R_ANAL_EX_TYPE_")]
 	public enum ExDataType {
 		REF_NULL,
-		UNK_REF,
+		REF_UNK,
 		REF,
 		SIGNED,
 		PRIM,
