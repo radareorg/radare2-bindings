@@ -1,14 +1,9 @@
 
-   ===============
-  =               =
-  =  R2-Bindings  =  Language bindings for r2 api
-  =               =
-   ===============   --pancake
-
-
+radare2 language bindings for r2 api
+====================================
 
 Description
-===========
+-----------
 
 This directory contains the code necessary to use the r2 api from your
 favourite language.
@@ -28,7 +23,7 @@ rules used to generate all interactive html documentation found at:
 
 
 Dependencies
-============
+------------
 
 To build radare2-bindings from repository you need the following programs installed:
 
@@ -44,35 +39,35 @@ To get install all dependencies do the following steps in order:
   * Install swig and git from repository
     (ensure you don't have vala installed from package)
 
-       arch$ sudo pacman -S swig git
-       deb$ sudo apt-get install swig git
+	arch$ sudo pacman -S swig git
+	deb$ sudo apt-get install swig git
 
   * Install latest release of Vala from tarball
 
-      http://live.gnome.org/Vala
+	http://live.gnome.org/Vala
 
-      ./configure --prefix=/usr
-      make
-      sudo make install
+	./configure --prefix=/usr
+	make
+	sudo make install
   
   * Clone vala compiler from git repository:
 
-      $ git clone git://git.gnome.org/vala
-      $ cd vala
-      $ sh autogen.sh --prefix=/usr
-      $ make
-      $ sudo make install
+	$ git clone git://git.gnome.org/vala
+	$ cd vala
+	$ sh autogen.sh --prefix=/usr
+	$ make
+	$ sudo make install
 
   * Fetch valabind from the repository:
  
-      $ git clone git://github.com/radare/valabind.git
-      $ cd valabind
-      $ make
-      $ sudo make install PREFIX=/usr
+	$ git clone git://github.com/radare/valabind.git
+	$ cd valabind
+	$ make
+	$ sudo make install PREFIX=/usr
 
 
 To keep bindings up-to-date
-===========================
+---------------------------
 
 When changes are done in libr an ABI break can occur. The bindings will require
 to be recompiled to work again.
@@ -80,27 +75,27 @@ to be recompiled to work again.
 It's recommendable to keep your system always up to date, and upgrade vala
 and valabind from git/hg.
 
-   $ cd vala
-   $ git pull
-   $ make
-   $ sudo make install
+	$ cd vala
+	$ git pull
+	$ make
+	$ sudo make install
 
-   $ cd ../valabind
-   $ git pull
-   $ make
-   $ sudo make install PREFIX=/usr
+	$ cd ../valabind
+	$ git pull
+	$ make
+	$ sudo make install PREFIX=/usr
 
 
 radare2-bindings
-===========
+----------------
 
 If you compile from the repo you need the latest version of valabind and then:
 
-  ./configure --prefix=/usr
+	./configure --prefix=/usr
 
 You can select the languages you want to compile with --enable={list-of-langs}
 
-  ./configure --prefix=/usr --enable=python
+	./configure --prefix=/usr --enable=python
 
 
 PYTHON
@@ -109,11 +104,11 @@ PYTHON
 To select the version of python to compile for use the PYTHON_CONFIG
 environment variable as follows:
 
-  $ ./configure --prefix=/usr --enable-devel
-  $ cd python
-  $ PYTHON_CONFIG=python2.7-config make
-  $ su -
-  # PYTHON_CONFIG=python2.7-config make install
+	$ ./configure --prefix=/usr --enable-devel
+	$ cd python
+	$ PYTHON_CONFIG=python2.7-config make
+	$ su -
+	# PYTHON_CONFIG=python2.7-config make install
 
 
 RANDOM NOTES
