@@ -14,7 +14,6 @@ function doSomeStuff(r) {
 	r2.analOp ("entry0", function(op) {
 		console.log (op.size, op.opcode, op.esil);
 	});
-
 	r2.cmd ('af@entry0', function (o) {
 		r2.cmd ("pdf @ entry0", function (o) {
 			console.log (o);
@@ -25,3 +24,10 @@ function doSomeStuff(r) {
 
 r2node.connect ("http://cloud.rada.re/cmd/", doSomeStuff);
 r2node.launch ("/bin/ls", doSomeStuff);
+r2node.launch ("/bin/ls", function (r) {
+	var r2 = require (r2jsapi)(r);
+	r2.cmd (["?v $s", "p8 10", "pi 3"], function(res) {
+		console.log (res);
+		r.quit ();
+	});
+});
