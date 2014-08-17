@@ -40,7 +40,6 @@ function httpCmd(uri, cmd, cb) {
 
 function pipeCmd(proc, cmd, cb) {
   pipeQueue.push({cmd: cmd, cb: cb, result: ''});
-
   if (pipeQueue.length === 1)
     proc.stdin.write(cmd + "\n");
 }
@@ -69,10 +68,10 @@ function r2bind(file, cb, r2cmd) {
   var running = false;
   var r2 = {
     cmd : function (s, cb2) {
-      if (r2cmd !== null)
-        r2cmd (port, s, cb2);
-      else
+      if (r2cmd === null)
         pipeCmd(ls, s, cb2);
+      else
+        r2cmd (port, s, cb2);
     },
     quit: function() {
       ls.stdin.end();
@@ -94,7 +93,7 @@ function r2bind(file, cb, r2cmd) {
       cb (r2);
     } else if (running && (r2cmd === null)) {
       pipeCmdOutput (ls, data);
-    }
+    } else console.log ("wtf");
     //console.log('stderr: ' + data);
   });
 
