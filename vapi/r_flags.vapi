@@ -12,6 +12,8 @@ namespace Radare {
 		public uint64 offset;
 		public string cmd;
 		public void set_name(string name);
+		public void set_alias(string alias);
+		public void set_comment(string comment);
 	}
 
 	[Compact]
@@ -28,7 +30,7 @@ namespace Radare {
 		public bool sort(int namesort);
 		//public static bool name_check(string name);
 		//public static bool name_filter(string name);
-		public void set(string name, uint64 addr, int size=1, bool dup=false);
+		public RFlagItem set(string name, uint64 addr, int size=1, bool dup=false);
 
 		public bool space_list(int type);
 		public unowned string? space_get_i(int idx);
