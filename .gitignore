@@ -1,0 +1,12 @@
+*._d
+*._o
+*.[ado]
+*.so
+*.pc
+*.sdb
+*.dylib
+*.dll
+.*.swp
+.*.swo
+*.un~
+
