@@ -16,9 +16,7 @@ class R2:
     return self.process.before
 
   def cmd_json(self, cmd):
-    self.process.sendline(cmd)
-    self._expect_eof_()
-    return json.loads(self.process.before)
+    return json.loads(self.cmd(cmd))
 
 if __name__ == "__main__":
   r3 = R2("/bin/ls")
