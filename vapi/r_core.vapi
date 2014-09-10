@@ -182,7 +182,6 @@ public class RCore {
 		//public static bool close(string file, Core.File file);
 		/* attributes */
 		public string uri;
-		public string filename;
 		public uint64 seek;
 		public uint64 size;
 		public RIO.Map map;
