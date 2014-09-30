@@ -34,7 +34,8 @@ namespace Radare {
 		public void diff_setup_i(bool doops, int thbb, int thfcn);
 
 		public RList<RAnal.Function> get_fcns();
-		public Function get_fcn_at (uint64 addr);
+		public Function get_fcn_at (uint64 addr, int type);
+		public Function get_fcn_in (uint64 addr, int type);
 		public void trace_bb (uint64 addr);
 		
 		[Compact]
