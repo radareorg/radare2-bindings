@@ -181,7 +181,6 @@ public class RCore {
 		//public static bool set(string file, Core.File file);
 		//public static bool close(string file, Core.File file);
 		/* attributes */
-		public uint64 seek;
 		public RIO.Map map;
 		public int rwx;
 		public bool dbg;
