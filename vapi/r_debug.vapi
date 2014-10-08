@@ -94,7 +94,7 @@ public class Radare.RDebug {
 
 	public RList<RDebug.Pid> pids (int pid);
 	// must deprecate //
-	public int pid_list (int pid);
+	public int pid_list (int pid, char fmt);
 	public int thread_list (int pid);
 
 	public void trace_reset ();
