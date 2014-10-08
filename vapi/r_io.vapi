@@ -55,7 +55,7 @@ namespace Radare {
 		public uint64 size();
 
 
-		public void cache_commit ();
+		public void cache_commit (uint64 from, uint64 to);
 		public void cache_init ();
 		public int cache_list (bool rad);
 		public void cache_reset (bool set);
