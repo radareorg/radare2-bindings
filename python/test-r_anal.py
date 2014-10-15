@@ -1,6 +1,9 @@
-from r2 import r_core
+try:
+	from r_core import *
+except:
+	from r2.r_core import *
 
-rc = r_core.RCore()
+rc = RCore()
 rc.file_open("/bin/ls", 0, 0)
 rc.bin_load("", 0)
 
@@ -29,11 +32,14 @@ for f in funcs:
 		while (cur_byte < end_byte):
 			#anal_op = rc.op_anal(cur_byte)
 			asm_op = rc.disassemble (cur_byte)
+			if asm_op:
+				if asm_op.size == 0:
+					print("Bogus op")
+					break
 
-			if asm_op.size == 0:
-				print("Bogus op")
+				print("0x%x %s" % (cur_byte, asm_op.buf_asm))
+				#print("0x%x %s %s" % (cur_byte, asm_op.buf_hex, asm_op.buf_asm))
+				cur_byte += asm_op.size
+			else:
+				print("Invalid at",f.addr);
 				break
-
-			print("0x%x %s" % (cur_byte, asm_op.buf_asm))
-			#print("0x%x %s %s" % (cur_byte, asm_op.buf_hex, asm_op.buf_asm))
-			cur_byte += asm_op.size
