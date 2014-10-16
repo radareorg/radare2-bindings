@@ -147,7 +147,7 @@ function r2bind(file, cb, r2cmd) {
       running = true;
       cb (r2);
     } else if (running && !r2cmd) {
-        pipeCmdOutput (ls, data);
+      pipeCmdOutput (ls, data);
     } else {
       console.log ("r2pipe: wtf");
     }
