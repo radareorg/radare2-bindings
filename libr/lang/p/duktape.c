@@ -289,7 +289,7 @@ static void register_helpers(RLang *lang) {
 	if (is_init)
 		return;
 	is_init = 1;
-	ctx = duk_create_heap_default();
+	ctx = duk_create_heap_default ();
 	register_r2cmd_duktape (lang, ctx);
 	lang_duktape_safe_eval (ctx,
 		"var console = {log:print,error:print}");
