@@ -22,8 +22,11 @@ void main(string[] args) {
 		error ("Usage: %s <file>\n", args[0]);
 
 	string file = args[1];
+	var io = new RIO();
+	
 	var bin = new RBin ();
-	if (bin.load (file, false) != 1)
+	bin.iobind (io);
+	if (bin.load (file, 0,0,0,0,0) != 1)
 		error ("Cannot open binary file\n");
 
 	uint64 baddr = bin.get_baddr();
@@ -33,11 +36,11 @@ void main(string[] args) {
 	foreach (var sec in bin.get_sections ()) {
 		string name = (string)sec.name;
 		if (name == ".got.plt") {
-			gotaddr = sec.rva+baddr; // in memory offset
+			gotaddr = sec.vaddr+baddr; // in memory offset
 			gotsize = sec.size;
 		} else
 		if (name == ".rel.plt") {
-			relplt = sec.offset; // disk offset
+			relplt = sec.paddr;
 			relpltsz = sec.size;
 		}
 	}
