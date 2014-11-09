@@ -33,6 +33,6 @@ private const RCmdPlugin plugin = {
 };
 
 const RCmdStruct radare_plugin = {
-	RLibType.CMD, ref plugin
+	RLibType.CORE, ref plugin
 };
 */

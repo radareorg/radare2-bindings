@@ -7,7 +7,7 @@ plugin.${SOEXT}:
 	valac plugin.vala pluginwrap.c \
 		--library=plugin -o plugin.${SOEXT} \
 		--Xcc=-shared --Xcc=-fPIC --vapidir=.. \
-		--pkg r_cmd --pkg r_lib --pkg r_core
+		--pkg r_cmd --pkg r_util --pkg r_core
 
 rgot:
 	valac --vapidir=.. rgot.vala --pkg r_bin --pkg r_util

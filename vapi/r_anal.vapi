@@ -83,6 +83,15 @@ namespace Radare {
 			public Value arg[2];
 		}
 
+		[CCode (cname="int", cprefix="R_ANAL_FCN_TYPE_")]
+		public enum FcnType {
+			FCN,
+			LOC,
+			SYM,
+			IMP,
+			ROOT
+		}
+
 		[CCode (cname="int", cprefix="R_ANAL_COND_")]
 		public enum Cnd {
 			EQ,
