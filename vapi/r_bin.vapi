@@ -31,15 +31,15 @@ namespace Radare {
 		public int list();
 		public uint64 get_baddr();
 		public RBin.Addr get_sym(int sym); // XXX: use RBin.Sym here ?
-		public RList<RBin.Addr> get_entries();
-		public RList<RBin.Field> get_fields();
-		public RList<RBin.Import> get_imports();
-		public RList<RBin.Section> get_sections();
-		public RList<RBin.String> get_strings();
-		public RList<RBin.Symbol> get_symbols();
-		public RList<RBin.Reloc> get_relocs();
-		public RList<string> get_libs();
-		public RBin.Info get_info();
+		public unowned RList<unowned RBin.Addr> get_entries();
+		public unowned RList<unowned RBin.Field> get_fields();
+		public unowned RList<unowned RBin.Import> get_imports();
+		public unowned RList<unowned RBin.Section> get_sections();
+		public unowned RList<unowned RBin.String> get_strings();
+		public unowned RList<unowned RBin.Symbol> get_symbols();
+		public unowned RList<unowned RBin.Reloc> get_relocs();
+		public unowned RList<unowned string> get_libs();
+		public unowned RBin.Info get_info();
 		public int is_big_endian();
 		public int is_stripped();
 		public int is_static();

@@ -33,7 +33,7 @@ namespace Radare {
 		public void diff_setup(bool doops, double thbb, double thfcn);
 		public void diff_setup_i(bool doops, int thbb, int thfcn);
 
-		public RList<RAnal.Function> get_fcns();
+		public unowned RList<unowned RAnal.Function> get_fcns();
 		public Function get_fcn_at (uint64 addr, int type);
 		public Function get_fcn_in (uint64 addr, int type);
 		public void trace_bb (uint64 addr);
@@ -367,7 +367,7 @@ namespace Radare {
 			public uint64 addr;
 		}
 
-		[CCode (cname="RAnalFunction", free_function="", cprefix="r_anal_fcn_", ref_function="", unref_function="")]
+		[CCode (cname="RAnalFunction", free_function="", cprefix="r_anal_fcn_", ref_function="", unref_function="", free_function="")]
 		public class Function {
 			public string name;
 			public string dsc;
