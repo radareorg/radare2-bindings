@@ -120,7 +120,7 @@ namespace Radare {
 	[Compact]
 	[CCode (cprefix="r_list_", cheader_filename="r_util.h", cname="RList")]
 	public class RList<G> {
-		public void *free;
+		//public void *free;
 		RListIter<G> *head;
 		RListIter<G> *tail;
 		public void append(owned G foo);
