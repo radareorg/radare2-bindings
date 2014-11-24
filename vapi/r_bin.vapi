@@ -154,10 +154,12 @@ namespace Radare {
 		public class Reloc {
 			public uint8 type;
 			public uint8 additive;
+			public RBin.Symbol symbol;
 			public RBin.Import import;
 			public int64 addend;
 			public uint64 vaddr;
 			public uint64 paddr;
+			public uint32 visibility;
 		}
 
 		[CCode (cname="RBinInfo", free_function="", ref_function="", unref_function="")]
