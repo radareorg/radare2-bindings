@@ -80,7 +80,9 @@ namespace Radare {
 
 	[CCode (cheader_filename="r_util.h", lower_case_cprefix="r_sys_")]
 	namespace RSystem {
+		[CCode (cname="R_SYS_OS")]
 		public static const string OS;
+		[CCode (cname="R_SYS_ARCH")]
 		public static const string ARCH;
 		public static int sleep (int secs);
 		public static int usleep (int usecs);
