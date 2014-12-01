@@ -33,6 +33,10 @@ namespace Radare {
 		public void diff_setup(bool doops, double thbb, double thfcn);
 		public void diff_setup_i(bool doops, int thbb, int thfcn);
 
+		public RList<RAnal.Ref> xrefs_get (uint64 addr);
+		public RList<RAnal.Ref> xrefs_get_from (uint64 addr);
+		//public RList<RAnal.Ref> xrefs_from(uint64 addr);
+
 		public unowned RList<unowned RAnal.Function> get_fcns();
 		public Function get_fcn_at (uint64 addr, int type);
 		public Function get_fcn_in (uint64 addr, int type);
@@ -657,6 +661,7 @@ namespace Radare {
 	
 	public static int ex_bb_head_comparator(RAnal.Block a, RAnal.Block b);
 	public static int ex_bb_address_comparator(RAnal.Block a, RAnal.Block b);
+
 
 //	public RList<RAnal.Block> ex_analyze( RAnal.State state, uint64 addr);
 //	public RList<RAnal.Block> ex_analysis_driver( RAnal.State state, uint64 addr);
