@@ -1,4 +1,5 @@
 try:
+	import os, signal
 	from r_core import *
 except:
 	from r2.r_core import *
@@ -43,3 +44,10 @@ for f in funcs:
 			else:
 				print("Invalid at",f.addr);
 				break
+
+# RCore.fini() crashes when freeing fcnlist from python
+# because it doublefrees some stuff, terminating the process
+# ensures no RCore deinitialization is done, and therefor
+# no doublefree happens. This must be fixed, but at least
+# this way it allows people to use the API.
+os.kill (os.getpid (), signal.SIGTERM)
