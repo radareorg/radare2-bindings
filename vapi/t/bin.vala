@@ -19,4 +19,7 @@ public void main (string[] args) {
 	foreach (var sym in bin.get_symbols ())
 		print ("0x%08"+uint64.FORMAT_MODIFIER+"x - %s\n",
 			baddr+sym.vaddr, sym.name);
+	foreach (var sec in bin.get_sections())
+		print ("0x%08"+uint64.FORMAT_MODIFIER+"x - %s\n",
+			baddr+sec.vaddr, sec.name);
 }
