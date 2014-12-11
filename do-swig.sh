@@ -46,10 +46,10 @@ esac
 PYTHON_CONFIG=$(../python-config-wrapper -n)
 export PYTHON_CONFIG
 echo valabind-cc ${LNG} ${MOD} ${VALABINDFLAGS} \
-	-NRadare ${VBMODE} \
+	-NRadare -NSDB ${VBMODE} \
 	-x --vapidir=../vapi ../vapi/${MOD} \
 	`pkg-config --cflags --libs ${MOD}`
 exec valabind-cc ${LNG} ${MOD} ${VALABINDFLAGS} \
-	-NRadare ${VBMODE} \
+	-NRadare -NSDB ${VBMODE} \
 	-x --vapidir=../vapi ../vapi/${MOD} \
 	`pkg-config --cflags --libs ${MOD}`
