@@ -30,6 +30,12 @@ namespace Radare {
 
 		public static bool is_interactive;
 		public static bool is_html;
+		public static int lines;
+		public static bool echo;
+		public bool breaked;
+		public static int fix_rows;
+		public static int fix_columns;
+		public static int fdout;
 		public static bool eof();
 
 		public static int pipe_open (string file, int fdn, bool append);
