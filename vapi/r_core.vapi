@@ -203,7 +203,7 @@ public class RCore {
 	public RCore.File file_open(string file, int mode, uint64 loadaddr=0);
 	public bool file_close(RCore.File cf);
 	public bool file_close_fd(int fd);
-	public bool file_list();
+	public bool file_list(int mode);
 
 	public int seek_delta(int64 addr);
 
