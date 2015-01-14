@@ -59,7 +59,7 @@ lang_tcc.${EXT_SO}: tcc.o
 	-${CC} ${CFLAGS} -fPIC ${LDFLAGS_LIB} -o lang_tcc.${EXT_SO} tcc.c -ldl -ltcc
 endif
 
-lang_duktape.$(EXT_SO): duktape.o
+lang_duktape.$(EXT_SO): duktape.o duk
 	-$(CC) -std=c99 $(CFLAGS) -fPIC $(LDFLAGS_LIB) \
 		-o lang_duktape.$(EXT_SO) duktape.c
 
@@ -93,13 +93,14 @@ install-home:
 	[ -n "`ls *.$(EXT_SO)`" ] && \
 		cp -f *.$(EXT_SO) ~/.config/radare2/plugins || true
 
-DUKTAPE_VER=1.0.2
+DUKTAPE_VER=1.1.0
 DUKTAPE_FILE=duktape-$(DUKTAPE_VER).tar.xz
 DUKTAPE_URL=http://duktape.org/$(DUKTAPE_FILE)
 
-duktape-sync duk-sync sync-dunk sync-duktape:
+duk duktape-sync duk-sync sync-dunk sync-duktape:
 	rm -f $(DUKTAPE_FILE)
 	wget -O $(DUKTAPE_FILE) $(DUKTAPE_URL)
 	tar xJvf $(DUKTAPE_FILE)
+	mkdir -p duk
 	cp -f duktape-$(DUKTAPE_VER)/src/duktape.* duk/
 	rm -rf $(DUKTAPE_FILE) duktape-$(DUKTAPE_VER)
