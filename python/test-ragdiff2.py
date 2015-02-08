@@ -12,6 +12,16 @@ import time
 import tempfile
 from r2.r_core import *
 
+# workaround a bug in valabind or swig here..
+try:
+	FcnType_FCN
+except:
+	FcnType_FCN = 1
+	FcnType_SYM = 4
+	BlockDiff_NULL = 0
+	BlockDiff_MATCH = 'm'
+	BlockDiff_UNMATCH = 'u'
+
 class ViewWidget(gtk.VBox):
 	ui = '''
 	<ui>
@@ -194,7 +204,7 @@ class RagDiff2(gtk.Window):
 	
 	def diff(self):
 		# Diff
-		self.c.gdiff(self.c2)
+		self.c.gdiff(self.c2, True)
 		# Fill treeview
 		for fcn in self.c.anal.get_fcns():
 			if (fcn.type == FcnType_FCN or fcn.type == FcnType_SYM):
