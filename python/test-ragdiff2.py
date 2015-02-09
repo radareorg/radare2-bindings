@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-# ragdiff2 - Copyright 2010-2011
+# ragdiff2 - Copyright 2010-2015
+#   pancake <nopcode.org>
 #   nibble <develsec.org>
 
 import sys
@@ -209,14 +210,16 @@ class RagDiff2(gtk.Window):
 		for fcn in self.c.anal.get_fcns():
 			if (fcn.type == FcnType_FCN or fcn.type == FcnType_SYM):
 				diffaddr = '0x%08x' % fcn.diff.addr
-				if (fcn.diff.type == BlockDiff_MATCH):
+				difftype = '%c' % fcn.diff.type
+				if (difftype == 'm'): #BlockDiff_MATCH):
 					difftype = "MATCH"
-				elif (fcn.diff.type == BlockDiff_UNMATCH):
+				elif (difftype == BlockDiff_UNMATCH):
 					difftype = "UNMATCH"
 				else:
 					difftype = "NEW"
 					diffaddr = ''
 				self.dw.add_function([fcn.name, '0x%08x' % fcn.addr, fcn.diff.name, diffaddr, difftype])
+		# Add NEW function that appear in c2, but not in c1
 		for fcn in self.c2.anal.get_fcns():
 			if ((fcn.type == FcnType_FCN or fcn.type == FcnType_SYM) and fcn.diff.type == BlockDiff_NULL):
 				self.dw.add_function(['', '', fcn.name, '0x%08x' % fcn.addr, "NEW"])
