@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2009-2012 pancake<nopcode.org> */
+/* radare - LGPL - Copyright 2009-2015 - pancake */
 
 namespace Radare {
 	[CCode (cheader_filename="r_cons.h", cname="RCons", free_function="", unref_function="", cprefix="r_cons_")]
@@ -64,7 +64,7 @@ namespace Radare {
 		//public static int fgets(out string buf, int len, int argc, string argv[]);
 		/* input */
 		public static int readchar();
-		public static void any_key();
+		public static void any_key(string? msg=null);
 		public static int get_size(out int rows);
 		public static bool yesno(bool def, string fmt, ...);
 
