@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2009-2013 - nibble */
+/* radare - LGPL - Copyright 2009-2015 - pancake */
 
 namespace Radare {
 	[Compact]
@@ -164,15 +164,15 @@ namespace Radare {
 
 		[CCode (cname="RBinInfo", free_function="", ref_function="", unref_function="")]
 		public class Info {
-			public char file[512]; // FIXME proper static strings w/o hardcoded size
-			public char type[512]; // FIXME proper static strings w/o hardcoded size
-			public char bclass[512]; // FIXME proper static strings w/o hardcoded size
-			public char rclass[512]; // FIXME proper static strings w/o hardcoded size
-			public char arch[512]; // FIXME proper static strings w/o hardcoded size
-			public char machine[512]; // FIXME proper static strings w/o hardcoded size
-			public char os[512]; // FIXME proper static strings w/o hardcoded size
-			public char subsystem[512]; // FIXME proper static strings w/o hardcoded size
-			public char rpath[512]; // FIXME proper static strings w/o hardcoded size
+			public string? file; // FIXME proper static strings w/o hardcoded size
+			public string? type; // FIXME proper static strings w/o hardcoded size
+			public string? bclass; // FIXME proper static strings w/o hardcoded size
+			public string? rclass; // FIXME proper static strings w/o hardcoded size
+			public string? arch; // FIXME proper static strings w/o hardcoded size
+			public string? machine; // FIXME proper static strings w/o hardcoded size
+			public string? os; // FIXME proper static strings w/o hardcoded size
+			public string? subsystem; // FIXME proper static strings w/o hardcoded size
+			public string? rpath; // FIXME proper static strings w/o hardcoded size
 			public unowned string lang;
 			public int bits;
 			public bool has_va;
