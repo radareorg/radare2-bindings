@@ -190,6 +190,10 @@ public class RAsm {
 		 */
 		public string arch;
 		/**
+		 * The CPUs the plugin supports.
+		 */
+		public string cpus;
+		/**
 		 * The plugin description.
 		 */
 		public string desc;
@@ -197,6 +201,10 @@ public class RAsm {
 		 * The license for the plugin.
 		 */
 		public string license;
+		/**
+		 * The user data pointer;
+		 */
+		public void *user;
 		/**
 		 * Supported bit sizes.
 		 */
