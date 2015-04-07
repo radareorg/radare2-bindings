@@ -72,7 +72,9 @@ func (r2p *Pipe) Var(name string) (value string, err error) {
 	return r2p.Run("e " + name)
 }
 
-func (r2p *Pipe) Close() {
-	r2p.Run("q!")
-	r2p.cmd.Wait()
+func (r2p *Pipe) Close() error {
+	if _, err := r2p.Run("q!"); err != nil {
+		return err
+	}
+	return r2p.cmd.Wait()
 }
