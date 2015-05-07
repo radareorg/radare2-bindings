@@ -22,7 +22,7 @@ namespace Radare {
 		public int space_idx;
 		public RFlag();
 		public RList<RFlagItem> flags;
-		public void list(bool rad);
+		public void list(bool rad, string? pfx = null);
 		public RFlagItem get(string name);
 		public RFlagItem get_i(uint64 addr);
 		public bool unset(string name, RFlagItem? item);
