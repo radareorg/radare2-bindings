@@ -12,7 +12,7 @@ all: ${LIBS}
 w32:
 	# TODO: add support for debian
 	LDFLAGS="-L${W32PY}/libs ${LDFLAGS}" \
-	CFLAGS="-Wl,--enable-auto-import -L../../radare2-w32-${VERSION} ${CFLAGS}" \
+	CFLAGS="-I../../radare2-w32-${VERSION}/include/libr/ -Wl,--enable-auto-import -L../../radare2-w32-${VERSION} ${CFLAGS}" \
 	export CC CXX CFLAGS LDFLAGS ; \
 	${MAKE} CC=${CC} CXX=${CXX}
 
