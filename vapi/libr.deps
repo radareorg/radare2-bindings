@@ -8,7 +8,6 @@ r_bp
 r_reg
 r_util
 r_debug
-r_diff
 r_search
 r_syscall
 r_flags
