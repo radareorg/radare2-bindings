@@ -15,10 +15,10 @@ def fun_system(str):
         return str
 
 def fun_open(file,flags):
-        return str
+        return file
 
 def fun_seek(off,type):
-        return str
+        return off
 
 def fun_write(buf):
         print "WRITING %d bytes (%s)"%(len(buf),buf)

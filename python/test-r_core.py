@@ -14,7 +14,7 @@ core = RCore()
 
 # Detect sub-bins in fatmach0
 path="/tmp/fatmach0-3true"
-path="/bin/ls"
+#path="/bin/ls"
 core.bin.load (path, 0, 0, 0, 0, 0)
 print ("Supported archs: %d"%core.bin.narch)
 

@@ -73,6 +73,7 @@ class RapServer():
 		elif key == RAP_SEEK:
 			buffer = c.recv(9)
 			(type, off) = unpack(">BQ", buffer)
+			seek = 0
 			if self.handle_cmd_seek != None:
 				seek = self.handle_cmd_seek(off, type)
 			else:
