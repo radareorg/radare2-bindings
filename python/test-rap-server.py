@@ -11,7 +11,8 @@ from string import *
 PORT = 9999
 
 def fun_system(str):
-        print "CURRENT SEEK IS %d"%radapy.offset
+        global rs
+        print "CURRENT SEEK IS %d"%rs.offset
         return str
 
 def fun_open(file,flags):

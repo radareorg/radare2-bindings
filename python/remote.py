@@ -28,12 +28,13 @@ class RapServer():
 		self.offset = 0
 		self.size = 0
 		self.handle_eof = None
-		self.handle_cmd_system = None
-		self.handle_cmd_seek   = None
-		self.handle_cmd_read   = None
-		self.handle_cmd_write  = None
-		self.handle_cmd_open   = None
-		self.handle_cmd_close  = None
+		self.handle_system = None
+		self.handle_cmd    = None
+		self.handle_seek   = None
+		self.handle_read   = None
+		self.handle_write  = None
+		self.handle_open   = None
+		self.handle_close  = None
 
 	def _handle_packet(self, c, key):
 		ret = ""
@@ -41,16 +42,16 @@ class RapServer():
 			buffer = c.recv(2)
 			(flags, length) = unpack(">BB", buffer)
 			file = c.recv(length)
-			if self.handle_cmd_open != None:
-				fd = self.handle_cmd_open(file, flags)
+			if self.handle_open != None:
+				fd = self.handle_open(file, flags)
 			else: 	fd = 3434
 			buf = pack(">Bi", key|RAP_REPLY, fd)
 			c.send(buf)
 		elif key == RAP_READ:
 			buffer = c.recv(4)
 			(length,) = unpack(">I", buffer)
-			if self.handle_cmd_read != None:
-				ret = str(self.handle_cmd_read(length))
+			if self.handle_read != None:
+				ret = str(self.handle_read(length))
 				try:
 					lon = len(ret)
 				except:
@@ -66,16 +67,16 @@ class RapServer():
 			(length,) = unpack(">I", buffer)
 			buffer = c.recv(length)
 			# TODO: get buffer and length
-			if self.handle_cmd_write != None:
-				length = self.handle_cmd_write (buffer)
+			if self.handle_write != None:
+				length = self.handle_write (buffer)
 			buf = pack(">Bi", key|RAP_REPLY, length)
 			c.send(buf)
 		elif key == RAP_SEEK:
 			buffer = c.recv(9)
 			(type, off) = unpack(">BQ", buffer)
 			seek = 0
-			if self.handle_cmd_seek != None:
-				seek = self.handle_cmd_seek(off, type)
+			if self.handle_seek != None:
+				seek = self.handle_seek(off, type)
 			else:
 				if   type == 0: # SET
 					seek = off;
@@ -87,14 +88,23 @@ class RapServer():
 			buf = pack(">BQ", key|RAP_REPLY, seek)
 			c.send(buf)
 		elif key == RAP_CLOSE:
-			if self.handle_cmd_close != None:
-				length = self.handle_cmd_close (fd)
+			if self.handle_close != None:
+				length = self.handle_close (fd)
+		elif key == RAP_CMD:
+			buf = c.recv(4)
+			(length,) = unpack(">i", buf)
+			ret = c.recv(length)
+			if self.handle_cmd != None:
+				reply = self.handle_cmd(ret)
+			else:	reply = ""
+			buf = pack(">Bi", key|RAP_REPLY, len(str(reply)))
+			c.send(buf+reply)
 		elif key == RAP_SYSTEM:
 			buf = c.recv(4)
 			(length,) = unpack(">i", buf)
 			ret = c.recv(length)
-			if self.handle_cmd_system != None:
-				reply = self.handle_cmd_system(ret)
+			if self.handle_system != None:
+				reply = self.handle_system(ret)
 			else:	reply = ""
 			buf = pack(">Bi", key|RAP_REPLY, len(str(reply)))
 			c.send(buf+reply)
