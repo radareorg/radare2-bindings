@@ -128,7 +128,7 @@ class RapServer():
 			buf = pack(">Bi", key|RAP_REPLY, len(str(reply)))
 			c.send(buf+reply)
 		else:
-			print "Unknown command"
+			print("Unknown command %x"%key)
 			c.close()
 
 	def _handle_client(self, c):
@@ -149,11 +149,15 @@ class RapServer():
 		s = socket();
 		s.bind(("0.0.0.0", port))
 		s.listen(999)
-		print "Listening at port %d"%port
-		while True:
+		print("Listening at port %d"%port)
+		self.running = True
+		while self.running:
 			(c, (addr,port)) = s.accept()
 			print "New client %s:%d"%(addr,port)
 			self._handle_client(c)
+
+	def stop(self):
+		self.running = False
 
 
 ##===================================================0
