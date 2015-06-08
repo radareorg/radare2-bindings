@@ -27,6 +27,7 @@ class RapServer():
 	def __init__(self):
 		self.offset = 0
 		self.size = 0
+		self.fd = None
 		self.handle_eof = None
 		self.handle_system = None
 		self.handle_cmd    = None
@@ -36,7 +37,25 @@ class RapServer():
 		self.handle_open   = None
 		self.handle_close  = None
 
+	# copypasta from client
+	def system(self, cmd):
+		buf = pack(">Bi", RAP_SYSTEM, len(str(cmd)))
+		self.fd.send(buf)
+		self.fd.send(cmd)
+		# read response
+		buf = self.fd.recv(5)
+		(c,l) = unpack(">Bi", buf)
+		if c != RAP_SYSTEM | RAP_REPLY:
+			print "rmt-system: Invalid response packet"
+			return ""
+		if l>0:
+			buf = self.fd.recv(l)
+		else:
+			buf = ""
+		return buf
+
 	def _handle_packet(self, c, key):
+		self.fd = c
 		ret = ""
 		if key == RAP_OPEN:
 			buffer = c.recv(2)
