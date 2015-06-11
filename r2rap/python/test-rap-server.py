@@ -11,21 +11,28 @@ from string import *
 PORT = 9999
 
 def fun_system(str):
-        print "CURRENT SEEK IS %d"%radapy.offset
+        global rs
+	print "system"
+        print "CURRENT SEEK IS %d"%rs.offset
+	res = rs.system("?e hello world")
+	print ("RES %s"%res)
         return str
 
 def fun_open(file,flags):
-        return str
+        return file
 
 def fun_seek(off,type):
-        return str
+	print "seek"
+        return off
 
 def fun_write(buf):
+	print "write"
         print "WRITING %d bytes (%s)"%(len(buf),buf)
         return 6
 
 def fun_read(len):
         global rs
+	print "read"
         print "READ %d bytes from %d\n"% (len, rs.offset)
         str = "patata"
         str = str[rs.offset:]
@@ -36,8 +43,9 @@ def fun_read(len):
 #radapy.handle_cmd_open = fun_open
 #radapy.handle_cmd_close = fun_close
 rs = RapServer()
-rs.handle_cmd_system = fun_system
-rs.handle_cmd_read = fun_read
-rs.handle_cmd_write = fun_write
+rs.handle_system = fun_system
+rs.handle_read = fun_read
+rs.handle_write = fun_write
+rs.handle_cmd = fun_system
 rs.size = 10
 rs.listen_tcp (PORT)
