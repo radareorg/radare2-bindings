@@ -6,4 +6,4 @@ PREFIX?=/usr
 include ../rules.mk
 
 mrproper:
-	rm -f *.js
+	rm -f *.cxx *.i *.js

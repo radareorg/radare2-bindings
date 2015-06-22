@@ -6,7 +6,7 @@ public class Radare.RBreakpoint {
 	public RBreakpoint ();
 	public RList<RBreakpoint.Item> bps;
 	public RList<RBreakpoint.Trace> traces;
-	public bool use (string arch);
+	public bool use (string arch, int bits);
 	public void enable (uint64 addr, bool enabled);
 	public unowned Item? get_in (uint64 addr, int rwx);
 	public unowned Item? get_at (uint64 addr);
