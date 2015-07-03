@@ -66,7 +66,7 @@ def version():
 class open:
 	"""Class representing an r2pipe connection with a running radare2 instance
 	"""
-	def __init__(self, filename='', debug=False, writeable=False, bininfo=True):
+	def __init__(self, filename='', writeable=False, bininfo=True, debug=False,):
 		"""Open a new r2 pipe
 		The 'filename' can be one of the following:
 
@@ -77,9 +77,9 @@ class open:
 
 		Args:
 			filename (str): path to filename or uri
-			debug (bool): if True opens in debugger (r2 -d)
 			writeable (bool): if True opens the file in read-write
 			bininfo (bool): if True loads the info from the binary
+			debug (bool): if True opens in debugger (r2 -d)
 		Returns:
 			Returns an object with methods to interact with r2 via commands
 		"""
