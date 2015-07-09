@@ -199,12 +199,12 @@ install-go:
 install-java:
 	cd java && ${MAKE} install
 
+RUBYPATH=$(shell gem environment gemdir | sed -e s,gems/,,)
 install-ruby:
-	for a in 1.8 1.9.1; do \
-		mkdir -p ${DESTDIR}${PREFIX}/lib/ruby/$$a/r2 ; \
-		echo "Installing ruby$$a r2 modules..." ; \
-		cp -rf ruby/* ${DESTDIR}${PREFIX}/lib/ruby/$$a/r2 ; \
-	done
+	echo "Installing radare2 Ruby modules..."
+	rm -rf ${DESTDIR}${RUBYPATH}/r2
+	mkdir -p ${DESTDIR}${RUBYPATH}/r2
+	cp -rf ruby/* ${DESTDIR}${RUBYPATH}/r2
 
 install-perl:
 	# hack for slpm
