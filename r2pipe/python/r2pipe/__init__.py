@@ -196,7 +196,7 @@ class open:
 		Returns:
 			Returns an string with the results of the command
 		"""
-		return self._cmd(cmd)
+		return self._cmd(cmd).encode('utf-8', 'ignore'))
 
 	def cmdj(self, cmd):
 		"""Same as cmd() but evaluates JSONs and returns an object
