@@ -130,7 +130,7 @@ test:
 	cd java && ${MAKE} test
 
 PYTHON?=`pwd`/python-wrapper
-PYTHON_VERSION?=`${PYTHON} --version 2>&1 | cut -d ' ' -f 2 | cut -d . -f 1,2`
+PYTHON_VERSION?=$(shell ${PYTHON} --version 2>&1 | cut -d ' ' -f 2 | cut -d . -f 1,2)
 PYTHON_PKGDIR=$(shell ${PYTHON} mp.py)
 PYTHON_INSTALL_DIR=${DESTDIR}/${PYTHON_PKGDIR}/r2
 
@@ -206,17 +206,14 @@ install-ruby:
 	mkdir -p ${DESTDIR}${RUBYPATH}/r2
 	cp -rf ruby/* ${DESTDIR}${RUBYPATH}/r2
 
+PERLPATH=$(DESTDIR)/$(shell perl -e 'for (@INC) { print "$$_\n" if /lib(64)?\/perl5/ && !/local/; }'|head -n 1)
+
 install-perl:
 	# hack for slpm
-	if [ -n "`echo ${PREFIX}${DESTDIR}|grep home`" ]; then \
-		target=${PREFIX}${DESTDIR}`perl -e 'for (@INC) { print "$$_\n" if /lib(64)?\/perl5/ && !/local/; }'|head -n 1` ; \
-	else \
-		target=${DESTDIR}`perl -e 'for (@INC) { print "$$_\n" if /lib(64)?\/perl5/ && !/local/; }'|head -n 1` ; \
-	fi ; \
-	mkdir -p $$target/r2 ; \
-	echo "Installing perl r2 modules..." ; \
-	cp -rf perl/*.${SOEXT} $$target/r2 ; \
-	cp -rf perl/*.pm $$target/r2
+	@echo "Installing perl r2 modules..."
+	mkdir -p $(PERLPATH)/r2
+	cp -rf perl/*.${SOEXT} $(PERLPATH)/r2
+	cp -rf perl/*.pm $(PERLPATH)/r2
 
 install-vapi:
 	mkdir -p ${DESTDIR}${PREFIX}/share/vala/vapi
