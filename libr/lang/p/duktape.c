@@ -1,9 +1,31 @@
-/* radare - LGPL - Copyright 2014 pancake */
+/* radare - LGPL - Copyright 2014-2015 pancake */
 
-#include "r_lib.h"
-#include "r_core.h"
-#include "r_lang.h"
+#define _XOPEN_SOURCE 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+#include <r_lib.h>
+#include <r_core.h>
+#include <r_lang.h>
+
+// FUCK POSIX
+int snprintf(char *str, size_t size, const char *format, ...);
+int vsnprintf(char *str, size_t size, const char *format, va_list ap);
+
 #include "./duk/duktape.c"
+
+static char *mystrdup(const char *s) {
+	char *p = NULL;
+	if (s) {
+		int len = strlen (s)+1;
+		p = malloc (len);
+		if (p) {
+			memcpy (p, s, len);
+		}
+	}
+	return p;
+}
 
 static int lang_duktape_file(RLang *lang, const char *file);
 
@@ -66,9 +88,9 @@ static int duk_disasm(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 	b = a->cur->user = duk_require_tval (ctx, -1);
 //	pushBuffer (buf, len);
 	if (duk_is_callable(ctx, -1)) {
-	int i;
-//		duk_push_string (ctx, "TODO 2");
-	pushBuffer (buf, len);
+		int i;
+		// duk_push_string (ctx, "TODO 2");
+		pushBuffer (buf, len);
 		duk_call (ctx, 1);
 
 		// [ size, str ]
@@ -85,10 +107,11 @@ static int duk_disasm(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 					opstr = duk_to_string (ctx, -1);
 				}
 			}
-duk_pop (ctx);
+			duk_pop (ctx);
 		}
-	} else eprintf ("[:(] Is not a function %02x %02x\n", 
-b[0],b[1]);
+	} else {
+		eprintf ("[:(] Is not a function %02x %02x\n", b[0],b[1]);
+	}
 
 	// fill op struct
 	op->size = res;
@@ -126,9 +149,9 @@ static int r2plugin(duk_context *ctx) {
 	duk_get_prop_string (ctx, 1, y); \
 	if (or) { \
 		const char *str = duk_to_string (ctx, -1); \
-		x = strdup (str? str: or); \
+		x = mystrdup (str? str: or); \
 	} else { \
-		x = strdup (duk_require_string (ctx, -1)); \
+		x = mystrdup (duk_require_string (ctx, -1)); \
 	} \
 	duk_pop (ctx);
 
