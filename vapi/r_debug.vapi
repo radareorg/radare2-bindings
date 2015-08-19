@@ -10,8 +10,7 @@ public class Radare.RDebug {
 	public bool swstep;
 	public int steps;
 	public int newstate;
-	public int reason;
-	public int signum;
+	public Reason reason;
 
 	public RBreakpoint bp;
 	public RDebug(int hard);
@@ -39,7 +38,7 @@ public class Radare.RDebug {
 	// TODO: add attribute to invert arraylen
 	//public bool startv(string[] argv); // XXX
 	public bool start(string cmd);
-	public RDebug.Reason stop_reason();
+	public RDebug.ReasonType stop_reason();
 
 	/* control flow */
 	[CCode (cname="r_debug_wait")]
@@ -127,8 +126,19 @@ public class Radare.RDebug {
 		DEAD
 	}
 
+	[CCode (cname="r_debug_reason_t")]
+	public struct Reason {
+		int type;
+		int tid;
+		int signum;
+		RBreakpoint.Item bpi;
+		uint64 timestamp;
+		uint64 addr;
+		uint64 ptr;
+	}
+
 	[CCode (cname="int", cprefix="R_DBG_REASON_")]
-	public enum Reason {
+	public enum ReasonType {
 		NEW_PID,
 		NEW_TID,
 		NEW_LIB,
