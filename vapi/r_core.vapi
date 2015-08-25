@@ -125,6 +125,7 @@ public class RCore {
 
 	public int search_preludes();
 	public int search_prelude(uint64 from, uint64 to, uint8 *k, int ksz, uint8 *m, int msz);
+	public bool hash_load(string? filename);
 
 	public bool anal_all();
 	public int anal_search (uint64 from, uint64 to, uint64 ref);
