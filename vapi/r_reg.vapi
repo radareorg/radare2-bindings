@@ -58,11 +58,14 @@ public class Radare.RReg {
 	public uint64 get_value(Item item);
 	public bool set_value(Item item, uint64 val);
 
-	public float get_fvalue(Item item);
-	public bool set_fvalue(Item item, float val);
+	public float get_float(Item item);
+	public bool set_float(Item item, float val);
 
-	public uint64 get_pvalue(Item item, int pidx);
-	public bool set_pvalue(Item item, uint64 val, int pidx);
+	public double get_double(Item item);
+	public bool set_double (Item item, double val);
+
+	public bool set_pack(Item item, int pidx, int pbits, uint64 val);
+	public uint64 get_pack(Item item, int pidx, int pbits);
 
 	public uint8* get_bytes(Type type, out int size = null);
 	public int set_bytes(Type type, uint8* buf, int len);
