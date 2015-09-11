@@ -59,8 +59,6 @@ public class RCore {
 	public RCmd rcmd;
 	public RAnal anal;
 	public RAsm assembler;
-	public RAnal.Refline reflines;
-	public RAnal.Refline reflines2;
 	public RParse parser;
 	public RPrint print;
 	public RLang lang;
@@ -129,7 +127,7 @@ public class RCore {
 
 	public bool anal_all();
 	public int anal_search (uint64 from, uint64 to, uint64 ref);
-	public void anal_refs(uint64 addr, int gv);
+	public void anal_refs(string input);
 	public int anal_bb(RAnal.Function fcn, uint64 at, int head);
 	public int anal_bb_seek(uint64 addr);
 	public int anal_fcn(uint64 at, uint64 from, int reftype, int depth);
