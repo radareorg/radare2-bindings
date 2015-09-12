@@ -159,6 +159,11 @@ namespace Radare {
 		public uint64 section_get_vaddr(uint64 addr);
 		public int section_get_rwx(uint64 addr);
 		public bool section_overlaps(Section refsec);
+		public uint64 section_vaddr_to_maddr_try(uint64 vaddr);
+		public uint64 section_vaddr_to_maddr(uint64 vaddr);
+		public uint64 section_maddr_to_vaddr(uint64 vaddr);
+		public uint64 section_exists_for_paddr(uint64 vaddr, int hasperm);
+		public uint64 section_exists_for_vaddr(uint64 vaddr, int hasperm);
 
 		[Compact]
 		[CCode (cname="RIODesc",free_function="")]
