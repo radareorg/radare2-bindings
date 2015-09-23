@@ -62,6 +62,9 @@ lang_tcc.${EXT_SO}: ;
 	# do nothing
 endif
 
+duktape:
+	$(MAKE) lang_duktape.$(EXT_SO)
+
 lang_duktape.$(EXT_SO): duktape.o duk
 	-$(CC) -std=c99 $(CFLAGS) -fPIC $(LDFLAGS_LIB) \
 		-o lang_duktape.$(EXT_SO) duktape.c
