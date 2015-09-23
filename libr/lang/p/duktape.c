@@ -9,10 +9,6 @@
 #include <r_core.h>
 #include <r_lang.h>
 
-// FUCK POSIX
-int snprintf(char *str, size_t size, const char *format, ...);
-int vsnprintf(char *str, size_t size, const char *format, va_list ap);
-
 #include "./duk/duktape.c"
 
 static char *mystrdup(const char *s) {
