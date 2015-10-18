@@ -152,7 +152,7 @@ namespace Radare {
 
 		public uint64 section_next(uint64 addr);
 		public void section_list(uint64 addr, bool rad);
-		public void section_list_visual(uint64 addr, uint64 len, int width, int color);
+		public void section_list_visual(uint64 addr, uint64 len, bool color);
 		public Section section_vget(uint64 addr);
 		//public Section section_mget(uint64 addr);
 		public uint64 section_get_offset(uint64 addr);
