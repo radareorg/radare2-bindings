@@ -28,7 +28,7 @@ namespace Radare {
 		public int use_arch(string arch, int bits, string name);
 		public int select(string arch, int bits, string name);
 		public int select_idx(string? name, int idx);
-		public int list();
+		public int list(int mode);
 		public uint64 get_baddr();
 		public RBin.Addr get_sym(int sym); // XXX: use RBin.Sym here ?
 		public unowned RList<unowned RBin.Addr> get_entries();
