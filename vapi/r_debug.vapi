@@ -1,9 +1,9 @@
-/* radare - LGPL - Copyright 2009-2012 pancake<nopcode.org> */
+/* radare - LGPL - Copyright 2009-2015 - pancake */
 
 [Compact]
 [CCode (cheader_filename="r_debug.h", cname="RDebug", free_function="r_debug_free", cprefix="r_debug_")]
 public class Radare.RDebug {
-	public int arch;
+	public string arch;
 	public int bits;
 	public int pid;
 	public int tid;
