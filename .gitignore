@@ -9,4 +9,4 @@
 .*.swp
 .*.swo
 *.un~
-
+!r2pipe/dlang/*.d
