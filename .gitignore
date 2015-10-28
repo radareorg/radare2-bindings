@@ -12,6 +12,7 @@
 .*.swp
 .*.swo
 *.un~
+*.d
 !r2pipe/dlang/*.d
 r2pipe/swift/main
 r2pipe/swift/Carthage
