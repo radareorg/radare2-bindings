@@ -39,32 +39,31 @@ To get install all dependencies do the following steps in order:
   * Install swig and git from repository
     (ensure you don't have vala installed from package)
 
-	arch$ sudo pacman -S swig git
-	deb$ sudo apt-get install swig git
+		arch$ sudo pacman -S swig git
+		deb$ sudo apt-get install swig git
 
   * Install latest release of Vala from tarball
 
 	http://live.gnome.org/Vala
 
-	./configure --prefix=/usr
-	make
-	sudo make install
-  
+		./configure --prefix=/usr
+		make
+		sudo make install
+
   * Clone vala compiler from git repository:
 
-	$ git clone git://git.gnome.org/vala
-	$ cd vala
-	$ sh autogen.sh --prefix=/usr
-	$ make
-	$ sudo make install
+		$ git clone git://git.gnome.org/vala
+		$ cd vala
+		$ sh autogen.sh --prefix=/usr
+		$ make
+		$ sudo make install
 
   * Fetch valabind from the repository:
- 
-	$ git clone git://github.com/radare/valabind.git
-	$ cd valabind
-	$ make
-	$ sudo make install PREFIX=/usr
 
+		$ git clone git://github.com/radare/valabind.git
+		$ cd valabind
+		$ make
+		$ sudo make install PREFIX=/usr
 
 To keep bindings up-to-date
 ---------------------------
