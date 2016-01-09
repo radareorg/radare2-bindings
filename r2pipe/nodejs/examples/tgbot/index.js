@@ -223,10 +223,7 @@ function launchTelegramBot(r2) {
               "r2bot accepts r2 commands and /start /help /list /asm /dis");
             break;
           default:
-            r2.cmd(text, function(data) {
-              console.log (data);
-              sendMessage (from, chat, data);
-            });
+            replyMessage("Unknown command. Try to use /help");
         }
       }
     }
