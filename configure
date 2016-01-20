@@ -101,12 +101,12 @@ done
 : ${INSTALL_PROGRAM_STRIP:=${INSTALL} -m 755 -s}
 : ${INSTALL_MAN:=${INSTALL} -m 444}
 : ${INSTALL_LIB:=${INSTALL} -m 755 -c}
- PKGNAME='radare2-bindings' ; VERSION='0.10.0-git' ; CONTACT_MAIL="pancake@nopcode.org" ; CONTACT_NAME="pancake" ; CONTACT="pancake <pancake@nopcode.org>" ;
+ PKGNAME='radare2-bindings' ; VERSION='0.10.0' ; CONTACT_MAIL="pancake@nopcode.org" ; CONTACT_NAME="pancake" ; CONTACT="pancake <pancake@nopcode.org>" ;
 }
                 
 show_usage() {
 cat <<EOF2
-'configure' configures radare2-bindings-0.10.0-git to adapt to many kinds of systems.
+'configure' configures radare2-bindings-0.10.0 to adapt to many kinds of systems.
 
 Usage: ./configure [OPTION]... [VAR=VALUE]...
 
@@ -145,9 +145,12 @@ System types:
   --target=TARGET        configure for building compilers for TARGET [HOST]
 EOF2
 
-printf "\nOptional Features:
-  --with-ostype          Choose OS type (gnulinux windows darwin)  (USEROSTYPE=auto)\n"
-printf "\nSome influential environment variables:
+printf "
+Optional Features:
+  --with-ostype          Choose OS type (gnulinux windows darwin)  (USEROSTYPE=auto)
+"
+printf "
+Some influential environment variables:
   CC          C compiler command
   CFLAGS      C compiler flags
   CPPFLAGS    C preprocessor flags
@@ -157,8 +160,10 @@ printf "\nSome influential environment variables:
               headers in a nonstandard directory <include dir>
   CPP         C preprocessor
   CXX         C++ compiler command
-  CXXFLAGS    C++ compiler flags\n"
-printf "\nReport bugs to: pancake <pancake@nopcode.org>"
+  CXXFLAGS    C++ compiler flags
+"
+printf "
+Report bugs to: pancake <pancake@nopcode.org>"
 echo ""
 exit 0
 }
@@ -173,7 +178,7 @@ take_environ() {
 }
 
 show_version() {
-echo "radare2-bindings-0.10.0-git configuration script done with acr v0.9.9.
+echo "radare2-bindings-0.10.0 configuration script done with acr v0.9.9.
 The 'Free Software Foundation' message is only for autodetection.
 Originally written by pancake <nopcode.org>."
 exit 0
@@ -197,7 +202,7 @@ case $flag in
 	show_version ; ;;
 -r|--r|--report)
 echo "PKGNAME:   radare2-bindings"
-echo "VERSION:   0.10.0-git"
+echo "VERSION:   0.10.0"
 echo "LANGS:     c c++"
 echo "PKG-CONFIG:  r_core"
 echo "FLAGS:     --with-ostype=auto"
