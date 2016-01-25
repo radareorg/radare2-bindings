@@ -99,7 +99,7 @@ install-home:
 	[ -n "`ls *.$(EXT_SO)`" ] && \
 		cp -f *.$(EXT_SO) ~/.config/radare2/plugins || true
 
-DUKTAPE_VER=1.3.1
+DUKTAPE_VER=1.4.0
 DUKTAPE_FILE=duktape-$(DUKTAPE_VER).tar.xz
 DUKTAPE_URL=http://duktape.org/$(DUKTAPE_FILE)
 
