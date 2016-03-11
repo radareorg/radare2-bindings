@@ -93,6 +93,7 @@ R2_PLUGIN_PATH=$(shell r2 -nqc 'e dir.plugins' -)
 install:
 	mkdir -p $(DESTDIR)/$(R2_PLUGIN_PATH)
 	[ -n "`ls *.$(EXT_SO)`" ] && cp -f *.$(EXT_SO) $(DESTDIR)/$(R2_PLUGIN_PATH) || true
+	cp -f radare.lua $(DESTDIR)/$(R2_PLUGIN_PATH)
 
 install-home:
 	mkdir -p ~/.config/radare2/plugins
