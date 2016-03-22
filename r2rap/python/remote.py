@@ -7,6 +7,10 @@
 ## server api
 ##===================================================0
 
+
+import select
+import threading
+
 from socket import *
 from struct import *
 import traceback
@@ -140,10 +144,19 @@ class RapServer():
 					break
 				if len(buf) == 0:
 					print "Connection closed\n"
-					break
+					return -1
 				self._handle_packet(c, ord(buf))
 			except KeyboardInterrupt:
 				break
+
+	def listen_stdin(self):
+		line = sys.stdin.readline()
+
+		def threaded_client(line):
+			cl = RapClient("localhost", 9999)
+			cl.cmd(line)
+
+		threading.Thread(target=threaded_client, args=(line.strip(), )).start()
 
 	def listen_tcp(self, port):
 		s = socket();
@@ -151,10 +164,25 @@ class RapServer():
 		s.listen(999)
 		print("Listening at port %d"%port)
 		self.running = True
+
+		inputs  = [s, sys.stdin]
+		outputs = []
+
 		while self.running:
-			(c, (addr,port)) = s.accept()
-			print "New client %s:%d"%(addr,port)
-			self._handle_client(c)
+			readfds, writefds, exceptfds = select.select(inputs, outputs, inputs)
+			for fd in readfds:
+				if fd is sys.stdin:
+					self.listen_stdin()
+				elif fd is s:
+					(c, (addr,port)) = s.accept()
+					print "New client %s:%d"%(addr,port)
+					inputs.append(c)
+				else:
+					if self._handle_client(fd) == -1:
+						for i in range(len(inputs)):
+							if inputs[i] == fd:
+								del inputs[i]
+								break
 
 	def stop(self):
 		self.running = False

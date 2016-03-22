@@ -14,8 +14,8 @@ def fun_system(str):
         global rs
 	print "system"
         print "CURRENT SEEK IS %d"%rs.offset
-	res = rs.system("?e hello world")
-	print ("RES %s"%res)
+	#res = rs.system("?e hello world")
+	#print ("RES %s"%res)
         return str
 
 def fun_open(file,flags):
