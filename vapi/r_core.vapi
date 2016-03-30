@@ -139,7 +139,7 @@ public class RCore {
 	public int project_save (string file);
 	public string project_info (string file);
 
-	public int gdiff(RCore *c2, bool anal_all);
+	public int gdiff(RCore *c2);
 
 	public void rtr_help();
 	public void rtr_pushout(string input);

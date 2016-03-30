@@ -71,7 +71,6 @@ public class Radare.RReg {
 	public int set_bytes(Type type, uint8* buf, int len);
 
 	public void fit_arena();
-	public void arena_set(int n, bool copy);
 	public bool arena_push ();
 	public void arena_pop();
 	//public uint64 arena_cmp (RReg.Item item);
