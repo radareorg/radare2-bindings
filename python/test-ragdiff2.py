@@ -205,7 +205,7 @@ class RagDiff2(gtk.Window):
 	
 	def diff(self):
 		# Diff
-		self.c.gdiff(self.c2, True)
+		self.c.gdiff(self.c2)
 		# Fill treeview
 		for fcn in self.c.anal.get_fcns():
 			if (fcn.type == FcnType_FCN or fcn.type == FcnType_SYM):
