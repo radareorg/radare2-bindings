@@ -157,6 +157,7 @@ public class RAsm {
 
 	public RAsm();
 	public bool use(string name);
+	public bool set_arch(string name, int bits);
 	public bool set_bits(int bits);
 	public bool set_syntax(Syntax syntax);
 	public bool set_pc(uint64 addr);
@@ -168,6 +169,9 @@ public class RAsm {
 	public Code? mdisassemble_hexstr(string hexstr);
 	public Code? massemble(string buf);
 	public Code? assemble_file(string file);
+
+	public string to_string(uint64 addr, uint8* buf, int len);
+	public uint8* from_string(uint64 addr, string str, out int len);
 
 	public bool filter_input(string filter);
 	public bool filter_output(string filter);
