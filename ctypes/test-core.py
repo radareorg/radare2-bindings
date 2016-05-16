@@ -1,4 +1,4 @@
-from r_core import *
+from r2.r_core import *
 
 def flush(c):
 	c = RCons()

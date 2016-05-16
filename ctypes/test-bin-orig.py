@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from r_bin import *
+from r2.r_bin import *
 import ctypes
 
 a=RBin()
