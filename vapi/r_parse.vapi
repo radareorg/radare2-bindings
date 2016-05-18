@@ -9,7 +9,7 @@ namespace Radare {
 
 		public int list();
 		public bool use(string name);
-		public bool filter(RFlag flag, ref string data, ref string str, int len);
+		public bool filter(RFlag flag, ref string data, ref string str, int len, bool bigendian);
 		public bool assemble(ref string dst, ref string src);
 		public bool parse(string dst, ref string src);
 /*

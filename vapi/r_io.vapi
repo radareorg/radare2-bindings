@@ -73,7 +73,7 @@ namespace Radare {
 		public uint64 sundo_redo();
 		public void sundo_push(uint64 off);
 		public void sundo_reset();
-		public void sundo_list();
+		public void sundo_list(int mode);
 
 		[Compact]
 		[CCode(cname="RIOUndoWrite", free_function="")]
