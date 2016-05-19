@@ -3,6 +3,8 @@
 *.[ao]
 *.so
 *.i
+*.exe
+*.obj
 *.pc
 *.pyc
 *.lock
