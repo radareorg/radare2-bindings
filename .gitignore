@@ -33,3 +33,4 @@ r2pipe/.*
 *node_modules*
 ocaml/*.cxx
 ocaml/r_*.ml*
+r2pipe/dotnet/**/*.snk
