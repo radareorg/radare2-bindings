@@ -377,7 +377,7 @@ namespace Radare {
 		public class Function {
 			public string name;
 			public string dsc;
-			public int size;
+			public int _size;
 			public int bits;
 			public short type;
 			public short rets;
@@ -387,9 +387,11 @@ namespace Radare {
 
 			public uint64 addr;
 			public int stack;
+			public int maxstack;
 			public int ninstr;
 			public int nargs;
 			public int depth;
+			public bool folded;
 			//public Type args;
 			// MUST BE deprecated public VarSub varsubs[32];
 
