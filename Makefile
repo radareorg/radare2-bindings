@@ -219,6 +219,15 @@ install-vapi:
 	mkdir -p ${DESTDIR}${PREFIX}/share/vala/vapi
 	${INSTALL_DATA} vapi/*.vapi vapi/*.deps ${DESTDIR}${PREFIX}/share/vala/vapi
 
+uninstall-vapi:
+	( cd vapi ; for a in *.vapi *.deps ; do \
+		F=\"${DESTDIR}${PREFIX}/share/vala/vapi/$$a\" ; \
+		if [ -f "$F" ]; then \
+			echo "rm -f \"$F\"" ; \
+			rm -f "${DESTDIR}${PREFIX}/share/vala/vapi/$$a" ; \
+		fi ; \
+	done )
+
 AWKDIR=${DESTDIR}${PREFIX}/lib/radare2/${VERSION}/awk
 install-awk:
 	mkdir -p ${AWKDIR}

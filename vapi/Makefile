@@ -5,6 +5,9 @@ all:
 install:
 	cd .. ; ${MAKE} install-vapi
 
+uninstall:
+	cd .. ; ${MAKE} uninstall-vapi
+
 sdb-update update-sdb r_db.vapi:
 	awk '{if(/SDB/){exit;}print;}' r_db.vapi > r_db.vapi.orig
 	wget -O sdb.vapi $(SDB_VAPI_URL)
