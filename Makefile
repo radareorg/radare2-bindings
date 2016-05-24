@@ -221,7 +221,7 @@ install-vapi:
 
 uninstall-vapi:
 	( cd vapi ; for a in *.vapi *.deps ; do \
-		F=\"${DESTDIR}${PREFIX}/share/vala/vapi/$$a\" ; \
+		F=${DESTDIR}${PREFIX}/share/vala/vapi/$$a ; \
 		if [ -f "$F" ]; then \
 			echo "rm -f \"$F\"" ; \
 			rm -f "${DESTDIR}${PREFIX}/share/vala/vapi/$$a" ; \
