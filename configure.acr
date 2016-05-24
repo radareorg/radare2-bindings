@@ -33,6 +33,6 @@ IFEQ USEROSTYPE auto ; {
 
 PKGCFG! FOO FOO r_core
 
-SUBDIRS ./config.mk ;
+SUBDIRS ./config.mk r2pipe/vala/r2pipe.pc ;
 
 REPORT PREFIX HAVE_SWIG HAVE_VALABIND HAVE_GIRCOMPILER ;
