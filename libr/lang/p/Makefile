@@ -116,7 +116,7 @@ duk duktape-sync duk-sync sync-dunk sync-duktape:
 
 PCP=/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
 
-mono csharp:
+mono csharp lang_csharp.$(EXT_SO):
 	$(CC) -fPIC $(LDFLAGS_LIB) -o lang_csharp.$(EXT_SO) \
 		$(shell pkg-config --cflags --libs r_util) csharp.c
 
