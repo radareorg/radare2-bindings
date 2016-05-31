@@ -14,7 +14,7 @@ else
 EXT_SO=so
 endif
 endif
-LUAPKG=$(shell pkg-config --list-all|awk '/lua-/{print $$1;}')
+LUAPKG=$(shell pkg-config --list-all|awk '/lua|lua-/{print $$1;}')
 ifneq (${LUAPKG},)
 CFLAGS+=$(shell pkg-config --cflags ${LUAPKG})
 LUA_LDFLAGS+=$(shell pkg-config --libs ${LUAPKG})
