@@ -33,6 +33,7 @@ endif
 ifeq ($(HAVE_LIB_LUA5_1),1)
 LANGS+=lang_lua.${EXT_SO}
 endif
+LANGS+=lang_csharp.${EXT_SO}
 
 LANGS+=lang_duktape.$(EXT_SO)
 
@@ -112,3 +113,13 @@ duk duktape-sync duk-sync sync-dunk sync-duktape:
 	cp -f duktape-$(DUKTAPE_VER)/src/duktape.* duk/
 	cp -f duktape-$(DUKTAPE_VER)/src/duk_config.h duk/
 	rm -rf $(DUKTAPE_FILE) duktape-$(DUKTAPE_VER)
+
+PCP=/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
+
+mono csharp:
+	$(CC) -fPIC $(LDFLAGS_LIB) -o lang_csharp.$(EXT_SO) \
+		$(shell pkg-config --cflags --libs r_util) csharp.c
+
+csharp-install mono-install:
+	mkdir -p ~/.config/radare2/plugins
+	cp -f lang_csharp.$(EXT_SO) ~/.config/radare2/plugins
