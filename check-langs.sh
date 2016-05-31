@@ -14,14 +14,14 @@ export PYTHON_CONFIG
 if [ "$1" = "force-all" ]; then
   :> supported.langs
   if [ -n "${PYTHON_CONFIG}" ]; then
-      echo "check-langs.sh: Detected python"
-      echo python >> supported.langs
+    echo "check-langs.sh: Detected python"
+    echo python >> supported.langs
   fi
   echo "#include <lua.h>" > .test.c
-  ${CC} -I/usr/include/lua5.1 ${CFLAGS} -c .test.c
-  if [ -f .test.o ]; then
-      echo "check-langs.sh: Detected lua"
-      echo lua >> supported.langs
+  ${CC} -I/usr/include/lua5.1 ${CFLAGS} -o .test.o -c .test.c
+  if [ $? = 0 -a -f .test.o ]; then
+    echo "check-langs.sh: Detected lua"
+    echo lua >> supported.langs
   fi
   rm -f .test.c
   exit 0
@@ -35,7 +35,7 @@ if [ $? = 0 ]; then
   #SUP_LANGS="gir ${SUP_LANGS}"
   for a in ${LANGS}; do
     printf " - $a: "
-    CC=${CC} CXX=${CXX} valabind-cc --test $a
+    CC=${CC} CXX=${CXX} valabind-cc --test $a >> config.log 2>&1
     if [ $? = 0 ]; then
       echo yes
       SUP_LANGS="$a ${SUP_LANGS}"
@@ -49,11 +49,11 @@ else
 fi
 
 for a in lua python php5 ; do
-	[ -f $a/r_core_wrap.cxx ] && SUP_LANGS="$a ${SUP_LANGS}"
+  [ -f $a/r_core_wrap.cxx ] && SUP_LANGS="$a ${SUP_LANGS}"
 done
 
 # check g++
-  ${CXX} --help >/dev/null 2>&1
+  ${CXX} --help > /dev/null 2>&1
   if [ $? = 0 ]; then
     echo " - cxx: yes ($CXX)"
     SUP_LANGS="cxx ${SUP_LANGS}"
@@ -78,4 +78,3 @@ done
 mv supported.langs .sl
 sort -u < .sl > supported.langs
 rm -f .sl
-
