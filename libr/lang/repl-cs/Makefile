@@ -22,6 +22,9 @@ NewtonSoft.Json.dll:
 install:
 	cp -f $(SCR) ~/.config/radare2/bin
 
+uninstall:
+	rm -f ~/.config/radare2/bin/$(SCR)
+
 clean:
 	rm -f $(BIN)
 	rm -f r2repl

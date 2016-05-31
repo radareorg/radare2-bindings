@@ -123,3 +123,6 @@ mono csharp:
 csharp-install mono-install:
 	mkdir -p ~/.config/radare2/plugins
 	cp -f lang_csharp.$(EXT_SO) ~/.config/radare2/plugins
+
+csharp-uninstall mono-uninstall:
+	rm -f ~/.config/radare2/plugins/lang_csharp.$(EXT_SO)
