@@ -8,7 +8,7 @@ R2PIPE+=../../../r2pipe/dotnet/r2pipe/QueuedR2Pipe.cs
 BIN=main.exe
 SCR=csharp-r2
 
-all: NewtonSoft.Json.dll
+all: NewtonSoft.Json.dll r2pipe.dll
 	mcs -out:$(BIN) main.cs shell.cs getline.cs \
 		-r:Mono.CSharp -r:System.Net.Http \
 		-r:Mono.Posix -r:r2pipe -r:NewtonSoft.Json
@@ -18,6 +18,9 @@ all: NewtonSoft.Json.dll
 
 NewtonSoft.Json.dll:
 	gunzip -k NewtonSoft.Json.dll.gz
+
+r2pipe.dll:
+	gunzip -k r2pipe.dll.gz
 
 install:
 	cp -f $(SCR) ~/.config/radare2/bin
