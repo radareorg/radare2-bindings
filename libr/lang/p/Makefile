@@ -55,6 +55,17 @@ lang_python.${EXT_SO}:
 	${LDFLAGS} ${LDFLAGS_LIB} -fPIC -o lang_python.${EXT_SO}
 endif
 
+python:
+	rm -f lang_python.$(EXT_SO)
+	$(MAKE) lang_python.$(EXT_SO)
+
+python-install:
+	mkdir -p ~/.config/radare2/plugins
+	cp -f lang_python.$(EXT_SO) ~/.config/radare2/plugins
+
+python-uninstall:
+	rm -f ~/.config/radare2/plugins/lang_python.$(EXT_SO)
+
 ifeq ($(HAVE_LIB_TCC),1)
 lang_tcc.${EXT_SO}: tcc.o
 	-${CC} ${CFLAGS} -fPIC ${LDFLAGS_LIB} -o lang_tcc.${EXT_SO} tcc.c -ldl -ltcc

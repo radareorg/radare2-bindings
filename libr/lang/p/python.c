@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2009-2013 - pancake */
+/* radare - LGPL - Copyright 2009-2016 - pancake */
 /* python extension for libr (radare2) */
 
 #include <r_lib.h>
@@ -23,11 +23,12 @@ static int run(RLang *lang, const char *code, int len) {
 
 static int slurp_python(const char *file) {
 	FILE *fd = r_sandbox_fopen (file, "r");
-	if (fd == NULL)
-		return R_FALSE;
-	PyRun_SimpleFile (fd, file);
-	fclose (fd);
-	return R_TRUE;
+	if (fd) {
+		PyRun_SimpleFile (fd, file);
+		fclose (fd);
+		return true;
+	}
+	return false;
 }
 
 static int run_file(struct r_lang_t *lang, const char *file) {
@@ -53,15 +54,15 @@ static void Radare_dealloc(Radare* self) {
 
 static PyObject * Radare_new(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 	Radare *self = (Radare *)type->tp_alloc (type, 0);
-	if (self != NULL) {
+	if (self) {
 		self->first = PyString_FromString ("");
-		if (self->first == NULL) {
+		if (!self->first) {
 			Py_DECREF (self);
 			return NULL;
 		}
 
 		self->last = PyString_FromString ("");
-		if (self->last == NULL) {
+		if (!self->last) {
 			Py_DECREF (self);
 			return NULL;
 		}
@@ -69,6 +70,19 @@ static PyObject * Radare_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	}
 
 	return (PyObject *)self;
+}
+
+static PyObject *Radare_r2plugin(Radare* self, PyObject *args) {
+	eprintf ("r2plugin called");
+#if 0
+	char *str, *cmd = NULL;
+
+	if (!PyArg_ParseTuple (args, "s", &cmd))
+		return NULL;
+	str = r_core_cmd_str (core, cmd);
+	return PyString_FromString (str? str: py_nullstr);
+#endif
+	return PyString_FromString ("TODO");
 }
 
 static PyObject *Radare_cmd(Radare* self, PyObject *args) {
@@ -81,9 +95,9 @@ static PyObject *Radare_cmd(Radare* self, PyObject *args) {
 }
 
 static int Radare_init(Radare *self, PyObject *args, PyObject *kwds) {
-	PyObject *first=NULL, *last=NULL, *tmp;
+	PyObject *first = NULL, *last = NULL, *tmp;
 
-	static char *kwlist[] = {"first", "last", "number", NULL};
+	static char *kwlist[] = { "first", "last", "number", NULL };
 
 	if (!PyArg_ParseTupleAndKeywords (args, kwds, "|OOi",
 		kwlist, &first, &last, &self->number))
@@ -116,6 +130,9 @@ static PyMemberDef Radare_members[] = {
 static PyMethodDef Radare_methods[] = {
 	{"cmd", (PyCFunction)Radare_cmd, METH_VARARGS,
 		"Executes a radare command and returns a string"
+	},
+	{"r2plugin", (PyCFunction)Radare_r2plugin, METH_VARARGS,
+		"Register plugins in radare2"
 	},
 	{NULL}  /* Sentinel */
 };
@@ -163,9 +180,10 @@ static PyTypeObject RadareType = {
 };
 
 static void init_radare_module(void) {
-	if (PyType_Ready (&RadareType) < 0)
+	if (PyType_Ready (&RadareType) < 0) {
 		return;
-	Py_InitModule3 ("r", Radare_methods, "radare python extension");
+	}
+	Py_InitModule3 ("r2lang", Radare_methods, "radare python extension");
 }
 #else
 
@@ -179,29 +197,39 @@ static PyMethodDef EmbMethods[] = {
 */
 
 static PyModuleDef EmbModule = {
-    PyModuleDef_HEAD_INIT, "radare", NULL, -1, NULL, //EmbMethods,
-    NULL, NULL, NULL, NULL
+	PyModuleDef_HEAD_INIT, "radare", NULL, -1, NULL, //EmbMethods,
+	NULL, NULL, NULL, NULL
 };
 
 static int init_radare_module(void) {
 	// TODO import r2-swig api
 	//eprintf ("TODO: python>3.x instantiate 'r' object\n");
 	PyObject *m = PyModule_Create (&EmbModule);
-	if (m == NULL) {
+	if (!m) {
 		eprintf ("Cannot create python3 r2 module\n");
-		return R_FALSE;
+		return false;
 	}
-	return R_TRUE;
+	return true;
 }
 #endif
+
 /* -init- */
 
+static int init(RLang *user);
+static int setup(RLang *user);
+
 static int prompt(void *user) {
-	int err = 1;
-	// PyRun_SimpleString("import IPython");
-	if (err != 0)
-		return R_FALSE;
-	return R_TRUE;
+	return !PyRun_SimpleString (
+		"r2 = None\n"
+		"try:\n"
+		"	import r2lang\n"
+		"	import r2pipe\n"
+		"	r2 = r2pipe.open()\n"
+		"	import IPython\n"
+		"	IPython.embed()\n"
+		"except:\n"
+		"	raise Exception(\"Cannot find IPython\")\n"
+	);
 }
 
 static int setup(RLang *lang) {
@@ -209,11 +237,17 @@ static int setup(RLang *lang) {
 	RLangDef *def;
 	char cmd[128];
 	// Segfault if already initialized ?
-	PyRun_SimpleString ("from r2.r_core import RCore");
+	PyRun_SimpleString (
+		"try:\n"
+		"	from r2.r_core import RCore\n"
+		"except:\n"
+		"	pass\n");
+	PyRun_SimpleString ("import r2pipe");
 	core = lang->user;
 	r_list_foreach (lang->defs, iter, def) {
-		if (!def->type || !def->name)
+		if (!def->type || !def->name) {
 			continue;
+		}
 		if (!strcmp (def->type, "int"))
 			snprintf (cmd, sizeof (cmd), "%s=%d", def->name, (int)(size_t)def->value);
 		else if (!strcmp (def->type, "string"))
@@ -228,8 +262,9 @@ static int setup(RLang *lang) {
 static int init(RLang *lang) {
 	core = lang->user;
 	// DO NOT INITIALIZE MODULE IF ALREADY INITIALIZED
-	if (Py_IsInitialized ())
+	if (Py_IsInitialized ()) {
 		return 0;
+	}
 	Py_Initialize ();
 	init_radare_module ();
 	return R_TRUE;

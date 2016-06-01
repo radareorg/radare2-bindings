@@ -1,4 +1,9 @@
-all: csharp
+all: py
+#csharp
+
+py python:
+	$(MAKE) -C p python
+	$(MAKE) -C p python-install
 
 csharp:
 	$(MAKE) -C p csharp
