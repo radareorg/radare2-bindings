@@ -26,11 +26,11 @@ static char *mystrdup(const char *s) {
 static int lang_duktape_file(RLang *lang, const char *file);
 
 static int lang_duktape_init(void *user) {
-	return R_TRUE;
+	return true;
 }
 
 static int lang_duktape_fini(void *user) {
-	return R_TRUE;
+	return true;
 }
 
 static RCore *Gcore = NULL;
@@ -56,20 +56,20 @@ static int duk_assemble(RAsm *a, RAsmOp *op, const char *str) {
 	duk_dup (ctx, 0);  /* timer callback */
 	duk_get_prop_string (ctx, -2, "asmfun");
 	a->cur->user = duk_require_tval (ctx, -1);
-	if (duk_is_callable(ctx, -1)) {
+	if (duk_is_callable (ctx, -1)) {
 		duk_push_string (ctx, str);
 		duk_call (ctx, 1);
 		// [ array of bytes ]
 		//duk_dup_top (ctx);
 		res = duk_get_length (ctx, -1);
 		op->size = res;
-		for (i=0; i<res; i++) {
+		for (i = 0; i < res; i++) {
 			duk_dup_top (ctx);
 			duk_get_prop_index (ctx, -2, i);
 			op->buf[i] = duk_to_int (ctx, -1);
 		}
 	}
-	if (res<1)
+	if (res < 1)
 		res = -1;
 	return res;
 }
@@ -83,21 +83,20 @@ static int duk_disasm(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 	duk_get_prop_string (ctx, -2, "disfun");
 	b = a->cur->user = duk_require_tval (ctx, -1);
 //	pushBuffer (buf, len);
-	if (duk_is_callable(ctx, -1)) {
+	if (duk_is_callable (ctx, -1)) {
 		int i;
 		// duk_push_string (ctx, "TODO 2");
 		pushBuffer (buf, len);
 		duk_call (ctx, 1);
 
 		// [ size, str ]
-		for (i = 0; i<3; i++) {
+		for (i = 0; i < 3; i++) {
 			duk_dup_top (ctx);
 			duk_get_prop_index (ctx, -1, i);
 			if (duk_is_number (ctx, -1)) {
 				if (res)
-				res2 = duk_to_number (ctx, -1);
-				else
-				res2 = res = duk_to_number (ctx, -1);
+					res2 = duk_to_number (ctx, -1);
+				else res2 = res = duk_to_number (ctx, -1);
 			} else if (duk_is_string (ctx, -1)) {
 				if (!opstr) {
 					opstr = duk_to_string (ctx, -1);

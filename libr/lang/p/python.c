@@ -1,5 +1,5 @@
 /* radare - LGPL - Copyright 2009-2016 - pancake */
-/* python extension for libr (radare2) */
+/* python extension for radare2's r_lang */
 
 #include <r_lib.h>
 #include <r_lang.h>
@@ -17,6 +17,7 @@
 static RCore *core = NULL;
 
 static int run(RLang *lang, const char *code, int len) {
+	core = (RCore *)lang->user;
 	PyRun_SimpleString (code);
 	return R_TRUE;
 }
@@ -72,22 +73,122 @@ static PyObject * Radare_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	return (PyObject *)self;
 }
 
-static PyObject *Radare_r2plugin(Radare* self, PyObject *args) {
-	eprintf ("r2plugin called");
-#if 0
-	char *str, *cmd = NULL;
+static char *getS(PyObject *o, const char *name) {
+	if (!o) return NULL;
+	PyObject *res = PyDict_GetItemString (o, name);
+	if (!res) return NULL;
+	return PyString_AsString (res);
+}
 
-	if (!PyArg_ParseTuple (args, "s", &cmd))
-		return NULL;
-	str = r_core_cmd_str (core, cmd);
-	return PyString_FromString (str? str: py_nullstr);
-#endif
-	return PyString_FromString ("TODO");
+static st64 getI(PyObject *o, const char *name) {
+	if (!o) return 0;
+	PyObject *res = PyDict_GetItemString (o, name);
+	if (!res) return 0;
+	return (st64) PyNumber_AsSsize_t (res, NULL);
+}
+
+static void *getF(PyObject *o, const char *name) {
+	if (!o) return NULL;
+	return PyDict_GetItemString (o, name);
+}
+
+static void *py_assemble_cb = NULL;
+
+static int py_assemble(RAsm *a, RAsmOp *op, const char *str) {
+	int i, size = 0;
+	int seize = -1;
+	const char *opstr = str;
+	if (py_assemble_cb) {
+		PyObject *arglist = Py_BuildValue ("(z)", str);
+		PyObject *result = PyEval_CallObject (py_assemble_cb, arglist);
+		if (result && PyList_Check (result)) {
+			seize = size = PyList_Size (result);
+			for (i = 0; i < size ; i++) {
+				PyObject *len = PyList_GetItem (result, i);
+				op->buf[i] = PyNumber_AsSsize_t (len, NULL);
+			}
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	op->size = size = seize;
+	strncpy (op->buf_asm, opstr, sizeof (op->buf_asm));
+	r_hex_bin2str (op->buf, op->size, op->buf_hex);
+	return seize;
+}
+
+static void *py_disassemble_cb = NULL;
+
+static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
+	int size = 0;
+	int seize = -1;
+	const char *opstr = "invalid";
+	if (py_disassemble_cb) {
+		PyObject *arglist = Py_BuildValue ("(s#)", buf, len);
+		PyObject *result = PyEval_CallObject (py_disassemble_cb, arglist);
+		if (result && PyList_Check (result)) {
+			PyObject *len = PyList_GetItem (result, 0);
+			PyObject *str = PyList_GetItem (result, 1);
+			seize = PyNumber_AsSsize_t (len, NULL);
+			opstr = PyString_AsString (str);
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	op->size = size = seize;
+	strncpy (op->buf_asm, opstr, sizeof (op->buf_asm));
+	r_hex_bin2str (buf, op->size, op->buf_hex);
+	return seize;
+}
+
+static PyObject *Radare_plugin(Radare* self, PyObject *args) {
+	char *type = NULL;
+	void *ptr = NULL;
+	void *cb = NULL;
+
+	if (!PyArg_ParseTuple (args, "sO", &type, &cb)) {
+		return Py_False;
+	}
+	if (!PyCallable_Check (cb)) {
+		PyErr_SetString (PyExc_TypeError, "second parameter must be callable");
+		return Py_False;
+	}
+	if (strcmp (type, "asm")) {
+		eprintf ("TODO: r2lang.plugin only supports 'asm' plugins atm\n");
+		return Py_False;
+	}
+
+	PyObject *arglist = Py_BuildValue("(i)", 0);
+	PyObject *o = PyEval_CallObject (cb, arglist);
+
+	RAsmPlugin *ap = R_NEW0 (RAsmPlugin);
+	ap->name = getS (o,"name");
+	ap->arch = getS (o, "arch");
+	ap->license = getS (o, "license");
+	ap->desc = getS (o, "desc");
+	ap->bits = getI (o, "bits");
+	ptr = getF (o, "disassemble");
+	if (ptr) {
+		Py_INCREF(ptr);
+		py_disassemble_cb = ptr;
+		ap->disassemble = py_disassemble;
+	}
+	ptr = getF (o, "assemble");
+	if (ptr) {
+		Py_INCREF(ptr);
+		py_assemble_cb = ptr;
+		ap->assemble = py_assemble;
+	}
+
+	RLibStruct *lp = R_NEW0 (RLibStruct);
+	lp->type = R_LIB_TYPE_ASM;
+	lp->data = ap;
+	r_lib_open_ptr (core->lib, "python.py", NULL, lp);
+	return Py_True;
 }
 
 static PyObject *Radare_cmd(Radare* self, PyObject *args) {
 	char *str, *cmd = NULL;
-
 	if (!PyArg_ParseTuple (args, "s", &cmd))
 		return NULL;
 	str = r_core_cmd_str (core, cmd);
@@ -131,7 +232,7 @@ static PyMethodDef Radare_methods[] = {
 	{"cmd", (PyCFunction)Radare_cmd, METH_VARARGS,
 		"Executes a radare command and returns a string"
 	},
-	{"r2plugin", (PyCFunction)Radare_r2plugin, METH_VARARGS,
+	{"plugin", (PyCFunction)Radare_plugin, METH_VARARGS,
 		"Register plugins in radare2"
 	},
 	{NULL}  /* Sentinel */
@@ -204,6 +305,7 @@ static PyModuleDef EmbModule = {
 static int init_radare_module(void) {
 	// TODO import r2-swig api
 	//eprintf ("TODO: python>3.x instantiate 'r' object\n");
+	Gcore = lang->user;
 	PyObject *m = PyModule_Create (&EmbModule);
 	if (!m) {
 		eprintf ("Cannot create python3 r2 module\n");
