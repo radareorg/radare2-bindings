@@ -67,7 +67,7 @@ namespace Radare {
 		// TODO: Implement seek and write undo apis..they must be unified..
 
 		[Compact]
-		[CCode(cname="RUndos", free_function="")]
+		[CCode(cname="RIOUndos", free_function="")]
 		public class Undos {
 			uint64 off;
 			int cursor;
