@@ -99,7 +99,7 @@ class open:
 			Returns an object with methods to interact with r2 via commands
 		"""
 		if in_rlang():
-			print "RLANG IS SET"
+			print ("RLANG IS SET")
 			self._cmd = self._cmd_rlang
 			return
 		self._cmd = self._cmd_rlang
