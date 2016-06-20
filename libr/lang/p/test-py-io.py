@@ -3,6 +3,9 @@
 #
 #  -- pancake @ nopcode.org
 #
+# Usage:
+#   r2 -I test-py-io.py pyio://33
+#
 # The r2lang.plugin function exposes a way to register new plugins
 # into the RCore instance. This API is only available from RLang.
 # You must call with with '#!python test.py' or 'r2 -i test.py ..'
