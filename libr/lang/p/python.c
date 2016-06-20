@@ -15,6 +15,49 @@
 #endif
 
 static RCore *core = NULL;
+typedef struct {
+	PyObject_HEAD
+	PyObject *first; /* first name */
+	PyObject *last;  /* last name */
+	int number;
+} Radare;
+
+
+static char *getS(PyObject *o, const char *name) {
+	if (!o) return NULL;
+	PyObject *res = PyDict_GetItemString (o, name);
+	if (!res) return NULL;
+	return PyString_AsString (res);
+}
+
+static st64 getI(PyObject *o, const char *name) {
+	if (!o) return 0;
+	PyObject *res = PyDict_GetItemString (o, name);
+	if (!res) return 0;
+	return (st64) PyNumber_AsSsize_t (res, NULL);
+}
+
+static void *getF(PyObject *o, const char *name) {
+	if (!o) return NULL;
+	return PyDict_GetItemString (o, name);
+}
+
+
+#include "python/io.c"
+#include "python/asm.c"
+#include "python/core.c"
+
+typedef struct {
+	const char *type;
+	PyObject* (*handler)(Radare*, PyObject*);
+} R2Plugins;
+
+static R2Plugins plugins[] = {
+	{ "core", &Radare_plugin_core },
+	{ "asm", &Radare_plugin_asm },
+	{ "io", &Radare_plugin_io },
+	{ NULL }
+};
 
 static int run(RLang *lang, const char *code, int len) {
 	core = (RCore *)lang->user;
@@ -36,13 +79,6 @@ static int run_file(struct r_lang_t *lang, const char *file) {
 	return slurp_python (file);
 }
 
-/* init */
-typedef struct {
-	PyObject_HEAD
-	PyObject *first; /* first name */
-	PyObject *last;  /* last name */
-	int number;
-} Radare;
 
 #if PY_MAJOR_VERSION<3
 static char *py_nullstr = "";
@@ -71,39 +107,6 @@ static PyObject * Radare_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	return (PyObject *)self;
 }
 
-static char *getS(PyObject *o, const char *name) {
-	if (!o) return NULL;
-	PyObject *res = PyDict_GetItemString (o, name);
-	if (!res) return NULL;
-	return PyString_AsString (res);
-}
-
-static st64 getI(PyObject *o, const char *name) {
-	if (!o) return 0;
-	PyObject *res = PyDict_GetItemString (o, name);
-	if (!res) return 0;
-	return (st64) PyNumber_AsSsize_t (res, NULL);
-}
-
-static void *getF(PyObject *o, const char *name) {
-	if (!o) return NULL;
-	return PyDict_GetItemString (o, name);
-}
-
-#include "python/io.c"
-#include "python/asm.c"
-
-typedef struct {
-	const char *type;
-	PyObject* (*handler)(Radare*, PyObject*);
-} R2Plugins;
-
-static R2Plugins plugins[] = {
-	{ "asm", &Radare_plugin_asm },
-	{ "io", &Radare_plugin_io },
-	{ NULL }
-};
-
 static PyObject *Radare_plugin(Radare* self, PyObject *args) {
 	char *type = NULL;
 	void *cb = NULL;
@@ -121,7 +124,7 @@ static PyObject *Radare_plugin(Radare* self, PyObject *args) {
 			return plugins[i].handler (self, cb);
 		}
 	}
-	eprintf ("TODO: r2lang.plugin only supports 'asm' plugins atm\n");
+	eprintf ("TODO: r2lang.plugin does not supports '%s' plugins yet\n", type);
 	return Py_False;
 }
 
