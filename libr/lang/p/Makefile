@@ -55,7 +55,7 @@ lang_python.${EXT_SO}:
 	${LDFLAGS} ${LDFLAGS_LIB} -fPIC -o lang_python.${EXT_SO}
 endif
 
-python:
+py python:
 	rm -f lang_python.$(EXT_SO)
 	$(MAKE) lang_python.$(EXT_SO)
 
