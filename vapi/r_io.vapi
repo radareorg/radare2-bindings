@@ -124,8 +124,6 @@ namespace Radare {
 		}
 
 		/* TODO: make them methods of Plugin class ? */
-		public bool plugin_open(int fd, RIO.Plugin plugin);
-		public bool plugin_close(int fd, RIO.Plugin plugin);
 		public bool plugin_add(RIO.Plugin plugin);
 		public int plugin_generate();
 		public void plugin_list();

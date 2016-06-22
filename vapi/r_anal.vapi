@@ -312,7 +312,6 @@ namespace Radare {
 			public SwitchOp switch_op;
 			public uint8 op_bytes[30];
 			public uint8 op_sz;
-			public uint64 eflags;
 #if VALABIND_CTYPES
 			public void* head;
 			public void* tail;
@@ -349,7 +348,6 @@ namespace Radare {
 			public int delay;
 			public uint64 jump;
 			public uint64 fail;
-			public uint32 selector;
 			public int64 ptr;
 			public uint64 val;
 			public int64 stackptr;

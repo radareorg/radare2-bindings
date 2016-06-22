@@ -9,7 +9,6 @@ public class Radare.RDebug {
 	public int tid;
 	public bool swstep;
 	public int steps;
-	public int newstate;
 	public Reason reason;
 
 	public RBreakpoint bp;
@@ -97,7 +96,6 @@ public class Radare.RDebug {
 	public int thread_list (int pid);
 
 	public void trace_reset ();
-	public int trace_pc ();
 	public void trace_at (string str);
 	//public RDebug.Tracepoint trace_get(uint64 addr);
 	public void trace_list(int mode);
@@ -131,7 +129,7 @@ public class Radare.RDebug {
 		int type;
 		int tid;
 		int signum;
-		RBreakpoint.Item bpi;
+		// RBreakpoint.Item bpi;
 		uint64 timestamp;
 		uint64 addr;
 		uint64 ptr;

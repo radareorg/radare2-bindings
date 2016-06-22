@@ -21,7 +21,7 @@ public class Radare.RBreakpoint {
 	public int set_trace (uint64 addr, int set);
 
 	public int restore (bool set);
-	public int recoil (uint64 addr);
+	// public int recoil (uint64 addr);
 
 	/* TODO: deprecate the list() method.. language iterators should be enought */
 	public int list (bool rad);
