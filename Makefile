@@ -80,7 +80,15 @@ w32dist:
 
 .PHONY: w32dist dist w32 check check-w32 vdoc vdoc_pkg
 
+PKG=radare2-bindings-$(VERSION)
+
 dist:
+	git clone . "$(PKG)"
+	rm -rf "$(PKG)/.git"
+	${TAR} "$(PKG).tar.xz" "$(PKG)"
+	rm -rf "$(PKG)"
+	
+old-dist:
 	PKG=radare2-bindings-${VERSION} ; \
 	DIR=`basename $$PWD` ; \
 	FILES=`git ls-files | sed -e s,^,radare2-bindings-${VERSION}/,` ; \
