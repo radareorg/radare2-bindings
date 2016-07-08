@@ -378,7 +378,7 @@ namespace Radare {
 			public int _size;
 			public int bits;
 			public short type;
-			public short rets;
+			public string rets;
 			public short fmod;
 			public short call;
 			public string attr;
