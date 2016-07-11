@@ -125,7 +125,7 @@ namespace Radare {
 
 		/* TODO: make them methods of Plugin class ? */
 		public bool plugin_add(RIO.Plugin plugin);
-		public int plugin_generate();
+		//public int plugin_generate();
 		public void plugin_list();
 
 		/* maps */
