@@ -43,7 +43,7 @@ namespace Radare {
 		public Function get_fcn_at (uint64 addr, int type);
 		public Function get_fcn_in (uint64 addr, int type);
 		public void trace_bb (uint64 addr);
-		
+
 		[Compact]
 		[CCode (cprefix="r_anal_case_", free_function="free", cname="RAnalCaseOp")]
 		public class CaseOp {
@@ -54,7 +54,7 @@ namespace Radare {
 			public uint64 bb_ref_to;
 			public uint64 bb_ref_from;
 		}
-		
+
 		[Compact]
 		[CCode (cprefix="r_anal_switch_op_", free_function="r_anal_switch_op_free", cname="RAnalSwitchOp")]
 		public class SwitchOp {
@@ -63,7 +63,7 @@ namespace Radare {
 			public uint64 def_val;
 			public uint32 max_val;
 			public RList<RAnal.CaseOp> cases;
-			
+
 			public SwitchOp(uint64 addr, uint64 min_val, uint64 max_val);
 			public CaseOp add_case(uint64 addr, uint64 jump, uint64 value);
 		}
@@ -137,9 +137,9 @@ namespace Radare {
 			public int anal_ret_val;
 			public uint32 current_depth;
 			public uint32 max_depth;
-			
+
 			public void *user_state;
-			
+
 			public State(uint64 start, uint8 * buffer, uint64 len);
 			public void insert_bb (RAnal.Block *bb);
 			//public int need_rehash (RAnal.Block *bb);
@@ -179,15 +179,15 @@ namespace Radare {
 			LAST,
 			FOOT,
 			SWITCH,
-			RET,  
-			JMP,  
-			COND, 
-			CALL, 
-			CMP,  
-			LD,   
-			ST,   
+			RET,
+			JMP,
+			COND,
+			CALL,
+			CMP,
+			LD,
+			ST,
 			BINOP,
-			TAIL 
+			TAIL
 		}
 
 		[CCode (cname="int", cprefix="R_ANAL_DIFF_TYPE_")]
@@ -380,7 +380,7 @@ namespace Radare {
 			public short type;
 			public string rets;
 			public short fmod;
-			public short call;
+			public string cc;
 			public string attr;
 
 			public uint64 addr;
@@ -533,7 +533,7 @@ namespace Radare {
 		REP_OP,
 		COND_OP,
 	}
-	
+
 	[CCode (cname="uint64", cprefix="R_ANAL_EX_TYPE_")]
 	public enum ExDataType {
 		REF_NULL,
@@ -599,7 +599,7 @@ namespace Radare {
 		DEL,
 		SIZE,
 	}
-	
+
 	[CCode (cname="uint64", cprefix="R_ANAL_EX_LDST_")]
 	public enum ExLdStOp {
 		FROM_REF,
@@ -660,7 +660,7 @@ namespace Radare {
 	public static uint32 ex_map_anal_ex_to_anal_bb_type (uint64 ranal2_op_type);
 	public static void ex_clone_op_switch_to_bb (RAnal.Block *bb, RAnal.Op *op);
 	public static void ex_update_bb_cfg_head_tail( RAnal.Block start, RAnal.Block head, RAnal.Block tail );
-	
+
 	public static int ex_bb_head_comparator(RAnal.Block a, RAnal.Block b);
 	public static int ex_bb_address_comparator(RAnal.Block a, RAnal.Block b);
 
