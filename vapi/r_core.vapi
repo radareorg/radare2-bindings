@@ -130,7 +130,7 @@ public class RCore {
 	public int anal_bb(RAnal.Function fcn, uint64 at, int head);
 	public int anal_bb_seek(uint64 addr);
 	public int anal_fcn(uint64 at, uint64 from, int reftype, int depth);
-	public int anal_fcn_list(string input, bool rad);
+	public int anal_fcn_list(string input, string rad);
 	public int anal_graph(uint64 addr, int opts);
 	//public int anal_graph_fcn(string input, int opts);
 	public int anal_ref_list(bool rad);
