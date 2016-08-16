@@ -152,7 +152,6 @@ public class RCore {
 	public bool read_at(uint64 addr, uint8 *buf, int size);
 	public bool write_at(uint64 addr, uint8 *buf, int size);
 	//public int write_op(uint64 addr, string arg, char op);
-	public int block_read(bool next);
 	public int block_size(int size);
 	public int seek(uint64 addr, bool rb);
 	public int seek_align(uint64 addr, int count);
