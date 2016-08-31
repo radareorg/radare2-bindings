@@ -21,7 +21,7 @@ LUA_LDFLAGS+=$(shell pkg-config --libs ${LUAPKG})
 endif
 
 BINDEPS=
-LDFLAGS_LIB=$(shell pkg-config --libs-only-L r_core) -lr_core -lr_util -shared
+LDFLAGS_LIB=$(shell pkg-config --libs-only-L r_core) -lr_core -lr_io -lr_util -shared
 
 LANGS=$(shell ./getlangs.sh ${EXT_SO})
 #LANGS=lang_python.${EXT_SO} lang_perl.${EXT_SO}
