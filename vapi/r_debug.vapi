@@ -40,7 +40,7 @@ public class Radare.RDebug {
 	public RDebug.ReasonType stop_reason();
 
 	/* control flow */
-	[CCode (cname="r_debug_wait")]
+	public RDebug.ReasonType wait(RBreakpointItem bp);
 	public bool hold();
 
 	public bool is_dead();
