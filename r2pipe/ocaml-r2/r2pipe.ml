@@ -11,9 +11,9 @@ type ctx =
   | Remote of string (* For Future *)
 
 let bytes_startswith s sub =
-  let slen, sublen = (Bytes.length s, Bytes.length sub) in
+  let slen, sublen = (String.length s, String.length sub) in
   if sublen>slen then false
-  else if Bytes.sub_string s 0 sublen = sub then true
+  else if String.sub s 0 sublen = sub then true
   else false
                                   
 let ropen f =
@@ -27,14 +27,14 @@ let ropen f =
 let takeUntil cha ch =
   let flag = ref true in
   let idx = ref 0 in
-  let output = Bytes.create 65535 in
+  let output = Buffer.create 1 in
   let () = while !flag <> false do
              let b = input_char cha in
              if b = ch then flag := false
-             else Bytes.set output !idx b ; idx := !idx+1
+             else Buffer.add_char output b ; idx := !idx+1
            done
   in
-  Bytes.sub_string output 0 (!idx-1)
+  Buffer.sub output 0 (!idx-1)
 
 let cmd ctx c =
   match ctx with
@@ -49,7 +49,7 @@ let cmdj ctx c =
   Yojson.Safe.from_string (cmd ctx c)
 
 (* ------------ UNIT TEST -------------- *)
-(*           
+(*
 let opt_get = function
   | Some x -> x
   | None -> raise (Invalid_argument "Opt_get")
@@ -60,4 +60,4 @@ let () =
   let () = print_endline output in
   let output = cmdj ctx "pdj 2" in
   print_endline (Yojson.Safe.pretty_to_string output)
-*)
+ *)
