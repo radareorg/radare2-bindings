@@ -1,6 +1,9 @@
-
 radare2 language bindings for r2 api
 ====================================
+
+This repository contains the native bindings generated with Valabind to use the radare2 APIs.
+
+The r2pipe implementations has been moved into a separate [repository](https://github.com/radare/radare2-r2pipe).
 
 Description
 -----------
@@ -40,7 +43,7 @@ To get install all dependencies do the following steps in order:
     (ensure you don't have vala installed from package)
 
 		arch$ sudo pacman -S swig git
-		deb$ sudo apt-get install swig git
+		deb$ sudo apt install swig git
 
   * Install latest release of Vala from tarball
 
