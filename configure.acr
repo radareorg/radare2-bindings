@@ -1,5 +1,5 @@
 PKGNAME radare2-bindings
-VERSION 0.10.6
+VERSION 0.99.9-git
 CONTACT pancake ; pancake@nopcode.org
 
 LANG_C!
@@ -33,6 +33,6 @@ IFEQ USEROSTYPE auto ; {
 
 PKGCFG! FOO FOO r_core
 
-SUBDIRS ./config.mk r2pipe/vala/r2pipe.pc ;
+SUBDIRS ./config.mk ;
 
 REPORT PREFIX HAVE_SWIG HAVE_VALABIND HAVE_GIRCOMPILER ;
