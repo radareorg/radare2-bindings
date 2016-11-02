@@ -1,6 +1,6 @@
-/* radare - LGPL - Copyright 2010 pancake<@nopcode.org> */
+/* radare - LGPL - Copyright 2010-2016 pancake<@nopcode.org> */
 
-[CCode (cheader_filename="r_flags.h,r_list.h,r_types_base.h", cprefix="r_flag_", lower_case_cprefix="r_flag_")]
+[CCode (cheader_filename="r_flag.h,r_list.h,r_types_base.h", cprefix="r_flag_", lower_case_cprefix="r_flag_")]
 namespace Radare {
 	[Compact]
 	[CCode (cprefix="r_flag_item_", cname="RFlagItem", free_function="")]

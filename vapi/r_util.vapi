@@ -101,12 +101,15 @@ namespace Radare {
 
 	[CCode (cname="RNum", cheader_filename="r_util.h", unref_function="", cprefix="r_num_", free_function="r_num_free")]
 	public class RNum {
-		public RNum(RNumCallback? cb=null, void *user=null);
+		public RNum(RNumCallback? cb=null, RNumCallback2? cb2 = null, void *user=null);
 		public uint64 get(string str);
 		public uint64 math(string str);
 	}
 	[CCode (cname="RNumCallback", has_target="false")]
 	public delegate uint64 RNumCallback (string str, int *ok);
+
+	[CCode (cname="RNumCallback2", has_target="false")]
+	public delegate string RNumCallback2 (uint64 num, int *ok);
 
 	[Compact]
 	[CCode (cname="RBuffer", cheader_filename="r_util.h", cprefix="r_buf_", free_function="r_buf_free")]
