@@ -214,7 +214,7 @@ install-ruby:
 	mkdir -p ${DESTDIR}${RUBYPATH}/r2
 	cp -rf ruby/* ${DESTDIR}${RUBYPATH}/r2
 
-PERLPATH=$(DESTDIR)/$(shell perl -e 'for (@INC) { print "$$_\n" if /lib(64)?\/perl5/ && !/local/; }'|head -n 1)
+PERLPATH=$(DESTDIR)/$(shell perl -e 'for (@INC) { print "$$_\n" if ((/lib(64)?\/perl5/ && !/local/) || (/Library/)); }'|head -n 1)
 
 install-perl:
 	# hack for slpm
