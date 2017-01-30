@@ -274,7 +274,7 @@ static void print_error(duk_context *ctx, FILE *f) {
 	duk_pop(ctx);
 }
 
-static int wrapped_compile_execute(duk_context *ctx) {
+static int wrapped_compile_execute(duk_context *ctx, void *usr) {
 	duk_compile (ctx, 0);
 	duk_push_global_object (ctx);
 	duk_call_method (ctx, 0);
@@ -290,7 +290,7 @@ static int lang_duktape_safe_eval(duk_context *ctx, const char *code) {
 	int rc;
 	duk_push_lstring (ctx, code, strlen (code));
 	duk_push_string (ctx, "input");
-	rc = duk_safe_call (ctx, wrapped_compile_execute, 2, 1); //, DUK_INVALID_INDEX);
+	rc = duk_safe_call (ctx, wrapped_compile_execute, NULL, 2, 1);
 	if (rc != DUK_EXEC_SUCCESS) {
 		print_error(ctx, stderr);
 		rc = R_FALSE;
@@ -329,7 +329,7 @@ static int lang_duktape_file(RLang *lang, const char *file) {
 		duk_push_lstring (ctx, code, strlen (code));
 		duk_push_string (ctx,file);
 		free (code);
-		ret = duk_safe_call (ctx, wrapped_compile_execute, 2, 1);
+		ret = duk_safe_call (ctx, wrapped_compile_execute, NULL, 2, 1);
 		if (ret != DUK_EXEC_SUCCESS) {
 			print_error(ctx, stderr);
 			eprintf ("duktape error");
@@ -353,7 +353,7 @@ static RLangPlugin r_lang_plugin_duktape = {
 };
 
 #if !CORELIB
-struct r_lib_struct_t radare_plugin = {
+RLibStruct radare_plugin = {
 	.type = R_LIB_TYPE_LANG,
 	.data = &r_lang_plugin_duktape,
 };
