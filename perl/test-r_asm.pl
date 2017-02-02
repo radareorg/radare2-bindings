@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use r_asm;
+use r2::r_asm;
 
 sub disasm {
 	my ($a, $arch, $op) = @_;
