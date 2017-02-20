@@ -160,7 +160,7 @@ public class RCore {
 	public bool yank_paste(uint64 addr, int len);
 
 	public int visual(string input);
-	public int visual_cmd(string arg);
+	public int visual_cmd(string arg, string arg);
 
 	public int serve(RIO.Desc fd);
 
