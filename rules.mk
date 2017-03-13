@@ -31,7 +31,7 @@ else
 ifeq (${LANG},java)
 	mkdir -p ${R2_JAVA_DIR}
 endif
-	@-test ../vapi/`echo $@|sed -e s,.${SOEXT},.vapi,` -nt ${LIBS_PFX}$@ ; \
+	@test ../vapi/`echo $@|sed -e s,.${SOEXT},.vapi,` -nt ${LIBS_PFX}$@ ; \
 	if [ ! $$? = 0 ]; then \
 	  if [ ! -e ${LIBS_PFX}$@ ]; then \
             true ; \
@@ -39,12 +39,13 @@ endif
             false ; \
           fi ; \
 	fi ; \
-	[ $$? = 0 ] && \
-	  (cd .. && RELEASE=$(RELEASE) \
-		sh do-swig.sh ${LANG} `echo $@ | sed -e s,.${SOEXT},,`) || exit 0 ; \
+	if [ $$? = 0 ] ; then \
+		cd .. ; \
+		RELEASE=$(RELEASE) sh do-swig.sh ${LANG} `echo $@ | sed -e s,.${SOEXT},,` || exit 1; \
 		[ "${LANG}`uname`" = pythonDarwin ] && cp _${LIBPFX}$@ _`echo $@|sed -e s,.${SOEXT},.so,` ; \
 		[ "${LANG}" = java ] && cp $@ lib$@ ; \
-		true
+		true ; \
+	fi
 	@echo ... $@
 endif
 endif
