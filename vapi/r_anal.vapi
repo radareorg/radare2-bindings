@@ -508,12 +508,13 @@ namespace Radare {
 	public int meta_list(MetaType type, uint64 rad);
 	}
 
+/*
 	[Compact]
 	[CCode (cheader_filename="r_sign.h", cprefix="r_sign_", lower_case_cprefix="r_sign_", cname="RSign", free_function="r_sign_free")]
 	public class RSign {
 		public RSign ();
-		/* TODO */
 	}
+*/
 
 	/* r_anal_ex.h */
 	[CCode (cname="uint64", cprefix="R_ANAL_EX_")]

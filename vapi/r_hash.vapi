@@ -27,8 +27,8 @@ public class Radare.RHash {
 	public RHash(bool rst, int bits);
 
 	/* checksum */
-	public static uint16 crc16(uint16 crc, uint8 *buf, uint64 len);
-	public static uint32 crc32(uint8 *buf, uint64 len);
+	// public static uint16 crc16(uint16 crc, uint8 *buf, uint64 len);
+	// public static uint32 crc32(uint8 *buf, uint64 len);
 	public static uint16 xor(uint8 *buf, uint64 len);
 	public static uint32 xorpair(uint8 *buf, uint64 len);
 	public static uint8 parity(uint8 *buf, uint64 len);

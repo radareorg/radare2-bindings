@@ -66,7 +66,7 @@ public class RCore {
 	public RDebug dbg;
 	public RFlag flags;
 	public RSearch search;
-	public RSign sign;
+	// public RSign sign;
 
 	public RFS fs;
 	public REgg egg;

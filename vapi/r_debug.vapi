@@ -110,7 +110,7 @@ public class Radare.RDebug {
 		// list for childs
 		// list for threads
 		//public struct Process *parent;
-		public Pid (string path, int pid, char status, uint64 pc);
+		public Pid (string path, int pid, int uid, char status, uint64 pc);
 	}
 
 // XXX cname=int must be deprecated by valaswig
