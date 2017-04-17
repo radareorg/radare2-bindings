@@ -43,7 +43,7 @@ namespace SDB {
 		public int json_num_set (string key, string path, int v, uint32 cas = 0);
 		public int json_num_inc (string key, string path, int n, uint32 cas = 0);
 		public int json_num_dec (string key, string path, int n, uint32 cas = 0);
-		public static string json_indent (string json);
+		public static string json_indent (string json, string prefix);
 		public static string json_unindent (string json);
 		/* remove */
 		public bool unset (string key, int cas=0);
