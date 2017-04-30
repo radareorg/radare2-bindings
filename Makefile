@@ -162,11 +162,10 @@ purge-python:
 
 install-python:
 	test -f python/_r_core.${SOEXT}
-	E=${SOEXT} ; [ `uname` = Darwin ] && E=so ; \
 	echo "Installing python${PYTHON_VERSION} r2 modules in ${PYTHON_INSTALL_DIR}" ; \
 	mkdir -p ${PYTHON_INSTALL_DIR} ; \
 	: > ${PYTHON_INSTALL_DIR}/__init__.py ; \
-	cp -rf python/r_*.py python/*.$$E ${PYTHON_INSTALL_DIR}
+	cp -rf python/r_*.py python/*.${SOEXT} ${PYTHON_INSTALL_DIR}
 
 install-ctypes:
 	test -f ctypes/r_core.py
