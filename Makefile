@@ -160,9 +160,14 @@ purge-python:
 	rm -rf ${DESTDIR}/${LIBDIR}/python${PYTHON_VERSION}/*-packages/r2
 	rm -rf ${PYTHON_INSTALL_DIR}
 
+HOST_OS=$(shell uname)
 install-python:
 	test -f python/_r_core.${SOEXT}
-	E=${SOEXT} ; [ `uname` = Darwin ] && E=so ; \
+	E=${SOEXT} ; \
+	if [ $(HOST_OS) = Darwin ];then \
+		for a in python/*.dylib ; do cp $$a `echo $$a | sed -e s,dylib,so,` ; done ; \
+		E=so ; \
+	fi ; \
 	echo "Installing python${PYTHON_VERSION} r2 modules in ${PYTHON_INSTALL_DIR}" ; \
 	mkdir -p ${PYTHON_INSTALL_DIR} ; \
 	: > ${PYTHON_INSTALL_DIR}/__init__.py ; \
