@@ -47,6 +47,7 @@ lang_python.${EXT_SO}:
 	${LDFLAGS_LIB} -o lang_python.${EXT_SO} python.c -lpython27
 else
 PYCFG=../../../python-config-wrapper
+PYCFG=python-config
 PYCFLAGS=$(shell ${PYCFG} --cflags)
 PYLDFLAGS=$(shell ${PYCFG} --libs) -L$(shell ${PYCFG} --prefix)/lib ${LDFLAGS_LIB}
 

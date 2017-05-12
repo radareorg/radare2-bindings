@@ -11,15 +11,15 @@ import r2lang
 
 def pyasm(a):
 	def assemble(s):
-		print "Assembling %s"%(s)
+		print("Assembling %s"%(s))
 		return [ 1, 2, 3, 4 ]
 
 	def disassemble(buf):
 		try:
 			return [ 2, "opcode %d"%(ord(buf[0])) ]
 		except:
-			print "err"
-			print sys.exc_info()
+			print("err")
+			print(sys.exc_info())
 			return [ 2, "opcode" ]
 	return {
 		"name": "MyPyDisasm",
@@ -31,5 +31,5 @@ def pyasm(a):
 		"disassemble": disassemble,
 	}
 
-print "Registering Python asm plugin..."
-print r2lang.plugin("asm", pyasm)
+print("Registering Python asm plugin...")
+print(r2lang.plugin("asm", pyasm))
