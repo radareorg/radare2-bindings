@@ -75,7 +75,7 @@ static int py_io_read(RIO *io, RIODesc *fd, ut8 *buf, int count) {
 				int limit = R_MIN (size, count);
 				memset (buf, io->Oxff, limit);
 				memcpy (buf, PyString_AsString (result), limit);
-				eprintf ("result is a string DONE %d %d\n" , count, size);
+				// eprintf ("result is a string DONE %d %d\n" , count, size);
 				return limit;
 			}
 			if (PyList_Check (result)) {
