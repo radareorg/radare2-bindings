@@ -13,7 +13,7 @@ import r2lang
 def pycore(a):
 	def _call(s):
 		if s == "q":
-			print "Dont be rude"
+			print("Dont be rude")
 			return 1;
 		return 0
 
@@ -24,5 +24,5 @@ def pycore(a):
 		"call": _call,
 	}
 
-print "Registering Python core plugin..."
-print r2lang.plugin("core", pycore)
+print("Registering Python core plugin...")
+print(r2lang.plugin("core", pycore))

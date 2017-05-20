@@ -16,16 +16,16 @@ FAKESIZE = 512
 
 def pyio(a):
 	def _open(path, rw, perm):
-		print "MyPyIO Opening %s"%(path)
+		print("MyPyIO Opening %s"%(path))
 		return 1234 
 	def _check(path, many):
-		print "python-check %s"%(path)
+		print("python-check %s"%(path))
 		return path[0:7] == "pyio://"
 	def _read(offset, size):
-		print "python-read"
+		print("python-read")
 		return "A" * size
 	def _seek(offset, whence):
-		print "python-seek"
+		print("python-seek")
 		if whence == 0: # SET
 			return offset
 		if whence == 1: # CUR
@@ -34,10 +34,10 @@ def pyio(a):
 			return 512 
 		return 512
 	def _write(offset, data, size):
-		print "python-write"
+		print("python-write")
 		return True
 	def _system(cmd):
-		print "python-SYSTEM %s"%(cmd)
+		print("python-SYSTEM %s"%(cmd))
 		return True
 	return {
 		"name": "pyio",
@@ -51,5 +51,5 @@ def pyio(a):
 		"system": _system,
 	}
 
-print "Registering Python IO plugin..."
-print r2lang.plugin("io", pyio)
+print("Registering Python IO plugin...")
+print(r2lang.plugin("io", pyio))

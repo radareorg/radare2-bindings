@@ -12,6 +12,7 @@
 #include <structmember.h>
 #if PY_MAJOR_VERSION>=3
 #define PyString_FromString PyUnicode_FromString
+#define PyString_AsString PyUnicode_AS_DATA
 #endif
 
 static RCore *core = NULL;
@@ -80,7 +81,6 @@ static int run_file(struct r_lang_t *lang, const char *file) {
 }
 
 
-#if PY_MAJOR_VERSION<3
 static char *py_nullstr = "";
 
 static void Radare_dealloc(Radare* self) {
@@ -176,8 +176,12 @@ static PyMethodDef Radare_methods[] = {
 };
 
 static PyTypeObject RadareType = {
+#if PY_MAJOR_VERSION >= 3
+	PyVarObject_HEAD_INIT(NULL, 0)
+#else
 	PyObject_HEAD_INIT (NULL)
 	0,                         /*ob_size*/
+#endif
 	"radare.RadareInternal",   /*tp_name*/
 	sizeof (Radare),           /*tp_basicsize*/
 	0,                         /*tp_itemsize*/
@@ -217,6 +221,7 @@ static PyTypeObject RadareType = {
 	Radare_new,                /* tp_new */
 };
 
+#if PY_MAJOR_VERSION < 3
 static void init_radare_module(void) {
 	if (PyType_Ready (&RadareType) < 0) {
 		return;
@@ -236,21 +241,25 @@ static PyMethodDef EmbMethods[] = {
 
 static PyModuleDef EmbModule = {
 	PyModuleDef_HEAD_INIT,
-	"radare",
-	NULL, -1, NULL,
+	"r2lang",
+	NULL, -1, Radare_methods,
 	NULL, NULL, NULL, NULL
 };
 
-static int init_radare_module(void) {
+static PyObject *init_radare_module(void) {
 	// TODO import r2-swig api
 	//eprintf ("TODO: python>3.x instantiate 'r' object\n");
-	Gcore = lang->user;
+	/* Gcore = lang->user; */
+	/* eprintf("\x1b[31;1minit_radare_module\x1b[0m\n"); */
+	if (PyType_Ready (&RadareType) < 0) {
+		return NULL;
+	}
 	PyObject *m = PyModule_Create (&EmbModule);
 	if (!m) {
 		eprintf ("Cannot create python3 r2 module\n");
-		return false;
+		return NULL;
 	}
-	return true;
+	return m;
 }
 #endif
 
@@ -309,8 +318,13 @@ static int init(RLang *lang) {
 	if (Py_IsInitialized ()) {
 		return 0;
 	}
+#if PY_MAJOR_VERSION >= 3
+	PyImport_AppendInittab("r2lang", init_radare_module);
 	Py_Initialize ();
-	init_radare_module ();
+#else
+	Py_Initialize ();
+	init_radare_module();
+#endif
 	return R_TRUE;
 }
 

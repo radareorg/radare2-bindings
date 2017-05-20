@@ -14,11 +14,11 @@ static RIODesc* py_io_open(RIO *io, const char *path, int rw, int mode) {
 		PyObject *arglist = Py_BuildValue ("(zii)", path, rw, mode);
 		PyObject *result = PyEval_CallObject (py_io_open_cb, arglist);
 		if (result) {
-			if (PyInt_Check (result)) {
-				if (PyInt_AsLong (result) == -1) {
+			if (PyLong_Check (result)) {
+				if (PyLong_AsLong (result) == -1) {
 					return NULL;
 				}
-				fd = PyInt_AsLong (result);
+				fd = PyLong_AsLong (result);
 			}
 			if (PyBool_Check (result) && result == Py_False) {
 				return NULL;
@@ -46,8 +46,8 @@ static ut64 py_io_seek(RIO *io, RIODesc *fd, ut64 offset, int whence) {
 	if (py_io_seek_cb) {
 		PyObject *arglist = Py_BuildValue ("(Ki)", offset, whence);
 		PyObject *result = PyEval_CallObject (py_io_seek_cb, arglist);
-		if (result && PyInt_Check (result)) {
-			return io->off = PyInt_AsLong (result);
+		if (result && PyLong_Check (result)) {
+			return io->off = PyLong_AsLong (result);
 		}
 		if (result && PyLong_Check (result)) {
 			ut64 num = PyLong_AsLongLong (result);
@@ -70,8 +70,8 @@ static int py_io_read(RIO *io, RIODesc *fd, ut8 *buf, int count) {
 		PyObject *arglist = Py_BuildValue ("(Ki)", io->off, count);
 		PyObject *result = PyEval_CallObject (py_io_read_cb, arglist);
 		if (result) {
-			if (PyString_Check (result)) {
-				int size = PyString_Size (result);
+			if (PyBytes_Check (result)) {
+				int size = PyBytes_Size (result);
 				int limit = R_MIN (size, count);
 				memset (buf, io->Oxff, limit);
 				memcpy (buf, PyString_AsString (result), limit);
@@ -104,8 +104,8 @@ static int py_io_system(RIO *io, RIODesc *desc, const char *cmd) {
 			if (PyBool_Check (result)) {
 				return result == Py_True;
 			}
-			if (PyInt_Check (result)) {
-				return PyInt_AsLong (result);
+			if (PyLong_Check (result)) {
+				return PyLong_AsLong (result);
 			}
 		}
 		// PyObject_Print(result, stderr, 0);
