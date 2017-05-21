@@ -266,7 +266,7 @@ static PyObject *init_radare_module(void) {
 /* -init- */
 
 static int init(RLang *user);
-static int setup(RLang *user);
+static bool setup(RLang *user);
 
 static int prompt(void *user) {
 	return !PyRun_SimpleString (
@@ -282,7 +282,7 @@ static int prompt(void *user) {
 	);
 }
 
-static int setup(RLang *lang) {
+static bool setup(RLang *lang) {
 	RListIter *iter;
 	RLangDef *def;
 	char cmd[128];
