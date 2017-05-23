@@ -17,7 +17,9 @@ static int r_lang_lua_report (lua_State *L, int status) {
 	const char *msg;
 	if (status) {
 		msg = lua_tostring(L, -1);
-		if (msg == NULL) msg = "(error with no message)";
+		if (!msg) {
+			msg = "(error with no message)";
+		}
 		eprintf ("status=%d, %s\n", status, msg);
 		lua_pop (L, 1);
 	}
@@ -80,14 +82,20 @@ static int init(RLang *lang) {
 	lua_setglobal(L,"cmd");
 #endif
 
+	lua_run (lang, "package.path=os.getenv(\"HOME\")..\"/.config/radare2/plugins/lua/?.lua;\"..package.path", 0);
+	lua_run (lang, "json = require \"json\"", 0);
+	lua_run (lang, "function r2cmdj(x)\n" \
+		"	return json.decode(r2cmd(x))\n" 
+		"end\n", 0);
 	lua_run (lang, "require \"r_core\"", 0);
 	sprintf (a, "c=r_core.RCore_ncast(0x%"PFMT64x")",
 		(ut64)(size_t)(void*)core);
 	lua_run (lang, a, 0);
 
 	//-- load template
+	/// DEPRECATED theres no need for this. better embed everything in into this .c
 	r_lua_file (NULL, LIBDIR"/radare2/"R2_VERSION"/radare.lua");
-	fflush(stdout);
+	fflush (stdout);
 
 	return R_TRUE;
 }

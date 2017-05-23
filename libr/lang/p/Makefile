@@ -85,8 +85,9 @@ lua lang_lua.${EXT_SO}: lua.o
 	-${CC} ${CFLAGS} -fPIC ${LDFLAGS_LIB} -o lang_lua.${EXT_SO} lua.c ${LUA_LDFLAGS}
 
 lua-install:
-	mkdir -p ~/.config/radare2/plugins
+	mkdir -p ~/.config/radare2/plugins/lua
 	cp -f lang_lua.${EXT_SO} ~/.config/radare2/plugins
+	cp -f lua/*.lua ~/.config/radare2/plugins/lua
 
 lang_ruby.${EXT_SO}:
 	-env CFLAGS="${CFLAGS}" ruby mkruby.rb
