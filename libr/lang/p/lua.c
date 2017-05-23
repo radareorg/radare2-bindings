@@ -69,14 +69,16 @@ static int init(RLang *lang) {
 	lua_pushlightuserdata (L, lang->user);
 	lua_setglobal (L, "core");
 
-	lua_register (L, "cmd_str", &lua_cmd_str);
+	lua_register (L, "r2cmd", &lua_cmd_str);
 	lua_pushcfunction(L, lua_cmd_str);
-	lua_setglobal(L,"cmd_str");
+	lua_setglobal(L,"r2cmd");
 
+#if 0
 	// DEPRECATED: cmd = radare_cmd_str
 	lua_register(L, "cmd", &lua_cmd);
 	lua_pushcfunction(L,lua_cmd);
 	lua_setglobal(L,"cmd");
+#endif
 
 	lua_run (lang, "require \"r_core\"", 0);
 	sprintf (a, "c=r_core.RCore_ncast(0x%"PFMT64x")",
