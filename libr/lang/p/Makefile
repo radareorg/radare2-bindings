@@ -84,6 +84,10 @@ lang_duktape.$(EXT_SO): duktape.o duk
 lua lang_lua.${EXT_SO}: lua.o
 	-${CC} ${CFLAGS} -fPIC ${LDFLAGS_LIB} -o lang_lua.${EXT_SO} lua.c ${LUA_LDFLAGS}
 
+lua-install:
+	mkdir -p ~/.config/radare2/plugins
+	cp -f lang_lua.${EXT_SO} ~/.config/radare2/plugins
+
 lang_ruby.${EXT_SO}:
 	-env CFLAGS="${CFLAGS}" ruby mkruby.rb
 
