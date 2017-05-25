@@ -47,24 +47,25 @@ lang_python.${EXT_SO}:
 	${LDFLAGS_LIB} -o lang_python.${EXT_SO} python.c -lpython27
 else
 PYCFG=../../../python-config-wrapper
+PYSO=lang_python$(PYVER).${EXT_SO}
 PYCFLAGS=$(shell ${PYCFG} --cflags)
 PYLDFLAGS=$(shell ${PYCFG} --libs) -L$(shell ${PYCFG} --prefix)/lib ${LDFLAGS_LIB}
 
-lang_python.${EXT_SO}:
+$(PYSO):
 	${CC} python.c ${CFLAGS} ${PYCFLAGS} ${PYLDFLAGS} \
-	${LDFLAGS} ${LDFLAGS_LIB} -fPIC -o lang_python.${EXT_SO}
+	${LDFLAGS} ${LDFLAGS_LIB} -fPIC -o $(PYSO)
 endif
 
 py python:
-	rm -f lang_python.$(EXT_SO)
-	$(MAKE) lang_python.$(EXT_SO)
+	rm -f $(PYSO)
+	$(MAKE) $(PYSO)
 
 python-install:
 	mkdir -p ~/.config/radare2/plugins
-	cp -f lang_python.$(EXT_SO) ~/.config/radare2/plugins
+	cp -f $(PYSO) ~/.config/radare2/plugins
 
 python-uninstall:
-	rm -f ~/.config/radare2/plugins/lang_python.$(EXT_SO)
+	rm -f ~/.config/radare2/plugins/$(PYSO)
 
 ifeq ($(HAVE_LIB_TCC),1)
 lang_tcc.${EXT_SO}: tcc.o

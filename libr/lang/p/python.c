@@ -13,6 +13,11 @@
 #if PY_MAJOR_VERSION>=3
 #define PyString_FromString PyUnicode_FromString
 #define PyString_AsString PyUnicode_AS_DATA
+#define PLUGIN_NAME r_lang_plugin_python3
+#define PyVersion "python3"
+#else
+#define PLUGIN_NAME r_lang_plugin_python2
+#define PyVersion "python2"
 #endif
 
 static RCore *core = NULL;
@@ -336,10 +341,11 @@ static const char *help =
 	//" r = new RadareInternal()\n"
 	"  print r2.cmd(\"p8 10\");\n";
 
-RLangPlugin r_lang_plugin_python = {
-	.name = "python",
+RLangPlugin PLUGIN_NAME = {
+	.name = PyVersion,
+	.alias = "python",
 	.ext = "py",
-	.desc = "Python language extension",
+	.desc = "Python language extension ("PyVersion")",
 	.init = &init,
 	.setup = &setup,
 	.fini = (void *)&fini,
@@ -352,6 +358,6 @@ RLangPlugin r_lang_plugin_python = {
 #if !CORELIB
 RLibStruct radare_plugin = {
 	.type = R_LIB_TYPE_LANG,
-	.data = &r_lang_plugin_python,
+	.data = &PLUGIN_NAME,
 };
 #endif
