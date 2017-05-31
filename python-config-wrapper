@@ -2,8 +2,26 @@
 # python-config wrapper trying to fix the python versioning hell
 # -- pancake
 
+if [ "${PYVER}" = 3 ]; then
 PCS="${PYTHON_CONFIG}
-	python-config
+	python3-config
+	python38-config
+	python3.8-config
+	python37-config
+	python3.7-config
+	python36-config
+	python3.6-config
+	python35-config
+	python3.5-config
+	python34-config
+	python3.4-config
+	python33-config
+	python3.3-config
+	python32-config
+	python3.2-config
+	python-config"
+else
+PCS="${PYTHON_CONFIG}
 	python2-config
 	python28-config
 	python2.8-config
@@ -12,7 +30,10 @@ PCS="${PYTHON_CONFIG}
 	python26-config
 	python2.6-config
 	python25-config
-	python2.5-config"
+	python2.5-config
+	python-config"
+fi
+
 PYCFG=""
 
 for a in ${PCS} ; do

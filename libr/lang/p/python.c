@@ -20,6 +20,15 @@
 #define PyVersion "python2"
 #endif
 
+#include "python/io.c"
+#include "python/asm.c"
+#include "python/core.c"
+
+typedef struct {
+	const char *type;
+	PyObject* (*handler)(Radare*, PyObject*);
+} R2Plugins;
+
 static RCore *core = NULL;
 typedef struct {
 	PyObject_HEAD
@@ -27,7 +36,6 @@ typedef struct {
 	PyObject *last;  /* last name */
 	int number;
 } Radare;
-
 
 static char *getS(PyObject *o, const char *name) {
 	if (!o) return NULL;
@@ -47,16 +55,6 @@ static void *getF(PyObject *o, const char *name) {
 	if (!o) return NULL;
 	return PyDict_GetItemString (o, name);
 }
-
-
-#include "python/io.c"
-#include "python/asm.c"
-#include "python/core.c"
-
-typedef struct {
-	const char *type;
-	PyObject* (*handler)(Radare*, PyObject*);
-} R2Plugins;
 
 static R2Plugins plugins[] = {
 	{ "core", &Radare_plugin_core },
@@ -84,7 +82,6 @@ static int slurp_python(const char *file) {
 static int run_file(struct r_lang_t *lang, const char *file) {
 	return slurp_python (file);
 }
-
 
 static char *py_nullstr = "";
 
@@ -327,7 +324,7 @@ static int init(RLang *lang) {
 #if PYVER != 3
 #error Trying to build py3 with py2 libraries
 #endif
-	PyImport_AppendInittab("r2lang", init_radare_module);
+	PyImport_AppendInittab ("r2lang", init_radare_module);
 	Py_Initialize ();
 #else
 #if PYVER != 2
