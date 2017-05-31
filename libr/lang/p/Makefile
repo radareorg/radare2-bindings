@@ -53,7 +53,7 @@ PYSO=lang_python$(PYVER).${EXT_SO}
 PYCFLAGS=$(shell PYVER=$(PYVER) ${PYCFG} --cflags) -DPYVER=${PYVER}
 PYLDFLAGS=$(shell PYVER=$(PYVER) ${PYCFG} --libs) -L$(shell ${PYCFG} --prefix)/lib ${LDFLAGS_LIB}
 
-$(PYSO):
+lang_python.$(EXT_SO) $(PYSO):
 	${CC} python.c ${CFLAGS} ${PYCFLAGS} ${PYLDFLAGS} \
 	${LDFLAGS} ${LDFLAGS_LIB} -fPIC -o $(PYSO)
 endif
