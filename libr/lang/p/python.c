@@ -33,7 +33,7 @@ static char *getS(PyObject *o, const char *name) {
 	if (!o) return NULL;
 	PyObject *res = PyDict_GetItemString (o, name);
 	if (!res) return NULL;
-	return PyString_AsString (res);
+	return strdup (PyString_AsString (res));
 }
 
 static st64 getI(PyObject *o, const char *name) {
