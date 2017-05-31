@@ -318,7 +318,9 @@ static bool setup(RLang *lang) {
 }
 
 static int init(RLang *lang) {
-	core = lang->user;
+	if (lang) {
+		core = lang->user;
+	}
 	// DO NOT INITIALIZE MODULE IF ALREADY INITIALIZED
 	if (Py_IsInitialized ()) {
 		return 0;
