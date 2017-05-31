@@ -2,7 +2,8 @@ BINDEPS=foo
 include ../../../config.mk
 
 CFLAGS+=$(shell pkg-config --cflags r_core)
-CFLAGS+=-Wall -DPREFIX=\"${PREFIX}\" -I. -Iduk
+
+DUK_CFLAGS+=-Wall -DPREFIX=\"${PREFIX}\" -I. -Iduk
 
 ifeq ($(OSTYPE),darwin)
 CFLAGS+=-undefined dynamic_lookup
@@ -61,11 +62,11 @@ py python:
 	rm -f $(PYSO)
 	$(MAKE) $(PYSO)
 
-python-install:
+py-install python-install:
 	mkdir -p ~/.config/radare2/plugins
 	cp -f $(PYSO) ~/.config/radare2/plugins
 
-python-uninstall:
+py-uninstall python-uninstall:
 	rm -f ~/.config/radare2/plugins/$(PYSO)
 
 ifeq ($(HAVE_LIB_TCC),1)
@@ -80,7 +81,7 @@ duktape:
 	$(MAKE) lang_duktape.$(EXT_SO)
 
 lang_duktape.$(EXT_SO): duktape.o duk
-	-$(CC) -std=c99 $(CFLAGS) -fPIC $(LDFLAGS_LIB) \
+	-$(CC) -std=c99 $(DUK_CFLAGS) $(CFLAGS) -fPIC $(LDFLAGS_LIB) \
 		-o lang_duktape.$(EXT_SO) duktape.c
 
 lua lang_lua.${EXT_SO}: lua.o
