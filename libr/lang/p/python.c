@@ -20,15 +20,6 @@
 #define PyVersion "python2"
 #endif
 
-#include "python/io.c"
-#include "python/asm.c"
-#include "python/core.c"
-
-typedef struct {
-	const char *type;
-	PyObject* (*handler)(Radare*, PyObject*);
-} R2Plugins;
-
 static RCore *core = NULL;
 typedef struct {
 	PyObject_HEAD
@@ -55,6 +46,15 @@ static void *getF(PyObject *o, const char *name) {
 	if (!o) return NULL;
 	return PyDict_GetItemString (o, name);
 }
+
+#include "python/io.c"
+#include "python/asm.c"
+#include "python/core.c"
+
+typedef struct {
+	const char *type;
+	PyObject* (*handler)(Radare*, PyObject*);
+} R2Plugins;
 
 static R2Plugins plugins[] = {
 	{ "core", &Radare_plugin_core },
