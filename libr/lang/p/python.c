@@ -324,9 +324,15 @@ static int init(RLang *lang) {
 		return 0;
 	}
 #if PY_MAJOR_VERSION >= 3
+#if PYVER != 3
+#error Trying to build py3 with py2 libraries
+#endif
 	PyImport_AppendInittab("r2lang", init_radare_module);
 	Py_Initialize ();
 #else
+#if PYVER != 2
+#error Trying to build py2 with py3 libraries
+#endif
 	Py_Initialize ();
 	init_radare_module();
 #endif

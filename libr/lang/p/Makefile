@@ -40,6 +40,7 @@ LANGS+=lang_duktape.$(EXT_SO)
 all: ${LANGS}
 	@echo "LANG ${LANGS}"
 
+PYVER?=2
 ifeq ($(OSTYPE),windows)
 lang_python.${EXT_SO}:
 	${CC} ${CFLAGS} -I${HOME}/.wine/drive_c/Python27/include \
@@ -48,7 +49,7 @@ lang_python.${EXT_SO}:
 else
 PYCFG=../../../python-config-wrapper
 PYSO=lang_python$(PYVER).${EXT_SO}
-PYCFLAGS=$(shell ${PYCFG} --cflags)
+PYCFLAGS=$(shell ${PYCFG} --cflags) -DPYVER=${PYVER}
 PYLDFLAGS=$(shell ${PYCFG} --libs) -L$(shell ${PYCFG} --prefix)/lib ${LDFLAGS_LIB}
 
 $(PYSO):
