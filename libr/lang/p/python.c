@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2009-2016 - pancake */
+/* radare - LGPL - Copyright 2009-2017 - pancake */
 /* python extension for radare2's r_lang */
 
 #include <r_lib.h>
@@ -324,8 +324,8 @@ static int init(RLang *lang) {
 #if PYVER != 3
 #error Trying to build py3 with py2 libraries
 #endif
-	PyImport_AppendInittab ("r2lang", init_radare_module);
 	Py_Initialize ();
+	PyImport_AppendInittab ("r2lang", init_radare_module);
 #else
 #if PYVER != 2
 #error Trying to build py2 with py3 libraries
