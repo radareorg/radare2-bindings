@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2009-2017 - pancake */
+/* radare2 - LGPL - Copyright 2009-2017 - pancake */
 /* python extension for radare2's r_lang */
 
 #include <r_lib.h>
@@ -11,8 +11,11 @@
 #include <Python.h>
 #include <structmember.h>
 #if PY_MAJOR_VERSION>=3
+#if PYVER != 3
+#error Trying to build py3 with py2 libraries
+#endif
 #define PyString_FromString PyUnicode_FromString
-#define PyString_AsString PyUnicode_AS_DATA
+#define PyString_AsString PyBytes_AS_STRING
 #define PLUGIN_NAME r_lang_plugin_python3
 #define PyVersion "python3"
 #else
