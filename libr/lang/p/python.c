@@ -14,7 +14,7 @@
 #if PYVER != 3
 #error Trying to build py3 with py2 libraries
 #endif
-#define PyString_FromString PyUnicode_FromString
+#define PyString_FromString PyBytes_FromString
 #define PyString_AsString PyBytes_AS_STRING
 #define PLUGIN_NAME r_lang_plugin_python3
 #define PyVersion "python3"
