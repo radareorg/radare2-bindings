@@ -10,8 +10,12 @@ static int py_core_call(void *user, const char *str) {
 	if (py_core_call_cb) {
 		PyObject *arglist = Py_BuildValue ("(z)", str);
 		PyObject *result = PyEval_CallObject (py_core_call_cb, arglist);
-		if (result && PyLong_Check (result)) {
-			return PyLong_AsLong (result);
+		if (result) {
+			if (PyLong_Check (result)) {
+				return PyLong_AsLong (result);
+			} else if (PyInt_Check (result)) {
+				return PyInt_AsLong (result);
+			}
 		}
 	}
 	return 0;
