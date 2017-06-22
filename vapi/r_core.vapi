@@ -125,7 +125,7 @@ public class RCore {
 	public bool hash_load(string? filename);
 
 	public bool anal_all();
-	public int anal_search (uint64 from, uint64 to, uint64 ref);
+	public int anal_search (uint64 from, uint64 to, uint64 ref, int mode);
 	public void anal_refs(string input);
 	public int anal_bb(RAnal.Function fcn, uint64 at, int head);
 	public int anal_bb_seek(uint64 addr);

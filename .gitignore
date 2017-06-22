@@ -33,3 +33,5 @@ r2pipe/.*
 ocaml/*.cxx
 ocaml/r_*.ml*
 r2pipe/dotnet/**/*.snk
+config.log
+*.dSYM
