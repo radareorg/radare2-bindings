@@ -14,7 +14,7 @@ static int py_core_call(void *user, const char *str) {
 			if (PyLong_Check (result)) {
 				return PyLong_AsLong (result);
 			} else if (PyINT_CHECK (result)) {
-				return PyInt_AsLong (result);
+				return PyINT_ASLONG (result);
 			}
 		}
 	}

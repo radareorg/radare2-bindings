@@ -17,10 +17,12 @@
 #define PyString_FromString PyBytes_FromString
 #define PyString_AsString PyBytes_AS_STRING
 #define PyINT_CHECK PyLong_Check
+#define PyINT_ASLONG PyLong_AsLong
 #define PLUGIN_NAME r_lang_plugin_python3
 #define PyVersion "python3"
 #else
 #define PyINT_CHECK PyInt_Check
+#define PyINT_ASLONG PyInt_AsLong
 #define PLUGIN_NAME r_lang_plugin_python2
 #define PyVersion "python2"
 #endif
