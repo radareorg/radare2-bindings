@@ -13,7 +13,7 @@ static int py_core_call(void *user, const char *str) {
 		if (result) {
 			if (PyLong_Check (result)) {
 				return PyLong_AsLong (result);
-			} else if (PyInt_Check (result)) {
+			} else if (PyINT_CHECK (result)) {
 				return PyInt_AsLong (result);
 			}
 		}
