@@ -18,11 +18,13 @@
 #define PyString_AsString PyBytes_AS_STRING
 #define PyINT_CHECK PyLong_Check
 #define PyINT_ASLONG PyLong_AsLong
+#define PySTRING_ASSTRING PyUnicode_AsUTF8
 #define PLUGIN_NAME r_lang_plugin_python3
 #define PyVersion "python3"
 #else
 #define PyINT_CHECK PyInt_Check
 #define PyINT_ASLONG PyInt_AsLong
+#define PySTRING_ASSTRING PyString_AsString
 #define PLUGIN_NAME r_lang_plugin_python2
 #define PyVersion "python2"
 #endif
@@ -39,7 +41,7 @@ static char *getS(PyObject *o, const char *name) {
 	if (!o) return NULL;
 	PyObject *res = PyDict_GetItemString (o, name);
 	if (!res) return NULL;
-	return strdup (PyString_AsString (res));
+	return strdup (PySTRING_ASSTRING (res));
 }
 
 static st64 getI(PyObject *o, const char *name) {
