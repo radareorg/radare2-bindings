@@ -19,12 +19,14 @@
 #define PyINT_CHECK PyLong_Check
 #define PyINT_ASLONG PyLong_AsLong
 #define PySTRING_ASSTRING PyUnicode_AsUTF8
+#define PySTRING_FROMSTRING PyUnicode_FromString
 #define PLUGIN_NAME r_lang_plugin_python3
 #define PyVersion "python3"
 #else
 #define PyINT_CHECK PyInt_Check
 #define PyINT_ASLONG PyInt_AsLong
 #define PySTRING_ASSTRING PyString_AsString
+#define PySTRING_FROMSTRING PyString_FromString
 #define PLUGIN_NAME r_lang_plugin_python2
 #define PyVersion "python2"
 #endif
@@ -103,12 +105,12 @@ static void Radare_dealloc(Radare* self) {
 static PyObject * Radare_new(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 	Radare *self = (Radare *)type->tp_alloc (type, 0);
 	if (self) {
-		self->first = PyString_FromString ("");
+		self->first = PySTRING_FROMSTRING ("");
 		if (!self->first) {
 			Py_DECREF (self);
 			return NULL;
 		}
-		self->last = PyString_FromString ("");
+		self->last = PySTRING_FROMSTRING ("");
 		if (!self->last) {
 			Py_DECREF (self);
 			return NULL;
@@ -145,7 +147,7 @@ static PyObject *Radare_cmd(Radare* self, PyObject *args) {
 		return NULL;
 	}
 	str = r_core_cmd_str (core, cmd);
-	return PyString_FromString (str? str: py_nullstr);
+	return PySTRING_FROMSTRING (str? str: py_nullstr);
 }
 
 static int Radare_init(Radare *self, PyObject *args, PyObject *kwds) {

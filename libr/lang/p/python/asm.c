@@ -38,7 +38,7 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 			PyObject *len = PyList_GetItem (result, 0);
 			PyObject *str = PyList_GetItem (result, 1);
 			seize = PyNumber_AsSsize_t (len, NULL);
-			opstr = PyString_AsString (str);
+			opstr = PySTRING_ASSTRING (str);
 		} else {
 			eprintf ("Unknown type returned. List was expected.\n");
 		}
