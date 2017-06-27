@@ -60,6 +60,7 @@ static void *getF(PyObject *o, const char *name) {
 
 #include "python/io.c"
 #include "python/asm.c"
+#include "python/anal.c"
 #include "python/core.c"
 
 typedef struct {
@@ -70,6 +71,7 @@ typedef struct {
 static R2Plugins plugins[] = {
 	{ "core", &Radare_plugin_core },
 	{ "asm", &Radare_plugin_asm },
+	{ "anal", &Radare_plugin_anal },
 	{ "io", &Radare_plugin_io },
 	{ NULL }
 };
