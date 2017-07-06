@@ -294,7 +294,7 @@ static void *py_load_bytes(RBinFile *arch, const ut8 *buf, ut64 sz, ut64 loadadd
 	if (py_load_bytes_cb) {
 		// load_bytes(RBinFile, buf, loadaddr) - returns NULL or NOTNULL
 		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(o,s#,K)", pybinfile, buf, sz, loadaddr);
+		PyObject *arglist = Py_BuildValue ("(o,y#,K)", pybinfile, buf, sz, loadaddr);
 		PyObject *result = PyEval_CallObject (py_load_bytes_cb, arglist);
 		if (result && PyList_Check (result)) {
 			PyObject *res = PyList_GetItem (result, 0);
@@ -311,16 +311,29 @@ static bool py_check_bytes(const ut8 *buf, ut64 length)
 {
 	int rres = 0;
 
+	if (!buf || length == 0) {
+		eprintf("Empty buffer!\n");
+	}
 	if (py_check_bytes_cb) {
+		if (!PyCallable_Check(py_check_bytes_cb)) {
+			PyErr_SetString(PyExc_TypeError, "parameter must be callable");
+			return false;
+		}
 		// check_bytes(RBinFile) - returns true/false
-		PyObject *arglist = Py_BuildValue ("(s#)", buf, length);
+		PyObject *arglist = Py_BuildValue ("(y#)", buf, length);
+		if (!arglist) {
+			PyErr_Print();
+			return false;
+		}
 		PyObject *result = PyEval_CallObject (py_check_bytes_cb, arglist);
 		if (result && PyList_Check (result)) {
 			PyObject *res = PyList_GetItem (result, 0);
 			rres = PyNumber_AsSsize_t (res, NULL);
-			if (rres) return true;
+			if (rres) {
+				return true;
+			}
 		} else {
-			eprintf ("Unknown type returned. List was expected.\n");
+			eprintf ("check_bytes: Unknown type returned. List was expected.\n");
 		}
 	}
 	return false;
@@ -339,9 +352,11 @@ static int py_destroy(RBinFile *arch) {
 		if (result && PyList_Check (result)) {
 			PyObject *res = PyList_GetItem (result, 0);
 			rres = PyNumber_AsSsize_t (res, NULL);
-			if (rres) return 1;
+			if (rres) {
+				return 1;
+			}
 		} else {
-			eprintf ("Unknown type returned. List was expected.\n");
+			eprintf ("destroy: Unknown type returned. List was expected.\n");
 		}
 	}
 	return -1;
@@ -361,7 +376,7 @@ static ut64 py_baddr(RBinFile *arch) {
 			rres = PyINT_ASLONG (res);
 			if (rres) return 0;
 		} else {
-			eprintf ("Unknown type returned. List was expected.\n");
+			eprintf ("baddr: Unknown type returned. List was expected.\n");
 		}
 	}
 	return 0;
@@ -393,7 +408,7 @@ static RBinAddr* py_binsym(RBinFile *arch, int sym) {
 			ret->type = getI (pybinsym, "type");
 			ret->bits = getI (pybinsym, "bits");
 		} else {
-			eprintf ("Unknown type returned. List was expected.\n");
+			eprintf ("binsym: Unknown type returned. List was expected.\n");
 		}
 	}
 	return ret;
@@ -433,7 +448,7 @@ static RList* py_entries(RBinFile *arch) {
 				r_list_append(ret, entry);
 			}
 		} else {
-			eprintf ("Unknown type returned. List was expected.\n");
+			eprintf ("entries: Unknown type returned. List was expected.\n");
 		}
 	}
 	return ret;
@@ -464,7 +479,7 @@ static RList* py_sections(RBinFile *arch) {
 				r_list_append(ret, section);
 			}
 		} else {
-			eprintf ("Unknown type returned. List was expected.\n");
+			eprintf ("sections: Unknown type returned. List was expected.\n");
 		}
 	}
 	return ret;
@@ -495,7 +510,7 @@ static RList* py_imports(RBinFile *arch) {
 				r_list_append(ret, import);
 			}
 		} else {
-			eprintf ("Unknown type returned. List was expected.\n");
+			eprintf ("imports: Unknown type returned. List was expected.\n");
 		}
 	}
 	return ret;
@@ -526,7 +541,7 @@ static RList* py_symbols(RBinFile *arch) {
 				r_list_append(ret, symbol);
 			}
 		} else {
-			eprintf ("Unknown type returned. List was expected.\n");
+			eprintf ("symbols: Unknown type returned. List was expected.\n");
 		}
 	}
 	return ret;
@@ -557,7 +572,7 @@ static RList* py_relocs(RBinFile *arch) {
 				r_list_append(ret, reloc);
 			}
 		} else {
-			eprintf ("Unknown type returned. List was expected.\n");
+			eprintf ("relocs: Unknown type returned. List was expected.\n");
 		}
 	}
 	return ret;
@@ -592,7 +607,7 @@ static RBinInfo *py_info(RBinFile *arch) {
 			ret->big_endian = getI (dict, "big_endian");
 			ret->dbg_info = getI (dict, "dbg_info");
 		} else {
-			eprintf ("Unknown type returned. List was expected.\n");
+			eprintf ("info: Unknown type returned. List was expected.\n");
 		}
 	}
 	return ret;
