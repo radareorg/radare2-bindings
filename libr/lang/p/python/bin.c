@@ -688,7 +688,7 @@ static PyObject *Radare_plugin_bin(Radare* self, PyObject *args) {
 		bp->info = py_info;
 	}
 	RLibStruct *lp = R_NEW0 (RLibStruct);
-	lp->type = R_LIB_TYPE_ANAL;
+	lp->type = R_LIB_TYPE_BIN;
 	lp->data = bp;
 	r_lib_open_ptr (core->lib, "python.py", NULL, lp);
 	return Py_True;
