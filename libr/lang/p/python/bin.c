@@ -1,0 +1,695 @@
+/* radare - LGPL - Copyright 2017 - xvilka */
+
+/* The structure, representing simplified version of RBinFile/RBinObject */
+typedef struct {
+	PyObject_HEAD
+	PyObject *bin_obj; /* RBinFile->o->bin_obj */
+	PyObject *buf;  /* RBinFile->buf */
+	ut64 size; /* RBinFile->size */
+	ut64 loadaddr; /* RBinFile->o->loadaddr */
+} PyBinFile;
+
+static void PyBinFile_dealloc(PyBinFile* self) {
+	Py_XDECREF (self->bin_obj);
+	Py_XDECREF (self->buf);
+	Py_TYPE (self)->tp_free((PyObject*)self);
+}
+
+static PyObject * PyBinFile_new(PyTypeObject *type, PyObject *args, PyObject *kwds) {
+	PyBinFile *self = (PyBinFile *)type->tp_alloc (type, 0);
+	if (self) {
+		// Create empty buffers
+		self->bin_obj = PySTRING_FROMSTRING ("");
+		if (!self->bin_obj) {
+			Py_DECREF (self);
+			return NULL;
+		}
+		self->buf = PySTRING_FROMSTRING ("");
+		if (!self->buf) {
+			Py_DECREF (self);
+			return NULL;
+		}
+		self->size = 0;
+		self->loadaddr = 0;
+	}
+	return (PyObject *)self;
+}
+
+static int PyBinFile_init(PyBinFile *self, PyObject *args, PyObject *kwds) {
+	static char *kwlist[] = {
+		"bin_obj",
+		"buf",
+		"size",
+		"loadaddr",
+		NULL
+	};
+	PyObject *bin_obj = NULL, *buf = NULL;
+	self->size = 0;
+	self->loadaddr = 0;
+	if (!PyArg_ParseTupleAndKeywords (args, kwds, "|OOKK",
+			(char **)kwlist, &bin_obj, &buf, &self->size, &self->loadaddr)) {
+		return -1;
+	}
+	self->bin_obj = bin_obj;
+	self->buf = buf;
+	return 0;
+}
+
+static PyMemberDef PyBinFile_members[] = {
+	{"bin_obj", T_OBJECT_EX, offsetof(PyBinFile, bin_obj), 0, "bin_obj"},
+	{"buf", T_OBJECT_EX, offsetof(PyBinFile, buf), 0, "buf"},
+	{"size", T_INT, offsetof(PyBinFile, size), 0, "size"},
+	{"loadaddr", T_INT, offsetof(PyBinFile, loadaddr), 0, "loadaddr"},
+	{NULL}  /* Sentinel */
+};
+
+static PyMethodDef PyBinFile_methods[] = {
+	{NULL}  /* Sentinel */
+};
+
+static PyTypeObject PyBinFileType = {
+#if PY_MAJOR_VERSION >= 3
+	PyVarObject_HEAD_INIT(NULL, 0)
+#else
+	PyObject_HEAD_INIT (NULL)
+	0,                         /*ob_size*/
+#endif
+	"binfile.BinFile",         /*tp_name*/
+	sizeof (PyBinFile),        /*tp_basicsize*/
+	0,                         /*tp_itemsize*/
+	(destructor)PyBinFile_dealloc,/*tp_dealloc*/
+	0,                         /*tp_print*/
+	0,                         /*tp_getattr*/
+	0,                         /*tp_setattr*/
+	0,                         /*tp_compare*/
+	0,                         /*tp_repr*/
+	0,                         /*tp_as_number*/
+	0,                         /*tp_as_sequence*/
+	0,                         /*tp_as_mapping*/
+	0,                         /*tp_hash */
+	0,                         /*tp_call*/
+	0,                         /*tp_str*/
+	0,                         /*tp_getattro*/
+	0,                         /*tp_setattro*/
+	0,                         /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
+	"BinFile objects",          /* tp_doc */
+	0,                         /* tp_traverse */
+	0,                         /* tp_clear */
+	0,                         /* tp_richcompare */
+	0,                         /* tp_weaklistoffset */
+	0,                         /* tp_iter */
+	0,                         /* tp_iternext */
+	PyBinFile_methods,         /* tp_methods */
+	PyBinFile_members,         /* tp_members */
+	0,                         /* tp_getset */
+	0,                         /* tp_base */
+	0,                         /* tp_dict */
+	0,                         /* tp_descr_get */
+	0,                         /* tp_descr_set */
+	0,                         /* tp_dictoffset */
+	(initproc)PyBinFile_init,  /* tp_init */
+	0,                         /* tp_alloc */
+	PyBinFile_new,             /* tp_new */
+};
+
+#if PY_MAJOR_VERSION < 3
+static void init_pybinfile_module(void) {
+	if (PyType_Ready (&PyBinFileType) < 0) {
+		return;
+	}
+	Py_InitModule3 ("binfile", PyBinFile_methods, "RBinFile python representation");
+}
+#else
+static PyModuleDef PyBinModule = {
+	PyModuleDef_HEAD_INIT,
+	"binfile",
+	NULL, -1, PyBinFile_methods,
+	NULL, NULL, NULL, NULL
+};
+
+static PyObject *init_pybinfile_module(void) {
+	if (PyType_Ready (&PyBinFileType) < 0) {
+		return NULL;
+	}
+	PyObject *m = PyModule_Create (&PyBinModule);
+	if (!m) {
+		eprintf ("Cannot create python3 RBinFile module\n");
+		return NULL;
+	}
+	return m;
+}
+#endif
+
+PyObject* create_PyBinFile(RBinFile *binfile)
+{
+	PyObject *po = PyObject_CallObject((PyObject *)&PyBinFileType, NULL);
+	((PyBinFile*)po)->bin_obj = binfile->o->bin_obj;
+	// FIXME: RBuffer -> void*
+	((PyBinFile*)po)->buf = (void*)binfile->buf->buf;
+	((PyBinFile*)po)->size = binfile->size;
+	((PyBinFile*)po)->loadaddr = binfile->o->loadaddr;
+	return po;
+}
+/* Plugin callbacks */
+
+// dict -> RBinSection
+// "name" : name,
+// "size" : size,
+// "vsize" : vsize,
+// "vaddr" : vaddr,
+// "paddr" : paddr,
+// "arch" : arch,
+// "format" : format,
+// "bits" : bits,
+// "has_strings" : bool,
+// "add" : bool,
+// "is_data" : bool
+#define READ_SECTION(sec, pysec) \
+		strcpy (sec->name, getS (pysec, "name")); \
+		sec->size = getI (pysec, "size"); \
+		sec->vsize = getI (pysec, "vsize"); \
+		sec->vaddr = getI (pysec, "vaddr"); \
+		sec->paddr = getI (pysec, "paddr"); \
+		sec->srwx = getI (pysec, "srwx"); \
+		sec->arch = getS (pysec, "arch"); \
+		sec->format = getS (pysec, "format"); \
+		sec->bits = getI (pysec, "bits"); \
+		sec->has_strings = getI (pysec, "has_strings"); \
+		sec->add = getI (pysec, "add"); \
+		sec->is_data = getI (pysec, "is_data")
+
+// dict -> RBinSymbol
+// "name" : name,
+// "dname" : dname,
+// "classname" : classname,
+// "forwarder" : forwarder
+// "bind" : bind,
+// "type" : type,
+// "visibility_str" : visibility_str,
+// "vaddr" : vaddr,
+// "paddr" : paddr,
+// "size" : size,
+// "ordinal" : ordinal,
+// "visibility" : visibility,
+// "bits" : bits,
+// "method_flags" : method_flags,
+// "dup_count" : dup_count
+#define READ_SYMBOL(sym, pysym) \
+		sym->name = getS (pysym, "name"); \
+		sym->dname = getS (pysym, "dname"); \
+		sym->classname = getS (pysym, "classname"); \
+		sym->forwarder = getS (pysym, "forwarder"); \
+		sym->bind = getS (pysym, "bind"); \
+		sym->type = getS (pysym, "type"); \
+		sym->visibility_str = getS (pysym, "visibility_str"); \
+		sym->vaddr = getI (pysym, "vaddr"); \
+		sym->paddr = getI (pysym, "paddr"); \
+		sym->size = getI (pysym, "size"); \
+		sym->ordinal = getI (pysym, "ordinal"); \
+		sym->visibility = getI (pysym, "visibility"); \
+		sym->bits = getI (pysym, "bits"); \
+		sym->method_flags = getI (pysym, "method_flags"); \
+		sym->dup_count = getI (pysym, "dup_count")
+
+// dict -> RBinImport
+// "name" : name,
+// "bind" : bind,
+// "type" : type,
+// "classname" : classname,
+// "descriptor" : descriptor,
+// "ordinal" : ordinal,
+// "visibility" : visibility,
+#define READ_IMPORT(imp, pyimp) \
+		imp->name = getS (pyimp, "name"); \
+		imp->bind = getS (pyimp, "bind"); \
+		imp->type = getS (pyimp, "type"); \
+		imp->classname = getS (pyimp, "classname"); \
+		imp->descriptor = getS (pyimp, "descriptor"); \
+		imp->ordinal = getI (pyimp, "ordinal"); \
+		imp->visibility = getI (pyimp, "visibility")
+
+// dict -> RBinSection
+// "type" : type, (integer)
+// "additive" : additive, (integer)
+// "symbol" : RBinSymbol,
+// "import" : RBinImport,
+// "addend" : addend,
+// "vaddr" : vaddr,
+// "paddr" : paddr,
+// "visibility" : visibility,
+// "is_ifunc" : bool
+#define READ_RELOC(rel, pyrel) \
+		rel->type = getI (pyrel, "type"); \
+		rel->additive = getI (pyrel, "additive"); \
+		PyObject *pysym = getO (pyrel, "symbol"); \
+		if (pysym) { READ_SYMBOL (rel->symbol, pysym); } \
+		else { rel->symbol = NULL; } \
+		PyObject *pyimp = getO (pyrel, "import"); \
+		if (pyimp) { READ_IMPORT (rel->import, pyimp); } \
+		else { rel->import = NULL; } \
+		rel->addend = getI (pyrel, "addend"); \
+		rel->vaddr = getI (pyrel, "vaddr"); \
+		rel->paddr = getI (pyrel, "paddr"); \
+		rel->visibility = getI (pyrel, "visibility"); \
+		rel->is_ifunc = getI (pysym, "is_ifunc")
+
+static void *py_load_cb = NULL;
+static void *py_load_bytes_cb = NULL;
+static void *py_check_bytes_cb = NULL;
+static void *py_destroy_cb = NULL;
+static void *py_baddr_cb = NULL;
+static void *py_sections_cb = NULL;
+static void *py_imports_cb = NULL;
+static void *py_symbols_cb = NULL;
+static void *py_relocs_cb = NULL;
+static void *py_binsym_cb = NULL;
+static void *py_entries_cb = NULL;
+static void *py_info_cb = NULL;
+
+static bool py_load(RBinFile *arch) {
+	int rres = 0;
+
+	if (!arch) return NULL;
+	if (py_load_cb) {
+		// info(RBinFile) - returns dictionary (structure) for RAnalOp
+		PyObject *pybinfile = create_PyBinFile(arch);
+		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *result = PyEval_CallObject (py_load_cb, arglist);
+		if (result && PyList_Check (result)) {
+			PyObject *res = PyList_GetItem (result, 0);
+			rres = PyNumber_AsSsize_t (res, NULL);
+			if (rres) return true;
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	return false;
+}
+
+static void *py_load_bytes(RBinFile *arch, const ut8 *buf, ut64 sz, ut64 loadaddr, Sdb *sdb) {
+	int rres = 0;
+
+	if (!arch) return NULL;
+	if (py_load_bytes_cb) {
+		// load_bytes(RBinFile, buf, loadaddr) - returns NULL or NOTNULL
+		PyObject *pybinfile = create_PyBinFile(arch);
+		PyObject *arglist = Py_BuildValue ("(o,s#,K)", pybinfile, buf, sz, loadaddr);
+		PyObject *result = PyEval_CallObject (py_load_bytes_cb, arglist);
+		if (result && PyList_Check (result)) {
+			PyObject *res = PyList_GetItem (result, 0);
+			rres = PyNumber_AsSsize_t (res, NULL);
+			if (rres) return R_NOTNULL;
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	return NULL;
+}
+
+static bool py_check_bytes(const ut8 *buf, ut64 length)
+{
+	int rres = 0;
+
+	if (py_check_bytes_cb) {
+		// check_bytes(RBinFile) - returns true/false
+		PyObject *arglist = Py_BuildValue ("(s#)", buf, length);
+		PyObject *result = PyEval_CallObject (py_check_bytes_cb, arglist);
+		if (result && PyList_Check (result)) {
+			PyObject *res = PyList_GetItem (result, 0);
+			rres = PyNumber_AsSsize_t (res, NULL);
+			if (rres) return true;
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	return false;
+
+}
+
+static int py_destroy(RBinFile *arch) {
+	int rres = 0;
+
+	if (!arch) return -1;
+	if (py_destroy_cb) {
+		// destroy(RBinFile) - returns something
+		PyObject *pybinfile = create_PyBinFile(arch);
+		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *result = PyEval_CallObject (py_destroy_cb, arglist);
+		if (result && PyList_Check (result)) {
+			PyObject *res = PyList_GetItem (result, 0);
+			rres = PyNumber_AsSsize_t (res, NULL);
+			if (rres) return 1;
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	return -1;
+}
+
+static ut64 py_baddr(RBinFile *arch) {
+	ut64 rres = 0;
+
+	if (!arch) return 0;
+	if (py_baddr_cb) {
+		// baddr(RBinFile) - returns baddr
+		PyObject *pybinfile = create_PyBinFile(arch);
+		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *result = PyEval_CallObject (py_baddr_cb, arglist);
+		if (result && PyList_Check (result)) {
+			PyObject *res = PyList_GetItem (result, 0);
+			rres = PyINT_ASLONG (res);
+			if (rres) return 0;
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	return 0;
+}
+
+static RBinAddr* py_binsym(RBinFile *arch, int sym) {
+	RBinAddr* ret = NULL;
+
+	if (!arch) return NULL;
+	if (!(ret = R_NEW0 (RBinAddr))) {
+		return NULL;
+	}
+	if (py_binsym_cb) {
+		// binsym(RBinFile, symtype) - returns RBinAddr if found
+		PyObject *pybinfile = create_PyBinFile(arch);
+		PyObject *arglist = Py_BuildValue ("(o, i)", pybinfile, sym);
+		PyObject *result = PyEval_CallObject (py_binsym_cb, arglist);
+		if (result && PyList_Check (result)) {
+			// dict -> RBinEntry
+			// "vaddr" : vaddr,
+			// "paddr" : paddr,
+			// "haddr" : haddr,
+			// "type" : type,
+			// "bits" : bits
+			PyObject *pybinsym = PyList_GetItem (result, 0);
+			ret->vaddr = getI (pybinsym, "vaddr");
+			ret->paddr = getI (pybinsym, "paddr");
+			ret->haddr = getI (pybinsym, "haddr");
+			ret->type = getI (pybinsym, "type");
+			ret->bits = getI (pybinsym, "bits");
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	return ret;
+}
+
+static RList* py_entries(RBinFile *arch) {
+	ssize_t listsz = 0;
+	ssize_t i = 0;
+	RList* ret = NULL;
+
+	if (!arch) return NULL;
+	if (!(ret = r_list_new())) {
+		return NULL;
+	}
+	if (py_entries_cb) {
+		// entries(RBinFile) - returns list of entries
+		PyObject *pybinfile = create_PyBinFile(arch);
+		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *result = PyEval_CallObject (py_entries_cb, arglist);
+		if (result && PyList_Check (result)) {
+			listsz = PyList_Size(result);
+			for (i = 0; i < listsz; i++) {
+				// dict -> RBinEntry
+				// "vaddr" : vaddr,
+				// "paddr" : paddr,
+				// "haddr" : haddr,
+				// "type" : type,
+				// "bits" : bits
+				PyObject *pyentry = PyList_GetItem (result, i);
+				RBinAddr *entry = R_NEW0 (RBinAddr);
+				if (!entry) continue;
+				entry->vaddr = getI (pyentry, "vaddr");
+				entry->paddr = getI (pyentry, "paddr");
+				entry->haddr = getI (pyentry, "haddr");
+				entry->type = getI (pyentry, "type");
+				entry->bits = getI (pyentry, "bits");
+				r_list_append(ret, entry);
+			}
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	return ret;
+}
+
+static RList* py_sections(RBinFile *arch) {
+	ssize_t listsz = 0;
+	ssize_t i = 0;
+	RList* ret = NULL;
+
+	if (!arch) return NULL;
+	if (!(ret = r_list_new())) {
+		return NULL;
+	}
+	if (py_sections_cb) {
+		// sections(RBinFile) - returns list of sections
+		PyObject *pybinfile = create_PyBinFile(arch);
+		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *result = PyEval_CallObject (py_sections_cb, arglist);
+		if (result && PyList_Check (result)) {
+			listsz = PyList_Size(result);
+			for (i = 0; i < listsz; i++) {
+				// dict -> RBinSection
+				PyObject *pysection = PyList_GetItem (result, i);
+				RBinSection *section = R_NEW0(RBinSection);
+				if (!section) continue;
+				READ_SECTION(section, pysection);
+				r_list_append(ret, section);
+			}
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	return ret;
+}
+
+static RList* py_imports(RBinFile *arch) {
+	ssize_t listsz = 0;
+	ssize_t i = 0;
+	RList* ret = NULL;
+
+	if (!arch) return NULL;
+	if (!(ret = r_list_new())) {
+		return NULL;
+	}
+	if (py_imports_cb) {
+		// imports(RBinFile) - returns list of imports
+		PyObject *pybinfile = create_PyBinFile(arch);
+		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *result = PyEval_CallObject (py_imports_cb, arglist);
+		if (result && PyList_Check (result)) {
+			listsz = PyList_Size(result);
+			for (i = 0; i < listsz; i++) {
+				// dict -> RBinSection
+				PyObject *pyimport = PyList_GetItem (result, i);
+				RBinImport *import = R_NEW0 (RBinImport);
+				if (!import) continue;
+				READ_IMPORT(import, pyimport);
+				r_list_append(ret, import);
+			}
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	return ret;
+}
+
+static RList* py_symbols(RBinFile *arch) {
+	ssize_t listsz = 0;
+	ssize_t i = 0;
+	RList* ret = NULL;
+
+	if (!arch) return NULL;
+	if (!(ret = r_list_new())) {
+		return NULL;
+	}
+	if (py_symbols_cb) {
+		// symbols(RBinFile) - returns list of symbols
+		PyObject *pybinfile = create_PyBinFile(arch);
+		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *result = PyEval_CallObject (py_symbols_cb, arglist);
+		if (result && PyList_Check (result)) {
+			listsz = PyList_Size(result);
+			for (i = 0; i < listsz; i++) {
+				// dict -> RBinSection
+				PyObject *pysym = PyList_GetItem (result, i);
+				RBinSymbol *symbol = R_NEW0 (RBinSymbol);
+				if (!symbol) continue;
+				READ_SYMBOL(symbol, pysym);
+				r_list_append(ret, symbol);
+			}
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	return ret;
+}
+
+static RList* py_relocs(RBinFile *arch) {
+	ssize_t listsz = 0;
+	ssize_t i = 0;
+	RList* ret = NULL;
+
+	if (!arch) return NULL;
+	if (!(ret = r_list_new())) {
+		return NULL;
+	}
+	if (py_relocs_cb) {
+		// relocs(RBinFile) - returns list of relocations
+		PyObject *pybinfile = create_PyBinFile(arch);
+		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *result = PyEval_CallObject (py_relocs_cb, arglist);
+		if (result && PyList_Check (result)) {
+			listsz = PyList_Size(result);
+			for (i = 0; i < listsz; i++) {
+				// dict -> RBinSection
+				PyObject *pyrel = PyList_GetItem (result, i);
+				RBinReloc *reloc = R_NEW0 (RBinReloc);
+				if (!reloc) continue;
+				READ_RELOC(reloc, pyrel);
+				r_list_append(ret, reloc);
+			}
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	return ret;
+}
+
+static RBinInfo *py_info(RBinFile *arch) {
+	RBinInfo *ret = NULL;
+
+	if (!arch) return NULL;
+	if (!(ret = R_NEW0 (RBinInfo))) {
+		return NULL;
+	}
+	if (py_info_cb) {
+		// info(RBinFile) - returns dictionary (structure) for RAnalOp
+		PyObject *pybinfile = create_PyBinFile(arch);
+		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *result = PyEval_CallObject (py_info_cb, arglist);
+		if (result && PyList_Check (result)) {
+			PyObject *dict = PyList_GetItem (result, 0);
+			/* TODO: Check for empty values first! */
+			ret->lang = NULL;
+			ret->file = arch->file? strdup (arch->file): NULL;
+			ret->type = getS (dict, "type");
+			ret->bclass = getS (dict, "bclass");
+			ret->rclass = getS (dict, "rclass");
+			ret->os = getS (dict, "os");
+			ret->subsystem = getS (dict, "subsystem");
+			ret->machine = getS (dict, "machine");
+			ret->arch = getS (dict, "arch");
+			ret->has_va = getI (dict, "has_va");
+			ret->bits = getI (dict, "bits");
+			ret->big_endian = getI (dict, "big_endian");
+			ret->dbg_info = getI (dict, "dbg_info");
+		} else {
+			eprintf ("Unknown type returned. List was expected.\n");
+		}
+	}
+	return ret;
+}
+
+/* TODO: Add missing exported symbols */
+/* TODO: Fold the repeating code - may be add some macro? */
+static PyObject *Radare_plugin_bin(Radare* self, PyObject *args) {
+	void *ptr = NULL;
+	PyObject *arglist = Py_BuildValue("(i)", 0);
+	PyObject *o = PyEval_CallObject (args, arglist);
+
+	RBinPlugin *bp = R_NEW0 (RBinPlugin);
+	bp->name = getS (o,"name");
+	bp->desc = getS (o, "desc");
+	bp->license = getS (o, "license");
+	ptr = getF (o, "load");
+	if (ptr) {
+		Py_INCREF (ptr);
+		py_load_cb = ptr;
+		bp->load = py_load;
+	}
+	ptr = getF (o, "load_bytes");
+	if (ptr) {
+		Py_INCREF (ptr);
+		py_load_bytes_cb = ptr;
+		bp->load_bytes = py_load_bytes;
+	}
+	ptr = getF (o, "destroy");
+	if (ptr) {
+		Py_INCREF (ptr);
+		py_destroy_cb = ptr;
+		bp->destroy = py_destroy;
+	}
+	ptr = getF (o, "check_bytes");
+	if (ptr) {
+		Py_INCREF (ptr);
+		py_check_bytes_cb = ptr;
+		bp->check_bytes = py_check_bytes;
+	}
+	ptr = getF (o, "baddr");
+	if (ptr) {
+		Py_INCREF (ptr);
+		py_baddr_cb = ptr;
+		bp->baddr = py_baddr;
+	}
+	// Get RList* here
+	ptr = getF (o, "entries");
+	if (ptr) {
+		Py_INCREF (ptr);
+		py_entries_cb = ptr;
+		bp->entries = py_entries;
+	}
+	// Get RList* here
+	ptr = getF (o, "sections");
+	if (ptr) {
+		Py_INCREF (ptr);
+		py_sections_cb = ptr;
+		bp->sections = py_sections;
+	}
+	// Get RList* here
+	ptr = getF (o, "imports");
+	if (ptr) {
+		Py_INCREF (ptr);
+		py_imports_cb = ptr;
+		bp->imports = py_imports;
+	}
+	// Get RList* here
+	ptr = getF (o, "symbols");
+	if (ptr) {
+		Py_INCREF (ptr);
+		py_symbols_cb = ptr;
+		bp->symbols = py_symbols;
+	}
+	// Get RList* here
+	ptr = getF (o, "relocs");
+	if (ptr) {
+		Py_INCREF (ptr);
+		py_relocs_cb = ptr;
+		bp->relocs = py_relocs;
+	}
+	// Get RBinAddr* here
+	ptr = getF (o, "binsym");
+	if (ptr) {
+		Py_INCREF (ptr);
+		py_binsym_cb = ptr;
+		bp->binsym = py_binsym;
+	}
+	ptr = getF (o, "info");
+	if (ptr) {
+		Py_INCREF (ptr);
+		py_info_cb = ptr;
+		bp->info = py_info;
+	}
+	RLibStruct *lp = R_NEW0 (RLibStruct);
+	lp->type = R_LIB_TYPE_ANAL;
+	lp->data = bp;
+	r_lib_open_ptr (core->lib, "python.py", NULL, lp);
+	return Py_True;
+}

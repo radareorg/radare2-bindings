@@ -39,6 +39,13 @@ typedef struct {
 	int number;
 } Radare;
 
+static PyObject *getO(PyObject *o, const char *name) {
+	if (!o) return NULL;
+	PyObject *res = PyDict_GetItemString (o, name);
+	if (!res) return NULL;
+	return res;
+}
+
 static char *getS(PyObject *o, const char *name) {
 	if (!o) return NULL;
 	PyObject *res = PyDict_GetItemString (o, name);
@@ -61,6 +68,7 @@ static void *getF(PyObject *o, const char *name) {
 #include "python/io.c"
 #include "python/asm.c"
 #include "python/anal.c"
+#include "python/bin.c"
 #include "python/core.c"
 
 typedef struct {
@@ -72,6 +80,7 @@ static R2Plugins plugins[] = {
 	{ "core", &Radare_plugin_core },
 	{ "asm", &Radare_plugin_asm },
 	{ "anal", &Radare_plugin_anal },
+	{ "bin", &Radare_plugin_bin },
 	{ "io", &Radare_plugin_io },
 	{ NULL }
 };
