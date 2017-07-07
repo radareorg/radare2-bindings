@@ -67,7 +67,7 @@ static PyMethodDef PyBinFile_methods[] = {
 	{NULL}  /* Sentinel */
 };
 
-static PyTypeObject PyBinFileType = {
+PyTypeObject PyBinFileType = {
 #if PY_MAJOR_VERSION >= 3
 	PyVarObject_HEAD_INIT(NULL, 0)
 #else
@@ -143,13 +143,27 @@ static PyObject *init_pybinfile_module(void) {
 
 PyObject* create_PyBinFile(RBinFile *binfile)
 {
-	PyObject *po = PyObject_CallObject((PyObject *)&PyBinFileType, NULL);
-	((PyBinFile*)po)->bin_obj = binfile->o->bin_obj;
+	if (!binfile) return NULL;
+	PyObject *pb = _PyObject_New(&PyBinFileType);
+	if (!pb) {
+		PyErr_Print();
+		return NULL;
+	}
+	pb = PyObject_Init(pb, &PyBinFileType);
+	if (!pb) {
+		PyErr_Print();
+		return NULL;
+	}
+	if (binfile->o) {
+		((PyBinFile*)pb)->bin_obj = binfile->o->bin_obj;
+		((PyBinFile*)pb)->loadaddr = binfile->o->loadaddr;
+	}
 	// FIXME: RBuffer -> void*
-	((PyBinFile*)po)->buf = (void*)binfile->buf->buf;
-	((PyBinFile*)po)->size = binfile->size;
-	((PyBinFile*)po)->loadaddr = binfile->o->loadaddr;
-	return po;
+	if (binfile->buf) {
+		((PyBinFile*)pb)->buf = (void*)binfile->buf->buf;
+	}
+	((PyBinFile*)pb)->size = binfile->size;
+	return pb;
 }
 /* Plugin callbacks */
 
@@ -274,7 +288,7 @@ static bool py_load(RBinFile *arch) {
 	if (py_load_cb) {
 		// info(RBinFile) - returns dictionary (structure) for RAnalOp
 		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *arglist = Py_BuildValue ("(O)", pybinfile);
 		PyObject *result = PyEval_CallObject (py_load_cb, arglist);
 		if (result && PyList_Check (result)) {
 			PyObject *res = PyList_GetItem (result, 0);
@@ -294,7 +308,12 @@ static void *py_load_bytes(RBinFile *arch, const ut8 *buf, ut64 sz, ut64 loadadd
 	if (py_load_bytes_cb) {
 		// load_bytes(RBinFile, buf, loadaddr) - returns NULL or NOTNULL
 		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(o,y#,K)", pybinfile, buf, sz, loadaddr);
+		if (!pybinfile) return NULL;
+		PyObject *arglist = Py_BuildValue ("(O,y#,L)", pybinfile, buf, sz, loadaddr);
+		if (!arglist) {
+			PyErr_Print();
+			return NULL;
+		}
 		PyObject *result = PyEval_CallObject (py_load_bytes_cb, arglist);
 		if (result && PyList_Check (result)) {
 			PyObject *res = PyList_GetItem (result, 0);
@@ -347,7 +366,11 @@ static int py_destroy(RBinFile *arch) {
 	if (py_destroy_cb) {
 		// destroy(RBinFile) - returns something
 		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *arglist = Py_BuildValue ("(O)", pybinfile);
+		if (!arglist) {
+			PyErr_Print();
+			return -1;
+		}
 		PyObject *result = PyEval_CallObject (py_destroy_cb, arglist);
 		if (result && PyList_Check (result)) {
 			PyObject *res = PyList_GetItem (result, 0);
@@ -369,12 +392,16 @@ static ut64 py_baddr(RBinFile *arch) {
 	if (py_baddr_cb) {
 		// baddr(RBinFile) - returns baddr
 		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *arglist = Py_BuildValue ("(O)", pybinfile);
+		if (!arglist) {
+			PyErr_Print();
+			return 0;
+		}
 		PyObject *result = PyEval_CallObject (py_baddr_cb, arglist);
 		if (result && PyList_Check (result)) {
 			PyObject *res = PyList_GetItem (result, 0);
 			rres = PyINT_ASLONG (res);
-			if (rres) return 0;
+			if (rres) return rres;
 		} else {
 			eprintf ("baddr: Unknown type returned. List was expected.\n");
 		}
@@ -392,7 +419,11 @@ static RBinAddr* py_binsym(RBinFile *arch, int sym) {
 	if (py_binsym_cb) {
 		// binsym(RBinFile, symtype) - returns RBinAddr if found
 		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(o, i)", pybinfile, sym);
+		PyObject *arglist = Py_BuildValue ("(O, i)", pybinfile, sym);
+		if (!arglist) {
+			PyErr_Print();
+			return NULL;
+		}
 		PyObject *result = PyEval_CallObject (py_binsym_cb, arglist);
 		if (result && PyList_Check (result)) {
 			// dict -> RBinEntry
@@ -426,7 +457,11 @@ static RList* py_entries(RBinFile *arch) {
 	if (py_entries_cb) {
 		// entries(RBinFile) - returns list of entries
 		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *arglist = Py_BuildValue ("(O)", pybinfile);
+		if (!arglist) {
+			PyErr_Print();
+			return NULL;
+		}
 		PyObject *result = PyEval_CallObject (py_entries_cb, arglist);
 		if (result && PyList_Check (result)) {
 			listsz = PyList_Size(result);
@@ -466,7 +501,11 @@ static RList* py_sections(RBinFile *arch) {
 	if (py_sections_cb) {
 		// sections(RBinFile) - returns list of sections
 		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *arglist = Py_BuildValue ("(O)", pybinfile);
+		if (!arglist) {
+			PyErr_Print();
+			return NULL;
+		}
 		PyObject *result = PyEval_CallObject (py_sections_cb, arglist);
 		if (result && PyList_Check (result)) {
 			listsz = PyList_Size(result);
@@ -497,7 +536,11 @@ static RList* py_imports(RBinFile *arch) {
 	if (py_imports_cb) {
 		// imports(RBinFile) - returns list of imports
 		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *arglist = Py_BuildValue ("(O)", pybinfile);
+		if (!arglist) {
+			PyErr_Print();
+			return NULL;
+		}
 		PyObject *result = PyEval_CallObject (py_imports_cb, arglist);
 		if (result && PyList_Check (result)) {
 			listsz = PyList_Size(result);
@@ -528,7 +571,11 @@ static RList* py_symbols(RBinFile *arch) {
 	if (py_symbols_cb) {
 		// symbols(RBinFile) - returns list of symbols
 		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *arglist = Py_BuildValue ("(O)", pybinfile);
+		if (!arglist) {
+			PyErr_Print();
+			return 0;
+		}
 		PyObject *result = PyEval_CallObject (py_symbols_cb, arglist);
 		if (result && PyList_Check (result)) {
 			listsz = PyList_Size(result);
@@ -559,7 +606,11 @@ static RList* py_relocs(RBinFile *arch) {
 	if (py_relocs_cb) {
 		// relocs(RBinFile) - returns list of relocations
 		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *arglist = Py_BuildValue ("(O)", pybinfile);
+		if (!arglist) {
+			PyErr_Print();
+			return 0;
+		}
 		PyObject *result = PyEval_CallObject (py_relocs_cb, arglist);
 		if (result && PyList_Check (result)) {
 			listsz = PyList_Size(result);
@@ -588,7 +639,11 @@ static RBinInfo *py_info(RBinFile *arch) {
 	if (py_info_cb) {
 		// info(RBinFile) - returns dictionary (structure) for RAnalOp
 		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(o)", pybinfile);
+		PyObject *arglist = Py_BuildValue ("(O)", pybinfile);
+		if (!arglist) {
+			PyErr_Print();
+			return NULL;
+		}
 		PyObject *result = PyEval_CallObject (py_info_cb, arglist);
 		if (result && PyList_Check (result)) {
 			PyObject *dict = PyList_GetItem (result, 0);

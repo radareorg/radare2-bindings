@@ -349,6 +349,7 @@ static int init(RLang *lang) {
 #error Trying to build py3 with py2 libraries
 #endif
 	PyImport_AppendInittab ("r2lang", init_radare_module);
+	PyImport_AppendInittab ("binfile", init_pybinfile_module);
 	Py_Initialize ();
 #else
 #if PYVER != 2
@@ -356,6 +357,7 @@ static int init(RLang *lang) {
 #endif
 	Py_Initialize ();
 	init_radare_module();
+	init_pybinfile_module();
 #endif
 	return R_TRUE;
 }
