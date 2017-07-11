@@ -2,6 +2,7 @@ BINDEPS=foo
 include ../../../config.mk
 
 CFLAGS+=$(shell pkg-config --cflags r_core)
+CFLAGS+=-DPREFIX=\"${PREFIX}\"
 
 DUK_CFLAGS+=-Wall -DPREFIX=\"${PREFIX}\" -I. -Iduk
 
