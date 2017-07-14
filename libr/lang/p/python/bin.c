@@ -55,6 +55,18 @@ static int PyBinFile_init(PyBinFile *self, PyObject *args, PyObject *kwds) {
 	return 0;
 }
 
+// write_bytes(addr, bytes)
+// TODO: Return an error
+static PyObject *RBin_write_bytes(Radare* self, PyObject *args) {
+	char *buf = NULL;
+	ut64 addr = 0;
+	int buf_sz = 0;
+	if (!PyArg_ParseTuple (args, "(K,"BYTES_FMT")", &addr, &buf, &buf_sz)) {
+		return NULL;
+	}
+	return PySTRING_FROMSTRING ("");
+}
+
 static PyMemberDef PyBinFile_members[] = {
 	{"bin_obj", T_OBJECT_EX, offsetof(PyBinFile, bin_obj), 0, "bin_obj"},
 	{"buf", T_OBJECT_EX, offsetof(PyBinFile, buf), 0, "buf"},
@@ -64,6 +76,8 @@ static PyMemberDef PyBinFile_members[] = {
 };
 
 static PyMethodDef PyBinFile_methods[] = {
+	{"write_bytes", (PyCFunction)RBin_write_bytes, METH_VARARGS,
+		"Write bytes back into RBin buffer" },
 	{NULL}  /* Sentinel */
 };
 
@@ -309,7 +323,7 @@ static void *py_load_bytes(RBinFile *arch, const ut8 *buf, ut64 sz, ut64 loadadd
 		// load_bytes(RBinFile, buf, loadaddr) - returns NULL or NOTNULL
 		PyObject *pybinfile = create_PyBinFile(arch);
 		if (!pybinfile) return NULL;
-		PyObject *arglist = Py_BuildValue ("(O,y#,L)", pybinfile, buf, sz, loadaddr);
+		PyObject *arglist = Py_BuildValue ("(O,"BYTES_FMT",L)", pybinfile, buf, sz, loadaddr);
 		if (!arglist) {
 			PyErr_Print();
 			return NULL;
@@ -339,7 +353,7 @@ static bool py_check_bytes(const ut8 *buf, ut64 length)
 			return false;
 		}
 		// check_bytes(RBinFile) - returns true/false
-		PyObject *arglist = Py_BuildValue ("(y#)", buf, length);
+		PyObject *arglist = Py_BuildValue ("("BYTES_FMT")", buf, length);
 		if (!arglist) {
 			PyErr_Print();
 			return false;
@@ -403,6 +417,7 @@ static ut64 py_baddr(RBinFile *arch) {
 			rres = PyINT_ASLONG (res);
 			if (rres) return rres;
 		} else {
+			PyErr_Print();
 			eprintf ("baddr: Unknown type returned. List was expected.\n");
 		}
 	}

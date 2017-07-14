@@ -21,6 +21,7 @@
 #define PySTRING_ASSTRING PyUnicode_AsUTF8
 #define PySTRING_FROMSTRING PyUnicode_FromString
 #define PLUGIN_NAME r_lang_plugin_python3
+#define BYTES_FMT "y#"
 #define PyVersion "python3"
 #else
 #define PyINT_CHECK PyInt_Check
@@ -28,6 +29,7 @@
 #define PySTRING_ASSTRING PyString_AsString
 #define PySTRING_FROMSTRING PyString_FromString
 #define PLUGIN_NAME r_lang_plugin_python2
+#define BYTES_FMT "s#"
 #define PyVersion "python2"
 #endif
 
