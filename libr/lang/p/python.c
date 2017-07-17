@@ -361,6 +361,10 @@ static int init(RLang *lang) {
 	init_radare_module();
 	init_pybinfile_module();
 #endif
+	// Add a current directory to the PYTHONPATH
+	PyObject *sys = PyImport_ImportModule("sys");
+	PyObject *path = PyObject_GetAttrString(sys, "path");
+	PyList_Append(path, PySTRING_FROMSTRING("."));
 	return R_TRUE;
 }
 
