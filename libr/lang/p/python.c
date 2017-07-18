@@ -249,10 +249,15 @@ static PyTypeObject RadareType = {
 
 #if PY_MAJOR_VERSION < 3
 static void init_radare_module(void) {
+	PyObject *m;
 	if (PyType_Ready (&RadareType) < 0) {
 		return;
 	}
-	Py_InitModule3 ("r2lang", Radare_methods, "radare python extension");
+	RadareType.tp_dict = PyDict_New();
+	py_export_anal_enum(RadareType.tp_dict);
+	m = Py_InitModule3 ("r2lang", Radare_methods, "radare python extension");
+	Py_INCREF(&RadareType);
+	PyModule_AddObject(m, "R", (PyObject *)&RadareType);
 }
 #else
 
@@ -280,11 +285,15 @@ static PyObject *init_radare_module(void) {
 	if (PyType_Ready (&RadareType) < 0) {
 		return NULL;
 	}
+	RadareType.tp_dict = PyDict_New();
+	py_export_anal_enum(RadareType.tp_dict);
 	PyObject *m = PyModule_Create (&EmbModule);
 	if (!m) {
 		eprintf ("Cannot create python3 r2 module\n");
 		return NULL;
 	}
+	Py_INCREF(&RadareType);
+	PyModule_AddObject(m, "R", (PyObject *)&RadareType);
 	return m;
 }
 #endif
