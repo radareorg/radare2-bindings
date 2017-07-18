@@ -129,8 +129,10 @@ static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len) {
 			op->size = seize;
 			op->addr = getI (dict, "addr");
 			op->jump = getI (dict, "jump");
+			op->fail = getI (dict, "fail");
 			op->stackop = getI (dict, "stackop");
 			op->stackptr = getI (dict, "stackptr");
+			op->ptr = getI (dict, "ptr");
 			op->eob = getI (dict, "eob");
 			r_strbuf_set (&op->esil, getS (dict, "esil"));
 			// TODO: Add opex support here
