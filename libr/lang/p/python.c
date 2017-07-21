@@ -67,6 +67,12 @@ static void *getF(PyObject *o, const char *name) {
 	return PyDict_GetItemString (o, name);
 }
 
+static bool getB(PyObject *o, const char *name) {
+	if (!o) return NULL;
+	if (PyObject_IsTrue(o)) return true;
+	return false;
+}
+
 #include "python/io.c"
 #include "python/asm.c"
 #include "python/anal.c"

@@ -93,6 +93,34 @@ static void py_export_anal_enum(PyObject *tp_dict) {
 #undef E
 }
 
+#define READ_REG(dict, reg) \
+	if (dict && PyDict_Check(dict)) { \
+		reg->name = getS (dict, "name"); \
+		reg->type = getI (dict, "type"); \
+		reg->size = getI (dict, "size"); \
+		reg->offset = getI (dict, "offset"); \
+		reg->packed_size = getI (dict, "packed_size"); \
+		reg->is_float = getB (dict, "is_float"); \
+		reg->flags = getS (dict, "flags"); \
+		reg->index = getI (dict, "index"); \
+		reg->arena = getI (dict, "arena"); \
+	}
+
+#define READ_VAL(dict, val, tmpreg) \
+	if (dict && PyDict_Check(dict)) { \
+		val->absolute = getI (dict, "absolute"); \
+		val->memref = getI (dict, "memref"); \
+		val->base = getI (dict, "base"); \
+		val->delta = getI (dict, "delta"); \
+		val->imm = getI (dict, "imm"); \
+		val->mul = getI (dict, "mul"); \
+		val->sel = getI (dict, "sel"); \
+		tmpreg = getO (dict, "reg"); \
+		READ_REG(tmpreg, val->reg) \
+		tmpreg = getO (dict, "regdelta"); \
+		READ_REG(tmpreg, val->regdelta) \
+	}
+
 static void *py_set_reg_profile_cb = NULL;
 static void *py_anal_cb = NULL;
 
@@ -112,8 +140,10 @@ static int py_set_reg_profile(RAnal *a) {
 }
 
 static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len) {
+	PyObject *tmpreg = NULL;
 	int size = 0;
 	int seize = -1;
+	int i = 0;
 	if (!op) return -1;
 	if (py_anal_cb) {
 		memset(op, 0, sizeof (RAnalOp));
@@ -123,19 +153,35 @@ static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len) {
 		if (result && PyList_Check (result)) {
 			PyObject *len = PyList_GetItem (result, 0);
 			PyObject *dict = PyList_GetItem (result, 1);
-			seize = PyNumber_AsSsize_t (len, NULL);
-			op->type = getI (dict, "type");
-			op->cycles = getI (dict, "cycles");
-			op->size = seize;
-			op->addr = getI (dict, "addr");
-			op->jump = getI (dict, "jump");
-			op->fail = getI (dict, "fail");
-			op->stackop = getI (dict, "stackop");
-			op->stackptr = getI (dict, "stackptr");
-			op->ptr = getI (dict, "ptr");
-			op->eob = getI (dict, "eob");
-			r_strbuf_set (&op->esil, getS (dict, "esil"));
-			// TODO: Add opex support here
+			if (dict && PyDict_Check (dict)) {
+				seize = PyNumber_AsSsize_t (len, NULL);
+				op->type = getI (dict, "type");
+				op->cycles = getI (dict, "cycles");
+				op->size = seize;
+				op->addr = getI (dict, "addr");
+				op->jump = getI (dict, "jump");
+				op->fail = getI (dict, "fail");
+				op->stackop = getI (dict, "stackop");
+				op->stackptr = getI (dict, "stackptr");
+				op->ptr = getI (dict, "ptr");
+				op->eob = getB (dict, "eob");
+				// Loading 'src' and 'dst' values
+				// SRC is is a list of 3 elements
+				PyObject *tmpsrc = getO (dict, "src");
+				if (tmpsrc && PyList_Check (tmpsrc)) {
+					for (i = 0; i < 3; i++) {
+						PyObject *tmplst = PyList_GetItem (tmpsrc, i);
+						// Read value and underlying regs
+						READ_VAL(tmplst, op->src[i], tmpreg)
+					}
+				}
+				PyObject *tmpdst = getO (dict, "dst");
+				// Read value and underlying regs
+				READ_VAL(tmpdst, op->dst, tmpreg)
+				// Loading 'var' value if presented
+				r_strbuf_set (&op->esil, getS (dict, "esil"));
+				// TODO: Add opex support here
+			}
 		} else {
 			eprintf ("Unknown type returned. List was expected.\n");
 		}
