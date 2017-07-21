@@ -90,7 +90,7 @@ static R2Plugins plugins[] = {
 static int run(RLang *lang, const char *code, int len) {
 	core = (RCore *)lang->user;
 	PyRun_SimpleString (code);
-	return R_TRUE;
+	return true;
 }
 
 static int slurp_python(const char *file) {
@@ -344,7 +344,7 @@ static bool setup(RLang *lang) {
 			"	pass", def->name, def->type, def->value);
 		PyRun_SimpleString (cmd);
 	}
-	return R_TRUE;
+	return true;
 }
 
 static int init(RLang *lang) {
@@ -374,11 +374,16 @@ static int init(RLang *lang) {
 	PyObject *sys = PyImport_ImportModule("sys");
 	PyObject *path = PyObject_GetAttrString(sys, "path");
 	PyList_Append(path, PySTRING_FROMSTRING("."));
-	return R_TRUE;
+	return true;
 }
 
 static int fini(void *user) {
-	return R_TRUE;
+#if PY_MAJOR_VERSION>=3
+	return Py_FinalizeEx() ? false : true;
+#else
+	Py_Finalize();
+	return true;
+#endif
 }
 
 static const char *help =
