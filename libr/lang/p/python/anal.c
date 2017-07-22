@@ -3,7 +3,11 @@
 // Exporting the R_ANAL_* enum constants
 
 static void py_export_anal_enum(PyObject *tp_dict) {
-#define PYENUM(name) PyDict_SetItemString(tp_dict, #name, PyLong_FromLong(name))
+	PyObject *o;
+
+#define PYENUM(name) o = PyLong_FromLong(name); \
+	PyDict_SetItemString(tp_dict, #name, o); Py_DECREF(o);
+
 	// R_ANAL_OP_FAMILY_*
 	PYENUM(R_ANAL_OP_FAMILY_UNKNOWN);
 	PYENUM(R_ANAL_OP_FAMILY_CPU);
@@ -190,6 +194,14 @@ static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len) {
 	return seize;
 }
 
+static void Radare_plugin_anal_free(RAnalPlugin *ap) {
+	free ((char *)ap->name);
+	free ((char *)ap->arch);
+	free ((char *)ap->license);
+	free ((char *)ap->desc);
+	free (ap);
+}
+
 static PyObject *Radare_plugin_anal(Radare* self, PyObject *args) {
 	void *ptr = NULL;
 	PyObject *arglist = Py_BuildValue("(i)", 0);
@@ -214,10 +226,12 @@ static PyObject *Radare_plugin_anal(Radare* self, PyObject *args) {
 		py_set_reg_profile_cb = ptr;
 		ap->set_reg_profile = py_set_reg_profile;
 	}
+	Py_DECREF (o);
 
 	RLibStruct lp = {};
 	lp.type = R_LIB_TYPE_ANAL;
 	lp.data = ap;
+	lp.free = (void (*)(void *data))Radare_plugin_anal_free;
 	r_lib_open_ptr (core->lib, "python.py", NULL, &lp);
 	Py_RETURN_TRUE;
 }

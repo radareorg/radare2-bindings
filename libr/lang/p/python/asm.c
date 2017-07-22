@@ -50,6 +50,14 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 	return seize;
 }
 
+static void Radare_plugin_asm_free(RAsmPlugin *ap) {
+	free ((char *)ap->name);
+	free ((char *)ap->arch);
+	free ((char *)ap->license);
+	free ((char *)ap->desc);
+	free (ap);
+}
+
 static PyObject *Radare_plugin_asm(Radare* self, PyObject *args) {
 	void *ptr = NULL;
 	PyObject *arglist = Py_BuildValue("(i)", 0);
@@ -73,10 +81,12 @@ static PyObject *Radare_plugin_asm(Radare* self, PyObject *args) {
 		py_assemble_cb = ptr;
 		ap->assemble = py_assemble;
 	}
+	Py_DECREF (o);
 
 	RLibStruct lp = {0};
 	lp.type = R_LIB_TYPE_ASM;
 	lp.data = ap;
+	lp.free = (void (*)(void *data))Radare_plugin_asm_free;
 	r_lib_open_ptr (core->lib, "python.py", NULL, &lp);
 	Py_RETURN_TRUE;
 }
