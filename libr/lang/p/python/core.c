@@ -36,9 +36,9 @@ static PyObject *Radare_plugin_core(Radare* self, PyObject *args) {
 		py_core_call_cb = ptr;
 		ap->call = py_core_call;
 	}
-	RLibStruct *lp = R_NEW0 (RLibStruct);
-	lp->type = R_LIB_TYPE_CORE;
-	lp->data = ap;
-	r_lib_open_ptr (core->lib, "python.py", NULL, lp);
-	return Py_True;
+	RLibStruct lp = {};
+	lp.type = R_LIB_TYPE_CORE;
+	lp.data = ap;
+	r_lib_open_ptr (core->lib, "python.py", NULL, &lp);
+	Py_RETURN_TRUE;
 }

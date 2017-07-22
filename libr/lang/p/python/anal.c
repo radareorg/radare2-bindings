@@ -215,9 +215,9 @@ static PyObject *Radare_plugin_anal(Radare* self, PyObject *args) {
 		ap->set_reg_profile = py_set_reg_profile;
 	}
 
-	RLibStruct *lp = R_NEW0 (RLibStruct);
-	lp->type = R_LIB_TYPE_ANAL;
-	lp->data = ap;
-	r_lib_open_ptr (core->lib, "python.py", NULL, lp);
-	return Py_True;
+	RLibStruct lp = {};
+	lp.type = R_LIB_TYPE_ANAL;
+	lp.data = ap;
+	r_lib_open_ptr (core->lib, "python.py", NULL, &lp);
+	Py_RETURN_TRUE;
 }
