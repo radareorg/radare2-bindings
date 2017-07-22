@@ -74,9 +74,9 @@ static PyObject *Radare_plugin_asm(Radare* self, PyObject *args) {
 		ap->assemble = py_assemble;
 	}
 
-	RLibStruct *lp = R_NEW0 (RLibStruct);
-	lp->type = R_LIB_TYPE_ASM;
-	lp->data = ap;
-	r_lib_open_ptr (core->lib, "python.py", NULL, lp);
-	return Py_True;
+	RLibStruct lp = {0};
+	lp.type = R_LIB_TYPE_ASM;
+	lp.data = ap;
+	r_lib_open_ptr (core->lib, "python.py", NULL, &lp);
+	Py_RETURN_TRUE;
 }
