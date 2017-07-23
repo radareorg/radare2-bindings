@@ -114,6 +114,13 @@ static int py_io_system(RIO *io, RIODesc *desc, const char *cmd) {
 	return -1;
 }
 
+static void Radare_plugin_io_free(RAsmPlugin *ap) {
+	free ((char *)ap->name);
+	free ((char *)ap->desc);
+	free ((char *)ap->license);
+	free (ap);
+}
+
 static PyObject *Radare_plugin_io(Radare* self, PyObject *args) {
 	void *ptr = NULL;
 	PyObject *arglist = Py_BuildValue("(i)", 0);
@@ -163,9 +170,12 @@ static PyObject *Radare_plugin_io(Radare* self, PyObject *args) {
 	ptr = getF (o, "write");
 	ptr = getF (o, "resize");
 #endif
+	Py_DECREF (o);
+
 	RLibStruct lp = {};
 	lp.type = R_LIB_TYPE_IO;
 	lp.data = ap;
+	lp.free = (void (*)(void *data))Radare_plugin_io_free;
 	r_lib_open_ptr (core->lib, "python.py", NULL, &lp);
 	Py_RETURN_TRUE;
 }

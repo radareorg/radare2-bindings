@@ -683,6 +683,13 @@ static RBinInfo *py_info(RBinFile *arch) {
 	return ret;
 }
 
+static void Radare_plugin_bin_free(RBinPlugin *bp) {
+	free ((char *)bp->name);
+	free ((char *)bp->desc);
+	free ((char *)bp->license);
+	free (bp);
+}
+
 /* TODO: Add missing exported symbols */
 /* TODO: Fold the repeating code - may be add some macro? */
 static PyObject *Radare_plugin_bin(Radare* self, PyObject *args) {
@@ -772,9 +779,12 @@ static PyObject *Radare_plugin_bin(Radare* self, PyObject *args) {
 		py_info_cb = ptr;
 		bp->info = py_info;
 	}
+	Py_DECREF (o);
+
 	RLibStruct lp = {};
 	lp.type = R_LIB_TYPE_BIN;
 	lp.data = bp;
+	lp.free = (void (*)(void *data))Radare_plugin_bin_free;
 	r_lib_open_ptr (core->lib, "python.py", NULL, &lp);
 	Py_RETURN_TRUE;
 }

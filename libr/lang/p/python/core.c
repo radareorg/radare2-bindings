@@ -21,6 +21,13 @@ static int py_core_call(void *user, const char *str) {
 	return 0;
 }
 
+static void Radare_plugin_core_free(RCorePlugin *ap) {
+	free ((char *)ap->name);
+	free ((char *)ap->license);
+	free ((char *)ap->desc);
+	free (ap);
+}
+
 static PyObject *Radare_plugin_core(Radare* self, PyObject *args) {
 	void *ptr = NULL;
 	PyObject *arglist = Py_BuildValue("(i)", 0);
@@ -36,9 +43,12 @@ static PyObject *Radare_plugin_core(Radare* self, PyObject *args) {
 		py_core_call_cb = ptr;
 		ap->call = py_core_call;
 	}
+	Py_DECREF (o);
+
 	RLibStruct lp = {};
 	lp.type = R_LIB_TYPE_CORE;
 	lp.data = ap;
+	lp.free = (void (*)(void *data))Radare_plugin_core_free;
 	r_lib_open_ptr (core->lib, "python.py", NULL, &lp);
 	Py_RETURN_TRUE;
 }
