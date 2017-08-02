@@ -25,6 +25,8 @@ endif
 BINDEPS=
 LDFLAGS_LIB=$(shell pkg-config --libs-only-L r_core) -lr_core -lr_io -lr_util -shared
 
+WANT_LUA=$(grep -q lua ../../../supported.langs && echo 1)
+
 LANGS=$(shell ./getlangs.sh ${EXT_SO})
 #LANGS=lang_python.${EXT_SO} lang_perl.${EXT_SO}
 
@@ -32,14 +34,22 @@ LANGS=$(shell ./getlangs.sh ${EXT_SO})
 ifeq ($(HAVE_LIB_TCC),1)
 LANGS+=lang_tcc.${EXT_SO}
 endif
+
+ifeq ($(WANT_LUA),1)
 ifeq ($(HAVE_LIB_LUA5_1),1)
 LANGS+=lang_lua.${EXT_SO}
 endif
+endif
+
+ifeq ($(WANT_CS),1)
 LANGS+=lang_csharp.${EXT_SO}
+endif
 
+ifeq ($(WANT_JS),1)
 LANGS+=lang_duktape.$(EXT_SO)
+endif
 
-all: ${LANGS}
+all: $(LANGS)
 	@echo "LANG ${LANGS}"
 
 PYVER?=2
