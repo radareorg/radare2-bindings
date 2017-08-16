@@ -384,7 +384,7 @@ static int init(RLang *lang) {
 }
 
 static int fini(void *user) {
-#if PY_MAJOR_VERSION>=3
+#if (PY_MAJOR_VERSION >= 3) && (PY_MINOR_VERSION >= 6)
 	return Py_FinalizeEx() ? false : true;
 #else
 	Py_Finalize();
