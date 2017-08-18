@@ -25,7 +25,11 @@ endif
 BINDEPS=
 LDFLAGS_LIB=$(shell pkg-config --libs-only-L r_core) -lr_core -lr_io -lr_util -shared
 
-WANT_LUA=$(grep -q lua ../../../supported.langs && echo 1)
+WANT_LUA=$(shell grep -q lua ../../../supported.langs && echo 1)
+#WANT_JS=$(shell grep -q js ../../../supported.langs && echo 1)
+WANT_DUK=$(shell grep -q duktape ../../../supported.langs && echo 1)
+WANT_PY=$(shell grep -q python ../../../supported.langs && echo 1)
+WANT_CS=$(shell grep -q cs ../../../supported.langs && echo 1)
 
 LANGS=$(shell ./getlangs.sh ${EXT_SO})
 #LANGS=lang_python.${EXT_SO} lang_perl.${EXT_SO}
@@ -45,7 +49,7 @@ ifeq ($(WANT_CS),1)
 LANGS+=lang_csharp.${EXT_SO}
 endif
 
-ifeq ($(WANT_JS),1)
+ifeq ($(WANT_DUK),1)
 LANGS+=lang_duktape.$(EXT_SO)
 endif
 
@@ -131,7 +135,7 @@ install-home:
 	[ -n "`ls *.$(EXT_SO)`" ] && \
 		cp -f *.$(EXT_SO) ~/.config/radare2/plugins || true
 
-DUKTAPE_VER=2.1.0
+DUKTAPE_VER=2.1.1
 DUKTAPE_FILE=duktape-$(DUKTAPE_VER).tar.xz
 DUKTAPE_URL=http://duktape.org/$(DUKTAPE_FILE)
 

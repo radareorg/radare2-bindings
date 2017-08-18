@@ -1,6 +1,4 @@
-/* radare - LGPL - Copyright 2009-2011 */
-/*   pancake<nopcode.org> */
-/*   nibble.ds<gmail.com> */
+/* radare - LGPL - Copyright 2009-2017 - pancake, nibble */
 /* perl extension for libr (radare2) */
 
 #include "r_lib.h"
@@ -41,34 +39,34 @@ static int init(struct r_lang_t *lang) {
 	char *perl_embed[] = { "", "-e", "0" };
 	core = lang->user;
 	my_perl = perl_alloc ();
-	if (my_perl == NULL) {
-		printf("Cannot init perl module\n");
-		return R_FALSE;
+	if (!my_perl) {
+		fprintf (stderr, "Cannot init perl module\n");
+		return false;
 	}
 	perl_construct (my_perl);
 	perl_parse (my_perl, xs_init, 3, perl_embed, (char **)NULL);
-	return R_TRUE;
+	return true;
 }
 
 static int fini(void *user) {
 	perl_destruct (my_perl);
 	perl_free (my_perl);
 	my_perl = NULL;
-	return R_TRUE;
+	return true;
 }
 
 static int run(void *user, const char *code, int len) {
 	/* TODO: catcth errors */
 	eval_pv (code, TRUE);
-	return R_TRUE;
+	return true;
 }
 
 static int setargv(void *user, int argc, char **argv) {
 	perl_parse (my_perl, xs_init, argc, argv, (char **)NULL);
-	return R_TRUE;
+	return true;
 }
 
-static int setup(RLang *lang) {
+static bool setup(RLang *lang) {
 	RListIter *iter;
 	RLangDef *def;
 	char cmd[128];
@@ -87,14 +85,14 @@ static int setup(RLang *lang) {
 			def->name, def->type, def->value);
 	//	PyRun_SimpleString (cmd);
 	}
-	return R_TRUE;
+	return true;
 }
 
 static const char *help =
 	"Perl plugin usage:\n"
 	" print \"r(\"pd 10\")\\n\";\n";
 
-static struct r_lang_plugin_t r_lang_plugin_perl = {
+static RLangPlugin r_lang_plugin_perl = {
 	.name = "perl",
 	.ext = "pl",
 	.desc = "Perl language extension",
@@ -109,7 +107,7 @@ static struct r_lang_plugin_t r_lang_plugin_perl = {
 };
 
 #ifndef CORELIB
-struct r_lib_struct_t radare_plugin = {
+RLibStruct radare_plugin = {
 	.type = R_LIB_TYPE_LANG,
 	.data = &r_lang_plugin_perl,
 };
