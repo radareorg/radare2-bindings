@@ -141,7 +141,6 @@ public class RCore {
 
 	public int gdiff(RCore *c2);
 
-	public void rtr_help();
 	public void rtr_pushout(string input);
 	public void rtr_list();
 	public void rtr_add(string input);

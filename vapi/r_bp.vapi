@@ -13,9 +13,9 @@ public class Radare.RBreakpoint {
 	public unowned Item add_sw (uint64 addr, int len, int rwx);
 	public unowned Item add_hw (uint64 addr, int len, int rwx);
 	public bool add_fault (uint64 addr, int len, int rwx);
-	public int add_cond (string cond);
+	// public int add_cond (string cond);
 	public bool del (uint64 addr);
-	public bool del_cond (int idx);
+	// public bool del_cond (int idx);
 
 	//public int get_bytes(out uint8 *buf, int len, bool bigendian, int idx);
 	public int set_trace (uint64 addr, int set);
