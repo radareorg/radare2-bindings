@@ -176,9 +176,9 @@ public class RCore {
 		//public static bool set(string file, Core.File file);
 		//public static bool close(string file, Core.File file);
 		/* attributes */
-		public RIO.Map map;
+		// public RIO.Map map;
 		public bool dbg;
-		public RIO.Desc desc;
+		// public RIO.Desc desc;
 		RCore core;
 		uint8 alive;
 	}
