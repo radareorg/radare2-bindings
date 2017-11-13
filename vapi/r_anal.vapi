@@ -496,8 +496,8 @@ namespace Radare {
 	//public string get_string(MetaType, uint64 addr);
 	[CCode (cname="r_meta_add")]
 	public bool meta_add(MetaType type, uint64 from, uint64 size, string str);
-	[CCode (cname="r_meta_del")]
-	public bool meta_del(MetaType type, uint64 from, uint64 size, string str);
+	//[CCode (cname="r_meta_del")]
+	//public bool meta_del(MetaType type, uint64 from, uint64 size, string str);
 	[CCode (cname="r_meta_find")]
 	public MetaItem meta_find(uint64 off, MetaType type, MetaWhere where);
 	[CCode (cname="r_meta_cleanup")]
