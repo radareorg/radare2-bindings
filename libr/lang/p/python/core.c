@@ -19,10 +19,10 @@ static int py_core_call(void *user, const char *str) {
 			} else if (PyUnicode_Check (result)) {
 				str_res = PyUnicode_AS_DATA (result);
 			} else if (PyString_Check (result)) {
-				str_res = PyString_AsString(result);
+				str_res = PyString_AsString (result);
 			}
 			if (str_res) {
-				r_cons_print(str_res);
+				r_cons_print (str_res);
 				return 1;
 			}
 		}
