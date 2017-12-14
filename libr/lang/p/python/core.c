@@ -2,7 +2,7 @@
 
 #include <r_core.h>
 #include <r_cmd.h>
-
+#include <r_cons.h>
 /* TODO : move into a struct stored in the plugin struct */
 static void *py_core_call_cb = NULL;
 
@@ -10,11 +10,20 @@ static int py_core_call(void *user, const char *str) {
 	if (py_core_call_cb) {
 		PyObject *arglist = Py_BuildValue ("(z)", str);
 		PyObject *result = PyEval_CallObject (py_core_call_cb, arglist);
+		const char * str_res = NULL;
 		if (result) {
 			if (PyLong_Check (result)) {
 				return PyLong_AsLong (result);
 			} else if (PyINT_CHECK (result)) {
 				return PyINT_ASLONG (result);
+			} else if (PyUnicode_Check (result)) {
+				str_res = PyUnicode_AS_DATA (result);
+			} else if (PyString_Check (result)) {
+				str_res = PyString_AsString (result);
+			}
+			if (str_res) {
+				r_cons_print (str_res);
+				return 1;
 			}
 		}
 	}
