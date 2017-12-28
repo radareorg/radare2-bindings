@@ -56,6 +56,9 @@ endif
 install:
 	cd .. ; ${MAKE} install-${LANG}
 
+uninstall:
+	cd .. ; ${MAKE} uninstall-${LANG}
+
 clean:
 ifeq (${LANG},java)
 	rm -rf radare2.jar

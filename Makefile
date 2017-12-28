@@ -180,6 +180,9 @@ install-ctypes:
 	: > ${PYTHON_INSTALL_DIR}/__init__.py ; \
 	cp -rf ctypes/r_*.py ${PYTHON_INSTALL_DIR}
 
+uninstall-ctypes:
+	rm -rf ${PYTHON_INSTALL_DIR}
+
 LUAPATH=$(shell strings `../sys/whereis.sh lua`| grep lib/lua | cut -d ';' -f 2 | grep '.so'  | cut -d '?' -f 1)
 
 LUAPKG=$(shell pkg-config --list-all | awk '/^lua[^a-zA-Z]/{printf($$1 "|");}' | sed -e s/\|$$//)
