@@ -400,10 +400,10 @@ namespace Radare {
 			public RList<RAnal.Block> get_bbs();
 			// public RList<RAnal.Var> vars;
 			// public RList<RAnal.Var> get_vars();
-			public RList<RAnal.Ref> get_refs();
+			//public RList<RAnal.Ref> get_refs();
+			// public RList<RAnal.Ref> get_xrefs();
 			public RList<RAnal.Ref> refs;
 			public RList<RAnal.Ref> xrefs;
-			public RList<RAnal.Ref> get_xrefs();
 		}
 
 		[Compact]

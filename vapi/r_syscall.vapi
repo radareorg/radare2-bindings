@@ -14,8 +14,7 @@ public class Radare.RSyscall {
 	}
 
 	public RSyscall();
-	public void setup(string arch, string os, int bits);
-	public void setup_file(string file);
+	public void setup(string arch, int bits, string cpu, string os);
 	public unowned Item get(int num, int swi);
 	public int get_num(string str);
 	//public unowned Item get_n(int num);
