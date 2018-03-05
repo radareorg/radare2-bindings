@@ -14,7 +14,7 @@ before_install:
   - git clone --depth=1 https://github.com/radare/valabind
   - ./configure --prefix=/usr
   - make -j2
-  - make install
+  - sudo make install
 script:
   - cd python
   - make -j2
