@@ -68,7 +68,7 @@ namespace Radare {
 		public static int get_size(out int rows);
 		public static bool yesno(bool def, string fmt, ...);
 
-		public static int html_print (string ptr);
+//		public static int html_print (string ptr);
 		public static int arrow_to_hjkl (int ch);
 		public static unowned string get_buffer ();
 		//public static void grep (string str);
