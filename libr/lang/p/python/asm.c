@@ -34,7 +34,6 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 	if (py_disassemble_cb) {
 		PyObject *arglist = Py_BuildValue ("("BYTES_FMT")", buf, len);
 		PyObject *result = PyEval_CallObject (py_disassemble_cb, arglist);
-		eprintf("obj: %s\n", PySTRING_ASSTRING(PyObject_Str(result)));
 		if (result && PyList_Check (result)) {
 			PyObject *len = PyList_GetItem (result, 0);
 			PyObject *str = PyList_GetItem (result, 1);
