@@ -18,9 +18,11 @@ static int py_core_call(void *user, const char *str) {
 				return PyINT_ASLONG (result);
 			} else if (PyUnicode_Check (result)) {
 				str_res = PyUnicode_AS_DATA (result);
+#if PY_MAJOR_VERSION < 3
 			} else if (PyString_Check (result)) {
 				str_res = PyString_AsString (result);
 			}
+#endif
 			if (str_res) {
 				r_cons_print (str_res);
 				return 1;
