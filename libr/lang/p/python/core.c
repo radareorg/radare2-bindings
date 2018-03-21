@@ -17,9 +17,26 @@ static int py_core_call(void *user, const char *str) {
 			} else if (PyINT_CHECK (result)) {
 				return PyINT_ASLONG (result);
 			} else if (PyUnicode_Check (result)) {
+#if (PY_MAJOR_VERSION >=3) && (PY_MINOR_VERSION < 4)
 				str_res = PyUnicode_AS_DATA (result);
+#else
+				int n = PyUnicode_KIND (result);
+				switch (n) {
+				case 1:
+					str_res = (char*)PyUnicode_1BYTE_DATA (result);
+					break;
+				case 2:
+					str_res = (char*)PyUnicode_2BYTE_DATA (result);
+					break;
+				case 4:
+				default:
+					str_res = (char*)PyUnicode_4BYTE_DATA (result);
+					break;
+				}
+#endif
+			}
 #if PY_MAJOR_VERSION < 3
-			} else if (PyString_Check (result)) {
+			else if (PyString_Check (result)) {
 				str_res = PyString_AsString (result);
 			}
 #endif
