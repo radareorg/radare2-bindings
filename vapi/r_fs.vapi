@@ -20,7 +20,7 @@ namespace Radare {
 		public int dir_dump (string path, string name);
 		public RList<string> find_name (string name, string glob);
 		public RList<string> find_off (string name, uint64 off);
-		public bool prompt (string root);
+		// public bool prompt (string root);
 		public static unowned string partition_type (string part, int type);
 		public static unowned string partition_type_get (int n);
 	}
