@@ -402,8 +402,6 @@ namespace Radare {
 			// public RList<RAnal.Var> get_vars();
 			//public RList<RAnal.Ref> get_refs();
 			// public RList<RAnal.Ref> get_xrefs();
-			public RList<RAnal.Ref> refs;
-			public RList<RAnal.Ref> xrefs;
 		}
 
 		[Compact]
@@ -452,7 +450,6 @@ namespace Radare {
 		[Compact]
 		[CCode (cname="RAnalRef", free_function="")]
 		public class Ref {
-			public int type;
 			public uint64 addr;
 			public uint64 at;
 		}
