@@ -1,12 +1,10 @@
-radare2 language bindings for r2 api
-====================================
+# radare2 language bindings for r2 api
 
 This repository contains the native bindings generated with Valabind to use the radare2 APIs.
 
 The r2pipe implementations has been moved into a separate [repository](https://github.com/radare/radare2-r2pipe).
 
-Description
------------
+## Description
 
 This directory contains the code necessary to use the r2 api from your
 favourite language.
@@ -24,9 +22,7 @@ rules used to generate all interactive html documentation found at:
 
    http://radare.org/vdoc
 
-
-Dependencies
-------------
+## Dependencies
 
 To build radare2-bindings from repository you need the following programs installed:
 
@@ -68,8 +64,7 @@ To get install all dependencies do the following steps in order:
 		$ make
 		$ sudo make install PREFIX=/usr
 
-To keep bindings up-to-date
----------------------------
+## To keep bindings up-to-date
 
 When changes are done in libr an ABI break can occur. The bindings will require
 to be recompiled to work again.
@@ -88,8 +83,7 @@ and valabind from git/hg.
 	$ sudo make install PREFIX=/usr
 
 
-radare2-bindings
-----------------
+## radare2-bindings
 
 If you compile from the repo you need the latest version of valabind and then:
 
@@ -99,9 +93,30 @@ You can select the languages you want to compile with --enable={list-of-langs}
 
 	./configure --prefix=/usr --enable=python
 
+## Experimental radare2 bindgen
 
-PYTHON
-======
+### Introduction
+
+This script allows to generate native bindings for these languages directly from radare2 C headers:
+
+ - Python (uses [ctypeslib2](https://github.com/trolldbois/ctypeslib))
+ - Rust (uses [rust-bindgen](https://github.com/rust-lang-nursery/rust-bindgen))
+ - Go (uses [c-for-go](https://github.com/xlab/c-for-go))
+ - Haskell (uses [c2hs](https://github.com/haskell/c2hs))
+
+More languages are planned, in particular:
+
+ - Ruby - I wanted to use [ffi-gen](https://github.com/neelance/ffi_gen) but it needs revival and update to the modern Ruby and Clang.
+ - OCaml - needs to be written
+ - Lua - maybe [LuaAutoC](https://github.com/orangeduck/LuaAutoC) can be used, I don't know.
+
+### Usage
+
+`genbind.py -o /tmp/r2bindings-output`
+
+The tool required `radare2` to be installed and takes the include directory from the output of `r2 -H`
+
+# PYTHON
 
 To select the version of python to compile for use the PYTHON_CONFIG
 environment variable as follows:
@@ -113,8 +128,7 @@ environment variable as follows:
 	# PYTHON_CONFIG=python2.7-config make install
 
 
-RANDOM NOTES
-===========
+# RANDOM NOTES
 
 The valabind integration forces us to do some changes in the r2 API.
 
