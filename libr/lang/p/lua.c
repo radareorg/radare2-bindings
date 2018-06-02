@@ -105,8 +105,8 @@ static int lua_run(RLang *lang, const char *code, int len) {
 	if (len == 0) len = strlen (code);
 	luaL_loadbuffer (L, code, len, ""); // \n included
 	if (lua_pcall (L, 0, 0, 1) != 0) {
-		eprintf ("syntax error: %s\n",
-                 lua_tostring(L, -1));
+		eprintf ("syntax error(lang_lua): %s in %s\n",
+                 lua_tostring(L, -1), code);
 	}
 	clearerr (stdin);
 	//lua_close(L); // TODO
