@@ -120,6 +120,11 @@ langs = {
 # 1. Check if all needed executables and libraries are installed
 # TODO: Check if versions are good enough
 # TODO: Write a message on howto install missing dependencies
+ctypeslib2_message = """
+ctypeslib2 not found!
+Please install it using the following command:
+    pip install ctypeslib2
+"""
 
 def check_python_requirements():
     # Check if Clang/LLVM is installed
@@ -131,7 +136,7 @@ def check_python_requirements():
         import importlib.util
         spec = importlib.util.find_spec(package_name)
         if spec is None:
-            print("ctypeslib2 not found!\n")
+            print(ctypeslib2_message)
             return False
         return True
     # Python 2 way:
@@ -141,13 +146,19 @@ def check_python_requirements():
         flat_installed_pkgs = [pkg.project_name for pkg in installed_pkgs]
         if package_name + "2" in flat_installed_pkgs:
             return True
-        print("ctypeslib2 not found!\n")
+        print(ctypeslib2_message)
         return False
 
 def check_ruby_requirements():
     # Check if we have Ruby installed
     # Check if we have neelance/ffi_gen gem installed
-    return True
+    return False
+
+cforgo_message = """
+c-for-go not found!
+Please install it using the following command:
+    go get github.com/xlab/c-for-go
+"""
 
 def check_go_requirements():
     # Check if Go is installed
@@ -157,13 +168,13 @@ def check_go_requirements():
     # Check for Go version
     # Check if "go get github.com/xlab/c-for-go" is installed
     if which("c-for-go") is None:
-        print("c-for-go is not installed!\n")
+        print(cforgo_message)
         return False
     return True
 
 def check_lua_requirements():
     # Check if we have LuaAutoC
-    return True
+    return False
 
 def check_rust_requirements():
     # Check if Rust is installed
@@ -212,6 +223,7 @@ def gen_python_bindings(outdir, path):
     clang_opts = r2_includes + c_includes
 
     parser = clangparser.Clang_Parser(flags = clang_opts)
+    print("Parsing {0:s} file...\n".format(path))
     items = parser.parse(path)
     if items is None:
         print("Error parsing {0} file!\n".format(fname))
