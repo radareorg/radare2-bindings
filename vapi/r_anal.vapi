@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2010-2017 - pancake */
+/* radare - LGPL - Copyright 2010-2018 - pancake */
 
 /* this vapi is broken as shit... we need to rename some stuff here ..
    if we can just avoid to use cname CCode attribute... */
@@ -10,7 +10,6 @@ namespace Radare {
 	public class RAnal {
 		public int bits;
 		public bool big_endian;
-		public bool split;
 		public void *user;
 		public RList<Function> fcns;
 //		public RList<VarType> vartypes;
