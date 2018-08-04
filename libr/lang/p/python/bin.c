@@ -444,11 +444,13 @@ static RBinAddr* py_binsym(RBinFile *arch, int sym) {
 			// dict -> RBinEntry
 			// "vaddr" : vaddr,
 			// "paddr" : paddr,
+			// "hpaddr" : hpaddr,
 			// "type" : type,
 			// "bits" : bits
 			PyObject *pybinsym = PyList_GetItem (result, 0);
 			ret->vaddr = getI (pybinsym, "vaddr");
 			ret->paddr = getI (pybinsym, "paddr");
+			ret->hpaddr = getI (pybinsym, "hpaddr");
 			ret->type = getI (pybinsym, "type");
 			ret->bits = getI (pybinsym, "bits");
 		} else {
@@ -482,7 +484,7 @@ static RList* py_entries(RBinFile *arch) {
 				// dict -> RBinEntry
 				// "vaddr" : vaddr,
 				// "paddr" : paddr,
-				// "haddr" : haddr,
+				// "hpaddr" : hpaddr,
 				// "type" : type,
 				// "bits" : bits
 				PyObject *pyentry = PyList_GetItem (result, i);
@@ -490,7 +492,7 @@ static RList* py_entries(RBinFile *arch) {
 				if (!entry) continue;
 				entry->vaddr = getI (pyentry, "vaddr");
 				entry->paddr = getI (pyentry, "paddr");
-				entry->haddr = getI (pyentry, "haddr");
+				entry->hpaddr = getI (pyentry, "hpaddr");
 				entry->type = getI (pyentry, "type");
 				entry->bits = getI (pyentry, "bits");
 				r_list_append(ret, entry);
