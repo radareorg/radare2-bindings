@@ -444,13 +444,11 @@ static RBinAddr* py_binsym(RBinFile *arch, int sym) {
 			// dict -> RBinEntry
 			// "vaddr" : vaddr,
 			// "paddr" : paddr,
-			// "haddr" : haddr,
 			// "type" : type,
 			// "bits" : bits
 			PyObject *pybinsym = PyList_GetItem (result, 0);
 			ret->vaddr = getI (pybinsym, "vaddr");
 			ret->paddr = getI (pybinsym, "paddr");
-			ret->haddr = getI (pybinsym, "haddr");
 			ret->type = getI (pybinsym, "type");
 			ret->bits = getI (pybinsym, "bits");
 		} else {
