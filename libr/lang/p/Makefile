@@ -6,6 +6,10 @@ CFLAGS+=-DPREFIX=\"${PREFIX}\"
 
 DUK_CFLAGS+=-Wall -DPREFIX=\"${PREFIX}\" -I. -Iduk
 
+R2PM_PLUGDIR?=$(shell r2 -H R2_USER_PLUGINS)
+EXT_SO?=$(shell r2 -H LIBEXT)
+
+ifeq ($(EXT_SO),)
 ifeq ($(OSTYPE),darwin)
 CFLAGS+=-undefined dynamic_lookup
 EXT_SO=dylib
@@ -16,6 +20,8 @@ else
 EXT_SO=so
 endif
 endif
+endif
+
 LUAPKG=$(shell pkg-config --list-all|awk '/lua5|lua5-/{print $$1;}')
 ifneq (${LUAPKG},)
 CFLAGS+=$(shell pkg-config --cflags ${LUAPKG})
@@ -78,11 +84,11 @@ py python:
 	$(MAKE) $(PYSO)
 
 py-install python-install:
-	mkdir -p ~/.config/radare2/plugins
-	cp -f $(PYSO) ~/.config/radare2/plugins
+	mkdir -p ${R2PM_PLUGDIR}
+	cp -f $(PYSO) ${R2PM_PLUGDIR}
 
 py-uninstall python-uninstall:
-	rm -f ~/.config/radare2/plugins/$(PYSO)
+	rm -f ${R2PM_PLUGDIR}/$(PYSO)
 
 ifeq ($(HAVE_LIB_TCC),1)
 lang_tcc.${EXT_SO}: tcc.o
@@ -103,9 +109,9 @@ lua lang_lua.${EXT_SO}: lua.o
 	-${CC} ${CFLAGS} -fPIC ${LDFLAGS_LIB} -o lang_lua.${EXT_SO} lua.c ${LUA_LDFLAGS}
 
 lua-install:
-	mkdir -p ~/.config/radare2/plugins/lua
-	cp -f lang_lua.${EXT_SO} ~/.config/radare2/plugins
-	cp -f lua/*.lua ~/.config/radare2/plugins/lua
+	mkdir -p ${R2PM_PLUGDIR}/lua
+	cp -f lang_lua.${EXT_SO} ${R2PM_PLUGDIR}
+	cp -f lua/*.lua ${R2PM_PLUGDIR}/lua
 
 lang_ruby.${EXT_SO}:
 	-env CFLAGS="${CFLAGS}" ruby mkruby.rb
@@ -123,7 +129,8 @@ mrproper clean:
 	-rm -rf *.dSYM
 
 #R2_PLUGIN_PATH=$(shell r2 -hh| grep PLUGINS|awk '{print $$2}')
-R2_PLUGIN_PATH=$(shell r2 -nqc 'e dir.plugins' -)
+#R2_PLUGIN_PATH=$(shell r2 -nqc 'e dir.plugins' -)
+R2_PLUGIN_PATH=$(shell r2 -H R2_USER_PLUGINS)
 
 install:
 	mkdir -p $(DESTDIR)/$(R2_PLUGIN_PATH)
@@ -131,9 +138,9 @@ install:
 	cp -f radare.lua $(DESTDIR)/$(R2_PLUGIN_PATH)
 
 install-home:
-	mkdir -p ~/.config/radare2/plugins
+	mkdir -p ${R2PM_PLUGDIR}
 	[ -n "`ls *.$(EXT_SO)`" ] && \
-		cp -f *.$(EXT_SO) ~/.config/radare2/plugins || true
+		cp -f *.$(EXT_SO) ${R2PM_PLUGDIR} || true
 
 DUKTAPE_VER=2.2.0
 DUKTAPE_FILE=duktape-$(DUKTAPE_VER).tar.xz
@@ -155,8 +162,8 @@ mono csharp lang_csharp.$(EXT_SO):
 		$(shell pkg-config --cflags --libs r_util) csharp.c
 
 csharp-install mono-install:
-	mkdir -p ~/.config/radare2/plugins
-	cp -f lang_csharp.$(EXT_SO) ~/.config/radare2/plugins
+	mkdir -p ${R2PM_PLUGDIR}
+	cp -f lang_csharp.$(EXT_SO) ${R2PM_PLUGDIR}
 
 csharp-uninstall mono-uninstall:
-	rm -f ~/.config/radare2/plugins/lang_csharp.$(EXT_SO)
+	rm -f ${R2PM_PLUGDIR}/lang_csharp.$(EXT_SO)
