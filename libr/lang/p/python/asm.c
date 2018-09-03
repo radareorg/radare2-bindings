@@ -8,6 +8,7 @@ static int py_assemble(RAsm *a, RAsmOp *op, const char *str) {
 	int i, size = 0;
 	int seize = -1;
 	const char *opstr = str;
+        ut8 *buf = (ut8*)r_strbuf_get (&op->buf);
 	if (py_assemble_cb) {
 		PyObject *arglist = Py_BuildValue ("(z)", str);
 		PyObject *result = PyEval_CallObject (py_assemble_cb, arglist);
@@ -15,15 +16,15 @@ static int py_assemble(RAsm *a, RAsmOp *op, const char *str) {
 			seize = size = PyList_Size (result);
 			for (i = 0; i < size ; i++) {
 				PyObject *len = PyList_GetItem (result, i);
-				op->buf[i] = PyNumber_AsSsize_t (len, NULL);
+				buf[i] = PyNumber_AsSsize_t (len, NULL);
 			}
 		} else {
 			eprintf ("Unknown type returned. List was expected.\n");
 		}
 	}
 	op->size = size = seize;
-	strncpy (op->buf_asm, opstr, sizeof (op->buf_asm));
-	r_hex_bin2str (op->buf, op->size, op->buf_hex);
+	strncpy (r_strbuf_get (&op->buf_asm), opstr, sizeof (op->buf_asm));
+	r_hex_bin2str ((ut8*)r_strbuf_get (&op->buf), op->size, r_strbuf_get (&op->buf_hex));
 	return seize;
 }
 
@@ -44,8 +45,8 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 		}
 	}
 	op->size = size = seize;
-	strncpy (op->buf_asm, opstr, sizeof (op->buf_asm));
-	r_hex_bin2str (buf, op->size, op->buf_hex);
+	strncpy (r_strbuf_get (&op->buf_asm), opstr, sizeof (op->buf_asm));
+	r_hex_bin2str (buf, op->size, r_strbuf_get (&op->buf_hex));
 	return seize;
 }
 
