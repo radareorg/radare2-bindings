@@ -83,15 +83,17 @@ public class RAsm {
 		 * The instruction payload.
 		 */
 		public int payload;
-		public uint8 buf[128]; // FIXME proper static buffers w/o hardcoded size
+
+		//public uint8 buf[128]; // FIXME proper static buffers w/o hardcoded size
 		/**
 		 * The assembly representation.
 		 */
-		public char buf_asm[128]; // FIXME proper static strings w/o hardcoded size
+		//public char buf_asm[128]; // FIXME proper static strings w/o hardcoded size
 		/**
 		 * The hexadecimal representation.
 		 */
-		public char buf_hex[128]; // FIXME proper static strings w/o hardcoded size
+		//public char buf_hex[128]; // FIXME proper static strings w/o hardcoded size
+
 		// accessors for bindings
 		/**
 		 * Retrieves the hexadecimal representation of the instruction.
