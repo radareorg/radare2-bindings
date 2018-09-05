@@ -24,7 +24,7 @@ static RIODesc* py_io_open(RIO *io, const char *path, int rw, int mode) {
 				return NULL;
 			}
 		}
-		return r_io_desc_new (py_io_plugin, fd, path, rw, mode, NULL);
+		return r_io_desc_new (io, py_io_plugin, path, rw, mode, NULL);
 	}
 	return NULL;
 }
