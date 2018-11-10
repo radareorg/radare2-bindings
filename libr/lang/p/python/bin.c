@@ -199,7 +199,7 @@ PyObject* create_PyBinFile(RBinFile *binfile)
 		sec->vsize = getI (pysec, "vsize"); \
 		sec->vaddr = getI (pysec, "vaddr"); \
 		sec->paddr = getI (pysec, "paddr"); \
-		sec->srwx = getI (pysec, "srwx"); \
+		sec->perm = getI (pysec, "perm"); \
 		sec->arch = getS (pysec, "arch"); \
 		sec->format = getS (pysec, "format"); \
 		sec->bits = getI (pysec, "bits"); \
@@ -315,29 +315,29 @@ static bool py_load(RBinFile *arch) {
 	return false;
 }
 
-static void *py_load_bytes(RBinFile *arch, const ut8 *buf, ut64 sz, ut64 loadaddr, Sdb *sdb) {
+static bool py_load_bytes(RBinFile *arch, const ut8 *buf, ut64 sz, ut64 loadaddr, Sdb *sdb) {
 	int rres = 0;
 
-	if (!arch) return NULL;
+	if (!arch) return false;
 	if (py_load_bytes_cb) {
-		// load_bytes(RBinFile, buf, loadaddr) - returns NULL or NOTNULL
+		// load_bytes(RBinFile, *binobj, buf, sz, loadaddr, sdb) - returns true/false
 		PyObject *pybinfile = create_PyBinFile(arch);
-		if (!pybinfile) return NULL;
+		if (!pybinfile) return false;
 		PyObject *arglist = Py_BuildValue ("(O,"BYTES_FMT",L)", pybinfile, buf, sz, loadaddr);
 		if (!arglist) {
 			PyErr_Print();
-			return NULL;
+			return false;
 		}
 		PyObject *result = PyEval_CallObject (py_load_bytes_cb, arglist);
 		if (result && PyList_Check (result)) {
 			PyObject *res = PyList_GetItem (result, 0);
 			rres = PyNumber_AsSsize_t (res, NULL);
-			if (rres) return R_NOTNULL;
+			if (rres) return true;
 		} else {
 			eprintf ("Unknown type returned. List was expected.\n");
 		}
 	}
-	return NULL;
+	return false;
 }
 
 static bool py_check_bytes(const ut8 *buf, ut64 length)
