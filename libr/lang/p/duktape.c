@@ -63,14 +63,20 @@ static int duk_assemble(RAsm *a, RAsmOp *op, const char *str) {
 		//duk_dup_top (ctx);
 		res = duk_get_length (ctx, -1);
 		op->size = res;
-		for (i = 0; i < res; i++) {
-			duk_dup_top (ctx);
-			duk_get_prop_index (ctx, -2, i);
-			op->buf[i] = duk_to_int (ctx, -1);
+		ut8 *buf = calloc (res, 1);
+		if (buf) {
+			for (i = 0; i < res; i++) {
+				duk_dup_top (ctx);
+				duk_get_prop_index (ctx, -2, i);
+				buf[i] = duk_to_int (ctx, -1);
+			}
+			r_asm_op_set_buf (op, buf, res);
+			free (buf);
 		}
 	}
-	if (res < 1)
+	if (res < 1) {
 		res = -1;
+	}
 	return res;
 }
 
@@ -94,9 +100,11 @@ static int duk_disasm(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 			duk_dup_top (ctx);
 			duk_get_prop_index (ctx, -1, i);
 			if (duk_is_number (ctx, -1)) {
-				if (res)
+				if (res) {
 					res2 = duk_to_number (ctx, -1);
-				else res2 = res = duk_to_number (ctx, -1);
+				} else {
+					res2 = res = duk_to_number (ctx, -1);
+				}
 			} else if (duk_is_string (ctx, -1)) {
 				if (!opstr) {
 					opstr = duk_to_string (ctx, -1);
@@ -111,19 +119,23 @@ static int duk_disasm(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 	// fill op struct
 	op->size = res;
 	if (!opstr) opstr = "invalid";
-	strncpy (op->buf_asm, opstr, sizeof (op->buf_asm));
-	r_hex_bin2str (buf, op->size, op->buf_hex);
+	r_asm_op_set_asm (op, opstr);
+	char *hexstr = malloc(op->size * 2);
+	if (hexstr) {
+		r_hex_bin2str (buf, op->size, hexstr);
+		r_asm_op_set_hex (op, hexstr);
+	}
 	return res2;
 }
 
 static int r2plugin(duk_context *ctx) {
 	RLibStruct *lib_struct;
-	int ret = R_TRUE;
+	bool ret = true;
 	// args: type, function
 	const char *type = duk_require_string (ctx, 0);
 	if (strcmp (type, "asm")) {
 		eprintf ("TODO: duk.r2plugin only supports 'asm' plugins atm\n");
-		return R_FALSE;
+		return false;
 	}
 	// call function of 2nd parameter, or get object
 	if (duk_is_function (ctx, 1)) {
@@ -133,7 +145,7 @@ static int r2plugin(duk_context *ctx) {
 	}
 	if (!duk_is_object (ctx, 1)) {
 		eprintf ("Expected object or function\n");
-		return R_FALSE;
+		return false;
 	}
 	duk_to_object (ctx, 1);
 	#define ap asm_plugin
@@ -283,20 +295,20 @@ static int wrapped_compile_execute(duk_context *ctx, void *usr) {
 	return 0;
 }
 
-static int lang_duktape_safe_eval(duk_context *ctx, const char *code) {
+static bool lang_duktape_safe_eval(duk_context *ctx, const char *code) {
 #if UNSAFE
 	duk_eval_string (ctx, code);
 #else
-	int rc;
+	bool rc;
 	duk_push_lstring (ctx, code, strlen (code));
 	duk_push_string (ctx, "input");
 	rc = duk_safe_call (ctx, wrapped_compile_execute, NULL, 2, 1);
 	if (rc != DUK_EXEC_SUCCESS) {
 		print_error(ctx, stderr);
-		rc = R_FALSE;
+		rc = false;
 	} else {
 		duk_pop (ctx);
-		rc = R_TRUE;
+		rc = true;
 	}
 	return rc;
 #endif
@@ -331,7 +343,7 @@ static int lang_duktape_file(RLang *lang, const char *file) {
 		free (code);
 		ret = duk_safe_call (ctx, wrapped_compile_execute, NULL, 2, 1);
 		if (ret != DUK_EXEC_SUCCESS) {
-			print_error(ctx, stderr);
+			print_error (ctx, stderr);
 			eprintf ("duktape error");
 		} else {
 			duk_pop (ctx);
@@ -344,12 +356,10 @@ static RLangPlugin r_lang_plugin_duktape = {
 	.name = "duktape",
 	.ext = "js",
 	.desc = "JavaScript extension language using DukTape",
-	.help = NULL,
 	.run = lang_duktape_run,
 	.init = (void*)lang_duktape_init,
 	.fini = (void*)lang_duktape_fini,
 	.run_file = (void*)lang_duktape_file,
-	.set_argv = NULL,
 };
 
 #if !CORELIB

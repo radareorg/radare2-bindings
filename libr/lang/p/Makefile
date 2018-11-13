@@ -29,7 +29,7 @@ LUA_LDFLAGS+=$(shell pkg-config --libs ${LUAPKG})
 endif
 
 BINDEPS=
-LDFLAGS_LIB=$(shell pkg-config --libs-only-L r_core) -lr_core -lr_io -lr_util -shared
+LDFLAGS_LIB=$(shell pkg-config --libs-only-L r_core) -lr_core -lr_io -lr_util -shared -lr_asm
 
 WANT_LUA=$(shell grep -q lua ../../../supported.langs && echo 1)
 #WANT_JS=$(shell grep -q js ../../../supported.langs && echo 1)
@@ -142,7 +142,7 @@ install-home:
 	[ -n "`ls *.$(EXT_SO)`" ] && \
 		cp -f *.$(EXT_SO) ${R2PM_PLUGDIR} || true
 
-DUKTAPE_VER=2.2.0
+DUKTAPE_VER=2.3.0
 DUKTAPE_FILE=duktape-$(DUKTAPE_VER).tar.xz
 DUKTAPE_URL=http://duktape.org/$(DUKTAPE_FILE)
 
