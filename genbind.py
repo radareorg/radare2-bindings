@@ -305,8 +305,8 @@ import Foreign.C.Types
 import Foreign.Ptr
 import Foreign.Storable
 
-#include "/usr/local/include/{0}"
-"""
+#include "{0}"
+""".format(radare2_includedir+"/{0}")
 
 def gen_haskell_bindings(outdir, path):
     def gen_chs(fname):
@@ -383,4 +383,3 @@ if __name__ == "__main__":
             check_bindings(outdir)
     else:
         parser.print_help()
-
