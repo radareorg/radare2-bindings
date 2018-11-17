@@ -305,12 +305,12 @@ import Foreign.C.Types
 import Foreign.Ptr
 import Foreign.Storable
 
-#include "{0}"
-""".format(radare2_includedir+"/{0}")
+#include "{0}/{1}"
+"""
 
 def gen_haskell_bindings(outdir, path):
     def gen_chs(fname):
-        return chs.format(fname)
+        return chs.format(radare2_includedir, fname)
 
     fname = os.path.splitext(os.path.basename(path))[0]
     cpp_opts = " ".join(r2_includes)
