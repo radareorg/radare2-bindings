@@ -2,6 +2,16 @@
 
 namespace Radare {
 	[Compact]
+	[CCode (cheader_filename="r_bin.h,r_list.h,r_types_base.h", cname="RBinOptions", free_function="", cprefix="r_bin_")]
+	public class RBinOptions {
+		int rawstr;
+		uint64 baddr;
+		uint64 laddr;
+		uint64 paddr;
+		string plugname;
+	}
+
+	[Compact]
 	[CCode (cheader_filename="r_bin.h,r_list.h,r_types_base.h", cname="RBin", free_function="r_bin_free", cprefix="r_bin_")]
 	public class RBin {
 		[CCode (cprefix="R_BIN_SYM_")]
@@ -17,17 +27,17 @@ namespace Radare {
 		public int narch;
 
 		public RBin();
-		public void iobind (RIO io);
+		// public void iobind (RIO io);
 
 		public uint64 wr_scn_resize (string name, uint64 size);
 		public int wr_rpath_del ();
 		public int wr_output (string filename);
 
-		public int load(string file, uint64 baddr, uint64 laddr, int xtr_idx, int fd, int rawstr);
+		public int open(string file, RBinOptions opts);
 		public RBuffer create(uint8 *code, int codelen, uint8 *data, int datalen);
 		public int use_arch(string arch, int bits, string name);
 		public int select(string arch, int bits, string name);
-		public int select_idx(string? name, int idx);
+		// public int select_idx(string? name, int idx);
 		public int list(int mode);
 		public uint64 get_baddr();
 		public RBin.Addr get_sym(int sym); // XXX: use RBin.Sym here ?
@@ -40,15 +50,8 @@ namespace Radare {
 		public unowned RList<unowned RBin.Reloc> get_relocs();
 		public unowned RList<unowned string> get_libs();
 		public unowned RBin.Info get_info();
-		public int is_big_endian();
-		public int is_stripped();
-		public int is_static();
-		public int has_dbg_linenums();
-		public int has_dbg_syms();
-		public int has_dbg_relocs();
 		public int addr2line(uint64 addr, ref string file, int len, out int line);
 		public string addr2text(uint64 addr, bool origin);
-		public RBin.Object get_object ();
 
 		[Compact]
 		[CCode (cname="RBinFile", free_function="", ref_function="", unref_function="")]
@@ -115,7 +118,7 @@ namespace Radare {
 			public uint64 vsize;
 			public uint64 vaddr;
 			public uint64 paddr;
-			public uint64 srwx;
+			public uint64 perm;
 		}
 
 		[CCode (cname="RBinSymbol", free_function="", ref_function="", unref_function="")]

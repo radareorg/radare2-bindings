@@ -133,7 +133,7 @@ public class RCore {
 	public int anal_fcn_list(string input, string rad);
 	public int anal_graph(uint64 addr, int opts);
 	//public int anal_graph_fcn(string input, int opts);
-	public int anal_ref_list(bool rad);
+	// public int anal_ref_list(bool rad);
 
 	public int project_open (string file, bool thready);
 	public int project_save (string file);

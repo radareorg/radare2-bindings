@@ -179,7 +179,7 @@ namespace Radare {
 		[CCode (cname="RIODesc",free_function="")]
 		public class Desc {
 			public int fd;
-			public int flags;
+			public int perm;
 			public string name;
 			RIO io;
 		}
