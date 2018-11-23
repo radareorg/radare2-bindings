@@ -4,17 +4,8 @@ compiler: gcc
 before_install:
   - git clone --depth=1 https://github.com/radare/radare2
   - cd radare2 && sys/install.sh && cd ..
-  - wget https://download.gnome.org/sources/vala/0.39/vala-0.39.5.tar.xz
-  - tar xJvf vala-0.39.5.tar.xz
-  - cd vala-0.39.5
-  - ./configure --prefix=/usr
-  - make -j12
-  - sudo make install
-  - cd ..
-  - git clone --depth=1 https://github.com/radare/valabind
-  - ./configure --prefix=/usr
-  - make -j2
-  - sudo make install
+  - r2pm -i vala
+  - r2pm -i valabind
 script:
   - cd python
-  - make -j2
+  - r2pm -r make -j2
