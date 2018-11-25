@@ -1,0 +1,7 @@
+include setup.py
+include README.md
+include MANIFEST.in
+include LICENSE
+include r_core.py
+include r_asm.py
+include r_bin.py
