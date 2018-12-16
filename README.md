@@ -33,6 +33,14 @@ To build radare2-bindings from repository you need the following programs instal
 Release tarballs come with all the pregenerated .cxx files, so you have
 no extra dependencies apart from the language libraries and C++ compiler.
 
+### Using r2pm
+
+Fortunely, all those dependencies can be installed with r2pm:
+
+* r2pm -i vala swig valabind
+
+### Building by hand
+
 To get install all dependencies do the following steps in order:
 
   * Install swig and git from repository
@@ -51,7 +59,7 @@ To get install all dependencies do the following steps in order:
 
   * Clone vala compiler from git repository:
 
-		$ git clone git://git.gnome.org/vala
+		$ git clone https://gitlab.gnome.org/GNOME/vala
 		$ cd vala
 		$ sh autogen.sh --prefix=/usr
 		$ make
