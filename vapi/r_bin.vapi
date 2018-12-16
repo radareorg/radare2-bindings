@@ -10,6 +10,13 @@ namespace Radare {
 		uint64 paddr;
 		string plugname;
 	}
+	
+	[Compact]
+	[CCode (cname="RBinArchOptions", free_function="", cprefix="")]
+	public class RBinArchOptions {
+		string *arch;
+		int bits;
+	}
 
 	[Compact]
 	[CCode (cheader_filename="r_bin.h,r_list.h,r_types_base.h", cname="RBin", free_function="r_bin_free", cprefix="r_bin_")]
@@ -34,7 +41,7 @@ namespace Radare {
 		public int wr_output (string filename);
 
 		public int open(string file, RBinOptions opts);
-		public RBuffer create(uint8 *code, int codelen, uint8 *data, int datalen);
+		public RBuffer create(string plugin_name,uint8 *code, int codelen, uint8 *data, int datalen, RBinArchOptions *opt);
 		public int use_arch(string arch, int bits, string name);
 		public int select(string arch, int bits, string name);
 		// public int select_idx(string? name, int idx);
