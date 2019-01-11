@@ -15,9 +15,8 @@ def pyasm(a):
 		return [ 1, 2, 3, 4 ]
 
 	def disassemble(buf, buflen, pc):
-		return [2, f"puta {pc}"]
 		try:
-			return [ 2, "opcode %d"%(buf[0]) ]
+			return [ 2, f"opcode {buf[0]}" ]
 		except:
 			print("err")
 			print(sys.exc_info())
