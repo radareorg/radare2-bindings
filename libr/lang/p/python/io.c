@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2009-2016 - pancake */
+/* radare - LGPL - Copyright 2009-2019 - pancake */
 
 /* r_io */
 static RIOPlugin *py_io_plugin = NULL;
@@ -18,7 +18,7 @@ static RIODesc* py_io_open(RIO *io, const char *path, int rw, int mode) {
 				if (PyLong_AsLong (result) == -1) {
 					return NULL;
 				}
-				fd = PyLong_AsLong (result);
+				fd = (int)PyLong_AsLong (result);
 			}
 			if (PyBool_Check (result) && result == Py_False) {
 				return NULL;
@@ -71,12 +71,12 @@ static int py_io_read(RIO *io, RIODesc *fd, ut8 *buf, int count) {
 		PyObject *result = PyEval_CallObject (py_io_read_cb, arglist);
 		if (result) {
 			if (PyBytes_Check (result)) {
-				int size = PyBytes_Size (result);
-				int limit = R_MIN (size, count);
+				size_t size = PyBytes_Size (result);
+				size_t limit = R_MIN (size, (size_t)count);
 				memset (buf, io->Oxff, limit);
 				memcpy (buf, PyString_AsString (result), limit);
 				// eprintf ("result is a string DONE %d %d\n" , count, size);
-				return limit;
+				return (int)limit;
 			}
 			if (PyList_Check (result)) {
 				int i, size = PyList_Size (result);
@@ -91,27 +91,36 @@ static int py_io_read(RIO *io, RIODesc *fd, ut8 *buf, int count) {
 		} else {
 			eprintf ("Unknown type returned. List was expected.\n");
 		}
-		return -1;
 	}
 	return -1;
 }
 
-static int py_io_system(RIO *io, RIODesc *desc, const char *cmd) {
+static char *py_io_system(RIO *io, RIODesc *desc, const char *cmd) {
 	if (py_io_system_cb) {
 		PyObject *arglist = Py_BuildValue ("(z)", cmd);
 		PyObject *result = PyEval_CallObject (py_io_system_cb, arglist);
 		if (result) {
+#if PY_MAJOR_VERSION < 3
+			if (PyString_Check (result)) {
+				return PyString_AsString (result);
+			}
+#else
+			if (PyUnicode_Check (result)) {
+				return PyString_AsString (result);
+			}
+#endif
 			if (PyBool_Check (result)) {
-				return result == Py_True;
+				return strdup (r_str_bool (result == Py_True));
 			}
 			if (PyLong_Check (result)) {
-				return PyLong_AsLong (result);
+				long n = PyLong_AsLong (result);
+				return r_str_newf ("%ld", n);
 			}
 		}
 		// PyObject_Print(result, stderr, 0);
 		eprintf ("Unknown type returned. Boolean was expected.\n");
 	}
-	return -1;
+	return NULL;
 }
 
 static void Radare_plugin_io_free(RAsmPlugin *ap) {

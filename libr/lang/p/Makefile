@@ -66,16 +66,20 @@ PYVER?=2
 ifeq ($(OSTYPE),windows)
 lang_python.${EXT_SO}:
 	${CC} ${CFLAGS} -I${HOME}/.wine/drive_c/Python27/include \
-	-L${HOME}/.wine/drive_c/Python27/libs -L../../core/ -lr_core \
+	-L${HOME}/.wine/drive_c/Python27/libs \
+	$(shell pkg-config --cflags --libs r_reg r_core r_cons) \
 	${LDFLAGS_LIB} -o lang_python.${EXT_SO} python.c -lpython27
 else
 PYCFG=../../../python-config-wrapper
 PYSO=lang_python$(PYVER).${EXT_SO}
 PYCFLAGS=$(shell PYVER=$(PYVER) ${PYCFG} --cflags) -DPYVER=${PYVER}
-PYLDFLAGS=$(shell PYVER=$(PYVER) ${PYCFG} --libs) -L$(shell ${PYCFG} --prefix)/lib ${LDFLAGS_LIB}
+PYLDFLAGS=$(shell PYVER=$(PYVER) ${PYCFG} --libs) 
+PYLDFLAGS+=-L$(shell PYVER=$(PYVER) ${PYCFG} --prefix)/lib
+PYLDFLAGS+=${LDFLAGS_LIB}
 
 lang_python.$(EXT_SO) $(PYSO):
 	${CC} python.c ${CFLAGS} ${PYCFLAGS} ${PYLDFLAGS} \
+	$(shell pkg-config --cflags --libs r_reg r_core r_cons) \
 	${LDFLAGS} ${LDFLAGS_LIB} -fPIC -o $(PYSO)
 endif
 

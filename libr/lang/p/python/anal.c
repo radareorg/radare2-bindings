@@ -1,6 +1,7 @@
-/* radare - LGPL - Copyright 2017 - xvilka */
+/* radare - LGPL - Copyright 2017-2019 - pancake, xvilka */
 
 // Exporting the R_ANAL_* enum constants
+#include <r_reg.h>
 
 static void py_export_anal_enum(PyObject *tp_dict) {
 	PyObject *o;
@@ -129,18 +130,16 @@ static void *py_set_reg_profile_cb = NULL;
 static void *py_anal_cb = NULL;
 
 static int py_set_reg_profile(RAnal *a) {
-	int res = -1;
 	const char *profstr = "";
 	if (py_set_reg_profile_cb) {
 		PyObject *result = PyEval_CallObject (py_set_reg_profile_cb, NULL);
 		if (result) {
 			profstr = PySTRING_ASSTRING (result);
-			res = r_reg_set_profile_string (a->reg, profstr);
-		} else {
-			eprintf ("Unknown type returned. String was expected.\n");
+			return r_reg_set_profile_string (a->reg, profstr);
 		}
+		eprintf ("Unknown type returned. String was expected.\n");
 	}
-	return res;
+	return -1;
 }
 
 static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len) {

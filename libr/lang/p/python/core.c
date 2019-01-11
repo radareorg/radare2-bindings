@@ -1,8 +1,9 @@
-/* radare - LGPL - Copyright 2016 - pancake */
+/* radare - LGPL - Copyright 2016-2019 - pancake */
 
 #include <r_core.h>
 #include <r_cmd.h>
 #include <r_cons.h>
+
 /* TODO : move into a struct stored in the plugin struct */
 static void *py_core_call_cb = NULL;
 
@@ -13,11 +14,11 @@ static int py_core_call(void *user, const char *str) {
 		const char * str_res = NULL;
 		if (result) {
 			if (PyLong_Check (result)) {
-				return PyLong_AsLong (result);
+				return (int)PyLong_AsLong (result);
 			} else if (PyINT_CHECK (result)) {
 				return PyINT_ASLONG (result);
 			} else if (PyUnicode_Check (result)) {
-#if (PY_MAJOR_VERSION >=3) && (PY_MINOR_VERSION < 4)
+#if PY_MAJOR_VERSION < 3
 				str_res = PyUnicode_AS_DATA (result);
 #else
 				int n = PyUnicode_KIND (result);
@@ -34,9 +35,13 @@ static int py_core_call(void *user, const char *str) {
 					break;
 				}
 #endif
-			}
+			} else
 #if PY_MAJOR_VERSION < 3
-			else if (PyString_Check (result)) {
+			if (PyString_Check (result)) {
+				str_res = PyString_AsString (result);
+			}
+#else
+			if (PyUnicode_Check (result)) {
 				str_res = PyString_AsString (result);
 			}
 #endif

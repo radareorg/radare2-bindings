@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2017 - xvilka */
+/* radare - LGPL - Copyright 2017-2019 - xvilka, pancake */
 
 /* The structure, representing simplified version of RBinFile/RBinObject */
 typedef struct {
@@ -315,7 +315,7 @@ static bool py_load(RBinFile *arch) {
 	return false;
 }
 
-static bool py_load_bytes(RBinFile *arch, const ut8 *buf, ut64 sz, ut64 loadaddr, Sdb *sdb) {
+static bool py_load_bytes(RBinFile *arch, void **bin_obj, const ut8 *buf, ut64 sz, ut64 loadaddr, Sdb *sdb) {
 	int rres = 0;
 
 	if (!arch) return false;
