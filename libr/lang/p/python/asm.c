@@ -23,7 +23,7 @@ static int py_assemble(RAsm *a, RAsmOp *op, const char *str) {
 		}
 	}
 	op->size = size = seize;
-	strncpy (r_strbuf_get (&op->buf_asm), opstr, sizeof (op->buf_asm));
+	r_strbuf_set (&op->buf_asm, opstr);
 	r_hex_bin2str ((ut8*)r_strbuf_get (&op->buf), op->size, r_strbuf_get (&op->buf_hex));
 	return seize;
 }
@@ -33,9 +33,9 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 	int seize = -1;
 	const char *opstr = "invalid";
 	if (py_disassemble_cb) {
-		PyObject *arglist = Py_BuildValue ("("BYTES_FMT")", buf, len);
+		PyObject *arglist = Py_BuildValue ("("BYTES_FMT")", buf, len, a->pc);
 		PyObject *result = PyEval_CallObject (py_disassemble_cb, arglist);
-		if (result) { //  && PyList_Check (result)) {
+		if (result && PyList_Check (result)) {
 			PyObject *len = PyList_GetItem (result, 0);
 			PyObject *str = PyList_GetItem (result, 1);
 			seize = PyNumber_AsSsize_t (len, NULL);
@@ -45,7 +45,7 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 		}
 	}
 	op->size = size = seize;
-	strncpy (r_strbuf_get (&op->buf_asm), opstr, sizeof (op->buf_asm));
+	r_strbuf_set (&op->buf_asm, opstr);
 	r_hex_bin2str (buf, op->size, r_strbuf_get (&op->buf_hex));
 	return seize;
 }

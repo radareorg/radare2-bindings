@@ -14,7 +14,8 @@ def pyasm(a):
 		print("Assembling %s"%(s))
 		return [ 1, 2, 3, 4 ]
 
-	def disassemble(buf):
+	def disassemble(buf, buflen, pc):
+		return [2, f"puta {pc}"]
 		try:
 			return [ 2, "opcode %d"%(buf[0]) ]
 		except:
