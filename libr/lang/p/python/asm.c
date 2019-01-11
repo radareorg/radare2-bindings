@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2009-2016 - pancake */
+/* radare - LGPL - Copyright 2009-2019 - pancake */
 
 /* TODO : move into a struct stored in the plugin struct */
 static void *py_assemble_cb = NULL;
@@ -35,7 +35,7 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 	if (py_disassemble_cb) {
 		PyObject *arglist = Py_BuildValue ("("BYTES_FMT")", buf, len);
 		PyObject *result = PyEval_CallObject (py_disassemble_cb, arglist);
-		if (result && PyList_Check (result)) {
+		if (result) { //  && PyList_Check (result)) {
 			PyObject *len = PyList_GetItem (result, 0);
 			PyObject *str = PyList_GetItem (result, 1);
 			seize = PyNumber_AsSsize_t (len, NULL);
@@ -59,17 +59,19 @@ static void Radare_plugin_asm_free(RAsmPlugin *ap) {
 }
 
 static PyObject *Radare_plugin_asm(Radare* self, PyObject *args) {
-	void *ptr = NULL;
-	PyObject *arglist = Py_BuildValue("(i)", 0);
+	PyObject *arglist = Py_BuildValue ("(i)", 0);
 	PyObject *o = PyEval_CallObject (args, arglist);
 
 	RAsmPlugin *ap = R_NEW0 (RAsmPlugin);
+	if (!ap) {
+		return NULL;
+	}
 	ap->name = getS (o,"name");
 	ap->arch = getS (o, "arch");
 	ap->license = getS (o, "license");
 	ap->desc = getS (o, "desc");
 	ap->bits = getI (o, "bits");
-	ptr = getF (o, "disassemble");
+	void *ptr = getF (o, "disassemble");
 	if (ptr) {
 		Py_INCREF (ptr);
 		py_disassemble_cb = ptr;

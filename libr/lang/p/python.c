@@ -1,4 +1,4 @@
-/* radare2 - LGPL - Copyright 2009-2017 - pancake */
+/* radare2 - LGPL - Copyright 2009-2019 - pancake */
 /* python extension for radare2's r_lang */
 
 #include <r_lib.h>

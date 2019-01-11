@@ -150,6 +150,11 @@ DUKTAPE_VER=2.3.0
 DUKTAPE_FILE=duktape-$(DUKTAPE_VER).tar.xz
 DUKTAPE_URL=http://duktape.org/$(DUKTAPE_FILE)
 
+p:
+	rm -f lang_python3.dylib
+	$(MAKE) lang_python.dylib PYVER=3
+	cp -f lang_python3.dylib ~/.local/share/radare2/plugins
+
 duk duktape-sync duk-sync sync-dunk sync-duktape:
 	rm -f $(DUKTAPE_FILE)
 	wget -O $(DUKTAPE_FILE) $(DUKTAPE_URL)

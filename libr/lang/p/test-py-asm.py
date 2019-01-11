@@ -16,7 +16,7 @@ def pyasm(a):
 
 	def disassemble(buf):
 		try:
-			return [ 2, "opcode %d"%(ord(buf[0])) ]
+			return [ 2, "opcode %d"%(buf[0]) ]
 		except:
 			print("err")
 			print(sys.exc_info())
@@ -31,5 +31,6 @@ def pyasm(a):
 		"disassemble": disassemble,
 	}
 
-print("Registering Python asm plugin...")
-print(r2lang.plugin("asm", pyasm))
+if not r2lang.plugin("asm", pyasm):
+	print("Failed to register the python asm plugin.")
+	
