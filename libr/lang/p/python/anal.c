@@ -4,10 +4,14 @@
 #include <r_reg.h>
 
 static void py_export_anal_enum(PyObject *tp_dict) {
-	PyObject *o;
 
-#define PYENUM(name) o = PyLong_FromLong(name); \
-	PyDict_SetItemString(tp_dict, #name, o); Py_DECREF(o);
+#define PYENUM(name) {\
+		PyObject *o = PyLong_FromLong(name); \
+		if (o) { \
+			PyDict_SetItemString(tp_dict, #name, o); \
+			Py_DECREF(o); \
+		}\
+	}
 
 	// R_ANAL_OP_FAMILY_*
 	PYENUM(R_ANAL_OP_FAMILY_UNKNOWN);
