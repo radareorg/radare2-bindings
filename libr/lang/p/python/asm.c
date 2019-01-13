@@ -46,7 +46,7 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 	}
 	op->size = size = seize;
 	r_strbuf_set (&op->buf_asm, opstr);
-	char *res = malloc (op->size * 3);
+	char *res = malloc (op->size * 5);
 	if (res) {
 		r_hex_bin2str (buf, op->size, res);
 		r_strbuf_set (&op->buf_hex, res);
