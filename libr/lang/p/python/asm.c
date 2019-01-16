@@ -50,8 +50,9 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 	buflen = R_MIN (buflen, len);
 	char *res = calloc (buflen, 3);
 	if (res) {
-		r_hex_bin2str (buf, buflen, res);
-		r_strbuf_set (&op->buf_hex, res);
+		//r_hex_bin2str (buf, buflen, res);
+		//r_strbuf_set (&op->buf_hex, res);
+		r_asm_op_set_buf (op, buf, len);
 		free (res);
 	}
 	return seize;
