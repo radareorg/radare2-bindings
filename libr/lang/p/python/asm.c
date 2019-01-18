@@ -44,6 +44,7 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 			eprintf ("Unknown type returned. List was expected.\n");
 		}
 	}
+	r_asm_op_init (op);
 	op->size = size = seize;
 	r_strbuf_set (&op->buf_asm, opstr);
 	int buflen = R_MAX (1, op->size);
