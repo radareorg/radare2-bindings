@@ -70,6 +70,24 @@ static int py_io_read(RIO *io, RIODesc *fd, ut8 *buf, int count) {
 		PyObject *arglist = Py_BuildValue ("(Ki)", io->off, count);
 		PyObject *result = PyEval_CallObject (py_io_read_cb, arglist);
 		if (result) {
+			if (PyByteArray_Check (result)) {
+				const char *ptr = PyByteArray_AsString (result);
+				ssize_t size = PyByteArray_Size (result);
+				ssize_t limit = R_MIN (size, (ssize_t)count);
+				memset (buf, io->Oxff, limit);
+				memcpy (buf, ptr, limit);
+				return (int)limit;
+			}
+			if (PyUnicode_Check (result)) {
+				//  PyObject* repr = PyObject_Repr(result);
+				//  PyObject* str = PyUnicode_AsEncodedString(repr, "utf-8", "~E~");
+				ssize_t size;
+				const char *ptr = PyUnicode_AsUTF8AndSize (result, &size);
+				ssize_t limit = R_MIN (size, (ssize_t)count);
+				memset (buf, io->Oxff, limit);
+				memcpy (buf, ptr, limit);
+				return (int)limit;
+			}
 			if (PyBytes_Check (result)) {
 				size_t size = PyBytes_Size (result);
 				size_t limit = R_MIN (size, (size_t)count);
@@ -140,7 +158,7 @@ static PyObject *Radare_plugin_io(Radare* self, PyObject *args) {
 		return Py_False;
 	}
 	py_io_plugin = ap;
-	ap->name = getS (o,"name");
+	ap->name = getS (o, "name");
 	ap->desc = getS (o, "desc");
 	ap->license = getS (o, "license");
 
