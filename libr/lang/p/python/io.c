@@ -16,30 +16,37 @@ static RIODesc* py_io_open(RIO *io, const char *path, int rw, int mode) {
 		if (result) {
 			if (PyLong_Check (result)) {
 				if (PyLong_AsLong (result) == -1) {
+					Py_DECREF (arglist);
+					Py_DECREF (result);
 					return NULL;
 				}
 				fd = (int)PyLong_AsLong (result);
 			}
 			if (PyBool_Check (result) && result == Py_False) {
+				Py_DECREF (arglist);
+				Py_DECREF (result);
 				return NULL;
 			}
 		}
+		Py_DECREF (arglist);
+		Py_DECREF (result);
 		return r_io_desc_new (io, py_io_plugin, path, rw, mode, NULL);
 	}
 	return NULL;
 }
 
 static bool py_io_check(RIO *io, const char *path, bool many) {
+	bool res = false;
 	if (py_io_check_cb) {
 		PyObject *arglist = Py_BuildValue ("(zO)", path, many?Py_True:Py_False);
 		PyObject *result = PyEval_CallObject (py_io_check_cb, arglist);
 		if (result && PyBool_Check (result)) {
-			return result == Py_True;
+			res = result == Py_True;
 		}
-		// PyObject_Print(result, stderr, 0);
-		eprintf ("CHECK: Unknown type returned. Boolean was expected.\n");
+		Py_DECREF (arglist);
+		Py_DECREF (result);
 	}
-	return false;
+	return res; 
 }
 
 static ut64 py_io_seek(RIO *io, RIODesc *fd, ut64 offset, int whence) {
@@ -66,79 +73,80 @@ static ut64 py_io_seek(RIO *io, RIODesc *fd, ut64 offset, int whence) {
 }
 
 static int py_io_read(RIO *io, RIODesc *fd, ut8 *buf, int count) {
-	if (py_io_read_cb) {
-		PyObject *arglist = Py_BuildValue ("(Ki)", io->off, count);
-		PyObject *result = PyEval_CallObject (py_io_read_cb, arglist);
-		if (result) {
-			if (PyByteArray_Check (result)) {
-				const char *ptr = PyByteArray_AsString (result);
-				ssize_t size = PyByteArray_Size (result);
-				ssize_t limit = R_MIN (size, (ssize_t)count);
-				memset (buf, io->Oxff, limit);
-				memcpy (buf, ptr, limit);
-				return (int)limit;
-			}
-			if (PyUnicode_Check (result)) {
-				//  PyObject* repr = PyObject_Repr(result);
-				//  PyObject* str = PyUnicode_AsEncodedString(repr, "utf-8", "~E~");
-				ssize_t size;
-				const char *ptr = PyUnicode_AsUTF8AndSize (result, &size);
-				ssize_t limit = R_MIN (size, (ssize_t)count);
-				memset (buf, io->Oxff, limit);
-				memcpy (buf, ptr, limit);
-				return (int)limit;
-			}
-			if (PyBytes_Check (result)) {
-				size_t size = PyBytes_Size (result);
-				size_t limit = R_MIN (size, (size_t)count);
-				memset (buf, io->Oxff, limit);
-				memcpy (buf, PyString_AsString (result), limit);
-				// eprintf ("result is a string DONE %d %d\n" , count, size);
-				return (int)limit;
-			}
-			if (PyList_Check (result)) {
-				int i, size = PyList_Size (result);
-				int limit = R_MIN (size, count);
-				memset (buf, io->Oxff, count);
-				for (i = 0; i < limit; i++) {
-					PyObject *len = PyList_GetItem (result, i);
-					buf[i] = PyNumber_AsSsize_t (len, NULL);
-				}
-				return count;
-			}
-		} else {
-			eprintf ("Unknown type returned. List was expected.\n");
-		}
+	if (!py_io_read_cb) {
+		return -1;
 	}
-	return -1;
+	PyObject *arglist = Py_BuildValue ("(Ki)", io->off, count);
+	PyObject *result = PyEval_CallObject (py_io_read_cb, arglist);
+	if (result) {
+		if (PyByteArray_Check (result)) {
+			const char *ptr = PyByteArray_AsString (result);
+			ssize_t size = PyByteArray_Size (result);
+			ssize_t limit = R_MIN (size, (ssize_t)count);
+			memset (buf, io->Oxff, limit);
+			memcpy (buf, ptr, limit);
+			count = (int)limit;
+		} else if (PyUnicode_Check (result)) {
+			//  PyObject* repr = PyObject_Repr(result);
+			//  PyObject* str = PyUnicode_AsEncodedString(repr, "utf-8", "~E~");
+			ssize_t size;
+			const char *ptr = PyUnicode_AsUTF8AndSize (result, &size);
+			ssize_t limit = R_MIN (size, (ssize_t)count);
+			memset (buf, io->Oxff, limit);
+			memcpy (buf, ptr, limit);
+			count = (int)limit;
+		} else if (PyBytes_Check (result)) {
+			size_t size = PyBytes_Size (result);
+			size_t limit = R_MIN (size, (size_t)count);
+			memset (buf, io->Oxff, limit);
+			memcpy (buf, PyString_AsString (result), limit);
+			// eprintf ("result is a string DONE %d %d\n" , count, size);
+			count = (int)limit;
+		} else if (PyList_Check (result)) {
+			int i, size = PyList_Size (result);
+			int limit = R_MIN (size, count);
+			memset (buf, io->Oxff, count);
+			for (i = 0; i < limit; i++) {
+				PyObject *len = PyList_GetItem (result, i);
+				buf[i] = PyNumber_AsSsize_t (len, NULL);
+			}
+			count = (int)limit;
+		}
+	} else {
+		eprintf ("Unknown type returned. List was expected.\n");
+	}
+	Py_DECREF (arglist);
+	Py_DECREF (result);
+	return count;
 }
 
 static char *py_io_system(RIO *io, RIODesc *desc, const char *cmd) {
+	char * res = NULL;
 	if (py_io_system_cb) {
 		PyObject *arglist = Py_BuildValue ("(z)", cmd);
 		PyObject *result = PyEval_CallObject (py_io_system_cb, arglist);
 		if (result) {
+			if (
 #if PY_MAJOR_VERSION < 3
-			if (PyString_Check (result)) {
-				return PyString_AsString (result);
-			}
+			PyString_Check (result)
 #else
-			if (PyUnicode_Check (result)) {
-				return PyString_AsString (result);
-			}
+			PyUnicode_Check (result)
 #endif
-			if (PyBool_Check (result)) {
-				return strdup (r_str_bool (result == Py_True));
-			}
-			if (PyLong_Check (result)) {
+			) {
+				res = PyString_AsString (result);
+			} else if (PyBool_Check (result)) {
+				res = strdup (r_str_bool (result == Py_True));
+			} else if (PyLong_Check (result)) {
 				long n = PyLong_AsLong (result);
-				return r_str_newf ("%ld", n);
+				res = r_str_newf ("%ld", n);
 			}
 		}
 		// PyObject_Print(result, stderr, 0);
 		eprintf ("Unknown type returned. Boolean was expected.\n");
+		Py_DECREF (arglist);
+		Py_DECREF (result);
 	}
-	return NULL;
+	return res;
 }
 
 static void Radare_plugin_io_free(RAsmPlugin *ap) {
