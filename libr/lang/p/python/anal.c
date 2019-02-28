@@ -132,6 +132,7 @@ static void py_export_anal_enum(PyObject *tp_dict) {
 
 static void *py_set_reg_profile_cb = NULL;
 static void *py_anal_cb = NULL;
+static void *py_archinfo_cb = NULL;
 
 static int py_set_reg_profile(RAnal *a) {
 	const char *profstr = "";
@@ -197,6 +198,18 @@ static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len) {
 	return seize;
 }
 
+static int py_archinfo(RAnal *a, int query) {
+	if (py_archinfo_cb) {
+		PyObject *arglist = Py_BuildValue ("(i)", query);
+		PyObject *result = PyEval_CallObject (py_archinfo_cb, arglist);
+		if (result) {
+			return PyINT_ASLONG (result); /* Python only returns long... */
+		}
+		eprintf ("Unknown type returned. Int was expected.\n");
+	}
+	return -1;
+}
+
 static void Radare_plugin_anal_free(RAnalPlugin *ap) {
 	free ((char *)ap->name);
 	free ((char *)ap->arch);
@@ -228,6 +241,12 @@ static PyObject *Radare_plugin_anal(Radare* self, PyObject *args) {
 		Py_INCREF (ptr);
 		py_set_reg_profile_cb = ptr;
 		ap->set_reg_profile = py_set_reg_profile;
+	}
+	ptr = getF (o, "archinfo");
+	if (ptr) {
+		Py_INCREF (ptr);
+		py_archinfo_cb = ptr;
+		ap->archinfo = py_archinfo;
 	}
 	Py_DECREF (o);
 
