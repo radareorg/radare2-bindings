@@ -9,26 +9,26 @@ namespace Radare {
 
 		static void free();
 		[CCode (cname="Color_RED")]
-		public static const string RED;
+		public const string RED;
 		[CCode (cname="Color_BLACK")]
-		public static const string BLACK;
+		public const string BLACK;
 		[CCode (cname="Color_WHITE")]
-		public static const string WHITE;
+		public const string WHITE;
 		[CCode (cname="Color_RESET")]
-		public static const string RESET;
+		public const string RESET;
 		[CCode (cname="Color_MAGENTA")]
-		public static const string MAGENTA;
+		public const string MAGENTA;
 		[CCode (cname="Color_YELLOW")]
-		public static const string YELLOW;
+		public const string YELLOW;
 		[CCode (cname="Color_TURQOISE")]
-		public static const string TURQOISE;
+		public const string TURQOISE;
 		[CCode (cname="Color_BLUE")]
-		public static const string BLUE;
+		public const string BLUE;
 		[CCode (cname="Color_GRAY")]
-		public static const string GRAY;
+		public const string GRAY;
 		/* TODO : add bold colors */
 
-		public static bool is_interactive;
+		// public static bool is_interactive;
 		public static bool is_html;
 		public static int lines;
 		public static bool echo;

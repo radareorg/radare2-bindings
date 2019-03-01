@@ -131,7 +131,6 @@ namespace Radare {
 		//public int plugin_generate();
 		public void plugin_list();
 
-		/* maps */
 /*
 		[CCode (cname="RIOMap", cprefix="r_io_map_", free_function="", unref_function="")]
 		public class Map {
@@ -144,35 +143,6 @@ namespace Radare {
 		public Map map_resolve(int fd);
 		public bool map_add(int fd, int flags, uint64 delta, uint64 addr, uint64 size);
 		public bool map_del(int fd);
-*/
-
-		/* sections */
-		[Compact]
-		[CCode (cname="RIOSection", free_function="")]
-		public class Section {
-			string name;
-			uint64 offset;
-			uint64 vaddr;
-			uint64 size;
-			uint64 vsize;
-			int rwx; // TODO: use perms
-			int id;
-		}
-
-/*
-		public uint64 section_next(uint64 addr);
-		public void section_list(uint64 addr, bool rad);
-		public Section section_vget(uint64 addr);
-		//public Section section_mget(uint64 addr);
-		public uint64 section_get_offset(uint64 addr);
-		public uint64 section_get_vaddr(uint64 addr);
-		public int section_get_rwx(uint64 addr);
-		public bool section_overlaps(Section refsec);
-		public uint64 section_vaddr_to_maddr_try(uint64 vaddr);
-		public uint64 section_vaddr_to_maddr(uint64 vaddr);
-		public uint64 section_maddr_to_vaddr(uint64 vaddr);
-		public uint64 section_exists_for_paddr(uint64 vaddr, int hasperm);
-		public uint64 section_exists_for_vaddr(uint64 vaddr, int hasperm);
 */
 
 		[Compact]

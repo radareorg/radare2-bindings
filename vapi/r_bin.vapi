@@ -54,7 +54,7 @@ namespace Radare {
 		public unowned RList<unowned RBin.Section> get_sections();
 		public unowned RList<unowned RBin.String> get_strings();
 		public unowned RList<unowned RBin.Symbol> get_symbols();
-		public unowned RList<unowned RBin.Reloc> get_relocs();
+		// public unowned RList<unowned RBin.Reloc> get_relocs();
 		public unowned RList<unowned string> get_libs();
 		public unowned RBin.Info get_info();
 		public int addr2line(uint64 addr, ref string file, int len, out int line);
@@ -104,7 +104,7 @@ namespace Radare {
 			public RList<RBin.Addr> entries;
 			public RList<RBin.Field> fields;
 			public RList<RBin.Symbol> libs;
-			public RList<RBin.Reloc> relocs;
+			// public RList<RBin.Reloc> relocs;
 			public RList<RBin.String> strings;
 			public RList<RBin.Class> classes;
 			public RList<RBin.DwarfRow> lines;
