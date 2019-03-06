@@ -137,12 +137,14 @@ static void *py_archinfo_cb = NULL;
 static int py_set_reg_profile(RAnal *a) {
 	const char *profstr = "";
 	if (py_set_reg_profile_cb) {
-		PyObject *result = PyEval_CallObject (py_set_reg_profile_cb, NULL);
+		PyObject *result = PyObject_CallObject (py_set_reg_profile_cb, NULL);
 		if (result) {
 			profstr = PySTRING_ASSTRING (result);
 			return r_reg_set_profile_string (a->reg, profstr);
+		} else {
+			eprintf ("Unknown type returned. String was expected.\n");
+			PyErr_Print();
 		}
-		eprintf ("Unknown type returned. String was expected.\n");
 	}
 	return -1;
 }
@@ -156,8 +158,8 @@ static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len) {
 	if (py_anal_cb) {
 		memset(op, 0, sizeof (RAnalOp));
 		// anal(addr, buf) - returns size + dictionary (structure) for RAnalOp
-		PyObject *arglist = Py_BuildValue ("(i, "BYTES_FMT")", addr, buf, len);
-		PyObject *result = PyEval_CallObject (py_anal_cb, arglist);
+		PyObject *arglist = Py_BuildValue ("("BYTES_FMT")", buf, len, addr);
+		PyObject *result = PyObject_CallObject (py_anal_cb, arglist);
 		if (result && PyList_Check (result)) {
 			PyObject *len = PyList_GetItem (result, 0);
 			PyObject *dict = PyList_GetItem (result, 1);
@@ -192,6 +194,7 @@ static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len) {
 			}
 		} else {
 			eprintf ("Unknown type returned. List was expected.\n");
+			PyErr_Print();
 		}
 	}
 	op->size = size = seize;
@@ -221,7 +224,7 @@ static void Radare_plugin_anal_free(RAnalPlugin *ap) {
 static PyObject *Radare_plugin_anal(Radare* self, PyObject *args) {
 	void *ptr = NULL;
 	PyObject *arglist = Py_BuildValue("(i)", 0);
-	PyObject *o = PyEval_CallObject (args, arglist);
+	PyObject *o = PyObject_CallObject (args, arglist);
 
 	RAnalPlugin *ap = R_NEW0 (RAnalPlugin);
 	ap->name = getS (o,"name");
