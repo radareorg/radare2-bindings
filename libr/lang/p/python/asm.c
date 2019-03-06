@@ -54,26 +54,25 @@ static int py_assemble(RAsm *a, RAsmOp *op, const char *str) {
 static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 	int size = 0;
 	int seize = -1;
-	const char *opstr = "invalid";
+	r_asm_op_init (op);
+	r_strbuf_set (&op->buf_asm, "invalid");
 	if (py_disassemble_cb) {
 		PyObject *arglist = Py_BuildValue ("(y#K)", buf, len, a->pc);
 		PyObject *result = PyEval_CallObject (py_disassemble_cb, arglist);
-		if (check_list_result (result, "assemble")) {
-			PyObject *len = PyList_GetItem (result, 0);
-			PyObject *str = PyList_GetItem (result, 1);
-			seize = PyNumber_AsSsize_t (len, NULL);
-			opstr = PySTRING_ASSTRING (str);
+		if (check_list_result (result, "disassemble")) {
+			PyObject *pylen = PyList_GetItem (result, 0);
+			PyObject *pystr = PyList_GetItem (result, 1);
+			seize = PyNumber_AsSsize_t (pylen, NULL);
+			r_strbuf_set (&op->buf_asm, PySTRING_ASSTRING (pystr));
 			Py_DECREF (result);
 		}
 	}
-	r_asm_op_init (op);
 	op->size = size = seize;
-	r_strbuf_set (&op->buf_asm, opstr);
 	int buflen = R_MAX (1, op->size);
 	buflen = R_MIN (buflen, len);
 	char *res = calloc (buflen, 3);
 	if (res) {
-		r_asm_op_set_buf (op, buf, R_MIN (buflen, len));
+		r_asm_op_set_buf (op, buf, buflen);
 		free (res);
 	}
 	return seize;
