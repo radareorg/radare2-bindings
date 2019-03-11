@@ -199,7 +199,9 @@ static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len) {
 				// Loading 'var' value if presented
 				r_strbuf_set (&op->esil, getS (dict, "esil"));
 				// TODO: Add opex support here
+				Py_DECREF (dict);
 			}
+			Py_DECREF (result);
 		} else {
 			eprintf ("Unknown type returned. List was expected.\n");
 			PyErr_Print();
