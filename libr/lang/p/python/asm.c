@@ -64,7 +64,7 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 			.ndim = 1,
 			.itemsize = 1,
 		};
-		PyObject *memview = PyMemoryView_FromMemory (&pybuf);
+		PyObject *memview = PyMemoryView_FromBuffer (&pybuf);
 		PyObject *arglist = Py_BuildValue ("(NK)", memview, a->pc);
 		PyObject *result = PyEval_CallObject (py_disassemble_cb, arglist);
 		if (check_list_result (result, "disassemble")) {
