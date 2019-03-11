@@ -158,8 +158,16 @@ static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len) {
 	if (py_anal_cb) {
 		memset(op, 0, sizeof (RAnalOp));
 		// anal(addr, buf) - returns size + dictionary (structure) for RAnalOp
-		PyObject *arglist = Py_BuildValue ("("BYTES_FMT")", buf, len, addr);
-		PyObject *result = PyObject_CallObject (py_anal_cb, arglist);
+		Py_buffer pybuf = {
+			.buf = buf,
+			.len = len,
+			.readonly = 1,
+			.ndim = 1,
+			.itemsize = 1,
+		};
+		PyObject *memview = PyMemoryView_FromBuffer (&pybuf);
+		PyObject *arglist = Py_BuildValue ("(NK)", memview, addr);
+		PyObject *result = PyEval_CallObject (py_anal_cb, arglist);
 		if (result && PyList_Check (result)) {
 			PyObject *len = PyList_GetItem (result, 0);
 			PyObject *dict = PyList_GetItem (result, 1);
