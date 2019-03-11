@@ -58,7 +58,7 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 	r_strbuf_set (&op->buf_asm, "invalid");
 	if (py_disassemble_cb) {
 		Py_buffer pybuf = {
-			.buf = buf,
+			.buf = (void *) buf, // Warning: const is lost when casting
 			.len = len,
 			.readonly = 1,
 			.ndim = 1,
