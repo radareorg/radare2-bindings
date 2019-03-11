@@ -159,7 +159,7 @@ static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len) {
 		memset(op, 0, sizeof (RAnalOp));
 		// anal(addr, buf) - returns size + dictionary (structure) for RAnalOp
 		Py_buffer pybuf = {
-			.buf = buf,
+			.buf = (void *) buf, // Warning: const is lost when casting
 			.len = len,
 			.readonly = 1,
 			.ndim = 1,
