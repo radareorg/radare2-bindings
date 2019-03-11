@@ -57,7 +57,15 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 	r_asm_op_init (op);
 	r_strbuf_set (&op->buf_asm, "invalid");
 	if (py_disassemble_cb) {
-		PyObject *arglist = Py_BuildValue ("(y#K)", buf, len, a->pc);
+		Py_buffer pybuf = {
+			.buf = buf,
+			.len = len,
+			.readonly = 1,
+			.ndim = 1,
+			.itemsize = 1,
+		};
+		PyObject *memview = PyMemoryView_FromMemory (&pybuf);
+		PyObject *arglist = Py_BuildValue ("(NK)", memview, a->pc);
 		PyObject *result = PyEval_CallObject (py_disassemble_cb, arglist);
 		if (check_list_result (result, "disassemble")) {
 			PyObject *pylen = PyList_GetItem (result, 0);
