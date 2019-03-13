@@ -62,37 +62,35 @@ endif
 all: $(LANGS)
 	@echo "LANG ${LANGS}"
 
-PYVER?=2
 ifeq ($(OSTYPE),windows)
 lang_python.${EXT_SO}:
-	${CC} ${CFLAGS} -I${HOME}/.wine/drive_c/Python27/include \
-	-L${HOME}/.wine/drive_c/Python27/libs \
+	${CC} ${CFLAGS} -I${HOME}/.wine/drive_c/Python34/include \
+	-L${HOME}/.wine/drive_c/Python34/libs \
 	$(shell pkg-config --cflags --libs r_reg r_core r_cons) \
-	${LDFLAGS_LIB} -o lang_python.${EXT_SO} python.c -lpython27
+	${LDFLAGS_LIB} -o lang_python.${EXT_SO} python.c -lpython34
 else
 PYCFG=../../../python-config-wrapper
-PYSO=lang_python$(PYVER).${EXT_SO}
-PYCFLAGS=$(shell PYVER=$(PYVER) ${PYCFG} --cflags) -DPYVER=${PYVER}
-PYLDFLAGS=$(shell PYVER=$(PYVER) ${PYCFG} --libs) 
-PYLDFLAGS+=-L$(shell PYVER=$(PYVER) ${PYCFG} --prefix)/lib
+PYCFLAGS=$(shell PYVER=3 ${PYCFG} --cflags) -DPYVER=3
+PYLDFLAGS=$(shell PYVER=3 ${PYCFG} --libs) 
+PYLDFLAGS+=-L$(shell PYVER=3 ${PYCFG} --prefix)/lib
 PYLDFLAGS+=${LDFLAGS_LIB}
 
-lang_python.$(EXT_SO) $(PYSO):
+lang_python.$(EXT_SO):
 	${CC} python.c ${CFLAGS} ${PYCFLAGS} ${PYLDFLAGS} \
 	$(shell pkg-config --cflags --libs r_reg r_core r_cons) \
-	${LDFLAGS} ${LDFLAGS_LIB} -fPIC -o $(PYSO)
+	${LDFLAGS} ${LDFLAGS_LIB} -fPIC -o lang_python.$(EXT_SO)
 endif
 
 py python:
-	rm -f $(PYSO)
-	$(MAKE) $(PYSO)
+	rm -f lang_python.$(EXT_SO)
+	$(MAKE) lang_python.$(EXT_SO)
 
 py-install python-install:
 	mkdir -p ${R2PM_PLUGDIR}
-	cp -f $(PYSO) ${R2PM_PLUGDIR}
+	cp -f lang_python.$(EXT_SO) ${R2PM_PLUGDIR}
 
 py-uninstall python-uninstall:
-	rm -f ${R2PM_PLUGDIR}/$(PYSO)
+	rm -f ${R2PM_PLUGDIR}/lang_python.$(EXT_SO)
 
 ifeq ($(HAVE_LIB_TCC),1)
 lang_tcc.${EXT_SO}: tcc.o
@@ -151,9 +149,9 @@ DUKTAPE_FILE=duktape-$(DUKTAPE_VER).tar.xz
 DUKTAPE_URL=http://duktape.org/$(DUKTAPE_FILE)
 
 p:
-	rm -f lang_python3.dylib
-	$(MAKE) lang_python.dylib PYVER=3
-	cp -f lang_python3.dylib ~/.local/share/radare2/plugins
+	rm -f lang_python.${EXT_SO}
+	$(MAKE) lang_python.${EXT_SO} PYVER=3
+	cp -f lang_python.${EXT_SO} ~/.local/share/radare2/plugins
 
 duk duktape-sync duk-sync sync-dunk sync-duktape:
 	rm -f $(DUKTAPE_FILE)
