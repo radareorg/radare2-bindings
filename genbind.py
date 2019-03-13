@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 import sys
 import os.path
 import logging
@@ -6,11 +6,7 @@ import tempfile
 import argparse
 import subprocess
 from subprocess import call, check_output
-# Python 2 legacy hack
-try:
-    from StringIO import StringIO
-except:
-    from io import StringIO
+from io import StringIO
 
 # TODO: Better Python3 support
 
