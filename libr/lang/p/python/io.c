@@ -127,11 +127,7 @@ static char *py_io_system(RIO *io, RIODesc *desc, const char *cmd) {
 		PyObject *result = PyEval_CallObject (py_io_system_cb, arglist);
 		if (result) {
 			if (
-#if PY_MAJOR_VERSION < 3
-			PyString_Check (result)
-#else
 			PyUnicode_Check (result)
-#endif
 			) {
 				res = PyString_AsString (result);
 			} else if (PyBool_Check (result)) {

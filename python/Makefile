@@ -8,7 +8,7 @@ include ../rules.mk
 tri:
 	valabind --swig -N Radare -o r_debug.i -m r_debug --vapidir ../../libr/vapi/ r_debug
 	swig -python -I/usr/include/libr r_debug.i
-	$(CC) r_debug_wrap.c -shared -fPIC -I /usr/include/libr -I /usr/include/python2.6/ -o _r_debug.so -lr_debug -lr_bp -lr_reg -lr_util
+	$(CC) r_debug_wrap.c -shared -fPIC -I /usr/include/libr -I /usr/include/python3.4/ -o _r_debug.so -lr_debug -lr_bp -lr_reg -lr_util
 
 mytest:
 	mkdir -p r2

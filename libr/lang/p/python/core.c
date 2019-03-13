@@ -18,9 +18,6 @@ static int py_core_call(void *user, const char *str) {
 			} else if (PyINT_CHECK (result)) {
 				return PyINT_ASLONG (result);
 			} else if (PyUnicode_Check (result)) {
-#if PY_MAJOR_VERSION < 3
-				str_res = PyUnicode_AS_DATA (result);
-#else
 				int n = PyUnicode_KIND (result);
 				switch (n) {
 				case 1:
@@ -34,17 +31,10 @@ static int py_core_call(void *user, const char *str) {
 					str_res = (char*)PyUnicode_4BYTE_DATA (result);
 					break;
 				}
-#endif
 			} else
-#if PY_MAJOR_VERSION < 3
-			if (PyString_Check (result)) {
-				str_res = PyString_AsString (result);
-			}
-#else
 			if (PyUnicode_Check (result)) {
 				str_res = PyString_AsString (result);
 			}
-#endif
 			if (str_res) {
 				r_cons_print (str_res);
 				return 1;

@@ -131,9 +131,9 @@ environment variable as follows:
 
 	$ ./configure --prefix=/usr --enable-devel
 	$ cd python
-	$ PYTHON_CONFIG=python2.7-config make
+	$ PYTHON_CONFIG=python3.2-config make
 	$ su -
-	# PYTHON_CONFIG=python2.7-config make install
+	# PYTHON_CONFIG=python3.2-config make install
 
 
 # RANDOM NOTES
