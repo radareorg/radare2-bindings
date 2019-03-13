@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Python example for using loading fatmach0 binaries
 # test file:

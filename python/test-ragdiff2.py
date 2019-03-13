@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # ragdiff2 - Copyright 2010-2015
 #   pancake <nopcode.org>
