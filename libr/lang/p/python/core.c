@@ -15,8 +15,8 @@ static int py_core_call(void *user, const char *str) {
 		if (result) {
 			if (PyLong_Check (result)) {
 				return (int)PyLong_AsLong (result);
-			} else if (PyINT_CHECK (result)) {
-				return PyINT_ASLONG (result);
+			} else if (PyLong_Check (result)) {
+				return PyLong_AsLong (result);
 			} else if (PyUnicode_Check (result)) {
 				int n = PyUnicode_KIND (result);
 				switch (n) {
@@ -33,7 +33,7 @@ static int py_core_call(void *user, const char *str) {
 				}
 			} else
 			if (PyUnicode_Check (result)) {
-				str_res = PyString_AsString (result);
+				str_res = PyBytes_AS_STRING (result);
 			}
 			if (str_res) {
 				r_cons_print (str_res);

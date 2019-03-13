@@ -13,15 +13,7 @@
 #if PY_MAJOR_VERSION<3
 #error Python 2 support is deprecated, use Python 3 instead
 #endif
-#define PyString_FromString PyBytes_FromString
-#define PyString_AsString PyBytes_AS_STRING
-#define PyINT_CHECK PyLong_Check
-#define PyINT_ASLONG PyLong_AsLong
-#define PySTRING_ASSTRING PyUnicode_AsUTF8
-#define PySTRING_FROMSTRING PyUnicode_FromString
 #define PLUGIN_NAME r_lang_plugin_python
-#define BYTES_FMT "y#iK"
-#define PyVersion "python3"
 
 static RCore *core = NULL;
 typedef struct {
@@ -42,7 +34,7 @@ static char *getS(PyObject *o, const char *name) {
 	if (!o) return NULL;
 	PyObject *res = PyDict_GetItemString (o, name);
 	if (!res) return NULL;
-	return strdup (PySTRING_ASSTRING (res));
+	return strdup (PyUnicode_AsUTF8 (res));
 }
 
 static st64 getI(PyObject *o, const char *name) {
@@ -114,12 +106,12 @@ static void Radare_dealloc(Radare* self) {
 static PyObject * Radare_new(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 	Radare *self = (Radare *)type->tp_alloc (type, 0);
 	if (self) {
-		self->first = PySTRING_FROMSTRING ("");
+		self->first = PyUnicode_FromString ("");
 		if (!self->first) {
 			Py_DECREF (self);
 			return NULL;
 		}
-		self->last = PySTRING_FROMSTRING ("");
+		self->last = PyUnicode_FromString ("");
 		if (!self->last) {
 			Py_DECREF (self);
 			return NULL;
@@ -156,7 +148,7 @@ static PyObject *Radare_cmd(Radare* self, PyObject *args) {
 		return NULL;
 	}
 	str = r_core_cmd_str (core, cmd);
-	return PySTRING_FROMSTRING (str? str: py_nullstr);
+	return PyUnicode_FromString (str? str: py_nullstr);
 }
 
 static int Radare_init(Radare *self, PyObject *args, PyObject *kwds) {
@@ -337,7 +329,7 @@ static int init(RLang *lang) {
 	// Add a current directory to the PYTHONPATH
 	PyObject *sys = PyImport_ImportModule("sys");
 	PyObject *path = PyObject_GetAttrString(sys, "path");
-	PyList_Append(path, PySTRING_FROMSTRING("."));
+	PyList_Append(path, PyUnicode_FromString("."));
 	return true;
 }
 
@@ -355,10 +347,10 @@ static const char *help =
 	"  print r2.cmd(\"p8 10\");\n";
 
 RLangPlugin PLUGIN_NAME = {
-	.name = PyVersion,
+	.name = "python",
 	.alias = "python",
 	.ext = "py",
-	.desc = "Python language extension ("PyVersion")",
+	.desc = "Python language extension",
 	.init = &init,
 	.setup = &setup,
 	.fini = (void *)&fini,

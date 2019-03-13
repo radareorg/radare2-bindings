@@ -19,12 +19,12 @@ static PyObject * PyBinFile_new(PyTypeObject *type, PyObject *args, PyObject *kw
 	PyBinFile *self = (PyBinFile *)type->tp_alloc (type, 0);
 	if (self) {
 		// Create empty buffers
-		self->bin_obj = PySTRING_FROMSTRING ("");
+		self->bin_obj = PyUnicode_FromString ("");
 		if (!self->bin_obj) {
 			Py_DECREF (self);
 			return NULL;
 		}
-		self->buf = PySTRING_FROMSTRING ("");
+		self->buf = PyUnicode_FromString ("");
 		if (!self->buf) {
 			Py_DECREF (self);
 			return NULL;
@@ -61,10 +61,10 @@ static PyObject *RBin_write_bytes(Radare* self, PyObject *args) {
 	char *buf = NULL;
 	ut64 addr = 0;
 	int buf_sz = 0;
-	if (!PyArg_ParseTuple (args, "(K,"BYTES_FMT")", &addr, &buf, &buf_sz)) {
+	if (!PyArg_ParseTuple (args, "(K,y#iK)", &addr, &buf, &buf_sz)) {
 		return NULL;
 	}
-	return PySTRING_FROMSTRING ("");
+	return PyUnicode_FromString ("");
 }
 
 static PyMemberDef PyBinFile_members[] = {
@@ -309,7 +309,7 @@ static bool py_load_bytes(RBinFile *arch, void **bin_obj, const ut8 *buf, ut64 s
 		// load_bytes(RBinFile, *binobj, buf, sz, loadaddr, sdb) - returns true/false
 		PyObject *pybinfile = create_PyBinFile(arch);
 		if (!pybinfile) return false;
-		PyObject *arglist = Py_BuildValue ("(O,"BYTES_FMT",L)", pybinfile, buf, sz, loadaddr);
+		PyObject *arglist = Py_BuildValue ("(O,y#iK,L)", pybinfile, buf, sz, loadaddr);
 		if (!arglist) {
 			PyErr_Print();
 			return false;
@@ -339,7 +339,7 @@ static bool py_check_bytes(const ut8 *buf, ut64 length)
 			return false;
 		}
 		// check_bytes(RBinFile) - returns true/false
-		PyObject *arglist = Py_BuildValue ("("BYTES_FMT")", buf, length);
+		PyObject *arglist = Py_BuildValue ("(y#iK)", buf, length);
 		if (!arglist) {
 			PyErr_Print();
 			return false;
@@ -400,7 +400,7 @@ static ut64 py_baddr(RBinFile *arch) {
 		PyObject *result = PyEval_CallObject (py_baddr_cb, arglist);
 		if (result && PyList_Check (result)) {
 			PyObject *res = PyList_GetItem (result, 0);
-			rres = PyINT_ASLONG (res);
+			rres = PyLong_AsLong (res);
 			if (rres) return rres;
 		} else {
 			PyErr_Print();

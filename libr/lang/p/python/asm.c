@@ -71,7 +71,7 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 			PyObject *pylen = PyList_GetItem (result, 0);
 			PyObject *pystr = PyList_GetItem (result, 1);
 			seize = PyNumber_AsSsize_t (pylen, NULL);
-			r_strbuf_set (&op->buf_asm, PySTRING_ASSTRING (pystr));
+			r_strbuf_set (&op->buf_asm, PyUnicode_AsUTF8 (pystr));
 			Py_DECREF (result);
 		}
 	}

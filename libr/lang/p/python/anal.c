@@ -139,7 +139,7 @@ static int py_set_reg_profile(RAnal *a) {
 	if (py_set_reg_profile_cb) {
 		PyObject *result = PyObject_CallObject (py_set_reg_profile_cb, NULL);
 		if (result) {
-			profstr = PySTRING_ASSTRING (result);
+			profstr = PyUnicode_AsUTF8 (result);
 			return r_reg_set_profile_string (a->reg, profstr);
 		} else {
 			eprintf ("Unknown type returned. String was expected.\n");
@@ -216,7 +216,7 @@ static int py_archinfo(RAnal *a, int query) {
 		PyObject *arglist = Py_BuildValue ("(i)", query);
 		PyObject *result = PyEval_CallObject (py_archinfo_cb, arglist);
 		if (result) {
-			return PyINT_ASLONG (result); /* Python only returns long... */
+			return PyLong_AsLong (result); /* Python only returns long... */
 		}
 		eprintf ("Unknown type returned. Int was expected.\n");
 	}

@@ -99,7 +99,7 @@ static int py_io_read(RIO *io, RIODesc *fd, ut8 *buf, int count) {
 			size_t size = PyBytes_Size (result);
 			size_t limit = R_MIN (size, (size_t)count);
 			memset (buf, io->Oxff, limit);
-			memcpy (buf, PyString_AsString (result), limit);
+			memcpy (buf, PyBytes_AS_STRING (result), limit);
 			// eprintf ("result is a string DONE %d %d\n" , count, size);
 			count = (int)limit;
 		} else if (PyList_Check (result)) {
@@ -129,7 +129,7 @@ static char *py_io_system(RIO *io, RIODesc *desc, const char *cmd) {
 			if (
 			PyUnicode_Check (result)
 			) {
-				res = PyString_AsString (result);
+				res = PyBytes_AS_STRING (result);
 			} else if (PyBool_Check (result)) {
 				res = strdup (r_str_bool (result == Py_True));
 			} else if (PyLong_Check (result)) {
