@@ -2,8 +2,7 @@
 include config.mk
 
 PREFIX?=/usr
-PYTHON2_CONFIG=python2.7-config
-PYTHON3_CONFIG=python3.2-config
+PYTHON_CONFIG=python3.2-config
 
 ifneq ($(shell bsdtar -h 2>/dev/null|grep bsdtar),)
 TAR=bsdtar cJvf
@@ -11,7 +10,7 @@ else
 TAR=tar -cJvf
 endif
 
-W32PY="${HOME}/.wine/drive_c/Python27/"
+W32PY="${HOME}/.wine/drive_c/Python34/"
 
 ifneq ($(shell grep valac supported.langs 2>/dev/null),)
 INSTALL_TARGETS=install-vapi
@@ -57,15 +56,15 @@ check:
 
 check-w32:
 	if [ ! -d "${W32PY}/libs" ]; then \
-		wget http://www.python.org/ftp/python/2.7/python-2.7.msi ; \
-		msiexec /i python-2.7.msi /qn ; \
+		wget https://www.python.org/ftp/python/3.4.4/python-3.4.4.msi ; \
+		msiexec /i python-3.4.4.msi /qn ; \
 	fi
 
 w32:
 	cd python && ${MAKE} w32
 
 DSTNAME=radare2-bindings-w32-$(VERSION)
-DST=../$(DSTNAME)/Python27/Lib/site-packages/r2
+DST=../$(DSTNAME)/Python34/Lib/site-packages/r2
 
 w32dist:
 	rm -rf ../${DSTNAME}
@@ -115,12 +114,9 @@ vdoc_pkg:
 	# rsync -avz vdoc/* pancake@radare.org:/srv/http/radareorg/vdoc/
 
 # TODO: unspaguetti this targets
-.PHONY: python2 python3
-python2:
-	@-[ "`grep python supported.langs`" ] && ( cd python && ${MAKE} PYTHON_CONFIG=${PYTHON2_CONFIG}) || true
-
+.PHONY: python3
 python3:
-	@-[ "`grep python supported.langs`" ] && ( cd python && ${MAKE} PYTHON_CONFIG=${PYTHON3_CONFIG}) || true
+	@-[ "`grep python supported.langs`" ] && ( cd python && ${MAKE} PYTHON_CONFIG=${PYTHON_CONFIG}) || true
 
 ${ALANG}::
 	cd $@ && ${MAKE}

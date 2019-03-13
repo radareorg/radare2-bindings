@@ -10,9 +10,8 @@
 #undef PREFIX
 #include <Python.h>
 #include <structmember.h>
-#if PY_MAJOR_VERSION>=3
-#if PYVER != 3
-#error Trying to build py3 with py2 libraries
+#if PY_MAJOR_VERSION<3
+#error Python 2 support is deprecated, use Python 3 instead
 #endif
 #define PyString_FromString PyBytes_FromString
 #define PyString_AsString PyBytes_AS_STRING
@@ -20,18 +19,9 @@
 #define PyINT_ASLONG PyLong_AsLong
 #define PySTRING_ASSTRING PyUnicode_AsUTF8
 #define PySTRING_FROMSTRING PyUnicode_FromString
-#define PLUGIN_NAME r_lang_plugin_python3
+#define PLUGIN_NAME r_lang_plugin_python
 #define BYTES_FMT "y#iK"
 #define PyVersion "python3"
-#else
-#define PyINT_CHECK PyInt_Check
-#define PyINT_ASLONG PyInt_AsLong
-#define PySTRING_ASSTRING PyString_AsString
-#define PySTRING_FROMSTRING PyString_FromString
-#define PLUGIN_NAME r_lang_plugin_python2
-#define BYTES_FMT "s#iK"
-#define PyVersion "python2"
-#endif
 
 static RCore *core = NULL;
 typedef struct {
@@ -208,12 +198,7 @@ static PyMethodDef Radare_methods[] = {
 };
 
 static PyTypeObject RadareType = {
-#if PY_MAJOR_VERSION >= 3
 	PyVarObject_HEAD_INIT(NULL, 0)
-#else
-	PyObject_HEAD_INIT (NULL)
-	0,                         /*ob_size*/
-#endif
 	"radare.RadareInternal",   /*tp_name*/
 	sizeof (Radare),           /*tp_basicsize*/
 	0,                         /*tp_itemsize*/
@@ -253,20 +238,6 @@ static PyTypeObject RadareType = {
 	Radare_new,                /* tp_new */
 };
 
-#if PY_MAJOR_VERSION < 3
-static void init_radare_module(void) {
-	PyObject *m;
-	if (PyType_Ready (&RadareType) < 0) {
-		return;
-	}
-	RadareType.tp_dict = PyDict_New();
-	py_export_anal_enum(RadareType.tp_dict);
-	m = Py_InitModule3 ("r2lang", Radare_methods, "radare python extension");
-	Py_INCREF(&RadareType);
-	PyModule_AddObject(m, "R", (PyObject *)&RadareType);
-}
-#else
-
 /*
 SEE 
 static PyMethodDef EmbMethods[] = {
@@ -302,7 +273,6 @@ static PyObject *init_radare_module(void) {
 	PyModule_AddObject(m, "R", (PyObject *)&RadareType);
 	return m;
 }
-#endif
 
 /* -init- */
 
@@ -361,21 +331,9 @@ static int init(RLang *lang) {
 	if (Py_IsInitialized ()) {
 		return 0;
 	}
-#if PY_MAJOR_VERSION >= 3
-#if PYVER != 3
-#error Trying to build py3 with py2 libraries
-#endif
 	PyImport_AppendInittab ("r2lang", init_radare_module);
 	PyImport_AppendInittab ("binfile", init_pybinfile_module);
 	Py_Initialize ();
-#else
-#if PYVER != 2
-#error Trying to build py2 with py3 libraries
-#endif
-	Py_Initialize ();
-	init_radare_module();
-	init_pybinfile_module();
-#endif
 	// Add a current directory to the PYTHONPATH
 	PyObject *sys = PyImport_ImportModule("sys");
 	PyObject *path = PyObject_GetAttrString(sys, "path");

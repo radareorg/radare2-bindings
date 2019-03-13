@@ -82,12 +82,7 @@ static PyMethodDef PyBinFile_methods[] = {
 };
 
 PyTypeObject PyBinFileType = {
-#if PY_MAJOR_VERSION >= 3
 	PyVarObject_HEAD_INIT(NULL, 0)
-#else
-	PyObject_HEAD_INIT (NULL)
-	0,                         /*ob_size*/
-#endif
 	"binfile.BinFile",         /*tp_name*/
 	sizeof (PyBinFile),        /*tp_basicsize*/
 	0,                         /*tp_itemsize*/
@@ -127,14 +122,6 @@ PyTypeObject PyBinFileType = {
 	PyBinFile_new,             /* tp_new */
 };
 
-#if PY_MAJOR_VERSION < 3
-static void init_pybinfile_module(void) {
-	if (PyType_Ready (&PyBinFileType) < 0) {
-		return;
-	}
-	Py_InitModule3 ("binfile", PyBinFile_methods, "RBinFile python representation");
-}
-#else
 static PyModuleDef PyBinModule = {
 	PyModuleDef_HEAD_INIT,
 	"binfile",
@@ -153,7 +140,6 @@ static PyObject *init_pybinfile_module(void) {
 	}
 	return m;
 }
-#endif
 
 PyObject* create_PyBinFile(RBinFile *binfile)
 {
