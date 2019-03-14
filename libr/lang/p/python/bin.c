@@ -1,5 +1,8 @@
 /* radare - LGPL - Copyright 2017-2019 - xvilka, pancake */
 
+#include "bin.h"
+#include "core.h"
+
 /* The structure, representing simplified version of RBinFile/RBinObject */
 typedef struct {
 	PyObject_HEAD
@@ -129,7 +132,7 @@ static PyModuleDef PyBinModule = {
 	NULL, NULL, NULL, NULL
 };
 
-static PyObject *init_pybinfile_module(void) {
+PyObject *init_pybinfile_module(void) {
 	if (PyType_Ready (&PyBinFileType) < 0) {
 		return NULL;
 	}
@@ -669,7 +672,7 @@ static RBinInfo *py_info(RBinFile *arch) {
 	return ret;
 }
 
-static void Radare_plugin_bin_free(RBinPlugin *bp) {
+void Radare_plugin_bin_free(RBinPlugin *bp) {
 	free ((char *)bp->name);
 	free ((char *)bp->desc);
 	free ((char *)bp->license);
@@ -678,7 +681,7 @@ static void Radare_plugin_bin_free(RBinPlugin *bp) {
 
 /* TODO: Add missing exported symbols */
 /* TODO: Fold the repeating code - may be add some macro? */
-static PyObject *Radare_plugin_bin(Radare* self, PyObject *args) {
+PyObject *Radare_plugin_bin(Radare* self, PyObject *args) {
 	void *ptr = NULL;
 	PyObject *arglist = Py_BuildValue("(i)", 0);
 	PyObject *o = PyEval_CallObject (args, arglist);

@@ -1,5 +1,8 @@
 /* radare - LGPL - Copyright 2009-2019 - pancake */
 
+#include "asm.h"
+#include "core.h"
+
 /* TODO : move into a struct stored in the plugin struct */
 static void *py_assemble_cb = NULL;
 static void *py_disassemble_cb = NULL;
@@ -86,7 +89,7 @@ static int py_disassemble(RAsm *a, RAsmOp *op, const ut8 *buf, int len) {
 	return seize;
 }
 
-static void Radare_plugin_asm_free(RAsmPlugin *ap) {
+void Radare_plugin_asm_free(RAsmPlugin *ap) {
 	free ((char *)ap->name);
 	free ((char *)ap->arch);
 	free ((char *)ap->license);
@@ -94,7 +97,7 @@ static void Radare_plugin_asm_free(RAsmPlugin *ap) {
 	free (ap);
 }
 
-static PyObject *Radare_plugin_asm(Radare* self, PyObject *args) {
+PyObject *Radare_plugin_asm(Radare* self, PyObject *args) {
 	PyObject *arglist = Py_BuildValue ("(i)", 0);
 	PyObject *o = PyEval_CallObject (args, arglist);
 

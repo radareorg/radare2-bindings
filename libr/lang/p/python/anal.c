@@ -2,8 +2,10 @@
 
 // Exporting the R_ANAL_* enum constants
 #include <r_reg.h>
+#include "anal.h"
+#include "core.h"
 
-static void py_export_anal_enum(PyObject *tp_dict) {
+void py_export_anal_enum(PyObject *tp_dict) {
 
 #define PYENUM(name) {\
 		PyObject *o = PyLong_FromLong(name); \
@@ -223,7 +225,7 @@ static int py_archinfo(RAnal *a, int query) {
 	return -1;
 }
 
-static void Radare_plugin_anal_free(RAnalPlugin *ap) {
+void Radare_plugin_anal_free(RAnalPlugin *ap) {
 	free ((char *)ap->name);
 	free ((char *)ap->arch);
 	free ((char *)ap->license);
@@ -231,7 +233,7 @@ static void Radare_plugin_anal_free(RAnalPlugin *ap) {
 	free (ap);
 }
 
-static PyObject *Radare_plugin_anal(Radare* self, PyObject *args) {
+PyObject *Radare_plugin_anal(Radare* self, PyObject *args) {
 	void *ptr = NULL;
 	PyObject *arglist = Py_BuildValue("(i)", 0);
 	PyObject *o = PyObject_CallObject (args, arglist);
