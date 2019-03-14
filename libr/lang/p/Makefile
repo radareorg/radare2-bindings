@@ -76,7 +76,7 @@ PYLDFLAGS+=-L$(shell PYVER=3 ${PYCFG} --prefix)/lib
 PYLDFLAGS+=${LDFLAGS_LIB}
 
 lang_python.$(EXT_SO):
-	${CC} python.c ${CFLAGS} ${PYCFLAGS} ${PYLDFLAGS} \
+	${CC} python.c python/*.c ${CFLAGS} ${PYCFLAGS} ${PYLDFLAGS} \
 	$(shell pkg-config --cflags --libs r_reg r_core r_cons) \
 	${LDFLAGS} ${LDFLAGS_LIB} -fPIC -o lang_python.$(EXT_SO)
 endif

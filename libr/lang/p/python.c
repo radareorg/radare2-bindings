@@ -1,72 +1,20 @@
 /* radare2 - LGPL - Copyright 2009-2019 - pancake */
 /* python extension for radare2's r_lang */
 
-#include <r_lib.h>
-#include <r_lang.h>
-#include <r_core.h>
-#undef _GNU_SOURCE
-#undef _XOPEN_SOURCE
-#undef _POSIX_C_SOURCE
-#undef PREFIX
-#include <Python.h>
-#include <structmember.h>
-#if PY_MAJOR_VERSION<3
-#error Python 2 support is deprecated, use Python 3 instead
-#endif
+#include "python/common.h"
+#include "python/core.h"
+#include "python/io.h"
+#include "python/asm.h"
+#include "python/anal.h"
+#include "python/bin.h"
 #define PLUGIN_NAME r_lang_plugin_python
-
-static RCore *core = NULL;
-typedef struct {
-	PyObject_HEAD
-	PyObject *first; /* first name */
-	PyObject *last;  /* last name */
-	int number;
-} Radare;
-
-static PyObject *getO(PyObject *o, const char *name) {
-	if (!o) return NULL;
-	PyObject *res = PyDict_GetItemString (o, name);
-	if (!res) return NULL;
-	return res;
-}
-
-static char *getS(PyObject *o, const char *name) {
-	if (!o) return NULL;
-	PyObject *res = PyDict_GetItemString (o, name);
-	if (!res) return NULL;
-	return strdup (PyUnicode_AsUTF8 (res));
-}
-
-static st64 getI(PyObject *o, const char *name) {
-	if (!o) return 0;
-	PyObject *res = PyDict_GetItemString (o, name);
-	if (!res) return 0;
-	return (st64) PyNumber_AsSsize_t (res, NULL);
-}
-
-static void *getF(PyObject *o, const char *name) {
-	if (!o) return NULL;
-	return PyDict_GetItemString (o, name);
-}
-
-static bool getB(PyObject *o, const char *name) {
-	if (!o) return NULL;
-	if (PyObject_IsTrue(o)) return true;
-	return false;
-}
-
-#include "python/io.c"
-#include "python/asm.c"
-#include "python/anal.c"
-#include "python/bin.c"
-#include "python/core.c"
 
 typedef struct {
 	const char *type;
 	PyObject* (*handler)(Radare*, PyObject*);
 } R2Plugins;
 
-static R2Plugins plugins[] = {
+R2Plugins plugins[] = {
 	{ "core", &Radare_plugin_core },
 	{ "asm", &Radare_plugin_asm },
 	{ "anal", &Radare_plugin_anal },

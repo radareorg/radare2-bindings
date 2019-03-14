@@ -1,8 +1,8 @@
 /* radare - LGPL - Copyright 2016-2019 - pancake */
 
-#include <r_core.h>
-#include <r_cmd.h>
-#include <r_cons.h>
+#include "core.h"
+
+RCore *core = NULL;
 
 /* TODO : move into a struct stored in the plugin struct */
 static void *py_core_call_cb = NULL;
@@ -44,14 +44,14 @@ static int py_core_call(void *user, const char *str) {
 	return 0;
 }
 
-static void Radare_plugin_core_free(RCorePlugin *ap) {
+void Radare_plugin_core_free(RCorePlugin *ap) {
 	free ((char *)ap->name);
 	free ((char *)ap->license);
 	free ((char *)ap->desc);
 	free (ap);
 }
 
-static PyObject *Radare_plugin_core(Radare* self, PyObject *args) {
+PyObject *Radare_plugin_core(Radare* self, PyObject *args) {
 	void *ptr = NULL;
 	PyObject *arglist = Py_BuildValue("(i)", 0);
 	PyObject *o = PyEval_CallObject (args, arglist);

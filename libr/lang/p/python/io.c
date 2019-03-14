@@ -1,5 +1,8 @@
 /* radare - LGPL - Copyright 2009-2019 - pancake */
 
+#include "io.h"
+#include "core.h"
+
 /* r_io */
 static RIOPlugin *py_io_plugin = NULL;
 static void *py_io_open_cb = NULL;
@@ -145,14 +148,14 @@ static char *py_io_system(RIO *io, RIODesc *desc, const char *cmd) {
 	return res;
 }
 
-static void Radare_plugin_io_free(RAsmPlugin *ap) {
+void Radare_plugin_io_free(RIOPlugin *ap) {
 	free ((char *)ap->name);
 	free ((char *)ap->desc);
 	free ((char *)ap->license);
 	free (ap);
 }
 
-static PyObject *Radare_plugin_io(Radare* self, PyObject *args) {
+PyObject *Radare_plugin_io(Radare* self, PyObject *args) {
 	void *ptr = NULL;
 	PyObject *arglist = Py_BuildValue("(i)", 0);
 	PyObject *o = PyEval_CallObject (args, arglist);
