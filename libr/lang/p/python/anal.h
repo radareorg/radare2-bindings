@@ -1,3 +1,5 @@
+/* radare - LGPL - Copyright 2017-2019 - pancake, xvilka, aronsky */
+
 #ifndef _PY_ANAL_H
 #define _PY_ANAL_H
 

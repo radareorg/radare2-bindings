@@ -1,3 +1,5 @@
+/* radare - LGPL - Copyright 2017-2019 - pancake, xvilka, aronsky */
+
 #include "common.h"
 
 PyObject *getO(PyObject *o, const char *name) {
