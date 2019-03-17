@@ -341,8 +341,16 @@ static bool py_check_bytes(const ut8 *buf, ut64 length)
 			PyErr_SetString(PyExc_TypeError, "parameter must be callable");
 			return false;
 		}
-		// check_bytes(RBinFile) - returns true/false
-		PyObject *arglist = Py_BuildValue ("(y#iK)", buf, length);
+		// check_bytes(buf) - returns true/false
+		Py_buffer pybuf = {
+			.buf = (void *) buf, // Warning: const is lost when casting
+			.len = length,
+			.readonly = 1,
+			.ndim = 1,
+			.itemsize = 1,
+		};
+		PyObject *memview = PyMemoryView_FromBuffer (&pybuf);
+		PyObject *arglist = Py_BuildValue ("(N)", memview);
 		if (!arglist) {
 			PyErr_Print();
 			return false;
