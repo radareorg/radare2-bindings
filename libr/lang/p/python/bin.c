@@ -312,7 +312,15 @@ static bool py_load_bytes(RBinFile *arch, void **bin_obj, const ut8 *buf, ut64 s
 		// load_bytes(RBinFile, *binobj, buf, sz, loadaddr, sdb) - returns true/false
 		PyObject *pybinfile = create_PyBinFile(arch);
 		if (!pybinfile) return false;
-		PyObject *arglist = Py_BuildValue ("(O,y#iK,L)", pybinfile, buf, sz, loadaddr);
+		Py_buffer pybuf = {
+			.buf = (void *) buf, // Warning: const is lost when casting
+			.len = sz,
+			.readonly = 1,
+			.ndim = 1,
+			.itemsize = 1,
+		};
+		PyObject *memview = PyMemoryView_FromBuffer (&pybuf);
+		PyObject *arglist = Py_BuildValue ("(O,N,K)", pybinfile, memview, loadaddr);
 		if (!arglist) {
 			PyErr_Print();
 			return false;
