@@ -190,7 +190,7 @@ PyObject* create_PyBinFile(RBinFile *binfile)
 // "add" : bool,
 // "is_data" : bool
 #define READ_SECTION(sec, pysec) \
-		strcpy (sec->name, getS (pysec, "name")); \
+		sec->name = getS (pysec, "name"); \
 		sec->size = getI (pysec, "size"); \
 		sec->vsize = getI (pysec, "vsize"); \
 		sec->vaddr = getI (pysec, "vaddr"); \
