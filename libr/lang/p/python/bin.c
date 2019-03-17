@@ -163,7 +163,14 @@ PyObject* create_PyBinFile(RBinFile *binfile)
 	}
 	// FIXME: RBuffer -> void* -> PyObject
 	if (binfile->buf) {
-		((PyBinFile*)pb)->buf = r_buf_buffer (binfile->buf);
+		Py_buffer pybuf = {
+			.buf = (void*) r_buf_buffer (binfile->buf),
+			.len = binfile->size,
+			.readonly = 1,
+			.ndim = 1,
+			.itemsize = 1
+		};
+		((PyBinFile*)pb)->buf = PyMemoryView_FromBuffer(&pybuf);
 	}
 	((PyBinFile*)pb)->size = binfile->size;
 	return pb;
