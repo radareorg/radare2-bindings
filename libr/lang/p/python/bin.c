@@ -706,6 +706,7 @@ void Radare_plugin_bin_free(RBinPlugin *bp) {
 /* TODO: Fold the repeating code - may be add some macro? */
 PyObject *Radare_plugin_bin(Radare* self, PyObject *args) {
 	void *ptr = NULL;
+	init_pybinfile_module ();
 	PyObject *arglist = Py_BuildValue("(i)", 0);
 	PyObject *o = PyEval_CallObject (args, arglist);
 
