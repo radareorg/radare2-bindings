@@ -50,7 +50,7 @@ static int py_assemble(RAsm *a, RAsmOp *op, const char *str) {
 	}
 	op->size = size = seize;
 	r_strbuf_set (&op->buf_asm, opstr);
-	r_hex_bin2str ((ut8*)r_strbuf_get (&op->buf), op->size, r_strbuf_get (&op->buf_hex));
+	//r_hex_bin2str ((ut8*)r_strbuf_get (&op->buf), op->size, r_strbuf_get (&op->buf_hex));
 	return seize;
 }
 

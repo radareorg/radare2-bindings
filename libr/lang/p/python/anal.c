@@ -151,7 +151,7 @@ static int py_set_reg_profile(RAnal *a) {
 	return -1;
 }
 
-static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len) {
+static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len, RAnalOpMask mask) {
 	PyObject *tmpreg = NULL;
 	int size = 0;
 	int seize = -1;

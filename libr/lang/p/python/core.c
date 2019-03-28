@@ -16,7 +16,7 @@ static int py_core_call(void *user, const char *str) {
 			if (PyLong_Check (result)) {
 				return (int)PyLong_AsLong (result);
 			} else if (PyLong_Check (result)) {
-				return PyLong_AsLong (result);
+				return (int)PyLong_AsLong (result);
 			} else if (PyUnicode_Check (result)) {
 				int n = PyUnicode_KIND (result);
 				switch (n) {

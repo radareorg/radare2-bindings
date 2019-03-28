@@ -62,6 +62,7 @@ endif
 all: $(LANGS)
 	@echo "LANG ${LANGS}"
 
+PYVER?=3
 ifeq ($(OSTYPE),windows)
 lang_python.${EXT_SO}:
 	${CC} ${CFLAGS} -I${HOME}/.wine/drive_c/Python34/include \

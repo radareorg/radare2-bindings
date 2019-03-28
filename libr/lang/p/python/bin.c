@@ -161,9 +161,9 @@ PyObject* create_PyBinFile(RBinFile *binfile)
 		((PyBinFile*)pb)->bin_obj = binfile->o->bin_obj;
 		((PyBinFile*)pb)->loadaddr = binfile->o->loadaddr;
 	}
-	// FIXME: RBuffer -> void*
+	// FIXME: RBuffer -> void* -> PyObject
 	if (binfile->buf) {
-		((PyBinFile*)pb)->buf = (void*)binfile->buf->buf;
+		((PyBinFile*)pb)->buf = r_buf_buffer (binfile->buf);
 	}
 	((PyBinFile*)pb)->size = binfile->size;
 	return pb;
@@ -268,7 +268,7 @@ PyObject* create_PyBinFile(RBinFile *binfile)
 		rel->addend = getI (pyrel, "addend"); \
 		rel->vaddr = getI (pyrel, "vaddr"); \
 		rel->paddr = getI (pyrel, "paddr"); \
-		rel->visibility = getI (pyrel, "visibility"); \
+		rel->visibility = (int) getI (pyrel, "visibility"); \
 		rel->is_ifunc = getI (pysym, "is_ifunc")
 
 static void *py_load_cb = NULL;
@@ -661,9 +661,9 @@ static RBinInfo *py_info(RBinFile *arch) {
 			ret->subsystem = getS (dict, "subsystem");
 			ret->machine = getS (dict, "machine");
 			ret->arch = getS (dict, "arch");
-			ret->has_va = getI (dict, "has_va");
-			ret->bits = getI (dict, "bits");
-			ret->big_endian = getI (dict, "big_endian");
+			ret->has_va = (bool) getI (dict, "has_va");
+			ret->bits = (int) getI (dict, "bits");
+			ret->big_endian = (int) getI (dict, "big_endian");
 			ret->dbg_info = getI (dict, "dbg_info");
 		} else {
 			eprintf ("info: Unknown type returned. List was expected.\n");
