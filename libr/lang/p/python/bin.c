@@ -661,7 +661,7 @@ static RBinInfo *py_info(RBinFile *arch) {
 			ret->subsystem = getS (dict, "subsystem");
 			ret->machine = getS (dict, "machine");
 			ret->arch = getS (dict, "arch");
-			ret->has_va = (bool) getI (dict, "has_va");
+			ret->has_va = getB (dict, "has_va");
 			ret->bits = (int) getI (dict, "bits");
 			ret->big_endian = (int) getI (dict, "big_endian");
 			ret->dbg_info = getI (dict, "dbg_info");
