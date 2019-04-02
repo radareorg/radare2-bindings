@@ -15,7 +15,6 @@ namespace Radare {
 //		public RList<VarType> vartypes;
 //		public RList<MetaItem> meta;
 		public RList<Refline> reflines;
-		public RList<Refline> reflines2;
 		public RReg reg;
 		public RSyscall syscall;
 

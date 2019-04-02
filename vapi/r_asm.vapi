@@ -115,16 +115,8 @@ public class RAsm {
 		/**
 		 * The code length.
 		 */
-		public int len;
-		public uint8* buf;
-		/**
-		 * The hexadecimal representation of the dissasembled code.
-		 */
-		public string buf_hex;
-		/**
-		 * The assembly representation of the dissasembled code.
-		 */
-		public string buf_asm;
+		//public int len;
+		// public uint8* buf;
 		/**
 		 * Replaces all occurrences of a code fragment with another text, usually
 		 * to enhance readability.
@@ -168,7 +160,6 @@ public class RAsm {
 	public int disassemble(out Op op, uint8* buf, int length);
 	public int assemble(out Op op, string buf);
 	public Code? mdisassemble(uint8 *buf, int length);
-	public Code? mdisassemble_hexstr(string hexstr);
 	public Code? massemble(string buf);
 	public Code? assemble_file(string file);
 

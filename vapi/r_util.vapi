@@ -115,15 +115,9 @@ namespace Radare {
 	[CCode (cname="RBuffer", cheader_filename="r_util.h", cprefix="r_buf_", free_function="r_buf_free")]
 	public class RBuffer {
 		public RBuffer();
-		public uint8 *buf;
-		public int length;
-		public int cur;
-		public uint64 base;
 		public int read_at(uint64 addr, uint8 *buf, int len);
 		public int write_at(uint64 addr, uint8 *buf, int len);
 		public bool set_bytes(uint8 *buf, int len);
-		//public bool memcpy(uint64 addr, uint8 *dst, uint8 *src, int len);
-		// ..
 	}
 
 	[Compact]
