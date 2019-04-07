@@ -366,5 +366,6 @@ static RLangPlugin r_lang_plugin_duktape = {
 RLibStruct radare_plugin = {
 	.type = R_LIB_TYPE_LANG,
 	.data = &r_lang_plugin_duktape,
+	.version = R2_VERSION
 };
 #endif

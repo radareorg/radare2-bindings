@@ -312,5 +312,6 @@ RLangPlugin PLUGIN_NAME = {
 RLibStruct radare_plugin = {
 	.type = R_LIB_TYPE_LANG,
 	.data = &PLUGIN_NAME,
+	.version = R2_VERSION
 };
 #endif
