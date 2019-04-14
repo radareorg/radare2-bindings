@@ -37,7 +37,7 @@ static int py_assemble(RAsm *a, RAsmOp *op, const char *str) {
 	const char *opstr = str;
 	ut8 *buf = (ut8*)r_strbuf_get (&op->buf);
 	if (py_assemble_cb) {
-		PyObject *arglist = Py_BuildValue ("(z)", str);
+		PyObject *arglist = Py_BuildValue ("(zK)", str, a->pc);
 		PyObject *result = PyEval_CallObject (py_assemble_cb, arglist);
 		if (check_list_result (result, "assemble")) {
 			seize = size = PyList_Size (result);
