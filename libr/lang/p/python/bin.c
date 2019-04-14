@@ -163,7 +163,14 @@ PyObject* create_PyBinFile(RBinFile *binfile)
 	}
 	// FIXME: RBuffer -> void* -> PyObject
 	if (binfile->buf) {
-		((PyBinFile*)pb)->buf = r_buf_buffer (binfile->buf);
+		Py_buffer pybuf = {
+			.buf = (void*) r_buf_buffer (binfile->buf),
+			.len = binfile->size,
+			.readonly = 1,
+			.ndim = 1,
+			.itemsize = 1
+		};
+		((PyBinFile*)pb)->buf = PyMemoryView_FromBuffer(&pybuf);
 	}
 	((PyBinFile*)pb)->size = binfile->size;
 	return pb;
@@ -183,7 +190,7 @@ PyObject* create_PyBinFile(RBinFile *binfile)
 // "add" : bool,
 // "is_data" : bool
 #define READ_SECTION(sec, pysec) \
-		strcpy (sec->name, getS (pysec, "name")); \
+		sec->name = getS (pysec, "name"); \
 		sec->size = getI (pysec, "size"); \
 		sec->vsize = getI (pysec, "vsize"); \
 		sec->vaddr = getI (pysec, "vaddr"); \
@@ -312,7 +319,15 @@ static bool py_load_bytes(RBinFile *arch, void **bin_obj, const ut8 *buf, ut64 s
 		// load_bytes(RBinFile, *binobj, buf, sz, loadaddr, sdb) - returns true/false
 		PyObject *pybinfile = create_PyBinFile(arch);
 		if (!pybinfile) return false;
-		PyObject *arglist = Py_BuildValue ("(O,y#iK,L)", pybinfile, buf, sz, loadaddr);
+		Py_buffer pybuf = {
+			.buf = (void *) buf, // Warning: const is lost when casting
+			.len = sz,
+			.readonly = 1,
+			.ndim = 1,
+			.itemsize = 1,
+		};
+		PyObject *memview = PyMemoryView_FromBuffer (&pybuf);
+		PyObject *arglist = Py_BuildValue ("(O,N,K)", pybinfile, memview, loadaddr);
 		if (!arglist) {
 			PyErr_Print();
 			return false;
@@ -341,8 +356,16 @@ static bool py_check_bytes(const ut8 *buf, ut64 length)
 			PyErr_SetString(PyExc_TypeError, "parameter must be callable");
 			return false;
 		}
-		// check_bytes(RBinFile) - returns true/false
-		PyObject *arglist = Py_BuildValue ("(y#iK)", buf, length);
+		// check_bytes(buf) - returns true/false
+		Py_buffer pybuf = {
+			.buf = (void *) buf, // Warning: const is lost when casting
+			.len = length,
+			.readonly = 1,
+			.ndim = 1,
+			.itemsize = 1,
+		};
+		PyObject *memview = PyMemoryView_FromBuffer (&pybuf);
+		PyObject *arglist = Py_BuildValue ("(N)", memview);
 		if (!arglist) {
 			PyErr_Print();
 			return false;
@@ -683,6 +706,7 @@ void Radare_plugin_bin_free(RBinPlugin *bp) {
 /* TODO: Fold the repeating code - may be add some macro? */
 PyObject *Radare_plugin_bin(Radare* self, PyObject *args) {
 	void *ptr = NULL;
+	init_pybinfile_module ();
 	PyObject *arglist = Py_BuildValue("(i)", 0);
 	PyObject *o = PyEval_CallObject (args, arglist);
 
