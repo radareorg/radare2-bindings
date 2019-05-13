@@ -87,6 +87,16 @@ namespace Radare {
 			public Value arg[2];
 		}
 
+		[Compact]
+		[CCode (cname="RAnalHint")]
+		public class Hint {
+			public uint64 addr;
+			public uint64 ptr;
+			public uint64 jump;
+			public string arch;
+			public string opcode;
+		}
+
 		[CCode (cname="int", cprefix="R_ANAL_FCN_TYPE_")]
 		public enum FcnType {
 			FCN,

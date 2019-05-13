@@ -97,7 +97,7 @@ public class Radare.RDebug {
 	public void trace_reset ();
 	public void trace_at (string str);
 	//public RDebug.Tracepoint trace_get(uint64 addr);
-	public void trace_list(int mode);
+	public void trace_list(int mode, uint64 addr);
 	//public RDebug.Tracepoint trace_add(uint64 addr, int size);
 	public bool trace_tag (int tag);
 

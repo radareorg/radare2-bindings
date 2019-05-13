@@ -10,7 +10,7 @@ namespace Radare {
 		public void view(int view);
 		public bool umount (string path);
 		public RList<RFSRoot> root (string path);
-		public RFSFile open (string path);
+		public RFSFile open (string path, bool create);
 		public void close (RFSFile file);
 		public int read(RFSFile file, uint64 addr, int len);
 		public RFSFile slurp(string path);
