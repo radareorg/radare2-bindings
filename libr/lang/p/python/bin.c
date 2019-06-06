@@ -716,15 +716,19 @@ PyObject *Radare_plugin_bin(Radare* self, PyObject *args) {
 	bp->license = getS (o, "license");
 	ptr = getF (o, "load");
 	if (ptr) {
-		Py_INCREF (ptr);
-		py_load_cb = ptr;
-		bp->load = py_load;
+		eprintf("warning: Plugin %s must implement load_buffer method instead of load.\n", bp->name);
 	}
-	ptr = getF (o, "load_bytes");
+	ptr = getF (o, "load_buffer");
+	if (getF (o, "load_bytes")) {
+		eprintf("warning: Plugin %s should implement load_buffer method instead of load_bytes.\n", bp->name);
+		if (!ptr) {
+			ptr = getF (o, "load_buffer");
+		}
+	}
 	if (ptr) {
 		Py_INCREF (ptr);
 		py_load_bytes_cb = ptr;
-		bp->load_bytes = py_load_bytes;
+		bp->load_buffer = py_load_bytes;
 	}
 	ptr = getF (o, "destroy");
 	if (ptr) {
