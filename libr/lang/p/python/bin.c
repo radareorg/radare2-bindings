@@ -161,16 +161,17 @@ PyObject* create_PyBinFile(RBinFile *binfile)
 		((PyBinFile*)pb)->bin_obj = binfile->o->bin_obj;
 		((PyBinFile*)pb)->loadaddr = binfile->o->loadaddr;
 	}
-	// FIXME: RBuffer -> void* -> PyObject
+	ut64 buf_size;
+	const ut8 *buf_ptr = r_buf_data (binfile->buf, &buf_size);
 	if (binfile->buf) {
 		Py_buffer pybuf = {
-			.buf = (void*) r_buf_buffer (binfile->buf),
-			.len = binfile->size,
+			.buf = (void*) buf_ptr,
+			.len = buf_size,
 			.readonly = 1,
 			.ndim = 1,
 			.itemsize = 1
 		};
-		((PyBinFile*)pb)->buf = PyMemoryView_FromBuffer(&pybuf);
+		((PyBinFile*)pb)->buf = PyMemoryView_FromBuffer (&pybuf);
 	}
 	((PyBinFile*)pb)->size = binfile->size;
 	return pb;
@@ -279,7 +280,7 @@ PyObject* create_PyBinFile(RBinFile *binfile)
 		rel->is_ifunc = getI (pysym, "is_ifunc")
 
 static void *py_load_cb = NULL;
-static void *py_load_bytes_cb = NULL;
+static void *py_load_buffer_cb = NULL;
 static void *py_check_bytes_cb = NULL;
 static void *py_destroy_cb = NULL;
 static void *py_baddr_cb = NULL;
@@ -311,17 +312,18 @@ static bool py_load(RBinFile *arch) {
 	return false;
 }
 
-static bool py_load_bytes(RBinFile *arch, void **bin_obj, const ut8 *buf, ut64 sz, ut64 loadaddr, Sdb *sdb) {
+static bool py_load_buffer(RBinFile *arch, void **bin_obj, RBuffer *buf, ut64 loadaddr, Sdb *sdb) {
 	int rres = 0;
+	ut64 size = 0;
+	const ut8 *buf_data = r_buf_data (buf, &size);
 
 	if (!arch) return false;
-	if (py_load_bytes_cb) {
-		// load_bytes(RBinFile, *binobj, buf, sz, loadaddr, sdb) - returns true/false
+	if (py_load_buffer_cb) {
 		PyObject *pybinfile = create_PyBinFile(arch);
 		if (!pybinfile) return false;
 		Py_buffer pybuf = {
-			.buf = (void *) buf, // Warning: const is lost when casting
-			.len = sz,
+			.buf = (void*) buf_data,
+			.len = size,
 			.readonly = 1,
 			.ndim = 1,
 			.itemsize = 1,
@@ -332,7 +334,7 @@ static bool py_load_bytes(RBinFile *arch, void **bin_obj, const ut8 *buf, ut64 s
 			PyErr_Print();
 			return false;
 		}
-		PyObject *result = PyEval_CallObject (py_load_bytes_cb, arglist);
+		PyObject *result = PyEval_CallObject (py_load_buffer_cb, arglist);
 		if (result && PyList_Check (result)) {
 			PyObject *res = PyList_GetItem (result, 0);
 			rres = PyNumber_AsSsize_t (res, NULL);
@@ -385,30 +387,21 @@ static bool py_check_bytes(const ut8 *buf, ut64 length)
 
 }
 
-static int py_destroy(RBinFile *arch) {
-	int rres = 0;
-
-	if (!arch) return -1;
+static void py_destroy(RBinFile *arch) {
+	if (!arch) return;
 	if (py_destroy_cb) {
 		// destroy(RBinFile) - returns something
 		PyObject *pybinfile = create_PyBinFile(arch);
 		PyObject *arglist = Py_BuildValue ("(O)", pybinfile);
 		if (!arglist) {
 			PyErr_Print();
-			return -1;
+			return;
 		}
 		PyObject *result = PyEval_CallObject (py_destroy_cb, arglist);
-		if (result && PyList_Check (result)) {
-			PyObject *res = PyList_GetItem (result, 0);
-			rres = PyNumber_AsSsize_t (res, NULL);
-			if (rres) {
-				return 1;
-			}
-		} else {
+		if (!(result && PyList_Check (result))) {
 			eprintf ("destroy: Unknown type returned. List was expected.\n");
 		}
 	}
-	return -1;
 }
 
 static ut64 py_baddr(RBinFile *arch) {
@@ -716,15 +709,20 @@ PyObject *Radare_plugin_bin(Radare* self, PyObject *args) {
 	bp->license = getS (o, "license");
 	ptr = getF (o, "load");
 	if (ptr) {
-		Py_INCREF (ptr);
-		py_load_cb = ptr;
-		bp->load = py_load;
+		eprintf ("warning: Plugin %s must implement load_buffer method instead of load.\n", bp->name);
 	}
-	ptr = getF (o, "load_bytes");
+	ptr = getF (o, "load_buffer");
+	if (getF (o, "load_bytes")) {
+		eprintf ("warning: Plugin %s should implement load_buffer method instead of load_bytes.\n", bp->name);
+		if (!ptr) {
+			// fallback
+			ptr = getF (o, "load_bytes");
+		}
+	}
 	if (ptr) {
 		Py_INCREF (ptr);
-		py_load_bytes_cb = ptr;
-		bp->load_bytes = py_load_bytes;
+		py_load_buffer_cb = ptr;
+		bp->load_buffer = py_load_buffer;
 	}
 	ptr = getF (o, "destroy");
 	if (ptr) {
