@@ -110,6 +110,7 @@ PyObject *Radare_plugin_asm(Radare* self, PyObject *args) {
 	ap->license = getS (o, "license");
 	ap->desc = getS (o, "desc");
 	ap->bits = getI (o, "bits");
+	ap->endian = getI (o, "endian");
 	void *ptr = getF (o, "disassemble");
 	if (ptr) {
 		Py_INCREF (ptr);
