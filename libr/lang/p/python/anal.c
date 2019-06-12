@@ -179,6 +179,7 @@ static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len, RA
 				op->cycles = getI (dict, "cycles");
 				op->size = seize;
 				op->addr = getI (dict, "addr");
+				op->delay = getI (dict, "delay");
 				op->jump = getI (dict, "jump");
 				op->fail = getI (dict, "fail");
 				op->stackop = getI (dict, "stackop");
