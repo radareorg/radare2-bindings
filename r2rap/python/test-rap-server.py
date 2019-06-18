@@ -30,13 +30,12 @@ def fun_write(buf):
         print "WRITING %d bytes (%s)"%(len(buf),buf)
         return 6
 
-def fun_read(len):
+def fun_read(size):
         global rs
-	print "read"
-        print "READ %d bytes from %d\n"% (len, rs.offset)
-        str = "patata"
-        str = str[rs.offset:]
-        return str
+        # print "READ %d bytes from %d\n"% (size, rs.offset)
+        s = "Hello World From RapLand"
+        s = s[rs.offset: rs.offset + size]
+        return s
 
 # main
 

@@ -77,13 +77,13 @@ class RapServer():
 					ret = ""
 					lon = 0
 			else:
-				print "PUTAA"
 				ret = ""
 				lon = 0;
-			print "PACKING REPLY"
+			if lon > length:
+				lon = length
+				ret = ret[0:lon]
 			buf = pack(">Bi", key | RAP_REPLY, lon)
-			print "SENDING RAP READ"
-			c.send(buf+ret)
+			c.send(buf + ret)
 		elif key == RAP_WRITE:
 			buf = c.recv(4)
 			(length,) = unpack(">I", buf)
@@ -94,21 +94,23 @@ class RapServer():
 			buf = pack(">Bi", key|RAP_REPLY, length)
 			c.send(buf)
 		elif key == RAP_SEEK:
+			# <(addr:8 + whence:1) (pkt:1 + addr:8)>
+			# read 9 bytes: 8 for the address + 1 for the whence
 			buf = c.recv(9)
-			(type, off) = unpack(">BQ", buf)
+			(whence, off) = unpack(">BQ", buf)
 			seek = 0
 			if self.handle_seek != None:
-				seek = self.handle_seek(off, type)
+				seek = self.handle_seek(off, whence)
 			else:
-				if   type == 0: # SET
+				if   whence == 0: # SET
 					seek = off;
-				elif type == 1: # CUR
+				elif whence == 1: # CUR
 					seek = seek + off 
-				elif type == 2: # END
+				elif whence == 2: # END
 					seek = self.size;
 			self.offset = seek
-			buf = pack(">BQ", key|RAP_REPLY, seek)
-			c.send(buf)
+			# send 9 bytes
+			c.send(pack(">BQ", key|RAP_REPLY, seek))
 		elif key == RAP_CLOSE:
 			if self.handle_close != None:
 				length = self.handle_close (fd)
