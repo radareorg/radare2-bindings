@@ -82,7 +82,7 @@ static int init(RLang *lang) {
 	lua_setglobal(L,"cmd");
 #endif
 
-	lua_run (lang, "package.path=os.getenv(\"HOME\")..\"/.config/radare2/plugins/lua/?.lua;\"..package.path", 0);
+	lua_run (lang, "package.path=os.getenv(\"HOME\")..\"/.local/share/radare2/plugins/lua/?.lua;\"..package.path", 0);
 	lua_run (lang, "json = require \"json\"", 0);
 	lua_run (lang, "function r2cmdj(x)\n" \
 		"	return json.decode(r2cmd(x))\n" 
