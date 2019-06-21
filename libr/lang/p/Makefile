@@ -26,6 +26,10 @@ LUAPKG=$(shell pkg-config --list-all|awk '/lua5|lua5-/{print $$1;}')
 ifneq (${LUAPKG},)
 CFLAGS+=$(shell pkg-config --cflags ${LUAPKG})
 LUA_LDFLAGS+=$(shell pkg-config --libs ${LUAPKG})
+else
+LUA_VERSION=5.3.5
+LUA_CFLAGS+=-Ilua-$(LUA_VERSION)/src
+LUA_LDFLAGS+=`ls lua-$(LUA_VERSION)/src/*.c | grep -v lua.c | grep -v luac.c`
 endif
 
 BINDEPS=
@@ -46,9 +50,7 @@ LANGS+=lang_tcc.${EXT_SO}
 endif
 
 ifeq ($(WANT_LUA),1)
-ifeq ($(HAVE_LIB_LUA5_1),1)
 LANGS+=lang_lua.${EXT_SO}
-endif
 endif
 
 ifeq ($(WANT_CS),1)
@@ -108,13 +110,15 @@ lang_duktape.$(EXT_SO): duktape.o duk
 	-$(CC) -std=c99 $(DUK_CFLAGS) $(CFLAGS) -fPIC $(LDFLAGS_LIB) \
 		-o lang_duktape.$(EXT_SO) duktape.c
 
-lua lang_lua.${EXT_SO}: lua.o
-	-${CC} ${CFLAGS} -fPIC ${LDFLAGS_LIB} -o lang_lua.${EXT_SO} lua.c ${LUA_LDFLAGS}
+lua lang_lua.${EXT_SO}: lua-sync
+	-${CC} $(LUA_CFLAGS) ${CFLAGS} -fPIC ${LDFLAGS_LIB} -o lang_lua.${EXT_SO} lua.c ${LUA_LDFLAGS}
 
 lua-install:
 	mkdir -p ${R2PM_PLUGDIR}/lua
 	cp -f lang_lua.${EXT_SO} ${R2PM_PLUGDIR}
 	cp -f lua/*.lua ${R2PM_PLUGDIR}/lua
+	# TODO: move this radare.lua into lua/
+	cp -f radare.lua ${R2PM_PLUGDIR}/lua
 
 lang_ruby.${EXT_SO}:
 	-env CFLAGS="${CFLAGS}" ruby mkruby.rb
@@ -153,6 +157,17 @@ p:
 	rm -f lang_python.${EXT_SO}
 	$(MAKE) lang_python.${EXT_SO} PYVER=3
 	cp -f lang_python.${EXT_SO} ~/.local/share/radare2/plugins
+
+
+ifeq (${LUAPKG},)
+lua-sync: lua-${LUA_VERSION}
+else
+lua-sync:
+endif
+
+lua-${LUA_VERSION}:
+	wget -c https://www.lua.org/ftp/lua-$(LUA_VERSION).tar.gz
+	tar xzvf lua-$(LUA_VERSION).tar.gz
 
 duk duktape-sync duk-sync sync-dunk sync-duktape:
 	rm -f $(DUKTAPE_FILE)

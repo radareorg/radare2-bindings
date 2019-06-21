@@ -87,17 +87,21 @@ static int init(RLang *lang) {
 	lua_run (lang, "function r2cmdj(x)\n" \
 		"	return json.decode(r2cmd(x))\n" 
 		"end\n", 0);
+/*
+	// this requires the native bindings to be built, nobody does that in 2019
 	lua_run (lang, "require \"r_core\"", 0);
 	sprintf (a, "c=r_core.RCore_ncast(0x%"PFMT64x")",
 		(ut64)(size_t)(void*)core);
 	lua_run (lang, a, 0);
+*/
 
 	//-- load template
 	/// DEPRECATED theres no need for this. better embed everything in into this .c
-	r_lua_file (NULL, LIBDIR"/radare2/"R2_VERSION"/radare.lua");
+	// r_lua_file (NULL, LIBDIR"/radare2/"R2_VERSION"/radare.lua");
+	// r_lua_file (NULL, LIBDIR"/radare2/"R2_VERSION"/radare.lua");
 	fflush (stdout);
 
-	return R_TRUE;
+	return true;
 }
 
 static int lua_run(RLang *lang, const char *code, int len) {
@@ -110,7 +114,7 @@ static int lua_run(RLang *lang, const char *code, int len) {
 	}
 	clearerr (stdin);
 	//lua_close(L); // TODO
-	return R_TRUE;
+	return true;
 }
 
 static struct r_lang_plugin_t r_lang_plugin_lua = {
