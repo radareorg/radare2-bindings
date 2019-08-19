@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2014-2015 pancake */
+/* radare - LGPL - Copyright 2014-2019 pancake */
 
 #define _XOPEN_SOURCE 
 #include <stdio.h>
@@ -10,6 +10,7 @@
 #include <r_lang.h>
 
 #include "./duk/duktape.c"
+#include "./duk/duk_console.c"
 
 static char *mystrdup(const char *s) {
 	char *p = NULL;
@@ -304,7 +305,7 @@ static bool lang_duktape_safe_eval(duk_context *ctx, const char *code) {
 	duk_push_string (ctx, "input");
 	rc = duk_safe_call (ctx, wrapped_compile_execute, NULL, 2, 1);
 	if (rc != DUK_EXEC_SUCCESS) {
-		print_error(ctx, stderr);
+		print_error (ctx, stderr);
 		rc = false;
 	} else {
 		duk_pop (ctx);
@@ -316,16 +317,20 @@ static bool lang_duktape_safe_eval(duk_context *ctx, const char *code) {
 
 static void register_helpers(RLang *lang) {
 	// TODO: move this code to init/fini
-	if (is_init)
+	if (is_init) {
 		return;
+	}
 	is_init = 1;
 	ctx = duk_create_heap_default ();
+        duk_console_init(ctx, DUK_CONSOLE_PROXY_WRAPPER /*flags*/);
 	register_r2cmd_duktape (lang, ctx);
+#if  0
 	lang_duktape_safe_eval (ctx,
 		"var console = {log:print,error:print}");
+#endif
 	lang_duktape_safe_eval (ctx, "function dir(x){"
-		"print(JSON.stringify(x).replace(/,/g,',\\n '));"
-		"for(var i in x) {print(i);}}");
+		"console.log(JSON.stringify(x).replace(/,/g,',\\n '));"
+		"for(var i in x) {console.log(i);}}");
 }
 
 static int lang_duktape_run(RLang *lang, const char *code, int len) {
@@ -347,6 +352,7 @@ static int lang_duktape_file(RLang *lang, const char *file) {
 			eprintf ("duktape error");
 		} else {
 			duk_pop (ctx);
+			ret = 1;
 		}
 	}
 	return ret;
@@ -354,7 +360,7 @@ static int lang_duktape_file(RLang *lang, const char *file) {
 
 static RLangPlugin r_lang_plugin_duktape = {
 	.name = "duktape",
-	.ext = "js",
+	.ext = "duk",
 	.desc = "JavaScript extension language using DukTape",
 	.run = lang_duktape_run,
 	.init = (void*)lang_duktape_init,

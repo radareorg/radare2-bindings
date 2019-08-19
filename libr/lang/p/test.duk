@@ -1,0 +1,4 @@
+console.log('Hello World');
+const a=  33;
+console.log(a);
+console.log(JSON.stringify({a:123}));

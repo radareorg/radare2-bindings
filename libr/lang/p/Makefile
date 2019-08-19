@@ -149,9 +149,10 @@ install-home:
 	[ -n "`ls *.$(EXT_SO)`" ] && \
 		cp -f *.$(EXT_SO) ${R2PM_PLUGDIR} || true
 
-DUKTAPE_VER=2.3.0
+DUKTAPE_VER=2.4.0
 DUKTAPE_FILE=duktape-$(DUKTAPE_VER).tar.xz
-DUKTAPE_URL=http://duktape.org/$(DUKTAPE_FILE)
+DUKTAPE_URL=https://duktape.org/$(DUKTAPE_FILE)
+DV=duktape-${DUKTAPE_VER}
 
 p:
 	rm -f lang_python.${EXT_SO}
@@ -174,9 +175,13 @@ duk duktape-sync duk-sync sync-dunk sync-duktape:
 	wget -O $(DUKTAPE_FILE) $(DUKTAPE_URL)
 	tar xJvf $(DUKTAPE_FILE)
 	mkdir -p duk
-	cp -f duktape-$(DUKTAPE_VER)/src/duktape.* duk/
-	cp -f duktape-$(DUKTAPE_VER)/src/duk_config.h duk/
-	rm -rf $(DUKTAPE_FILE) duktape-$(DUKTAPE_VER)
+	cp -f $(DV)/src/duktape.* duk/
+	cp -f $(DV)/src/duk_config.h duk/
+	cp -f $(DV)/extras/console/duk* duk/
+	rm -rf $(DUKTAPE_FILE) ${DV}
+
+duk-install install-duk:
+	cp -f lang_duktape.${EXT_SO} ${R2PM_PLUGDIR}
 
 PCP=/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
 
