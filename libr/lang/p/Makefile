@@ -88,6 +88,9 @@ py python:
 	rm -f lang_python.$(EXT_SO)
 	$(MAKE) lang_python.$(EXT_SO)
 
+py-clean:
+	rm -f python.o lang_python.$(EXT_SO)
+
 py-install python-install:
 	mkdir -p ${R2PM_PLUGDIR}
 	cp -f lang_python.$(EXT_SO) ${R2PM_PLUGDIR}
