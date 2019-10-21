@@ -141,6 +141,10 @@ genbind.py -o /tmp/r2bindings-output
 ```
 
 The tool required `radare2` to be installed and takes the include directory from the output of `r2 -H`
+It is possible also specify the particular languages, for example:
+```sh
+genbind.py -o /tmp/r2bindings-output -l go rust python
+```
 
 # PYTHON
 
