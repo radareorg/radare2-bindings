@@ -10,14 +10,6 @@ PCS="${PYTHON_CONFIG}
 	python3.7
 	python36
 	python3.6
-	python35
-	python3.5
-	python34
-	python3.4
-	python33
-	python3.3
-	python32
-	python3.2
 	python"
 
 PYCFG=""
@@ -26,16 +18,16 @@ for a in ${PCS} ; do
 	$a --help >/dev/null 2>&1
 	if [ $? = 0 ]; then
 		PYCFG=$a
-		PY3=`$a --version 2>&1 | grep 'Python 3'`
+		PY3=$($a --version 2>&1 | grep 'Python 3')
 		[ -n "${PY3}" ] && break
 	fi
 done
 
 [ -z "${PYCFG}" ] && exit 1
 if [ "$1" = "-n" ]; then
-	echo ${PYCFG}
+	echo "${PYCFG}"
 	exit 0
 fi
 
-${PYCFG} $@ | sed -e 's/-arch [^\s]*//g' | \
+"${PYCFG}" "$@" | sed -e 's/-arch [^\s]*//g' | \
 	sed s,-Wstrict-prototypes,,g 2>/dev/null

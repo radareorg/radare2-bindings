@@ -1,4 +1,4 @@
-# radare2 language bindings for r2 api
+# radare2 language bindings
 
 This repository contains the native bindings generated with Valabind to use the radare2 APIs.
 
@@ -10,17 +10,26 @@ This directory contains the code necessary to use the r2 api from your
 favourite language.
 
 It supports a large list of programming languages:
-
-  - Python, JavaScript, Java, Vala, Go, Ruby, Perl, Lua, NewLisp, Guile, OCaml
+- Python
+- JavaScript
+- Java
+- Go
+- Ruby
+- Perl
+- Lua
+- Vala
+- NewLisp
+- Guile
+- OCaml
 
 And some other experimental bindings are for:
 
-  - GIR, C++, C#
+- GIR
+- C++
+- C#
 
 This package also contains the vdoc/ subdirectory which contains the
-rules used to generate all interactive html documentation found at:
-
-   http://radare.org/vdoc
+rules used to generate all [interactive html documentation](https://radare.org/vdoc).
 
 ## Dependencies
 
@@ -30,14 +39,15 @@ To build radare2-bindings from repository you need the following programs instal
   * vala: if you want to have Vala or Genie bindings
   * valabind: required only in developer mode (not release tarball)
 
-Release tarballs come with all the pregenerated .cxx files, so you have
+Release tarballs come with all the pregenerated `.cxx` files, so you have
 no extra dependencies apart from the language libraries and C++ compiler.
 
 ### Using r2pm
 
 Fortunely, all those dependencies can be installed with r2pm:
-
-* r2pm -i vala swig valabind
+```sh
+r2pm -i vala swig valabind
+```
 
 ### Building by hand
 
@@ -46,31 +56,35 @@ To get install all dependencies do the following steps in order:
   * Install swig and git from repository
     (ensure you don't have vala installed from package)
 
-		arch$ sudo pacman -S swig git
-		deb$ sudo apt install swig git
+```sh
+arch$ sudo pacman -S swig git
+deb$ sudo apt install swig git
+```
 
-  * Install latest release of Vala from tarball
+  * Install [latest release](https://live.gnome.org/Vala) of Vala from tarball
 
-	http://live.gnome.org/Vala
-
-		./configure --prefix=/usr
-		make
-		sudo make install
-
+```sh
+./configure --prefix=/usr
+make
+sudo make install
+```
   * Clone vala compiler from git repository:
 
-		$ git clone https://gitlab.gnome.org/GNOME/vala
-		$ cd vala
-		$ sh autogen.sh --prefix=/usr
-		$ make
-		$ sudo make install
-
+```sh
+$ git clone https://gitlab.gnome.org/GNOME/vala
+$ cd vala
+$ sh autogen.sh --prefix=/usr
+$ make
+$ sudo make install
+```
   * Fetch valabind from the repository:
 
-		$ git clone git://github.com/radare/valabind.git
-		$ cd valabind
-		$ make
-		$ sudo make install PREFIX=/usr
+```sh
+$ git clone git://github.com/radare/valabind.git
+$ cd valabind
+$ make
+$ sudo make install PREFIX=/usr
+```
 
 ## To keep bindings up-to-date
 
@@ -78,28 +92,30 @@ When changes are done in libr an ABI break can occur. The bindings will require
 to be recompiled to work again.
 
 It's recommendable to keep your system always up to date, and upgrade vala
-and valabind from git/hg.
+and valabind from git.
+```sh
+$ cd vala
+$ git pull
+$ make
+$ sudo make install
 
-	$ cd vala
-	$ git pull
-	$ make
-	$ sudo make install
-
-	$ cd ../valabind
-	$ git pull
-	$ make
-	$ sudo make install PREFIX=/usr
-
+$ cd ../valabind
+$ git pull
+$ make
+$ sudo make install PREFIX=/usr
+```
 
 ## radare2-bindings
 
 If you compile from the repo you need the latest version of valabind and then:
+```
+./configure --prefix=/usr
+```
 
-	./configure --prefix=/usr
-
-You can select the languages you want to compile with --enable={list-of-langs}
-
-	./configure --prefix=/usr --enable=python
+You can select the languages you want to compile with `--enable={list-of-langs}`
+```
+./configure --prefix=/usr --enable=python
+```
 
 ## Experimental radare2 bindgen
 
@@ -120,7 +136,9 @@ More languages are planned, in particular:
 
 ### Usage
 
-`genbind.py -o /tmp/r2bindings-output`
+```sh
+genbind.py -o /tmp/r2bindings-output
+```
 
 The tool required `radare2` to be installed and takes the include directory from the output of `r2 -H`
 
@@ -128,13 +146,13 @@ The tool required `radare2` to be installed and takes the include directory from
 
 To select the version of python to compile for use the PYTHON_CONFIG
 environment variable as follows:
-
-	$ ./configure --prefix=/usr --enable-devel
-	$ cd python
-	$ PYTHON_CONFIG=python3.2-config make
-	$ su -
-	# PYTHON_CONFIG=python3.2-config make install
-
+```sh
+$ ./configure --prefix=/usr --enable-devel
+$ cd python
+$ PYTHON_CONFIG=python3.2-config make
+$ su -
+# PYTHON_CONFIG=python3.2-config make install
+```
 
 # RANDOM NOTES
 
@@ -147,7 +165,7 @@ These api changes are for:
     Every language has its own keywords, r2api should try to workaround
     all those keywords to avoid collisions for bindings.
 
-    Example: use, del, from, continue, etc..
+    Example: `use`, `del`, `from`, `continue`, etc..
 
     TODO: we need to review APIs, find better names for functions using
     those keywords, etc..
@@ -159,9 +177,12 @@ These api changes are for:
     APIs or integrate them with the syntax sugar of the target language.
 
     Example:
-      foreach (var foo in binls.get_symbols ()) {
-        print ("%s 0x%08"PFMT64x"\n", foo.name, foo.offset);
-      }
+
+```vala
+  foreach (var foo in binls.get_symbols ()) {
+	print ("%s 0x%08"PFMT64x"\n", foo.name, foo.offset);
+  }
+```
 
   - Unit testing
 
@@ -178,4 +199,4 @@ These api changes are for:
 SWIG is not complete, there are still so many bugs to fix and so many
 unimplemented stuff. Here's a list of the most anoying things of it:
 
-  - unsigned char * : not implemented
+  - `unsigned char *` : not implemented

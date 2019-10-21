@@ -1,26 +1,25 @@
 #!/usr/bin/env python3
-import sys
+# pylint: disable=missing-docstring
+# pylint: disable=invalid-name
 import os.path
 import logging
 import tempfile
 import argparse
 import subprocess
+import locale
 from subprocess import call, check_output
 from io import StringIO
 
-# TODO: Better Python3 support
+# Force the UTF-8 locale here
+# FIXME: Still doesn't affect subprocess.Popen() calls
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 # --------------------------------------------------------------------
 #                        Helper functions
 def which(program):
-    def is_file(fpath):
-        if sys.version_info >= (3,0):
-            return os.path.is_file(fpath)
-        else:
-            return os.path.isfile(fpath)
 
     def is_exe(fpath):
-        return is_file(fpath) and os.access(fpath, os.X_OK)
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
     fpath, fname = os.path.split(program)
     if fpath:
@@ -35,14 +34,13 @@ def which(program):
     return None
 
 # For now works only for GCC
-# TODO: Fix, since it depends on locale
 def get_gcc_include_paths():
     startline = "#include <...> search starts here:"
     cmdline = ["cpp", "-v", "/dev/null", "-o", "/dev/null"]
     p = subprocess.Popen(cmdline, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-    out, err = p.communicate()
+    _, err = p.communicate()
     # Interesting output is in stderr:
-    lines = err.split('\n')
+    lines = err.decode('utf-8').split('\n')
     includes = []
     if startline in lines:
         start = lines.index(startline)
@@ -54,11 +52,11 @@ def get_gcc_include_paths():
     return includes
 
 def get_radare2_include_dir():
-    r2indir = "/usr/local/include/libr" # default value
+    r2incdir = "/usr/local/include/libr" # default value
     cmdline = ["r2", "-H"]
     p = subprocess.Popen(cmdline, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-    out, err = p.communicate()
-    lines = out.split('\n')
+    out, _ = p.communicate()
+    lines = out.decode('utf-8').split('\n')
     for l in lines:
         if l.startswith('INCDIR='):
             r2incdir = l[7:]
@@ -69,10 +67,11 @@ cpp_includedirs = get_gcc_include_paths()
 radare2_includedir = get_radare2_include_dir()
 
 def get_compiler_include_paths():
+    print("Using compiler includes from {0}...".format(cpp_includedirs))
     return cpp_includedirs
 
 def get_radare2_include_paths():
-    print(radare2_includedir)
+    print("Parsing headers from {0}...".format(radare2_includedir))
     return [radare2_includedir]
 
 # --------------------------------------------------------------------
@@ -126,24 +125,13 @@ def check_python_requirements():
     # Check if Clang/LLVM is installed
     # Check if its headers are installed
     # Check if "ctypeslib2" is installed - "pip install ctypeslib2"
-    # Python 3 way:
     package_name = "ctypeslib"
-    if sys.version_info >= (3,0):
-        import importlib.util
-        spec = importlib.util.find_spec(package_name)
-        if spec is None:
-            print(ctypeslib2_message)
-            return False
-        return True
-    # Python 2 way:
-    else:
-        import pip
-        installed_pkgs = pip.get_installed_distributions()
-        flat_installed_pkgs = [pkg.project_name for pkg in installed_pkgs]
-        if package_name + "2" in flat_installed_pkgs:
-            return True
+    import importlib.util
+    spec = importlib.util.find_spec(package_name)
+    if spec is None:
         print(ctypeslib2_message)
         return False
+    return True
 
 def check_ruby_requirements():
     # Check if we have Ruby installed
@@ -209,7 +197,6 @@ def check_ocaml_requirements():
 # Converters for every language
 
 def gen_python_bindings(outdir, path):
-    import ctypeslib
     from ctypeslib.codegen import clangparser
     from ctypeslib.codegen import codegenerator
     pyout = StringIO()
@@ -218,17 +205,18 @@ def gen_python_bindings(outdir, path):
     # TODO: Make it configurable
     clang_opts = r2_includes + c_includes
 
-    parser = clangparser.Clang_Parser(flags = clang_opts)
+    cparser = clangparser.Clang_Parser(flags=clang_opts)
     print("Parsing {0:s} file...\n".format(path))
-    items = parser.parse(path)
+    cparser.parse(path)
+    items = cparser.get_result()
     if items is None:
         print("Error parsing {0} file!\n".format(fname))
         return False
     gen = codegenerator.Generator(pyout)
     # See ctypeslib/clang2py.py for more options
-    gen.generate(parser, items, flags=[], verbose=True)
+    gen.generate(cparser, items)
     outfname = outdir + "/" + fname + ".py"
-    with fopen(outfname, "w") as f:
+    with open(outfname, "w") as f:
         f.write(pyout.getvalue())
         pyout.close()
         return True
@@ -371,11 +359,11 @@ if __name__ == "__main__":
         lst = read_file_list()
         # Python bindings
         if check_requirements():
-            for f in lst:
-                gen_bindings(outdir, f)
+            for hdr in lst:
+                gen_bindings(outdir, hdr)
             # Go bindings generated all at once
             if langs["go"]:
-                gen_go_bindings(outdir, f)
+                gen_go_bindings(outdir, hdr)
             check_bindings(outdir)
     else:
         parser.print_help()

@@ -10,14 +10,6 @@ PCS="${PYTHON_CONFIG}
 	python3.7-config
 	python36-config
 	python3.6-config
-	python35-config
-	python3.5-config
-	python34-config
-	python3.4-config
-	python33-config
-	python3.3-config
-	python32-config
-	python3.2-config
 	python-config"
 
 PYCFG=""
@@ -32,11 +24,11 @@ done
 
 [ -z "${PYCFG}" ] && exit 1
 if [ "$1" = "-n" ]; then
-	echo ${PYCFG}
+	echo "${PYCFG}"
 	exit 0
 fi
 
-${PYCFG} $@ | sed \
+"${PYCFG}" "$@" | sed \
 	-e 's/-arch [^\ ]*//g' \
 	-e 's, s ,,g' \
 	-e 's,-mn[^\ ]*,,g' \

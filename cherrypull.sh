@@ -21,14 +21,14 @@ fi
 git branch -D branch
 git checkout -b branch
 git reset --hard @~100
-git pull $RR $RB
-C=`git log | grep ^commit | head -n $N | cut -d ' ' -f2`
+git pull "$RR" "$RB"
+C=$(git log | grep ^commit | head -n "$N" | cut -d ' ' -f2)
 RC=""
 git checkout master
 for a in $C ; do
 	RC="$a $RC"
 done
 for a in $RC ; do
-	git cherry-pick $a
+	git cherry-pick "$a"
 done
 git branch -D branch

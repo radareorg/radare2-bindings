@@ -1,8 +1,7 @@
 #!/bin/sh
 #
-# Look for the 'acr' tool here: http://www.nopcode.org/
-# Clone last version of ACR from here:
-#  hg clone http://youterm.com/hg/acr
+# Look for the 'acr' tool here:
+#  git clone https://github.com/radare/acr
 #
 # -- pancake
 acr -p
