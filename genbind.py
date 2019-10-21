@@ -154,7 +154,7 @@ def check_python_requirements():
     if spec is None:
         print(ctypeslib2_message)
         return False
-    return False
+    return True
 
 def check_ruby_requirements():
     # Check if we have Ruby installed
@@ -363,6 +363,13 @@ def check_requirements():
     langs["haskell"] = check_haskell_requirements()
     return result
 
+def get_choices():
+    result = []
+    for k, v in langs.items():
+        if v:
+            result += [k]
+    return result
+
 # TODO: Better fail check
 def gen_bindings(outdir, path):
     result = True
@@ -377,23 +384,34 @@ def gen_bindings(outdir, path):
 def check_bindings(outdir):
     return True
 
-# TODO: add language selection option
 # TODO: add debug option
 if __name__ == "__main__":
     logging.basicConfig(format="%(asctime)s %(message)s")
     parser = argparse.ArgumentParser(description="Generate language bindings")
-    parser.add_argument("-o", "--out", nargs="+", help="Output directory")
-    args = parser.parse_args()
-    if args.out is not None:
-        outdir = args.out[0]
-        lst = read_file_list()
-        # Python bindings
-        if check_requirements():
+    if check_requirements():
+        choices = get_choices()
+        parser.add_argument("-o", "--out", nargs="+", help="Output directory")
+        parser.add_argument("-l", "--languages", choices=get_choices(),
+                nargs='+', help="Select supported languages (on your configuration)")
+        args = parser.parse_args()
+        if args.languages is not None:
+            for l in langs:
+                langs[l] = False
+            for l in args.languages:
+                if l in langs:
+                    langs[l] = True
+        if args.out is not None:
+            outdir = args.out[0]
+            lst = read_file_list()
             for hdr in lst:
                 gen_bindings(outdir, hdr)
             # Go bindings generated all at once
             if langs["go"]:
                 gen_go_bindings(outdir, hdr)
             check_bindings(outdir)
+        else:
+            print('ERROR: Please specify output directory!')
+            parser.print_help()
     else:
+        print('ERROR: No suitable language generators found!')
         parser.print_help()
