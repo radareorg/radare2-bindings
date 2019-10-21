@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # pylint: disable=missing-docstring
 # pylint: disable=invalid-name
+import os
 import os.path
 import logging
 import tempfile
@@ -33,6 +34,15 @@ def which(program):
 
     return None
 
+def set_pkgconfig(libdir):
+    pkgenv = os.environ.copy()
+    pkgconfigdir = libdir + '/pkgconfig'
+    if 'PKG_CONFIG_PATH' in pkgenv:
+        pkgenv['PKG_CONFIG_PATH'] = pkgenv['PKG_CONFIG_PATH'] + ':' + pkgconfigdir
+    else:
+        pkgenv['PKG_CONFIG_PATH'] = pkgconfigdir
+    return pkgenv
+
 # For now works only for GCC
 def get_gcc_include_paths():
     startline = "#include <...> search starts here:"
@@ -58,13 +68,26 @@ def get_radare2_include_dir():
     out, _ = p.communicate()
     lines = out.decode('utf-8').split('\n')
     for l in lines:
-        if l.startswith('INCDIR='):
-            r2incdir = l[7:]
+        if l.startswith('R2_INCDIR='):
+            r2incdir = l[10:]
 
     return r2incdir
 
+def get_radare2_lib_dir():
+    r2libdir = "/usr/local/lib" # default value
+    cmdline = ["r2", "-H"]
+    p = subprocess.Popen(cmdline, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+    out, _ = p.communicate()
+    lines = out.decode('utf-8').split('\n')
+    for l in lines:
+        if l.startswith('R2_LIBDIR='):
+            r2libdir = l[10:]
+
+    return r2libdir
+
 cpp_includedirs = get_gcc_include_paths()
 radare2_includedir = get_radare2_include_dir()
+radare2_libdir = get_radare2_lib_dir()
 
 def get_compiler_include_paths():
     print("Using compiler includes from {0}...".format(cpp_includedirs))
@@ -131,7 +154,7 @@ def check_python_requirements():
     if spec is None:
         print(ctypeslib2_message)
         return False
-    return True
+    return False
 
 def check_ruby_requirements():
     # Check if we have Ruby installed
@@ -234,8 +257,10 @@ def gen_rust_bindings(outdir, path):
     # Add the include directory, for angled includes
     cmdline += " -- -I" + radare2_includedir
     # run it
+    # set PKG_CONFIG_PATH
+    pkgenv = set_pkgconfig(radare2_libdir)
     # TODO: Check return code
-    call(cmdline, shell=True)
+    call(cmdline, shell=True, env=pkgenv)
     return True
 
 cgo_tmpl = """
@@ -275,11 +300,14 @@ def gen_go_bindings(outdir, path):
     tmpfname = "radare2.yml"
     tmpf = open(tmpfname, "w")
     tmpf.write(yml)
-    print("Writing YAML file: {0}".format(tmpfname))
-    cmdline = "c-for-go -ccdefs -ccincl {0}".format(tmpfname)
-    # TODO: Check return code
-    call(cmdline, shell=True)
     tmpf.close()
+    print("Writing YAML file: {0}".format(tmpfname))
+    # cmdline = "c-for-go -ccdefs -ccincl {0}".format(tmpfname)
+    cmdline = "c-for-go {0}".format(tmpfname)
+    # set PKG_CONFIG_PATH
+    pkgenv = set_pkgconfig(radare2_libdir)
+    # TODO: Check return code
+    call(cmdline, shell=True, env=pkgenv)
     return True
 
 chs = """
@@ -304,9 +332,11 @@ def gen_haskell_bindings(outdir, path):
     tmpf.write(tmpchs)
     print("Writing CHS file: {0}".format(tmpfname))
     cmdline = "c2hs -d trace -d genbind -d ctrav -k -t {0} -C \"{1}\" {2}".format(outdir, cpp_opts, tmpfname)
-    print(cmdline)
+    # print(cmdline)
+    # set PKG_CONFIG_PATH
+    pkgenv = set_pkgconfig(radare2_libdir)
     # TODO: Check return code
-    call(cmdline, shell=True)
+    call(cmdline, shell=True, env=pkgenv)
     tmpf.close()
     return True
 
