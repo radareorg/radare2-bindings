@@ -279,7 +279,6 @@ PyObject* create_PyBinFile(RBinFile *binfile)
 		rel->visibility = (int) getI (pyrel, "visibility"); \
 		rel->is_ifunc = getI (pysym, "is_ifunc")
 
-static void *py_load_cb = NULL;
 static void *py_load_buffer_cb = NULL;
 static void *py_check_bytes_cb = NULL;
 static void *py_destroy_cb = NULL;
@@ -291,26 +290,6 @@ static void *py_relocs_cb = NULL;
 static void *py_binsym_cb = NULL;
 static void *py_entries_cb = NULL;
 static void *py_info_cb = NULL;
-
-static bool py_load(RBinFile *arch) {
-	int rres = 0;
-
-	if (!arch) return NULL;
-	if (py_load_cb) {
-		// info(RBinFile) - returns dictionary (structure) for RAnalOp
-		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(O)", pybinfile);
-		PyObject *result = PyEval_CallObject (py_load_cb, arglist);
-		if (result && PyList_Check (result)) {
-			PyObject *res = PyList_GetItem (result, 0);
-			rres = PyNumber_AsSsize_t (res, NULL);
-			if (rres) return true;
-		} else {
-			eprintf ("Unknown type returned. List was expected.\n");
-		}
-	}
-	return false;
-}
 
 static bool py_load_buffer(RBinFile *arch, void **bin_obj, RBuffer *buf, ut64 loadaddr, Sdb *sdb) {
 	int rres = 0;
