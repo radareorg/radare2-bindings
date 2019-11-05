@@ -201,6 +201,7 @@ static int py_anal(RAnal *a, RAnalOp *op, ut64 addr, const ut8 *buf, int len, RA
 				READ_VAL(tmpdst, op->dst, tmpreg)
 				// Loading 'var' value if presented
 				r_strbuf_set (&op->esil, getS (dict, "esil"));
+				op->mnemonic = r_str_new (getS (dict, "mnemonic"));
 				// TODO: Add opex support here
 				Py_DECREF (dict);
 			}
