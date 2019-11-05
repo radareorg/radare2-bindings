@@ -279,9 +279,8 @@ PyObject* create_PyBinFile(RBinFile *binfile)
 		rel->visibility = (int) getI (pyrel, "visibility"); \
 		rel->is_ifunc = getI (pysym, "is_ifunc")
 
-static void *py_load_cb = NULL;
 static void *py_load_buffer_cb = NULL;
-static void *py_check_bytes_cb = NULL;
+static void *py_check_buffer_cb = NULL;
 static void *py_destroy_cb = NULL;
 static void *py_baddr_cb = NULL;
 static void *py_sections_cb = NULL;
@@ -291,26 +290,6 @@ static void *py_relocs_cb = NULL;
 static void *py_binsym_cb = NULL;
 static void *py_entries_cb = NULL;
 static void *py_info_cb = NULL;
-
-static bool py_load(RBinFile *arch) {
-	int rres = 0;
-
-	if (!arch) return NULL;
-	if (py_load_cb) {
-		// info(RBinFile) - returns dictionary (structure) for RAnalOp
-		PyObject *pybinfile = create_PyBinFile(arch);
-		PyObject *arglist = Py_BuildValue ("(O)", pybinfile);
-		PyObject *result = PyEval_CallObject (py_load_cb, arglist);
-		if (result && PyList_Check (result)) {
-			PyObject *res = PyList_GetItem (result, 0);
-			rres = PyNumber_AsSsize_t (res, NULL);
-			if (rres) return true;
-		} else {
-			eprintf ("Unknown type returned. List was expected.\n");
-		}
-	}
-	return false;
-}
 
 static bool py_load_buffer(RBinFile *arch, void **bin_obj, RBuffer *buf, ut64 loadaddr, Sdb *sdb) {
 	int rres = 0;
@@ -346,21 +325,24 @@ static bool py_load_buffer(RBinFile *arch, void **bin_obj, RBuffer *buf, ut64 lo
 	return false;
 }
 
-static bool py_check_bytes(const ut8 *buf, ut64 length)
+static bool py_check_buffer(RBuffer *buf)
 {
 	int rres = 0;
+	ut64 length = 0;
+	const ut8 *buf_data = r_buf_data (buf, &length);
 
-	if (!buf || length == 0) {
+
+	if (!buf_data || length == 0) {
 		eprintf("Empty buffer!\n");
 	}
-	if (py_check_bytes_cb) {
-		if (!PyCallable_Check(py_check_bytes_cb)) {
+	if (py_check_buffer_cb) {
+		if (!PyCallable_Check(py_check_buffer_cb)) {
 			PyErr_SetString(PyExc_TypeError, "parameter must be callable");
 			return false;
 		}
-		// check_bytes(buf) - returns true/false
+		// check_buffer(buf) - returns true/false
 		Py_buffer pybuf = {
-			.buf = (void *) buf, // Warning: const is lost when casting
+			.buf = (void *) buf_data, // Warning: const is lost when casting
 			.len = length,
 			.readonly = 1,
 			.ndim = 1,
@@ -372,7 +354,7 @@ static bool py_check_bytes(const ut8 *buf, ut64 length)
 			PyErr_Print();
 			return false;
 		}
-		PyObject *result = PyEval_CallObject (py_check_bytes_cb, arglist);
+		PyObject *result = PyEval_CallObject (py_check_buffer_cb, arglist);
 		if (result && PyList_Check (result)) {
 			PyObject *res = PyList_GetItem (result, 0);
 			rres = PyNumber_AsSsize_t (res, NULL);
@@ -730,11 +712,18 @@ PyObject *Radare_plugin_bin(Radare* self, PyObject *args) {
 		py_destroy_cb = ptr;
 		bp->destroy = py_destroy;
 	}
-	ptr = getF (o, "check_bytes");
+	ptr = getF (o, "check_buffer");
+	if (getF (o, "check_bytes")) {
+		eprintf ("warning: Plugin %s should implement check_buffer method instead of check_bytes.\n", bp->name);
+		if (!ptr) {
+			// fallback
+			ptr = getF (o, "check_bytes");
+		}
+	}
 	if (ptr) {
 		Py_INCREF (ptr);
-		py_check_bytes_cb = ptr;
-		bp->check_bytes = py_check_bytes;
+		py_check_buffer_cb = ptr;
+		bp->check_buffer = py_check_buffer;
 	}
 	ptr = getF (o, "baddr");
 	if (ptr) {
