@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # pylint: disable=missing-docstring
 # pylint: disable=invalid-name
+# pylint: disable=import-outside-toplevel
 import os
 import os.path
 import logging
-import tempfile
+#import tempfile
 import argparse
 import subprocess
 import locale
-from subprocess import call, check_output
+from subprocess import call
 from io import StringIO
 
 # Force the UTF-8 locale here
@@ -22,7 +23,7 @@ def which(program):
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
-    fpath, fname = os.path.split(program)
+    fpath, _ = os.path.split(program)
     if fpath:
         if is_exe(program):
             return program
@@ -61,8 +62,9 @@ def get_gcc_include_paths():
                 includes  += [line]
     return includes
 
-def get_radare2_include_dir():
+def get_radare2_directories():
     r2incdir = "/usr/local/include/libr" # default value
+    r2libdir = "/usr/local/lib" # default value
     cmdline = ["r2", "-H"]
     p = subprocess.Popen(cmdline, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
     out, _ = p.communicate()
@@ -70,24 +72,13 @@ def get_radare2_include_dir():
     for l in lines:
         if l.startswith('R2_INCDIR='):
             r2incdir = l[10:]
-
-    return r2incdir
-
-def get_radare2_lib_dir():
-    r2libdir = "/usr/local/lib" # default value
-    cmdline = ["r2", "-H"]
-    p = subprocess.Popen(cmdline, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-    out, _ = p.communicate()
-    lines = out.decode('utf-8').split('\n')
-    for l in lines:
         if l.startswith('R2_LIBDIR='):
             r2libdir = l[10:]
 
-    return r2libdir
+    return r2incdir, r2libdir
 
 cpp_includedirs = get_gcc_include_paths()
-radare2_includedir = get_radare2_include_dir()
-radare2_libdir = get_radare2_lib_dir()
+radare2_includedir, radare2_libdir = get_radare2_directories()
 
 def get_compiler_include_paths():
     print("Using compiler includes from {0}...".format(cpp_includedirs))
