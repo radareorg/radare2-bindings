@@ -48,7 +48,7 @@ def set_pkgconfig(libdir):
 def get_gcc_include_paths():
     startline = "#include <...> search starts here:"
     cmdline = ["cpp", "-v", "/dev/null", "-o", "/dev/null"]
-    p = subprocess.Popen(cmdline, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+    p = subprocess.Popen(cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     _, err = p.communicate()
     # Interesting output is in stderr:
     lines = err.decode('utf-8').split('\n')
@@ -59,21 +59,21 @@ def get_gcc_include_paths():
         for i in range(1, end):
             line = lines[start + i].lstrip()
             if os.path.exists(os.path.dirname(line)):
-                includes  += [line]
+                includes += [line]
     return includes
 
 def get_radare2_directories():
     r2incdir = "/usr/local/include/libr" # default value
     r2libdir = "/usr/local/lib" # default value
     cmdline = ["r2", "-H"]
-    p = subprocess.Popen(cmdline, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+    p = subprocess.Popen(cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, _ = p.communicate()
     lines = out.decode('utf-8').split('\n')
-    for l in lines:
-        if l.startswith('R2_INCDIR='):
-            r2incdir = l[10:]
-        if l.startswith('R2_LIBDIR='):
-            r2libdir = l[10:]
+    for ln in lines:
+        if ln.startswith('R2_INCDIR='):
+            r2incdir = ln[10:]
+        if ln.startswith('R2_LIBDIR='):
+            r2libdir = ln[10:]
 
     return r2incdir, r2libdir
 
@@ -93,22 +93,22 @@ def get_radare2_include_paths():
 def read_file_list():
     basedir = radare2_includedir + "/"
     return [
-            basedir + "r_core.h",
-            basedir + "r_asm.h",
-            basedir + "r_anal.h",
-            basedir + "r_bin.h",
-            basedir + "r_debug.h",
-            basedir + "r_io.h",
-            basedir + "r_config.h",
-            basedir + "r_flag.h",
-            basedir + "r_sign.h",
-            basedir + "r_hash.h",
-            basedir + "r_diff.h",
-            basedir + "r_egg.h",
-            basedir + "r_fs.h",
-            basedir + "r_lang.h",
-            basedir + "r_pdb.h"
-            ]
+        basedir + "r_core.h",
+        basedir + "r_asm.h",
+        basedir + "r_anal.h",
+        basedir + "r_bin.h",
+        basedir + "r_debug.h",
+        basedir + "r_io.h",
+        basedir + "r_config.h",
+        basedir + "r_flag.h",
+        basedir + "r_sign.h",
+        basedir + "r_hash.h",
+        basedir + "r_diff.h",
+        basedir + "r_egg.h",
+        basedir + "r_fs.h",
+        basedir + "r_lang.h",
+        basedir + "r_pdb.h"
+    ]
 
 # -I/usr/local/include - form strings like this
 r2_includes = ["-I" + s for s in get_radare2_include_paths()]
@@ -254,6 +254,7 @@ def gen_rust_bindings(outdir, path):
     call(cmdline, shell=True, env=pkgenv)
     return True
 
+# TODO: Do not hardcode the PkgConfigOpts
 cgo_tmpl = """
 ---
 GENERATOR:
@@ -319,10 +320,11 @@ def gen_haskell_bindings(outdir, path):
     cpp_opts = " ".join(r2_includes)
     tmpchs = gen_chs(fname + ".h")
     tmpfname = fname + ".chs"
-    tmpf = open(tmpfname, "w")
+    tmpfpath = os.path.join(outdir, tmpfname)
+    tmpf = open(tmpfpath, "w")
     tmpf.write(tmpchs)
     print("Writing CHS file: {0}".format(tmpfname))
-    cmdline = "c2hs -d trace -d genbind -d ctrav -k -t {0} -C \"{1}\" {2}".format(outdir, cpp_opts, tmpfname)
+    cmdline = "c2hs -d trace -d genbind -d ctrav -k -t {0} -C \"{1}\" {2}".format(outdir, cpp_opts, tmpfpath)
     # print(cmdline)
     # set PKG_CONFIG_PATH
     pkgenv = set_pkgconfig(radare2_libdir)
@@ -392,14 +394,14 @@ if __name__ == "__main__":
                 if l in langs:
                     langs[l] = True
         if args.out is not None:
-            outdir = args.out[0]
+            outputdir = args.out[0]
             lst = read_file_list()
             for hdr in lst:
-                gen_bindings(outdir, hdr)
+                gen_bindings(outputdir, hdr)
             # Go bindings generated all at once
             if langs["go"]:
-                gen_go_bindings(outdir, hdr)
-            check_bindings(outdir)
+                gen_go_bindings(outputdir, hdr)
+            check_bindings(outputdir)
         else:
             print('ERROR: Please specify output directory!')
             parser.print_help()
