@@ -302,36 +302,23 @@ def gen_go_bindings(outdir, path):
     call(cmdline, shell=True, env=pkgenv)
     return True
 
-chs = """
-{{-#LANGUAGE ForeignFunctionInterface #-}}
-
-import Foreign.C.Types
-import Foreign.Ptr
-import Foreign.Storable
-
-#include "{0}/{1}"
-"""
-
 def gen_haskell_bindings(outdir, path):
-    def gen_chs(fname):
-        return chs.format(radare2_includedir, fname)
-
     fname = os.path.splitext(os.path.basename(path))[0]
     cpp_opts = " ".join(r2_includes)
-    tmpchs = gen_chs(fname + ".h")
-    tmpfname = fname + ".chs"
-    tmpfpath = os.path.join(outdir, tmpfname)
-    tmpf = open(tmpfpath, "w")
-    tmpf.write(tmpchs)
-    print("Writing CHS file: {0}".format(tmpfname))
-    cmdline = "c2hs -d trace -d genbind -d ctrav -k -t {0} -C \"{1}\" {2}".format(outdir, cpp_opts, tmpfpath)
-    # print(cmdline)
-    # set PKG_CONFIG_PATH
-    pkgenv = set_pkgconfig(radare2_libdir)
-    # TODO: Check return code
-    call(cmdline, shell=True, env=pkgenv)
-    tmpf.close()
-    return True
+    chsname = fname + ".chs"
+    chspath = os.path.join("genbind/haskell/", chsname)
+    # Process CHS file if exist
+    if os.path.isfile(chspath):
+        print("Processing CHS file: {0}".format(chsname))
+        cmdline = "c2hs -d trace -d genbind -d ctrav -k -t {0} -C \"{1}\" {2}".format(outdir,
+                cpp_opts, chspath)
+        # print(cmdline)
+        # set PKG_CONFIG_PATH
+        pkgenv = set_pkgconfig(radare2_libdir)
+        # TODO: Check return code
+        call(cmdline, shell=True, env=pkgenv)
+        return True
+    return False
 
 # -------------------------------------------------------
 # Check/autotest the result
