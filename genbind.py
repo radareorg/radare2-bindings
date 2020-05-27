@@ -13,7 +13,6 @@ from subprocess import call
 from io import StringIO
 
 # Force the UTF-8 locale here
-# FIXME: Still doesn't affect subprocess.Popen() calls
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 # --------------------------------------------------------------------
@@ -35,6 +34,12 @@ def which(program):
 
     return None
 
+def set_locale():
+    localenv = os.environ.copy()
+    localenv['LANGUAGE'] = 'en_US.UTF-8'
+    localenv['LC_ALL'] = 'en_US.UTF-8'
+    return localenv
+
 def set_pkgconfig(libdir):
     pkgenv = os.environ.copy()
     pkgconfigdir = libdir + '/pkgconfig'
@@ -48,7 +53,8 @@ def set_pkgconfig(libdir):
 def get_gcc_include_paths():
     startline = "#include <...> search starts here:"
     cmdline = ["cpp", "-v", "/dev/null", "-o", "/dev/null"]
-    p = subprocess.Popen(cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    localenv = set_locale()
+    p = subprocess.Popen(cmdline, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=localenv)
     _, err = p.communicate()
     # Interesting output is in stderr:
     lines = err.decode('utf-8').split('\n')
