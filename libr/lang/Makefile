@@ -1,5 +1,9 @@
-all: py
+all: py v
 #csharp
+
+v vlang:
+	$(MAKE) -C p vlang
+	$(MAKE) -C p vlang-install
 
 py python:
 	$(MAKE) -C p python
