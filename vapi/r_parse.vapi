@@ -7,7 +7,6 @@ namespace Radare {
 	public class RParse {
 		public RParse();
 
-		public int list();
 		public bool use(string name);
 		public bool filter(uint64 addr, RFlag flag, RAnal.Hint hint, ref string data, ref string str, int len, bool bigendian);
 		public bool assemble(ref string dst, ref string src);
@@ -22,6 +21,6 @@ namespace Radare {
 		/* CParse api */
 		// public static string c_file (RAnal anal, string path);
 		// public static string c_string (RAnal anal, string str);
-		public static bool is_c_file (string path);
+		// public static bool is_c_file (string path);
 	}
 }

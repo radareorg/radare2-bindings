@@ -6,11 +6,11 @@ namespace Radare {
 		public RConfig (void* user);
 		//TODO: public void setup_file(string file);
 		public bool lock;
-		public int last_notfound;
-		public int n_nodes;
+		// public int last_notfound;
+		// public int n_nodes;
 
 		//public void @lock (bool enable);
-		public int eval(string str);
+		// public int eval(string str);
 
 		public unowned string get(string name);
 		public uint64 get_i(string name);

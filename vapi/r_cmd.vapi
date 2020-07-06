@@ -41,10 +41,10 @@ namespace Radare {
 		public delegate bool Callback (void *user, string cmd);
 		public RCmd ();
 		public void set_data (void *data);
-		public bool @add (string cmd, string desc, Callback cb);
-		public bool add_long (string cmd, string scmd, string desc);
+		// public bool @add (string cmd, string desc, Callback cb);
+		/// public bool add_long (string cmd, string scmd, string desc);
 		//public bool del (string cmd);
 		public bool call (string cmd);
-		public bool call_long (string cmd);
+		// public bool call_long (string cmd);
 	}
 }

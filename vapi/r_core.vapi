@@ -28,8 +28,6 @@ public class RCore {
 	 * Pointer to the first byte of the working block
 	 */
 	public uint8 *block;
-	public uint8 *oobi;
-	public int oobi_len;
 	public RBuffer *yank_buf;
 	public int tmpseek;
 	public bool vmode;
@@ -58,7 +56,7 @@ public class RCore {
 	public RLib lib;
 	public RCmd rcmd;
 	public RAnal anal;
-	public RAsm assembler;
+	public RAsm rasm;
 	public RParse parser;
 	public RPrint print;
 	public RLang lang;
@@ -73,7 +71,6 @@ public class RCore {
 	public string cmdqueue;
 	public string lastcmd;
 	public int cmdrepeat;
-	public uint64 inc;
 	/**
 	 * Entrypoint for the global Sdb namespace
 	 */
@@ -114,7 +111,7 @@ public class RCore {
 	public unowned string cmd_str_pipe(string cmd);
 
 	public string op_str(uint64 addr);
-	public RAnal.Op op_anal(uint64 addr);
+	// public RAnal.Op op_anal(uint64 addr);
 
 	public unowned string disassemble_instr(uint64 addr, int l);
 	public unowned string disassemble_bytes(uint64 addr, int b);
@@ -122,8 +119,8 @@ public class RCore {
 	public bool anal_all();
 	public int anal_search (uint64 from, uint64 to, uint64 ref, int mode);
 	public void anal_refs(string input);
-	public int anal_bb(RAnal.Function fcn, uint64 at, int head);
-	public int anal_bb_seek(uint64 addr);
+	// public int anal_bb(RAnal.Function fcn, uint64 at, int head);
+	// public int anal_bb_seek(uint64 addr);
 	public int anal_fcn(uint64 at, uint64 from, int reftype, int depth);
 	public int anal_fcn_list(string input, string rad);
 	public int anal_graph(uint64 addr, int opts);

@@ -61,7 +61,7 @@ public class Radare.RDebug {
 	//public void map_list_free (RList<RDebug.Map> maps);
 	// public void map_list (uint64 addr, bool rad);
 	public RDebug.Map map_get (uint64 addr);
-	public RDebug.Map map_alloc (uint64 addr, int size);
+	// public RDebug.Map map_alloc (uint64 addr, int size);
 	public bool map_sync ();
 
 	public bool child_fork ();
@@ -92,7 +92,7 @@ public class Radare.RDebug {
 	public RList<RDebug.Pid> pids (int pid);
 	// must deprecate //
 	public int pid_list (int pid, char fmt);
-	public int thread_list (int pid);
+	// public int thread_list (int pid);
 
 	public void trace_reset ();
 	public void trace_at (string str);

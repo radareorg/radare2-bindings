@@ -6,7 +6,7 @@
 namespace Radare {
 
 	[Compact]
-	[CCode (cheader_filename="r_anal_ex.h,r_anal.h,r_list.h,r_types_base.h", cprefix="r_anal_", lowercase_c_prefix="r_anal_", free_function="r_anal_free", cname="RAnal")]
+	[CCode (cheader_filename="r_anal.h,r_list.h,r_types_base.h", cprefix="r_anal_", lowercase_c_prefix="r_anal_", free_function="r_anal_free", cname="RAnal")]
 	public class RAnal {
 		public int bits;
 		public bool big_endian;
@@ -38,8 +38,8 @@ namespace Radare {
 		//public RList<RAnal.Ref> xrefs_from(uint64 addr);
 
 		public unowned RList<unowned RAnal.Function> get_fcns();
-		public Function get_fcn_at (uint64 addr, int type);
-		public Function get_fcn_in (uint64 addr, int type);
+		// public Function get_fcn_at (uint64 addr, int type);
+		// public Function get_fcn_in (uint64 addr, int type);
 		public void trace_bb (uint64 addr);
 
 		[Compact]
@@ -48,11 +48,12 @@ namespace Radare {
 			public uint64 addr;
 			public uint64 jump;
 			public uint64 value;
-			public uint32 cond;
-			public uint64 bb_ref_to;
-			public uint64 bb_ref_from;
+			// public uint32 cond;
+			// public uint64 bb_ref_to;
+			// public uint64 bb_ref_from;
 		}
 
+/*
 		[Compact]
 		[CCode (cprefix="r_anal_switch_op_", free_function="r_anal_switch_op_free", cname="RAnalSwitchOp")]
 		public class SwitchOp {
@@ -66,6 +67,7 @@ namespace Radare {
 			public CaseOp add_case(uint64 addr, uint64 jump, uint64 value);
 		}
 
+*/
 		[Compact]
 		[CCode (cname="RAnalValue")]
 		public class Value {
@@ -118,6 +120,7 @@ namespace Radare {
 			NV
 		}
 
+/*
 		[Compact]
 		//[CCode (cprefix="r_anal_state_", cname="RAnalState")]
 		[CCode (cprefix="r_anal_state_", free_function="r_anal_state_free", cname="RAnalState")]
@@ -154,10 +157,11 @@ namespace Radare {
 			public Block search_bb (uint64 addr);
 			public uint64 get_len (uint64 addr);
 			//public uint8* get_buf_by_addr (uint64 addr);
-			public int addr_is_valid (uint64 addr);
+			// public int addr_is_valid (uint64 addr);
 			//public void merge_bb_list (RList<RAnal.Block> bbs);
-			public void set_depth(uint32 depth);
+			// public void set_depth(uint32 depth);
 		}
+*/
 
 /*
 		[CCode (cname="int", cprefix="R_ANAL_VAR_TYPE_")]
@@ -299,47 +303,49 @@ namespace Radare {
 		}
 
 		[Compact]
-		[CCode (cprefix="r_anal_bb_", cname="RAnalBlock")]
+		[CCode (cprefix="r_anal_bb_", cname="RAnalBlock", free_function="")]
 		public class Block {
-			public char* name;
+			// public char* name;
 			public uint64 addr;
 			public uint64 jump;
-			public uint64 type2;
+			// public uint64 type2;
 			public uint64 fail;
-			public int size;
-			public BlockType type;
-			public BlockType type_ex;
+			// public int size;
+			// public BlockType type;
+			// public BlockType type_ex;
 			public int ninstr;
-			public bool returnbb;
-			public bool conditional;
+			// public bool returnbb;
+			// public bool conditional;
 			public bool traced;
-			public char* label;
+			// public char* label;
 			public uint8 * fingerprint;
 			public Diff diff;
-			public Cond cond;
-			public SwitchOp switch_op;
+			// public Cond cond;
+			// public SwitchOp switch_op;
 			public uint8 op_bytes[30];
-			public uint8 op_sz;
+			// public uint8 op_sz;
+/*
 #if VALABIND_CTYPES
 			public void* head;
-			public void* tail;
+			// public void* tail;
 			public void* next;
 			public void* prev;
 			public void* failbb;
 			public void* jumpbb;
 #else
 			public Block head;
-			public Block tail;
+			// public Block tail;
 			public Block next;
 			public Block prev;
 			public Block failbb;
 			public Block jumpbb;
 #endif
+*/
 			//public RList<RAnal.Op> ops;
 		}
 
-		public void bb (Block bb, uint64 addr, uint8 *buf, uint64 len, bool head);
-		public Block bb_from_offset (uint64 addr);
+		// public void bb (Block bb, uint64 addr, uint8 *buf, uint64 len, bool head);
+		// public Block bb_from_offset (uint64 addr);
 
 		[Compact]
 		[CCode (cprefix="r_anal_op_", cname="RAnalOp")]
@@ -347,11 +353,11 @@ namespace Radare {
 			public string mnemonic;
 			public uint64 addr;
 			public int type;
-			public bool stackop;
-			public int cond;
+			// public bool stackop;
+			// public int cond;
 			public int size;
 			public int nopcode;
-			public int family;
+			// public int family;
 			public bool eob;
 			public int delay;
 			public uint64 jump;
@@ -382,21 +388,21 @@ namespace Radare {
 		[CCode (cname="RAnalFunction", free_function="", cprefix="r_anal_fcn_", ref_function="", unref_function="", free_function="")]
 		public class Function {
 			public string name;
-			public string dsc;
-			public int _size;
+			// public string dsc;
+			// public int _size;
 			public int bits;
-			public short type;
-			public string rets;
-			public short fmod;
+			// public short type;
+			// public string rets;
+			// public short fmod;
 			public string cc;
-			public string attr;
+			// public string attr;
 
 			public uint64 addr;
 			public int stack;
 			public int maxstack;
 			public int ninstr;
-			public int nargs;
-			public int depth;
+			// public int nargs;
+			// public int depth;
 			public bool folded;
 			//public Type args;
 			// MUST BE deprecated public VarSub varsubs[32];
@@ -404,8 +410,8 @@ namespace Radare {
 			public Diff diff;
 			public uint8 * fingerprint;
 			//public FunctionType type;
-			public RList<RAnal.Block> bbs;
-			public RList<RAnal.Block> get_bbs();
+			// public RList<RAnal.Block> bbs;
+			// public RList<RAnal.Block> get_bbs();
 			// public RList<RAnal.Var> vars;
 			// public RList<RAnal.Var> get_vars();
 			//public RList<RAnal.Ref> get_refs();
@@ -413,20 +419,13 @@ namespace Radare {
 		}
 
 		[Compact]
-		[CCode (cname="RAnalVar")]
+		[CCode (cname="RAnalVar", free_function="")]
 		public class Var {
 			public string name;
 			public string type;
 			public int delta;
-			public RList<RAnal.VarAccess> accesses;
 		}
 
-		[Compact]
-		[CCode (cname="RAnalVarAccess", free_function="")]
-		public class VarAccess {
-			public uint64 addr;
-			public bool @set;
-		}
 
 #if 0
 		[Compact]
@@ -472,13 +471,15 @@ namespace Radare {
 
 	/* meta */
 	[Compact]
-	[CCode (cname="RAnalMetaItem",cprefix="r_anal_meta_item_", free_function="r_meta_item_free")]
+	[CCode (cname="RAnalMetaItem",cprefix="r_anal_meta_item_", free_function="")] // r_meta_item_free")]
 	public class MetaItem {
+/*
 		public uint64 from;
 		public uint64 to;
 		public uint64 size;
 		public int type;
 		public string str;
+*/
 	}
 
 	[CCode (cname="int", cprefix="R_META_WHERE_")]
@@ -499,10 +500,11 @@ namespace Radare {
 
 	//public int count (MetaType type, uint64 from, uint64 to,
 	//public string get_string(MetaType, uint64 addr);
-	[CCode (cname="r_meta_add")]
-	public bool meta_add(MetaType type, uint64 from, uint64 size, string str);
+	//[CCode (cname="r_meta_add")]
+	// public bool meta_add(MetaType type, uint64 from, uint64 size, string str);
 	//[CCode (cname="r_meta_del")]
 	//public bool meta_del(MetaType type, uint64 from, uint64 size, string str);
+/*
 	[CCode (cname="r_meta_find")]
 	public MetaItem meta_find(uint64 off, MetaType type, MetaWhere where);
 	[CCode (cname="r_meta_cleanup")]
@@ -511,6 +513,7 @@ namespace Radare {
 	public static unowned string meta_type_to_string(MetaType type);
 	[CCode (cname="r_meta_list")]
 	public int meta_list(MetaType type, uint64 rad);
+*/
 	}
 
 /*
@@ -661,14 +664,14 @@ namespace Radare {
 		MIXED,
 	}
 
-	public static uint64 ex_map_anal_ex_to_anal_op_type(uint64 ranal2_op_type);
-	public static int ex_is_op_type_eop(uint64 x);
-	public static uint32 ex_map_anal_ex_to_anal_bb_type (uint64 ranal2_op_type);
-	public static void ex_clone_op_switch_to_bb (RAnal.Block *bb, RAnal.Op *op);
-	public static void ex_update_bb_cfg_head_tail( RAnal.Block start, RAnal.Block head, RAnal.Block tail );
+	// public static uint64 ex_map_anal_ex_to_anal_op_type(uint64 ranal2_op_type);
+	// public static int ex_is_op_type_eop(uint64 x);
+	// public static uint32 ex_map_anal_ex_to_anal_bb_type (uint64 ranal2_op_type);
+	// public static void ex_clone_op_switch_to_bb (RAnal.Block *bb, RAnal.Op *op);
+	// public static void ex_update_bb_cfg_head_tail( RAnal.Block start, RAnal.Block head, RAnal.Block tail );
 
-	public static int ex_bb_head_comparator(RAnal.Block a, RAnal.Block b);
-	public static int ex_bb_address_comparator(RAnal.Block a, RAnal.Block b);
+	// public static int ex_bb_head_comparator(RAnal.Block a, RAnal.Block b);
+	// public static int ex_bb_address_comparator(RAnal.Block a, RAnal.Block b);
 
 
 //	public RList<RAnal.Block> ex_analyze( RAnal.State state, uint64 addr);

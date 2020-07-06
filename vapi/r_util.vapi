@@ -198,7 +198,7 @@ namespace Radare {
 	[Compact]
 	[CCode (cheader_filename="r_lib.h", cprefix="r_lib_", cname="RLib", free_function="r_lib_free")]
 	public class RLib {
-		public RLib (string symname);
+		public RLib (string symname, string symfunc = null);
 		public bool close(string file);
 		public int opendir(string path);
 		public static string? path(string libname);
@@ -208,7 +208,7 @@ namespace Radare {
 		public static void* dl_open(string libname);
 		public void* dl_sym(string symname);
 		public static bool dl_close(void *handler);
-		public static bool dl_check_filename(string file);
+		// public static bool dl_check_filename(string file);
 		/* handlers */
 	// we need delegates here (function pointerz)
 	//	public bool add_handler(int type, string desc, /* */, void* user);

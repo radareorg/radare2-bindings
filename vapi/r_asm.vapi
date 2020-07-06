@@ -161,7 +161,7 @@ public class RAsm {
 	public int assemble(out Op op, string buf);
 	public Code? mdisassemble(uint8 *buf, int length);
 	public Code? massemble(string buf);
-	public Code? assemble_file(string file);
+	// public Code? assemble_file(string file);
 
 	public string to_string(uint64 addr, uint8* buf, int len);
 	public uint8* from_string(uint64 addr, string str, out int len);

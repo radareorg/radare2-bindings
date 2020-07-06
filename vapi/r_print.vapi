@@ -8,7 +8,7 @@ public class Radare.RPrint {
 
 	/* fields */
 	public int width;
-	public bool interrupt;
+	// public bool interrupt;
 	public int limit;
 	public bool cur_enabled;
 	public int cur;
