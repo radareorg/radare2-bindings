@@ -42,7 +42,6 @@ $(foreach p,${ALANGS},$(eval $(call ADD_lang,$(p))))
 
 LANGS=$(shell cat supported.langs 2>/dev/null)
 all: supported.langs
-	$(MAKE) -C libr/lang/p
 	@for a in ${LANGS} ; do \
 		[ $$a = valac ] && continue; \
 		(cd $$a && ${MAKE} ) ; done
@@ -141,9 +140,6 @@ PYTHON_INSTALL_DIR=${DESTDIR}/${PYTHON_PKGDIR}/r2
 .PHONY: purge purge-python install-cxx install-plugins
 
 purge: purge-python purge-java
-
-install-plugins:
-	$(MAKE) -C libr/lang/p install
 
 install-cxx:
 	@echo TODO: install-cxx
@@ -273,7 +269,6 @@ oldtest:
 	python test.py
 
 clean:
-	$(MAKE) -C libr/lang/p clean
 	@for a in $(LANGS); do \
 		if [ -d $$a ]; then \
 		echo "Cleaning $$a " ; \
