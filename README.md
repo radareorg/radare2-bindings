@@ -1,5 +1,9 @@
 # radare2 language bindings
 
+| Service | Badge |
+|----------|---------------------------------------------------------------------|
+| **TravisCI** 	| [![Build Status](https://travis-ci.com/radareorg/radare2-bindings.svg?branch=master)](https://travis-ci.com/radareorg/radare2-bindings)|
+
 This repository contains the native bindings generated with Valabind to use the radare2 APIs.
 
 The r2pipe implementations has been moved into a separate [repository](https://github.com/radare/radare2-r2pipe).
