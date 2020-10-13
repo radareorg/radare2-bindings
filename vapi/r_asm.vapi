@@ -166,8 +166,8 @@ public class RAsm {
 	public string to_string(uint64 addr, uint8* buf, int len);
 	public uint8* from_string(uint64 addr, string str, out int len);
 
-	public bool filter_input(string filter);
-	public bool filter_output(string filter);
+	// public bool filter_input(string filter);
+	// public bool filter_output(string filter);
 
 	/* TODO: not directy defined here */
 	public void free();
