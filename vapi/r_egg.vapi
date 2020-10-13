@@ -23,7 +23,7 @@ namespace Radare {
 		public void reset ();
 		public bool setup (string arch, int bits, bool bigendian, string os);
 		public void load (string code, int fmt);
-		public void syscall(string arg, ...);
+		// public void syscall(string arg, ...);
 		public void alloc(int n);
 		public void label (string name);
 		public void include (string file, int fmt);

@@ -10,7 +10,6 @@ namespace Radare {
 		// public bool enforce_rwx;
 		// public bool enforce_seek;
 		public uint64 off;
-		public bool debug;
 
 		[CCode (cprefix="R_IO_")]
 		public enum Perm {
