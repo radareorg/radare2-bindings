@@ -38,6 +38,7 @@ LDFLAGS_LIB=$(shell pkg-config --libs-only-L r_core) -lr_core -lr_io -lr_util -s
 WANT_LUA=$(shell grep -q lua ../../../supported.langs && echo 1)
 #WANT_JS=$(shell grep -q js ../../../supported.langs && echo 1)
 WANT_DUK=$(shell grep -q duktape ../../../supported.langs && echo 1)
+WANT_QJS=$(shell grep -q quickjs ../../../supported.langs && echo 1)
 WANT_PY=$(shell grep -q python ../../../supported.langs && echo 1)
 WANT_CS=$(shell grep -q cs ../../../supported.langs && echo 1)
 
@@ -55,6 +56,10 @@ endif
 
 ifeq ($(WANT_CS),1)
 LANGS+=lang_csharp.${EXT_SO}
+endif
+
+ifeq ($(WANT_QJS),1)
+LANGS+=lang_quickjs.$(EXT_SO)
 endif
 
 ifeq ($(WANT_DUK),1)
@@ -121,6 +126,14 @@ else
 lang_tcc.${EXT_SO}: ;
 	# do nothing
 endif
+
+quickjs:
+	git clone https://github.com/bellard/quickjs
+
+lang_quickjs.${EXT_SO}: quickjs
+	$(MAKE) -C quickjs libquickjs.a
+	-$(CC) -std=c99 $(DUK_CFLAGS) -I quickjs $(CFLAGS) -fPIC $(LDFLAGS_LIB) \
+		-o lang_quickjs.$(EXT_SO) quickjs.c quickjs/libquickjs.a
 
 duktape:
 	$(MAKE) lang_duktape.$(EXT_SO)
