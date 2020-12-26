@@ -22,3 +22,5 @@ bis:
 mrproper:
 	a=python`python --version 2>&1 | cut -d ' ' -f 2 | cut -d . -f 1,2`/site-packages ; \
 	rm -rf ${PREFIX}/lib/$a/r2
+	rm -f *.i *.cxx r_*.py
+	rm -rf *.dSYM
