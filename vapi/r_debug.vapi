@@ -69,8 +69,8 @@ public class Radare.RDebug {
 
 	// TODO: public RList<RDebug.Frame> frames ();
 
-	public uint64 arg_get (int fast, int num);
-	public bool arg_set (int fast, int num, uint64 val);
+	// public uint64 arg_get (int fast, int num);
+	// public bool arg_set (int fast, int num, uint64 val);
 
 	public uint64 execute(uint8 *buf, int len, bool restore); // XXX: uint8
 	public int desc_open (string path);

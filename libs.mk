@@ -2,6 +2,7 @@
 LIBS=r_core.${SOEXT}
 LIBS+=r_bin.${SOEXT}
 LIBS+=r_asm.${SOEXT}
+LIBS+=r_io.${SOEXT}
 
 #LIBS=r_asm.${SOEXT}
 

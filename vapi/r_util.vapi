@@ -28,6 +28,7 @@ namespace Radare {
 	[Compact]
 	[CCode (cheader_filename="r_util.h", lower_case_cprefix="r_strbuf_", cname="RStrBuf", init_function="", unref_function="")]
 	public class RStrBuf {
+		public void init ();
 		public RStrBuf (string str);
 		public bool @set (string s);
 		public bool setf (string s, ...);

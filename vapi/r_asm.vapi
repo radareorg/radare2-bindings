@@ -34,9 +34,30 @@ public class RAsm {
 	 */
 	[CCode (cprefix="R_ASM_SYNTAX_", cname="int")]
 	public enum Syntax {
+		/**
+		 * Use default syntax provided by the disassembler
+		 */
 		NONE,
+		/**
+		 * Intel syntax
+		 */
 		INTEL,
-		ATT
+		/**
+		 * AT&T syntax
+		 */
+		ATT,
+		/**
+		 * Microsoft Assembler syntax
+		 */
+		MASM,
+		/**
+		 * Always use numeric registers
+		 */
+		REGNUM,
+		/**
+		 * Use JZ instead of JE on x86
+		 */
+		JZ
 	}
 
 	/**
@@ -80,21 +101,23 @@ public class RAsm {
 		 */
 		public int size;
 		/**
+		 * The instruction size in bits
+		 */
+		public int bitsize;
+		/**
 		 * The instruction payload.
 		 */
 		public int payload;
 
-		//public uint8 buf[128]; // FIXME proper static buffers w/o hardcoded size
+		/**
+		 * The bytes
+		 */
+		// public RStrBuf buf;
 		/**
 		 * The assembly representation.
 		 */
-		//public char buf_asm[128]; // FIXME proper static strings w/o hardcoded size
-		/**
-		 * The hexadecimal representation.
-		 */
-		//public char buf_hex[128]; // FIXME proper static strings w/o hardcoded size
+		// public RStrBuf buf_asm;
 
-		// accessors for bindings
 		/**
 		 * Retrieves the hexadecimal representation of the instruction.
 		 * @return the actual opcode, in hexadecimal.
@@ -104,29 +127,25 @@ public class RAsm {
 		 * Retrieves the assembly representation of the instruction.
 		 * @return such representation.
 		 */
-		public string get_asm();
+		// public string get_asm();
 	}
 
 	/**
 	 * Models decompiled assembly code.
 	 */
+	[Compact]
 	[CCode (cname="RAsmCode", cprefix="r_asm_code_", free_function="r_asm_code_free", unref_function="r_asm_code_free")]
 	public class Code {
-		/**
-		 * The code length.
-		 */
-		//public int len;
-		// public uint8* buf;
-		/**
-		 * Replaces all occurrences of a code fragment with another text, usually
-		 * to enhance readability.
-		 * @param key the code to replace.
-		 * @param val the replacement value.
-		 * @return the number of replacements made.
-		 */
-//		public int set_equ (<RAsmCode> code, string key, string val);
-		//public int equ_replace (string key);
-		//public void* free();
+		int len;
+		uint8 bytes;
+		string assembly;
+		// RList equs
+		uint64 code_offset;
+		uint64 data_offset;
+		int code_align;
+		public string get_hex();
+		public string equ_replace(string s);
+		public bool set_equ(string k, string v);
 	}
 
 	/**
@@ -141,7 +160,7 @@ public class RAsm {
 	/**
 	 * The syntax.
 	 */
-	public int syntax;
+	// public Syntax syntax;
 	public uint64 pc;
 	/**
 	 * The list of active plugins.
@@ -158,6 +177,9 @@ public class RAsm {
 	public bool set_big_endian(bool big);
 	// TODO: Use Code? instead of op??
 	public int disassemble(out Op op, uint8* buf, int length);
+	/**
+	 * Assemble provided instruction into an Op, returns instruction size in bytes.
+	 */
 	public int assemble(out Op op, string buf);
 	public Code? mdisassemble(uint8 *buf, int length);
 	public Code? massemble(string buf);
@@ -165,9 +187,6 @@ public class RAsm {
 
 	public string to_string(uint64 addr, uint8* buf, int len);
 	public uint8* from_string(uint64 addr, string str, out int len);
-
-	// public bool filter_input(string filter);
-	// public bool filter_output(string filter);
 
 	/* TODO: not directy defined here */
 	public void free();
