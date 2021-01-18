@@ -1,5 +1,3 @@
-using SDB;
-
 [CCode (cheader_filename="r_config.h", cprefix="r_", lower_case_cprefix="r_")]
 namespace Radare {
 	/**
