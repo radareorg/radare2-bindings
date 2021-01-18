@@ -1,4 +1,4 @@
-SDB_VAPI_URL=https://raw.github.com/radare/sdb/master/bindings/vala/sdb.vapi
+SDB_VAPI_URL=https://raw.github.com/radareorg/sdb/master/bindings/vala/sdb.vapi
 
 all:
 

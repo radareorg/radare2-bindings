@@ -15,7 +15,7 @@ public class HashExample
 	public static void main(string[] args)
 	{
 		/* calculate crc32 */
-		print ("CRC32: %x\n", RHash.crc32("hello", 5));
+//		print ("CRC32: %x\n", RHash.crc32("hello", 5));
 
 		/* directly calculate md5 */
 		var st = new RHash (true, RHash.Algorithm.ALL);

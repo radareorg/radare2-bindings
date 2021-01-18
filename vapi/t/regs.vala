@@ -22,6 +22,6 @@ void main() {
 
 // XXX noarraylength vala bug
 //	print ("%d\n", reg.types.length);
-	for (int i=0;reg.get_type(i) != null; i++)
+	for (int i=0;reg.get_type(i) is not null; i++)
 		print ("  Type %d is %s\n", i, reg.get_type (i));
 }

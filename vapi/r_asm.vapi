@@ -1,7 +1,7 @@
 
 namespace Radare {
 /**
- * Radare2 Assembler module
+ * Radare2 Assembler Module
  */
 [Compact]
 [CCode (cheader_filename="r_asm.h", cname="RAsm", free_function="r_asm_free", cprefix="r_asm_")]
@@ -117,6 +117,7 @@ public class RAsm {
 		 * The assembly representation.
 		 */
 		// public RStrBuf buf_asm;
+		public string buf_asm;
 
 		/**
 		 * Retrieves the hexadecimal representation of the instruction.
@@ -143,6 +144,7 @@ public class RAsm {
 		uint64 code_offset;
 		uint64 data_offset;
 		int code_align;
+		public string buf_hex;
 		public string get_hex();
 		public string equ_replace(string s);
 		public bool set_equ(string k, string v);

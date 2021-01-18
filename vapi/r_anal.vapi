@@ -6,7 +6,7 @@
 namespace Radare {
 
 	[Compact]
-	[CCode (cheader_filename="r_anal.h,r_list.h,r_types_base.h", cprefix="r_anal_", lowercase_c_prefix="r_anal_", free_function="r_anal_free", cname="RAnal")]
+	[CCode (cheader_filename="r_anal.h,r_list.h,r_types_base.h", cprefix="r_anal_", free_function="r_anal_free", cname="RAnal")]
 	public class RAnal {
 		public int bits;
 		public bool big_endian;

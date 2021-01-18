@@ -1,6 +1,9 @@
 include ../../config.mk
 
-all: bin lang core asmsearch bwdisassemble regs hash sc socket asm search db io list rgot plugin.${SOEXT}
+all: config lang regs sc hash socket search list plugin.${SOEXT}
+	@true
+
+all2: bin lang core asmsearch bwdisassemble regs hash sc socket asm search db io list rgot plugin.${SOEXT}
 	@true
 
 plugin.${SOEXT}:
@@ -8,6 +11,9 @@ plugin.${SOEXT}:
 		--library=plugin -o plugin.${SOEXT} \
 		--Xcc=-shared --Xcc=-fPIC --vapidir=.. \
 		--pkg r_cmd --pkg r_util --pkg r_core
+
+config:
+	valac --vapidir=.. cfg.vala --pkg r_config --pkg r_util --pkg r_db
 
 rgot:
 	valac --vapidir=.. rgot.vala --pkg r_bin --pkg r_util
@@ -41,7 +47,7 @@ db:
 	valac --vapidir=${PWD}/.. --pkg r_db db.vala
 
 sc:
-	valac --vapidir=${PWD}/.. sc.vala --pkg r_syscall
+	valac --vapidir=${PWD}/.. sc.vala --pkg r_syscall --pkg r_util
 
 core:
 	valac --vapidir=.. core.vala --pkg r_asm --pkg r_anal --pkg r_core --pkg r_cons --pkg r_bp

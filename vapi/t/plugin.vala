@@ -11,7 +11,7 @@ public bool mycall(void *user, string cmd) {
 				":bc push       upload signatures to server\n"+
 				"See: http://bincrowd.zynamics.com/\n");
 		} else {
-			RCore* core = (RCore*)user;
+			unowned RCore *core = (RCore*)user;
 			string p = (string)(((char*)cmd)+4);
 			print ("Hello World from Vala! (%s)\n", p);
 			//core->cmd ("pd 4 @ eip", false);

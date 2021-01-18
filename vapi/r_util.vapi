@@ -81,14 +81,11 @@ namespace Radare {
 
 	[CCode (cheader_filename="r_util.h", lower_case_cprefix="r_sys_")]
 	namespace RSystem {
-#if VALABIND_SWIG
-		/* not supported */
-#else
 		[CCode (cname="R_SYS_OS")]
-		public static const string OS;
+		public const string OS;
 		[CCode (cname="R_SYS_ARCH")]
-		public static const string ARCH;
-#endif
+		public const string ARCH;
+
 		public static int sleep (int secs);
 		public static int usleep (int usecs);
 		public static string getenv (string key);
@@ -199,7 +196,7 @@ namespace Radare {
 	[Compact]
 	[CCode (cheader_filename="r_lib.h", cprefix="r_lib_", cname="RLib", free_function="r_lib_free")]
 	public class RLib {
-		public RLib (string symname, string symfunc = null);
+		public RLib (string symname, string? symfunc = null);
 		public bool close(string file);
 		public int opendir(string path);
 		public static string? path(string libname);
