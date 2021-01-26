@@ -1,5 +1,5 @@
 PKGNAME radare2-bindings
-VERSION 4.5.0-git
+VERSION 5.1.0
 CONTACT pancake ; pancake@nopcode.org
 
 LANG_C!
@@ -7,6 +7,8 @@ LANG_CXX!
 CHKPRG VALABIND valabind
 CHKPRG SWIG swig
 CHKPRG GIRCOMPILER g-ir-compiler
+
+USE_PKGCONFIG!
 
 ((
 ARG_WITH USERCC=gcc cc Define C compiler to use (gcc by default) ;
