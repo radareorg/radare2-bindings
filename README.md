@@ -121,6 +121,18 @@ You can select the languages you want to compile with `--enable={list-of-langs}`
 ./configure --prefix=/usr --enable=python
 ```
 
+## r2libr
+
+r2libr is python bindings generated from source with all `libr` dynamic libraries bundled in a wheel.
+
+You may have a try without the need to install radare2:
+
+```bash
+pip3 install --upgrade r2libr
+```
+
+For details, see [r2libr](https://github.com/radareorg/radare2-bindings/tree/master/r2libr).
+
 ## Experimental radare2 bindgen
 
 ### Introduction
@@ -150,7 +162,7 @@ It is possible also specify the particular languages, for example:
 genbind.py -o /tmp/r2bindings-output -l go rust python
 ```
 
-# PYTHON
+## PYTHON
 
 To select the version of python to compile for use the PYTHON_CONFIG
 environment variable as follows:
@@ -162,7 +174,7 @@ $ su -
 # PYTHON_CONFIG=python3.2-config make install
 ```
 
-# RANDOM NOTES
+## RANDOM NOTES
 
 The valabind integration forces us to do some changes in the r2 API.
 
