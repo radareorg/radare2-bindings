@@ -70,7 +70,7 @@ jobs:
   
     - uses: actions/upload-artifact@v2
       with:
-         path: ${{ github.workspace }}/dist/*
+         path: ${{ github.workspace }}/r2api/dist/*
 
   publish:
     needs: [build]
