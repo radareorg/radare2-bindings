@@ -10,7 +10,7 @@ if sys.platform == "win32":
 else:
     example_file = b"/bin/ls"
 
-class R2APITest(unittest.TestCase):
+class R2LIBRTest(unittest.TestCase):
     
     def __get_r_core(self):
         r2c = r2.r_core.r_core_new()

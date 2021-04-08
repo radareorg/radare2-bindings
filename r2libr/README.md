@@ -1,23 +1,23 @@
-## r2api
+## r2libr
 
 Yet another radare2 python bindings.
 
 Compared to [radare2-bindings](https://github.com/radareorg/radare2-bindings/python) and [radare2-r2pipe](https://github.com/radareorg/radare2-r2pipe), this binding:
 
 - Doesn't need any extra installation of radare2. Just `pip install` and you are ready to go.
-- Gives you the full control of the core radare2 API and helps build your own tools.
+- Gives you the full control of the core radare2 libr API and helps build your own tools.
 
 ## Install
 
 ```bash
-pip3 install --upgrade r2api
+pip3 install --upgrade r2libr
 ```
 
 **No need to install radare2** since all dynamic libraries are bundled with the Python wheels.
 
 ## Example
 
-Implement a basic command line r2 by r2api.
+Implement a basic command line r2 by r2libr.
 
 ```python
 import r2
@@ -39,7 +39,7 @@ class R2:
         r2.r_core.r_core_free(self._r2c)
     
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser("Implement a basic command line r2 by r2api")
+    ap = argparse.ArgumentParser("Implement a basic command line r2 by r2libr")
     ap.add_argument("binary", help="The binary to analyse.")
     args = ap.parse_args()
 
@@ -61,7 +61,7 @@ Clone the repository.
 
 ```bash
 git clone https://github.com/radareorg/radare2-bindings
-cd radare2-bindings/r2api
+cd radare2-bindings/r2libr
 ```
 
 Since radare2 chooses `meson` as their alternative building system and it's cross-platform, the first step is install `meson`.

@@ -226,13 +226,13 @@ with open(Path(ROOT_DIR) / "README.md", "r+") as f:
     long_description = f.read()
 
 setuptools.setup(
-    name="r2api",
+    name="r2libr",
     version="5.1.0",
     author="mio",
     author_email="mio@lazym.io",
     description="Yet anohter radare2 python bindings.",
     long_description=long_description,
-    url="https://github.com/radare2-bindings/r2api",
+    url="https://github.com/radare2-bindings/r2libr",
     packages=setuptools.find_packages(),
     long_description_content_type="text/markdown",
     classifiers=[

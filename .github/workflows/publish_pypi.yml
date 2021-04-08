@@ -51,26 +51,26 @@ jobs:
         python3 -m pip install setuptools wheel meson
 
     - name: Clone latest radare2.
-      run: cd r2api && git clone https://github.com/radareorg/radare2
+      run: cd r2libr && git clone https://github.com/radareorg/radare2
 
     - name: Remove link.exe to avoid conflicts and Build distribution 📦 on Windows.
       if: matrix.os == 'windows-latest'
       shell: cmd
       run: |
           del /f "C:\Program Files\Git\mingw64\bin\link.exe"
-          cd r2api && python3 setup.py bdist_wheel
+          cd r2libr && python3 setup.py bdist_wheel
       
     - name: Build distribution 📦.
       if: matrix.os != 'windows-latest'
       shell: bash
-      run: cd r2api && python3 setup.py bdist_wheel
+      run: cd r2libr && python3 setup.py bdist_wheel
     
     - name: Test our build.
-      run: cd r2api && python3 -m pip install -e . && cd tests && python3 test_r2api.py
+      run: cd r2libr && python3 -m pip install -e . && cd tests && python3 test_r2libr.py
   
     - uses: actions/upload-artifact@v2
       with:
-         path: ${{ github.workspace }}/r2api/dist/*
+         path: ${{ github.workspace }}/r2libr/dist/*
 
   publish:
     needs: [build]
