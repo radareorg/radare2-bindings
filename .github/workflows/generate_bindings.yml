@@ -17,7 +17,7 @@ jobs:
       run: sudo apt update && sudo apt install python3 python3-pip libclang-11-dev -y
     
     - name: Set up (a specific version) ctypeslib.
-      run: python3 -m pip install https://github.com/trolldbois/ctypeslib/archive/d59c5d4725ec0d40f134e2bb87b120ea73af88be.zip
+      run: python3 -m pip install https://github.com/wtdcode/ctypeslib/archive/187171e5c2366d683e4b98943b919c9e379d2cd0.zip
     
     - name: Checkout the repo.
       uses: actions/checkout@v2
