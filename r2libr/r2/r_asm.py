@@ -317,10 +317,10 @@ RAsmEqu = struct_c__SA_RAsmEqu
 class struct_r_asm_t(Structure):
     pass
 
-class struct_sdb_t(Structure):
+class struct_r_syscall_t(Structure):
     pass
 
-class struct_r_syscall_t(Structure):
+class struct_sdb_t(Structure):
     pass
 
 class struct_r_asm_plugin_t(Structure):

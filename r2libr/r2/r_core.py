@@ -570,10 +570,16 @@ class struct_r_print_t(Structure):
 class struct_r_cons_t(Structure):
     pass
 
+class struct_c__SA_RTable(Structure):
+    pass
+
 class struct_r_bin_t(Structure):
     pass
 
 class struct_r_anal_t(Structure):
+    pass
+
+class struct_r_io_t(Structure):
     pass
 
 class struct_r_asm_t(Structure):
@@ -615,9 +621,6 @@ class struct_r_debug_t(Structure):
 class struct_r_num_t(Structure):
     pass
 
-class struct_c__SA_RTable(Structure):
-    pass
-
 class struct_r_cmd_t(Structure):
     pass
 
@@ -628,9 +631,6 @@ class struct_r_config_t(Structure):
     pass
 
 class struct_r_parse_t(Structure):
-    pass
-
-class struct_r_io_t(Structure):
     pass
 
 class struct_r_cmd_descriptor_t(Structure):

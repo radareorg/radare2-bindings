@@ -326,13 +326,13 @@ REggLang = struct_r_egg_lang_t
 class struct_r_egg_t(Structure):
     pass
 
+class struct_sdb_t(Structure):
+    pass
+
 class struct_r_asm_t(Structure):
     pass
 
 class struct_r_syscall_t(Structure):
-    pass
-
-class struct_sdb_t(Structure):
     pass
 
 class struct_r_egg_emit_t(Structure):

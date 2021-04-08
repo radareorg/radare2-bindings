@@ -197,13 +197,13 @@ struct_r_list_iter_t._fields_ = [
 class struct_r_anal_function_t(Structure):
     pass
 
-class struct_r_anal_diff_t(Structure):
-    pass
-
 class struct_r_anal_t(Structure):
     pass
 
 class struct_ht_up_t(Structure):
+    pass
+
+class struct_r_anal_diff_t(Structure):
     pass
 
 class struct_ht_pp_t(Structure):
