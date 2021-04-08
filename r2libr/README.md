@@ -40,7 +40,7 @@ class R2:
         r2.r_core.r_core_free(self._r2c)
     
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser("Implement a basic command line r2 by pyr2")
+    ap = argparse.ArgumentParser("Implement a basic command line r2 by r2libr")
     ap.add_argument("binary", help="The binary to analyse.")
     args = ap.parse_args()
 
