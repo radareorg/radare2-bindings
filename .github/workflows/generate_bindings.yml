@@ -2,8 +2,9 @@ name: Generate bindings for r2api 🚀
 
 on:
   push:
-    paths-ignore:
-      - "r2api/r2/**"
+    paths:
+      - 'r2api/**'
+      - '!r2api/r2/**'
     branches:
       - "*"
 
