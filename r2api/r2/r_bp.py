@@ -121,11 +121,14 @@ class Structure(ctypes.Structure, AsDictMixin):
         for name, type_ in cls._fields_:
             if hasattr(type_, "restype"):
                 if name in bound_fields:
-                    # use a closure to capture the callback from the loop scope
-                    fields[name] = (
-                        type_((lambda callback: lambda *args: callback(*args))(
-                            bound_fields[name]))
-                    )
+                    if bound_fields[name] is None:
+                        fields[name] = type_()
+                    else:
+                        # use a closure to capture the callback from the loop scope
+                        fields[name] = (
+                            type_((lambda callback: lambda *args: callback(*args))(
+                                bound_fields[name]))
+                        )
                     del bound_fields[name]
                 else:
                     # default callback implementation (does nothing)
@@ -329,16 +332,16 @@ struct_r_io_bind_t._fields_ = [
     ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
 ]
 
-class struct_r_id_storage_t(Structure):
+class struct_r_cache_t(Structure):
     pass
 
-class struct_r_id_pool_t(Structure):
+class struct_r_id_storage_t(Structure):
     pass
 
 class struct_r_event_t(Structure):
     pass
 
-class struct_r_cache_t(Structure):
+class struct_r_id_pool_t(Structure):
     pass
 
 class struct_ls_t(Structure):
@@ -434,10 +437,10 @@ struct_r_io_t._fields_ = [
     ('corebind', struct_r_core_bind_t),
 ]
 
-class struct_ht_up_t(Structure):
+class struct_r_io_plugin_t(Structure):
     pass
 
-class struct_r_io_plugin_t(Structure):
+class struct_ht_up_t(Structure):
     pass
 
 struct_r_io_desc_t._pack_ = 1 # source:False

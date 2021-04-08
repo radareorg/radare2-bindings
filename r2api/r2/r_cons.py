@@ -129,11 +129,14 @@ class Structure(ctypes.Structure, AsDictMixin):
         for name, type_ in cls._fields_:
             if hasattr(type_, "restype"):
                 if name in bound_fields:
-                    # use a closure to capture the callback from the loop scope
-                    fields[name] = (
-                        type_((lambda callback: lambda *args: callback(*args))(
-                            bound_fields[name]))
-                    )
+                    if bound_fields[name] is None:
+                        fields[name] = type_()
+                    else:
+                        # use a closure to capture the callback from the loop scope
+                        fields[name] = (
+                            type_((lambda callback: lambda *args: callback(*args))(
+                                bound_fields[name]))
+                        )
                     del bound_fields[name]
                 else:
                     # default callback implementation (does nothing)
@@ -682,10 +685,10 @@ RConsCursorPos = struct_c__SA_RConsCursorPos
 class struct_r_cons_t(Structure):
     pass
 
-class struct__IO_FILE(Structure):
+class struct_r_line_t(Structure):
     pass
 
-class struct_r_line_t(Structure):
+class struct__IO_FILE(Structure):
     pass
 
 class struct_r_num_t(Structure):
@@ -788,13 +791,13 @@ struct_r_cons_t._fields_ = [
     ('cpos', RConsCursorPos),
 ]
 
-class struct__IO_codecvt(Structure):
-    pass
-
 class struct__IO_marker(Structure):
     pass
 
 class struct__IO_wide_data(Structure):
+    pass
+
+class struct__IO_codecvt(Structure):
     pass
 
 struct__IO_FILE._pack_ = 1 # source:False
@@ -923,17 +926,53 @@ struct_r_num_t._fields_ = [
     ('nc', struct_r_num_calc_t),
 ]
 
+class struct_r_list_iter_t(Structure):
+    pass
+
 class struct_r_list_t(Structure):
+    pass
+
+class struct_r_hud_t(Structure):
     pass
 
 class struct_r_selection_widget_t(Structure):
     pass
 
-class struct_r_list_iter_t(Structure):
+
+# values for enumeration 'c__EA_RLinePromptType'
+c__EA_RLinePromptType__enumvalues = {
+    0: 'R_LINE_PROMPT_DEFAULT',
+    1: 'R_LINE_PROMPT_OFFSET',
+    2: 'R_LINE_PROMPT_FILE',
+}
+R_LINE_PROMPT_DEFAULT = 0
+R_LINE_PROMPT_OFFSET = 1
+R_LINE_PROMPT_FILE = 2
+c__EA_RLinePromptType = ctypes.c_uint32 # enum
+class struct_r_line_buffer_t(Structure):
     pass
 
-class struct_r_hud_t(Structure):
+struct_r_line_buffer_t._pack_ = 1 # source:False
+struct_r_line_buffer_t._fields_ = [
+    ('data', ctypes.c_char * 4096),
+    ('index', ctypes.c_int32),
+    ('length', ctypes.c_int32),
+]
+
+class struct_r_line_hist_t(Structure):
     pass
+
+struct_r_line_hist_t._pack_ = 1 # source:False
+struct_r_line_hist_t._fields_ = [
+    ('data', ctypes.POINTER(ctypes.POINTER(ctypes.c_char))),
+    ('match', ctypes.POINTER(ctypes.c_char)),
+    ('size', ctypes.c_int32),
+    ('index', ctypes.c_int32),
+    ('top', ctypes.c_int32),
+    ('autosave', ctypes.c_int32),
+    ('do_setup_match', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 7),
+]
 
 class struct_r_line_comp_t(Structure):
     pass
@@ -959,20 +998,6 @@ struct_r_pvector_t._fields_ = [
     ('v', struct_r_vector_t),
 ]
 
-class struct_r_line_buffer_t(Structure):
-    pass
-
-
-# values for enumeration 'c__EA_RLinePromptType'
-c__EA_RLinePromptType__enumvalues = {
-    0: 'R_LINE_PROMPT_DEFAULT',
-    1: 'R_LINE_PROMPT_OFFSET',
-    2: 'R_LINE_PROMPT_FILE',
-}
-R_LINE_PROMPT_DEFAULT = 0
-R_LINE_PROMPT_OFFSET = 1
-R_LINE_PROMPT_FILE = 2
-c__EA_RLinePromptType = ctypes.c_uint32 # enum
 struct_r_line_comp_t._pack_ = 1 # source:False
 struct_r_line_comp_t._fields_ = [
     ('opt', ctypes.c_bool),
@@ -983,28 +1008,6 @@ struct_r_line_comp_t._fields_ = [
     ('args', struct_r_pvector_t),
     ('run', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_line_comp_t), ctypes.POINTER(struct_r_line_buffer_t), c__EA_RLinePromptType, ctypes.POINTER(None))),
     ('run_user', ctypes.POINTER(None)),
-]
-
-struct_r_line_buffer_t._pack_ = 1 # source:False
-struct_r_line_buffer_t._fields_ = [
-    ('data', ctypes.c_char * 4096),
-    ('index', ctypes.c_int32),
-    ('length', ctypes.c_int32),
-]
-
-class struct_r_line_hist_t(Structure):
-    pass
-
-struct_r_line_hist_t._pack_ = 1 # source:False
-struct_r_line_hist_t._fields_ = [
-    ('data', ctypes.POINTER(ctypes.POINTER(ctypes.c_char))),
-    ('match', ctypes.POINTER(ctypes.c_char)),
-    ('size', ctypes.c_int32),
-    ('index', ctypes.c_int32),
-    ('top', ctypes.c_int32),
-    ('autosave', ctypes.c_int32),
-    ('do_setup_match', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 7),
 ]
 
 struct_r_line_t._pack_ = 1 # source:False
@@ -1849,10 +1852,10 @@ struct_r_panels_menu_item._fields_ = [
     ('p', ctypes.POINTER(struct_r_panel_t)),
 ]
 
-class struct_r_panel_view_t(Structure):
+class struct_r_panel_model_t(Structure):
     pass
 
-class struct_r_panel_model_t(Structure):
+class struct_r_panel_view_t(Structure):
     pass
 
 struct_r_panel_t._pack_ = 1 # source:False
@@ -2023,29 +2026,11 @@ struct_r_panels_t._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
 ]
 
-class struct_sdb_gperf_t(Structure):
-    pass
-
 class struct_ls_t(Structure):
     pass
 
-class struct_cdb(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
-
-struct_cdb._pack_ = 1 # source:False
-struct_cdb._fields_ = [
-    ('map', ctypes.POINTER(ctypes.c_char)),
-    ('fd', ctypes.c_int32),
-    ('size', ctypes.c_uint32),
-    ('loop', ctypes.c_uint32),
-    ('khash', ctypes.c_uint32),
-    ('kpos', ctypes.c_uint32),
-    ('hpos', ctypes.c_uint32),
-    ('hslots', ctypes.c_uint32),
-    ('dpos', ctypes.c_uint32),
-    ('dlen', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-]
 
 class struct_cdb_make(Structure):
     pass
@@ -2105,6 +2090,24 @@ struct_sdb_kv._fields_ = [
     ('cas', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
     ('expire', ctypes.c_uint64),
+]
+
+class struct_cdb(Structure):
+    pass
+
+struct_cdb._pack_ = 1 # source:False
+struct_cdb._fields_ = [
+    ('map', ctypes.POINTER(ctypes.c_char)),
+    ('fd', ctypes.c_int32),
+    ('size', ctypes.c_uint32),
+    ('loop', ctypes.c_uint32),
+    ('khash', ctypes.c_uint32),
+    ('kpos', ctypes.c_uint32),
+    ('hpos', ctypes.c_uint32),
+    ('hslots', ctypes.c_uint32),
+    ('dpos', ctypes.c_uint32),
+    ('dlen', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
 struct_sdb_t._pack_ = 1 # source:False

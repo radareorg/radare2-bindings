@@ -121,11 +121,14 @@ class Structure(ctypes.Structure, AsDictMixin):
         for name, type_ in cls._fields_:
             if hasattr(type_, "restype"):
                 if name in bound_fields:
-                    # use a closure to capture the callback from the loop scope
-                    fields[name] = (
-                        type_((lambda callback: lambda *args: callback(*args))(
-                            bound_fields[name]))
-                    )
+                    if bound_fields[name] is None:
+                        fields[name] = type_()
+                    else:
+                        # use a closure to capture the callback from the loop scope
+                        fields[name] = (
+                            type_((lambda callback: lambda *args: callback(*args))(
+                                bound_fields[name]))
+                        )
                     del bound_fields[name]
                 else:
                     # default callback implementation (does nothing)
@@ -202,12 +205,14 @@ struct_r_magic_0_0._fields_ = [
 ]
 
 union_r_magic_0._pack_ = 1 # source:False
+union_r_magic_0._anonymous_ = ('_0',)
 union_r_magic_0._fields_ = [
     ('_mask', ctypes.c_uint64),
-    ('_s', struct_r_magic_0_0),
+    ('_0', struct_r_magic_0_0),
 ]
 
 struct_r_magic._pack_ = 1 # source:False
+struct_r_magic._anonymous_ = ('_0',)
 struct_r_magic._fields_ = [
     ('cont_level', ctypes.c_uint16),
     ('flag', ctypes.c_ubyte),
@@ -223,7 +228,7 @@ struct_r_magic._fields_ = [
     ('offset', ctypes.c_uint32),
     ('in_offset', ctypes.c_uint32),
     ('lineno', ctypes.c_uint32),
-    ('_u', union_r_magic_0),
+    ('_0', union_r_magic_0),
     ('value', union_VALUETYPE),
     ('desc', ctypes.c_char * 64),
     ('mimetype', ctypes.c_char * 64),
@@ -243,6 +248,17 @@ struct_mlist._fields_ = [
 
 class struct_r_magic_set(Structure):
     pass
+
+class struct_r_magic_set_2(Structure):
+    pass
+
+struct_r_magic_set_2._pack_ = 1 # source:False
+struct_r_magic_set_2._fields_ = [
+    ('s', ctypes.POINTER(ctypes.c_char)),
+    ('s_len', ctypes.c_uint64),
+    ('offset', ctypes.c_uint64),
+    ('rm_len', ctypes.c_uint64),
+]
 
 class struct_out(Structure):
     pass
@@ -265,18 +281,8 @@ struct_cont._fields_ = [
     ('li', ctypes.POINTER(struct_level_info)),
 ]
 
-class struct_r_magic_set_2(Structure):
-    pass
-
-struct_r_magic_set_2._pack_ = 1 # source:False
-struct_r_magic_set_2._fields_ = [
-    ('s', ctypes.POINTER(ctypes.c_char)),
-    ('s_len', ctypes.c_uint64),
-    ('offset', ctypes.c_uint64),
-    ('rm_len', ctypes.c_uint64),
-]
-
 struct_r_magic_set._pack_ = 1 # source:False
+struct_r_magic_set._anonymous_ = ('_0',)
 struct_r_magic_set._fields_ = [
     ('mlist', ctypes.POINTER(struct_mlist)),
     ('c', struct_cont),
@@ -287,7 +293,7 @@ struct_r_magic_set._fields_ = [
     ('haderr', ctypes.c_int32),
     ('file', ctypes.POINTER(ctypes.c_char)),
     ('line', ctypes.c_uint64),
-    ('search', struct_r_magic_set_2),
+    ('_0', struct_r_magic_set_2),
     ('ms_value', union_VALUETYPE),
 ]
 

@@ -129,11 +129,14 @@ class Structure(ctypes.Structure, AsDictMixin):
         for name, type_ in cls._fields_:
             if hasattr(type_, "restype"):
                 if name in bound_fields:
-                    # use a closure to capture the callback from the loop scope
-                    fields[name] = (
-                        type_((lambda callback: lambda *args: callback(*args))(
-                            bound_fields[name]))
-                    )
+                    if bound_fields[name] is None:
+                        fields[name] = type_()
+                    else:
+                        # use a closure to capture the callback from the loop scope
+                        fields[name] = (
+                            type_((lambda callback: lambda *args: callback(*args))(
+                                bound_fields[name]))
+                        )
                     del bound_fields[name]
                 else:
                     # default callback implementation (does nothing)
@@ -173,10 +176,10 @@ RCoreCmdfCallback = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctype
 class struct_r_lang_t(Structure):
     pass
 
-class struct_r_lang_plugin_t(Structure):
+class struct_r_list_t(Structure):
     pass
 
-class struct_r_list_t(Structure):
+class struct_r_lang_plugin_t(Structure):
     pass
 
 struct_r_lang_t._pack_ = 1 # source:False
