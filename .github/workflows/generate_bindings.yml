@@ -7,11 +7,11 @@ on:
       - '!r2api/r2/**'
     branches:
       - "*"
+  workflow_dispatch:
 
 jobs:
   generate:
     runs-on: ubuntu-20.04
-    if: startsWith(github.ref, 'refs/head')
     steps:
     - name: Set up system path for python libs.
       run: echo "$HOME/.local/bin" >> $GITHUB_PATH
@@ -59,7 +59,6 @@ jobs:
   test:
     needs: [generate]
     runs-on: ${{ matrix.os }}
-    if: startsWith(github.ref, 'refs/head')
     strategy:
       fail-fast: false
       matrix:
