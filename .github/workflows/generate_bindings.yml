@@ -51,7 +51,7 @@ jobs:
       run: git status | grep -q "changes"  && git add -u && git commit -m "r2api generated on `date`"
 
     - name: Push new bindings
-      run: mkdir -p ~/.ssh && echo "$BINDINGS_DEPLOY_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa && ssh-keyscan github.com >> ~/.ssh/known_hosts && git remote add orig git@github.com:wtdcode/pyr2.git && git push orig
+      run: mkdir -p ~/.ssh && echo "$BINDINGS_DEPLOY_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa && ssh-keyscan github.com >> ~/.ssh/known_hosts && git remote add orig git@github.com:radareorg/radare2-bindings.git && git push orig
       env:
         BINDINGS_DEPLOY_KEY: ${{ secrets.BINDINGS_DEPLOY_KEY }}
   
