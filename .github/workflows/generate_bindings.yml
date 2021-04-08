@@ -2,8 +2,10 @@ name: Generate bindings for r2api 🚀
 
 on:
   push:
-     branches:
-       - "*"
+    paths-ignore:
+      - "r2api/r2/**"
+    branches:
+      - "*"
 
 jobs:
   generate:
@@ -34,13 +36,13 @@ jobs:
       run: cd r2api && git clone https://github.com/radareorg/radare2
 
     - name: Build radare2.
-      run: env BINDINGS=1 python3 setup.py build
+      run: cd r2api && env BINDINGS=1 python3 setup.py build
     
     - name: Generate bindings.
-      run: cd tools && python3 gen.py -O ../r2/ -B ../radare2/pyr2installdir/ && cd ..
+      run: cd r2api/tools && python3 gen.py -O ../r2/ -B ../radare2/pyr2installdir/
 
     - name: Test bindings.
-      run: python3 -m pip install -e . && cd tests && python3 test_r2api.py
+      run: cd r2api && python3 -m pip install -e . && cd tests && python3 test_r2api.py
     
     - name: Set up git.
       run: git config --global user.email mio@lazym.io && git config --global user.name mio
@@ -106,4 +108,4 @@ jobs:
       run: del /f "C:\Program Files\Git\mingw64\bin\link.exe"
     
     - name: Test our build.
-      run: python3 -m pip install -e . && cd tests && python3 test_r2api.py
+      run: cd r2api && python3 -m pip install -e . && cd tests && python3 test_r2api.py

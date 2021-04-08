@@ -58,15 +58,15 @@ jobs:
       shell: cmd
       run: |
           del /f "C:\Program Files\Git\mingw64\bin\link.exe"
-          python3 setup.py bdist_wheel
+          cd r2api && python3 setup.py bdist_wheel
       
     - name: Build distribution 📦.
       if: matrix.os != 'windows-latest'
       shell: bash
-      run: python3 setup.py bdist_wheel
+      run: cd r2api && python3 setup.py bdist_wheel
     
     - name: Test our build.
-      run: python3 -m pip install -e . && cd tests && python3 test_r2api.py
+      run: cd r2api && python3 -m pip install -e . && cd tests && python3 test_r2api.py
   
     - uses: actions/upload-artifact@v2
       with:
