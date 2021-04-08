@@ -232,7 +232,7 @@ setuptools.setup(
     author_email="mio@lazym.io",
     description="Yet anohter radare2 python bindings.",
     long_description=long_description,
-    url="https://github.com/radare2-bindings/r2libr",
+    url="https://github.com/radareorg/radare2-bindings/tree/master/r2libr",
     packages=setuptools.find_packages(),
     long_description_content_type="text/markdown",
     classifiers=[
