@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    if: startsWith(github.ref, 'refs/tags')
     strategy:
       fail-fast: false
       matrix:
@@ -76,7 +75,6 @@ jobs:
   publish:
     needs: [build]
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags')
     steps:
       - uses: actions/download-artifact@v2
         with:
