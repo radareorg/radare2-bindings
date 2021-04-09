@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'r2libr/**'
-      - '!r2libr/r2/**'
+      - '!r2libr/libr/**'
     branches:
       - "*"
   workflow_dispatch:
@@ -40,7 +40,7 @@ jobs:
       run: cd r2libr && env BINDINGS=1 python3 setup.py build
     
     - name: Generate bindings.
-      run: cd r2libr/tools && python3 gen.py -O ../r2/ -B ../radare2/pyr2installdir/
+      run: cd r2libr/tools && python3 gen.py -O ../libr/ -B ../radare2/pyr2installdir/
 
     - name: Test bindings.
       run: cd r2libr && python3 -m pip install -e . && cd tests && python3 test_r2libr.py

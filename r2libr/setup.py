@@ -18,7 +18,7 @@ IS_64BITS = platform.architecture()[0] == '64bit'
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 RADARE2_DIR = Path(ROOT_DIR) / "radare2"
-LIBS_DIR = Path(ROOT_DIR) / "r2" / "libr"
+LIBS_DIR = Path(ROOT_DIR) / "libr" / "libr"
 
 def detect_python_on_windows():
     try:
@@ -38,7 +38,7 @@ def detect_python_on_windows():
 
 def clean_builds():
     shutil.rmtree(Path(ROOT_DIR) / "build", ignore_errors=True)
-    shutil.rmtree(Path(ROOT_DIR) / "r2" / "libr", ignore_errors=True)
+    shutil.rmtree(Path(ROOT_DIR) / "libr" / "libr", ignore_errors=True)
     shutil.rmtree(Path(ROOT_DIR) / "radare2" / "pyr2installdir", ignore_errors=True)
     shutil.rmtree(Path(ROOT_DIR) / "radare2" / "pyr2build", ignore_errors=True)
 
@@ -176,7 +176,7 @@ def build_radare2():
             if sys.platform == "darwin" and not p.is_symlink():
                 rewrite_dyld_path(p)
             # Known Issue: Altough we copy symlinks here, still python would follow symlink and copy a duplicate one.
-            #              To keep r2libs.py simple (meson write versions to file names), let's keep that copy.
+            #              To keep r_libs.py simple (meson write versions to file names), let's keep that copy.
             shutil.copy(p, LIBS_DIR, follow_symlinks=False)
     os.chdir(ROOT_DIR) 
 
@@ -227,7 +227,7 @@ with open(Path(ROOT_DIR) / "README.md", "r+") as f:
 
 setuptools.setup(
     name="r2libr",
-    version="5.1.0-1",
+    version="5.1.0-2",
     author="mio",
     author_email="mio@lazym.io",
     description="Yet anohter radare2 python bindings.",
@@ -248,7 +248,7 @@ setuptools.setup(
     include_package_data=True,
     is_pure=False,
     package_data= {
-        "r2" : ['libr/*']
+        "libr" : ['libr/*']
     }
 )
 
