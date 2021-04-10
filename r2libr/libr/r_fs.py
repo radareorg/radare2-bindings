@@ -187,10 +187,10 @@ class struct_r_io_bind_t(Structure):
 class struct_r_io_t(Structure):
     pass
 
-class struct_r_io_map_t(Structure):
+class struct_r_io_desc_t(Structure):
     pass
 
-class struct_r_io_desc_t(Structure):
+class struct_r_io_map_t(Structure):
     pass
 
 class struct_r_list_t(Structure):
@@ -235,16 +235,16 @@ struct_r_io_bind_t._fields_ = [
 class struct_r_event_t(Structure):
     pass
 
-class struct_r_id_pool_t(Structure):
+class struct_r_id_storage_t(Structure):
+    pass
+
+class struct_r_cache_t(Structure):
     pass
 
 class struct_ls_t(Structure):
     pass
 
-class struct_r_id_storage_t(Structure):
-    pass
-
-class struct_r_cache_t(Structure):
+class struct_r_id_pool_t(Structure):
     pass
 
 class struct_r_io_undo_t(Structure):
@@ -609,10 +609,10 @@ RFSPartitionPlugin = struct_r_fs_partition_plugin_t
 class struct_r_fs_file_t(Structure):
     pass
 
-class struct_r_fs_root_t(Structure):
+class struct_r_fs_plugin_t(Structure):
     pass
 
-class struct_r_fs_plugin_t(Structure):
+class struct_r_fs_root_t(Structure):
     pass
 
 struct_r_fs_file_t._pack_ = 1 # source:False

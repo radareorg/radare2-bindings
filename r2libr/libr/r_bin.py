@@ -181,16 +181,16 @@ _libraries['FIXME_STUB'] = FunctionFactoryStub() #  ctypes.CDLL('FIXME_STUB')
 class struct_r_bin_t(Structure):
     pass
 
-class struct_r_list_t(Structure):
-    pass
-
-class struct_r_bin_file_t(Structure):
-    pass
-
 class struct_r_id_storage_t(Structure):
     pass
 
 class struct_sdb_t(Structure):
+    pass
+
+class struct_r_list_t(Structure):
+    pass
+
+class struct_r_bin_file_t(Structure):
     pass
 
 class struct_r_cons_bind_t(Structure):
@@ -665,10 +665,10 @@ struct_ht_up_kv._fields_ = [
     ('value_len', ctypes.c_uint32),
 ]
 
-class struct_r_bin_write_t(Structure):
+class struct_r_bin_dbginfo_t(Structure):
     pass
 
-class struct_r_bin_dbginfo_t(Structure):
+class struct_r_bin_write_t(Structure):
     pass
 
 class struct_r_buf_t(Structure):
@@ -1062,11 +1062,36 @@ struct_r_queue_t._fields_ = [
     ('size', ctypes.c_uint32),
 ]
 
+class struct_r_cache_t(Structure):
+    pass
+
 class struct_r_event_t(Structure):
     pass
 
-class struct_r_cache_t(Structure):
+class struct_r_io_undo_t(Structure):
     pass
+
+class struct_r_io_undos_t(Structure):
+    pass
+
+struct_r_io_undos_t._pack_ = 1 # source:False
+struct_r_io_undos_t._fields_ = [
+    ('off', ctypes.c_uint64),
+    ('cursor', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
+struct_r_io_undo_t._pack_ = 1 # source:False
+struct_r_io_undo_t._fields_ = [
+    ('s_enable', ctypes.c_int32),
+    ('w_enable', ctypes.c_int32),
+    ('w_list', ctypes.POINTER(struct_r_list_t)),
+    ('w_init', ctypes.c_int32),
+    ('idx', ctypes.c_int32),
+    ('undos', ctypes.c_int32),
+    ('redos', ctypes.c_int32),
+    ('seek', struct_r_io_undos_t * 64),
+]
 
 class struct_r_skyline_t(Structure):
     pass
@@ -1118,31 +1143,6 @@ struct_r_core_bind_t._fields_ = [
     ('isMapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_int32)),
     ('syncDebugMaps', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None))),
     ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
-]
-
-class struct_r_io_undo_t(Structure):
-    pass
-
-class struct_r_io_undos_t(Structure):
-    pass
-
-struct_r_io_undos_t._pack_ = 1 # source:False
-struct_r_io_undos_t._fields_ = [
-    ('off', ctypes.c_uint64),
-    ('cursor', ctypes.c_int32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-]
-
-struct_r_io_undo_t._pack_ = 1 # source:False
-struct_r_io_undo_t._fields_ = [
-    ('s_enable', ctypes.c_int32),
-    ('w_enable', ctypes.c_int32),
-    ('w_list', ctypes.POINTER(struct_r_list_t)),
-    ('w_init', ctypes.c_int32),
-    ('idx', ctypes.c_int32),
-    ('undos', ctypes.c_int32),
-    ('redos', ctypes.c_int32),
-    ('seek', struct_r_io_undos_t * 64),
 ]
 
 struct_r_io_t._pack_ = 1 # source:False
@@ -1596,6 +1596,21 @@ r_bin_ldr_add.argtypes = [ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(struct_
 class struct_pj_t(Structure):
     pass
 
+
+# values for enumeration 'PJEncodingStr'
+PJEncodingStr__enumvalues = {
+    0: 'PJ_ENCODING_STR_DEFAULT',
+    1: 'PJ_ENCODING_STR_BASE64',
+    2: 'PJ_ENCODING_STR_HEX',
+    3: 'PJ_ENCODING_STR_ARRAY',
+    4: 'PJ_ENCODING_STR_STRIP',
+}
+PJ_ENCODING_STR_DEFAULT = 0
+PJ_ENCODING_STR_BASE64 = 1
+PJ_ENCODING_STR_HEX = 2
+PJ_ENCODING_STR_ARRAY = 3
+PJ_ENCODING_STR_STRIP = 4
+PJEncodingStr = ctypes.c_uint32 # enum
 class struct_c__SA_RStrBuf(Structure):
     pass
 
@@ -1620,21 +1635,6 @@ PJ_ENCODING_NUM_DEFAULT = 0
 PJ_ENCODING_NUM_STR = 1
 PJ_ENCODING_NUM_HEX = 2
 PJEncodingNum = ctypes.c_uint32 # enum
-
-# values for enumeration 'PJEncodingStr'
-PJEncodingStr__enumvalues = {
-    0: 'PJ_ENCODING_STR_DEFAULT',
-    1: 'PJ_ENCODING_STR_BASE64',
-    2: 'PJ_ENCODING_STR_HEX',
-    3: 'PJ_ENCODING_STR_ARRAY',
-    4: 'PJ_ENCODING_STR_STRIP',
-}
-PJ_ENCODING_STR_DEFAULT = 0
-PJ_ENCODING_STR_BASE64 = 1
-PJ_ENCODING_STR_HEX = 2
-PJ_ENCODING_STR_ARRAY = 3
-PJ_ENCODING_STR_STRIP = 4
-PJEncodingStr = ctypes.c_uint32 # enum
 struct_pj_t._pack_ = 1 # source:False
 struct_pj_t._fields_ = [
     ('sb', struct_c__SA_RStrBuf),

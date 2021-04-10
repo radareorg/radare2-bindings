@@ -197,16 +197,16 @@ struct_r_list_iter_t._fields_ = [
 class struct_r_anal_function_t(Structure):
     pass
 
-class struct_r_anal_t(Structure):
+class struct_r_anal_diff_t(Structure):
     pass
 
 class struct_ht_up_t(Structure):
     pass
 
-class struct_r_anal_diff_t(Structure):
+class struct_ht_pp_t(Structure):
     pass
 
-class struct_ht_pp_t(Structure):
+class struct_r_anal_t(Structure):
     pass
 
 class struct_r_anal_fcn_meta_t(Structure):
@@ -376,19 +376,25 @@ struct_r_anal_diff_t._fields_ = [
     ('PADDING_1', ctypes.c_ubyte * 4),
 ]
 
+class struct_sdb_t(Structure):
+    pass
+
+class struct_r_anal_range_t(Structure):
+    pass
+
 class struct_r_rb_node_t(Structure):
+    pass
+
+class struct_r_anal_plugin_t(Structure):
+    pass
+
+class struct_r_anal_esil_t(Structure):
     pass
 
 class struct_r_anal_esil_plugin_t(Structure):
     pass
 
-class struct_sdb_t(Structure):
-    pass
-
 class struct_r_syscall_t(Structure):
-    pass
-
-class struct_r_anal_plugin_t(Structure):
     pass
 
 class struct_r_reg_t(Structure):
@@ -397,10 +403,10 @@ class struct_r_reg_t(Structure):
 class struct_r_event_t(Structure):
     pass
 
-class struct_r_anal_esil_t(Structure):
+class struct_r_flag_item_t(Structure):
     pass
 
-class struct_r_anal_range_t(Structure):
+class struct_r_flag_t(Structure):
     pass
 
 class struct_r_bin_bind_t(Structure):
@@ -409,10 +415,10 @@ class struct_r_bin_bind_t(Structure):
 class struct_r_bin_t(Structure):
     pass
 
-class struct_r_bin_file_t(Structure):
+class struct_r_bin_section_t(Structure):
     pass
 
-class struct_r_bin_section_t(Structure):
+class struct_r_bin_file_t(Structure):
     pass
 
 struct_r_bin_bind_t._pack_ = 1 # source:False
@@ -439,6 +445,54 @@ struct_r_anal_callbacks_t._fields_ = [
     ('on_fcn_delete', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(None), ctypes.POINTER(struct_r_anal_function_t))),
     ('on_fcn_rename', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(None), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(ctypes.c_char))),
     ('on_fcn_bb_new', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(None), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t))),
+]
+
+class struct_r_io_bind_t(Structure):
+    pass
+
+class struct_r_io_t(Structure):
+    pass
+
+class struct_r_io_map_t(Structure):
+    pass
+
+class struct_r_io_desc_t(Structure):
+    pass
+
+struct_r_io_bind_t._pack_ = 1 # source:False
+struct_r_io_bind_t._fields_ = [
+    ('init', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('io', ctypes.POINTER(struct_r_io_t)),
+    ('desc_use', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
+    ('desc_get', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_desc_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
+    ('desc_size', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_desc_t))),
+    ('open', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_desc_t), ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.c_int32)),
+    ('open_at', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_desc_t), ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64)),
+    ('close', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
+    ('read_at', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
+    ('write_at', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
+    ('system', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char))),
+    ('fd_open', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.c_int32)),
+    ('fd_close', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
+    ('fd_seek', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64, ctypes.c_int32)),
+    ('fd_size', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
+    ('fd_resize', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64)),
+    ('fd_read', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
+    ('fd_write', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
+    ('fd_read_at', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
+    ('fd_write_at', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
+    ('fd_is_dbg', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
+    ('fd_get_name', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
+    ('fd_get_map', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_list_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
+    ('fd_remap', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64)),
+    ('is_valid_offset', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.c_int32)),
+    ('addr_is_mapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
+    ('map_get_at', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
+    ('map_get_paddr', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
+    ('map_add', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)),
+    ('v2p', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
+    ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
 ]
 
 class struct_r_spaces_t(Structure):
@@ -496,66 +550,12 @@ struct_r_anal_options_t._fields_ = [
     ('PADDING_2', ctypes.c_ubyte * 3),
 ]
 
-class struct_r_flag_item_t(Structure):
-    pass
-
-class struct_r_flag_t(Structure):
-    pass
-
 class struct_r_anal_hint_cb_t(Structure):
     pass
 
 struct_r_anal_hint_cb_t._pack_ = 1 # source:False
 struct_r_anal_hint_cb_t._fields_ = [
     ('on_bits', ctypes.CFUNCTYPE(None, ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_bool)),
-]
-
-class struct_r_io_bind_t(Structure):
-    pass
-
-class struct_r_io_t(Structure):
-    pass
-
-class struct_r_io_map_t(Structure):
-    pass
-
-class struct_r_io_desc_t(Structure):
-    pass
-
-struct_r_io_bind_t._pack_ = 1 # source:False
-struct_r_io_bind_t._fields_ = [
-    ('init', ctypes.c_int32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-    ('io', ctypes.POINTER(struct_r_io_t)),
-    ('desc_use', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
-    ('desc_get', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_desc_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
-    ('desc_size', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_desc_t))),
-    ('open', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_desc_t), ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.c_int32)),
-    ('open_at', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_desc_t), ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64)),
-    ('close', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
-    ('read_at', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
-    ('write_at', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
-    ('system', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char))),
-    ('fd_open', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.c_int32)),
-    ('fd_close', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
-    ('fd_seek', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64, ctypes.c_int32)),
-    ('fd_size', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
-    ('fd_resize', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64)),
-    ('fd_read', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
-    ('fd_write', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
-    ('fd_read_at', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
-    ('fd_write_at', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
-    ('fd_is_dbg', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
-    ('fd_get_name', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
-    ('fd_get_map', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_list_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32)),
-    ('fd_remap', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64)),
-    ('is_valid_offset', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.c_int32)),
-    ('addr_is_mapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
-    ('map_get_at', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
-    ('map_get_paddr', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
-    ('map_add', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)),
-    ('v2p', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
-    ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
 ]
 
 class struct_r_interval_tree_t(Structure):
@@ -763,10 +763,10 @@ struct_r_reg_arena_t._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
-class struct__IO_FILE(Structure):
+class struct_r_syscall_item_t(Structure):
     pass
 
-class struct_r_syscall_item_t(Structure):
+class struct__IO_FILE(Structure):
     pass
 
 class struct_r_syscall_port_t(Structure):
@@ -849,10 +849,10 @@ struct_r_syscall_port_t._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
 ]
 
-class struct_sdb_gperf_t(Structure):
+class struct_ls_t(Structure):
     pass
 
-class struct_ls_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
 class struct_cdb(Structure):
@@ -1006,13 +1006,13 @@ struct_ls_iter_t._fields_ = [
     ('p', ctypes.POINTER(struct_ls_iter_t)),
 ]
 
-class struct_r_cache_t(Structure):
-    pass
-
 class struct_r_id_pool_t(Structure):
     pass
 
 class struct_r_id_storage_t(Structure):
+    pass
+
+class struct_r_cache_t(Structure):
     pass
 
 class struct_r_skyline_t(Structure):
@@ -1200,10 +1200,10 @@ struct_r_io_map_t._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
 ]
 
-class struct_r_skiplist_t(Structure):
+class struct_r_num_t(Structure):
     pass
 
-class struct_r_num_t(Structure):
+class struct_r_skiplist_t(Structure):
     pass
 
 struct_r_flag_t._pack_ = 1 # source:False
@@ -1409,13 +1409,13 @@ struct_r_bin_t._fields_ = [
     ('PADDING_7', ctypes.c_ubyte * 7),
 ]
 
-class struct_r_buf_t(Structure):
-    pass
-
 class struct_r_bin_object_t(Structure):
     pass
 
 class struct_r_bin_xtr_plugin_t(Structure):
+    pass
+
+class struct_r_buf_t(Structure):
     pass
 
 struct_r_bin_file_t._pack_ = 1 # source:False
@@ -1472,10 +1472,10 @@ struct_r_buffer_methods_t._fields_ = [
     ('nonempty_list', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_list_t), ctypes.POINTER(struct_r_buf_t))),
 ]
 
-class struct_r_bin_info_t(Structure):
+class struct_r_bin_plugin_t(Structure):
     pass
 
-class struct_r_bin_plugin_t(Structure):
+class struct_r_bin_info_t(Structure):
     pass
 
 class struct_r_bin_addr_t(Structure):
@@ -2441,6 +2441,15 @@ struct_r_parse_ctype_type_t_0_1._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 7),
 ]
 
+class struct_r_parse_ctype_type_t_0_2(Structure):
+    pass
+
+struct_r_parse_ctype_type_t_0_2._pack_ = 1 # source:False
+struct_r_parse_ctype_type_t_0_2._fields_ = [
+    ('type', ctypes.POINTER(struct_r_parse_ctype_type_t)),
+    ('count', ctypes.c_uint64),
+]
+
 class struct_r_parse_ctype_type_t_0_0(Structure):
     pass
 
@@ -2451,15 +2460,6 @@ struct_r_parse_ctype_type_t_0_0._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
     ('is_const', ctypes.c_bool),
     ('PADDING_1', ctypes.c_ubyte * 7),
-]
-
-class struct_r_parse_ctype_type_t_0_2(Structure):
-    pass
-
-struct_r_parse_ctype_type_t_0_2._pack_ = 1 # source:False
-struct_r_parse_ctype_type_t_0_2._fields_ = [
-    ('type', ctypes.POINTER(struct_r_parse_ctype_type_t)),
-    ('count', ctypes.c_uint64),
 ]
 
 union_r_parse_ctype_type_t_0._pack_ = 1 # source:False

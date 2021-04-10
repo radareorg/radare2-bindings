@@ -685,13 +685,13 @@ RConsCursorPos = struct_c__SA_RConsCursorPos
 class struct_r_cons_t(Structure):
     pass
 
+class struct_r_line_t(Structure):
+    pass
+
 class struct__IO_FILE(Structure):
     pass
 
 class struct_r_num_t(Structure):
-    pass
-
-class struct_r_line_t(Structure):
     pass
 
 class struct_termios(Structure):
