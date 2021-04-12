@@ -82,6 +82,7 @@ CROSSBUILD=0
 BUILD=`guess_os`
 HOST="${BUILD}"
 TARGET="${HOST}"
+ETCDIR="/etc"
 SYSCONFDIR=""
 
 create_environ() {
@@ -89,7 +90,7 @@ create_environ() {
 : ${SPREFIX:="${PREFIX}"}
 : ${BINDIR:="${SPREFIX}/bin"}
 : ${SBINDIR:="${PREFIX}/sbin"}
-: ${SYSCONFDIR:="${SPREFIX}/etc"}
+: ${ETCDIR:="${SPREFIX}/etc"}
 : ${LIBDIR:="${SPREFIX}/lib"}
 : ${LIBEXECDIR:="${SPREFIX}/libexec"}
 : ${INCLUDEDIR:="${SPREFIX}/include"}
@@ -109,12 +110,12 @@ done
 : ${INSTALL_PROGRAM_STRIP:=${INSTALL} -m 755 -s}
 : ${INSTALL_MAN:=${INSTALL} -m 444}
 : ${INSTALL_LIB:=${INSTALL} -m 755 -c}
- PKGNAME='radare2-bindings' ; VERSION='5.1.0' ; VERSION_MAJOR=5; VERSION_MINOR=1; VERSION_PATCH=0; VERSION_NUMBER=50100; CONTACT_MAIL="pancake@nopcode.org" ; CONTACT_NAME="pancake" ; CONTACT="pancake <pancake@nopcode.org>" ;
+ PKGNAME='radare2-bindings' ; VERSION='5.2.0' ; VERSION_MAJOR=5; VERSION_MINOR=2; VERSION_PATCH=0; VERSION_NUMBER=50200; CONTACT_MAIL="pancake@nopcode.org" ; CONTACT_NAME="pancake" ; CONTACT="pancake <pancake@nopcode.org>" ;
 }
 
 show_usage() {
 cat <<EOF2
-'configure' configures radare2-bindings-5.1.0 to adapt to many kinds of systems.
+'configure' configures radare2-bindings-5.2.0 to adapt to many kinds of systems.
 
 Usage: ./configure [OPTION]... [VAR=VALUE]...
 
@@ -146,6 +147,7 @@ Fine tuning of the installation directories:
   --localstatedir=DIR    modifiable single-machine data [PREFIX/var]
   --mandir=DIR           man documentation [DATADIR/man]
   --sbindir=DIR          system admin executables [EPREFIX/sbin]
+  --etcdir=DIR           same as --sysconfdir (/etc)
   --sysconfdir=DIR       read-only single-machine data [PREFIX/etc]
   --sharedstatedir=DIR   modifiable architecture-independent data [PREFIX/com]
 
@@ -198,10 +200,10 @@ ocho() {
 
 show_version() {
 if [ "$QUIET" = 1 ]; then
-	echo "5.1.0"
+	echo "5.2.0"
 	exit 0
 fi
-echo "radare2-bindings-5.1.0 configuration script done with acr v1.9.8.
+echo "radare2-bindings-5.2.0 configuration script done with acr v1.9.8.
 The 'Free Software Foundation' message is only for autodetection.
 Originally written by pancake <nopcode.org>."
 exit 0
@@ -230,7 +232,7 @@ case $flag in
 	show_version ; ;;
 -r|--r|--report)
 echo "PKGNAME:   radare2-bindings"
-echo "VERSION:   5.1.0"
+echo "VERSION:   5.2.0"
 echo "LANGS:     c c++"
 echo "PKG-CONFIG:  r_core"
 echo "FLAGS:     --with-ostype=auto"
@@ -263,7 +265,11 @@ echo "FLAGS:     --with-ostype=auto"
 --datadir)
 	DATADIR="$value"; ;;
 --sysconfdir)
-	SYSCONFDIR="$value"; ;;
+	SYSCONFDIR="$value"
+	ETCDIR="$value"; ;;
+--etcdir)
+	SYSCONFDIR="$value"
+	ETCDIR="$value"; ;;
 --sharedstatedir)
 	SHAREDSTATEDIR="$value"; ;;
 --localstatedir)
@@ -297,7 +303,7 @@ parse_options "$1"
 shift
 done
 
-ENVWORDS="MANDIR INFODIR LIBDIR INCLUDEDIR LOCALSTATEDIR SYSCONFDIR DATADIR DOCDIR LIBEXECDIR SBINDIR BINDIR EPREFIX PREFIX SPREFIX TARGET HOST BUILD INSTALL INSTALL_LIB INSTALL_MAN INSTALL_PROGRAM INSTALL_PROGRAM_STRIP INSTALL_DIR INSTALL_SCRIPT INSTALL_DATA HOST_OS HOST_CPU BUILD_OS BUILD_CPU TARGET_OS TARGET_CPU VERSION VERSION_MAJOR VERSION_MINOR VERSION_PATCH VERSION_NUMBER PKGNAME VPATH CONTACT CONTACT_NAME CONTACT_MAIL CC CFLAGS CPPFLAGS LDFLAGS HAVE_LANG_C CXX CXXFLAGS HAVE_LANG_CXX HAVE_VALABIND VALABIND HAVE_SWIG SWIG HAVE_GIRCOMPILER GIRCOMPILER PKGCONFIG USEROSTYPE FOO HAVE_PKGCFG_R_CORE"
+ENVWORDS="MANDIR INFODIR LIBDIR INCLUDEDIR LOCALSTATEDIR ETCDIR SYSCONFDIR DATADIR DOCDIR LIBEXECDIR SBINDIR BINDIR EPREFIX PREFIX SPREFIX TARGET HOST BUILD INSTALL INSTALL_LIB INSTALL_MAN INSTALL_PROGRAM INSTALL_PROGRAM_STRIP INSTALL_DIR INSTALL_SCRIPT INSTALL_DATA HOST_OS HOST_CPU BUILD_OS BUILD_CPU TARGET_OS TARGET_CPU VERSION VERSION_MAJOR VERSION_MINOR VERSION_PATCH VERSION_NUMBER PKGNAME VPATH CONTACT CONTACT_NAME CONTACT_MAIL CC CFLAGS CPPFLAGS LDFLAGS HAVE_LANG_C CXX CXXFLAGS HAVE_LANG_CXX HAVE_VALABIND VALABIND HAVE_SWIG SWIG HAVE_GIRCOMPILER GIRCOMPILER PKGCONFIG USEROSTYPE FOO HAVE_PKGCFG_R_CORE"
 
 create_environ
 
