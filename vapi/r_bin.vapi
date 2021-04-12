@@ -190,6 +190,7 @@ namespace Radare {
 			public uint64 dbg_info;
 		}
 
+		[Compact]
 		[CCode (cname="RBinString", free_function="", ref_function="", unref_function="")]
 		public class String {
 			public string @string; // FIXME proper static strings w/o hardcoded size
@@ -199,8 +200,9 @@ namespace Radare {
 			public uint64 size;
 		}
 
+		[Compact]
 		[CCode (cname="RBinField", free_function="", ref_function="", unref_function="")]
-		public compact class Field {
+		public class Field {
 			public string name; // FIXME proper static strings w/o hardcoded size
 			public uint64 vaddr;
 			public uint64 paddr;

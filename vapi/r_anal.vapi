@@ -27,8 +27,8 @@ namespace Radare {
 		public RAnal ();
 		public bool op_hexstr(uint64 addr, string hexstr);
 		//public bool esil_eval (string str);
-		public bool set_bits (int bits);
-		public bool set_big_endian (bool big);
+		public void set_bits (int bits);
+		public void set_big_endian (bool big);
 		//public bool set_pc (uint64 addr);
 		public void diff_setup(bool doops, double thbb, double thfcn);
 		public void diff_setup_i(bool doops, int thbb, int thfcn);

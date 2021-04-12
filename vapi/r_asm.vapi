@@ -116,7 +116,7 @@ public class RAsm {
 		/**
 		 * The assembly representation.
 		 */
-		public RStrBuf buf_asm;
+		// public RStrBuf buf_asm;
 		// public string buf_asm;
 
 		/**
@@ -128,7 +128,7 @@ public class RAsm {
 		 * Retrieves the assembly representation of the instruction.
 		 * @return such representation.
 		 */
-		// public string get_asm();
+		public string get_asm();
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class RAsm {
 		uint64 code_offset;
 		uint64 data_offset;
 		int code_align;
-		public string buf_hex;
+		//public string buf_hex;
 		public string get_hex();
 		public string equ_replace(string s);
 		public bool set_equ(string k, string v);

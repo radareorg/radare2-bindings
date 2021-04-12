@@ -53,7 +53,7 @@ namespace Radare {
 		/* output */
 		public static void printf(string fmt, ...);
 		public static void strcat(string str);
-		public static void memcat(string str, int len);
+		public static void write(string str, int len);
 		public static void newline();
 		public static void flush();
 		public static void filter();

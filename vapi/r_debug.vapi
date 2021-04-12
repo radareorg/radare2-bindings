@@ -85,7 +85,7 @@ public class Radare.RDebug {
 	//public bool mmu_free(uint64 addr);
 
 	public bool reg_sync(RReg.Type type, bool set);
-	public bool reg_list(int type, int size, int rad, string use_color);
+	// public bool reg_list(int type, int size, int rad, string use_color);
 	//public bool reg_set(string name, uint64 num);
 	//public uint64 reg_get(string name);
 

@@ -91,9 +91,9 @@ namespace Radare {
 		public class UndoWrite {
 			int set;
 			uint64 off;
-			uint8 *o;   /* old data */
-			uint8 *n;   /* new data */
-			int len;    /* length */
+			uint8 *o;   // old data
+			uint8 *n;   // new data
+			int len;    // length
 		}
 */
 

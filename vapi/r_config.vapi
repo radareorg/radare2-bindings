@@ -8,8 +8,8 @@ namespace Radare {
 	public class RConfig {
 		public RConfig (void* user = null);
 		public RConfig clone();
-		public void serialize(SDB.Sdb db);
-		public bool unserialize(SDB.Sdb db, out string err);
+		// public void serialize(SDB.Sdb db);
+		// public bool unserialize(SDB.Sdb db, out string err);
 
 		public void lock (bool enable);
 		public void bump (string key);

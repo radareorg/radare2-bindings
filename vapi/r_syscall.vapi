@@ -13,7 +13,7 @@ public class Radare.RSyscall {
 		string sargs;
 	}
 
-	public Item item_new_from_string(string name, string s);
+	// public Item item_new_from_string(string name, string s);
 
 	public RSyscall();
 	public bool setup(string arch, int bits, string cpu, string os);
