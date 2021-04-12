@@ -206,52 +206,54 @@ c__EA_RRegisterId__enumvalues = {
     2: 'R_REG_NAME_SR',
     3: 'R_REG_NAME_BP',
     4: 'R_REG_NAME_LR',
-    5: 'R_REG_NAME_A0',
-    6: 'R_REG_NAME_A1',
-    7: 'R_REG_NAME_A2',
-    8: 'R_REG_NAME_A3',
-    9: 'R_REG_NAME_A4',
-    10: 'R_REG_NAME_A5',
-    11: 'R_REG_NAME_A6',
-    12: 'R_REG_NAME_A7',
-    13: 'R_REG_NAME_A8',
-    14: 'R_REG_NAME_A9',
-    15: 'R_REG_NAME_R0',
-    16: 'R_REG_NAME_R1',
-    17: 'R_REG_NAME_R2',
-    18: 'R_REG_NAME_R3',
-    19: 'R_REG_NAME_ZF',
-    20: 'R_REG_NAME_SF',
-    21: 'R_REG_NAME_CF',
-    22: 'R_REG_NAME_OF',
-    23: 'R_REG_NAME_SN',
-    24: 'R_REG_NAME_LAST',
+    5: 'R_REG_NAME_RS',
+    6: 'R_REG_NAME_A0',
+    7: 'R_REG_NAME_A1',
+    8: 'R_REG_NAME_A2',
+    9: 'R_REG_NAME_A3',
+    10: 'R_REG_NAME_A4',
+    11: 'R_REG_NAME_A5',
+    12: 'R_REG_NAME_A6',
+    13: 'R_REG_NAME_A7',
+    14: 'R_REG_NAME_A8',
+    15: 'R_REG_NAME_A9',
+    16: 'R_REG_NAME_R0',
+    17: 'R_REG_NAME_R1',
+    18: 'R_REG_NAME_R2',
+    19: 'R_REG_NAME_R3',
+    20: 'R_REG_NAME_ZF',
+    21: 'R_REG_NAME_SF',
+    22: 'R_REG_NAME_CF',
+    23: 'R_REG_NAME_OF',
+    24: 'R_REG_NAME_SN',
+    25: 'R_REG_NAME_LAST',
 }
 R_REG_NAME_PC = 0
 R_REG_NAME_SP = 1
 R_REG_NAME_SR = 2
 R_REG_NAME_BP = 3
 R_REG_NAME_LR = 4
-R_REG_NAME_A0 = 5
-R_REG_NAME_A1 = 6
-R_REG_NAME_A2 = 7
-R_REG_NAME_A3 = 8
-R_REG_NAME_A4 = 9
-R_REG_NAME_A5 = 10
-R_REG_NAME_A6 = 11
-R_REG_NAME_A7 = 12
-R_REG_NAME_A8 = 13
-R_REG_NAME_A9 = 14
-R_REG_NAME_R0 = 15
-R_REG_NAME_R1 = 16
-R_REG_NAME_R2 = 17
-R_REG_NAME_R3 = 18
-R_REG_NAME_ZF = 19
-R_REG_NAME_SF = 20
-R_REG_NAME_CF = 21
-R_REG_NAME_OF = 22
-R_REG_NAME_SN = 23
-R_REG_NAME_LAST = 24
+R_REG_NAME_RS = 5
+R_REG_NAME_A0 = 6
+R_REG_NAME_A1 = 7
+R_REG_NAME_A2 = 8
+R_REG_NAME_A3 = 9
+R_REG_NAME_A4 = 10
+R_REG_NAME_A5 = 11
+R_REG_NAME_A6 = 12
+R_REG_NAME_A7 = 13
+R_REG_NAME_A8 = 14
+R_REG_NAME_A9 = 15
+R_REG_NAME_R0 = 16
+R_REG_NAME_R1 = 17
+R_REG_NAME_R2 = 18
+R_REG_NAME_R3 = 19
+R_REG_NAME_ZF = 20
+R_REG_NAME_SF = 21
+R_REG_NAME_CF = 22
+R_REG_NAME_OF = 23
+R_REG_NAME_SN = 24
+R_REG_NAME_LAST = 25
 c__EA_RRegisterId = ctypes.c_uint32 # enum
 RRegisterId = c__EA_RRegisterId
 RRegisterId__enumvalues = c__EA_RRegisterId__enumvalues
@@ -288,13 +290,13 @@ RRegArena = struct_r_reg_arena_t
 class struct_r_reg_set_t(Structure):
     pass
 
-class struct_ht_pp_t(Structure):
-    pass
-
 class struct_r_list_iter_t(Structure):
     pass
 
 class struct_r_list_t(Structure):
+    pass
+
+class struct_ht_pp_t(Structure):
     pass
 
 struct_r_reg_set_t._pack_ = 1 # source:False
@@ -380,7 +382,7 @@ struct_r_reg_t._fields_ = [
     ('profile', ctypes.POINTER(ctypes.c_char)),
     ('reg_profile_cmt', ctypes.POINTER(ctypes.c_char)),
     ('reg_profile_str', ctypes.POINTER(ctypes.c_char)),
-    ('name', ctypes.POINTER(ctypes.c_char) * 24),
+    ('name', ctypes.POINTER(ctypes.c_char) * 25),
     ('regset', struct_r_reg_set_t * 8),
     ('allregs', ctypes.POINTER(struct_r_list_t)),
     ('roregs', ctypes.POINTER(struct_r_list_t)),
@@ -388,9 +390,10 @@ struct_r_reg_t._fields_ = [
     ('arch', ctypes.c_int32),
     ('bits', ctypes.c_int32),
     ('size', ctypes.c_int32),
+    ('bits_default', ctypes.c_int32),
     ('is_thumb', ctypes.c_bool),
     ('big_endian', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 6),
+    ('PADDING_0', ctypes.c_ubyte * 2),
 ]
 
 RReg = struct_r_reg_t
@@ -522,6 +525,15 @@ r_reg_get_value.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struc
 class struct__utX(Structure):
     pass
 
+class struct__ut128(Structure):
+    pass
+
+struct__ut128._pack_ = 1 # source:False
+struct__ut128._fields_ = [
+    ('Low', ctypes.c_uint64),
+    ('High', ctypes.c_int64),
+]
+
 class struct__ut96(Structure):
     pass
 
@@ -543,22 +555,11 @@ struct__ut80._fields_ = [
 ]
 
 class struct__ut256(Structure):
-    pass
-
-class struct__ut128(Structure):
-    pass
-
-struct__ut128._pack_ = 1 # source:False
-struct__ut128._fields_ = [
-    ('Low', ctypes.c_uint64),
-    ('High', ctypes.c_int64),
-]
-
-struct__ut256._pack_ = 1 # source:False
-struct__ut256._fields_ = [
+    _pack_ = 1 # source:False
+    _fields_ = [
     ('Low', struct__ut128),
     ('High', struct__ut128),
-]
+     ]
 
 struct__utX._pack_ = 1 # source:False
 struct__utX._fields_ = [
@@ -610,6 +611,9 @@ r_reg_set_pack.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struct
 r_reg_get_pack = _libr_reg.r_reg_get_pack
 r_reg_get_pack.restype = ctypes.c_uint64
 r_reg_get_pack.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struct_r_reg_item_t), ctypes.c_int32, ctypes.c_int32]
+r_reg_default_bits = _libr_reg.r_reg_default_bits
+r_reg_default_bits.restype = ctypes.c_int32
+r_reg_default_bits.argtypes = [ctypes.POINTER(struct_r_reg_t)]
 r_reg_get_bytes = _libr_reg.r_reg_get_bytes
 r_reg_get_bytes.restype = ctypes.POINTER(ctypes.c_ubyte)
 r_reg_get_bytes.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.c_int32, ctypes.POINTER(ctypes.c_int32)]
@@ -671,21 +675,22 @@ __all__ = \
     'R_REG_NAME_CF', 'R_REG_NAME_LAST', 'R_REG_NAME_LR',
     'R_REG_NAME_OF', 'R_REG_NAME_PC', 'R_REG_NAME_R0',
     'R_REG_NAME_R1', 'R_REG_NAME_R2', 'R_REG_NAME_R3',
-    'R_REG_NAME_SF', 'R_REG_NAME_SN', 'R_REG_NAME_SP',
-    'R_REG_NAME_SR', 'R_REG_NAME_ZF', 'R_REG_TYPE_ALL',
-    'R_REG_TYPE_DRX', 'R_REG_TYPE_FLG', 'R_REG_TYPE_FPU',
-    'R_REG_TYPE_GPR', 'R_REG_TYPE_LAST', 'R_REG_TYPE_MMX',
-    'R_REG_TYPE_SEG', 'R_REG_TYPE_XMM', 'R_REG_TYPE_YMM',
-    'c__EA_RRegisterId', 'c__EA_RRegisterType', 'r_reg_32_to_64',
-    'r_reg_64_to_32', 'r_reg_arena_dup', 'r_reg_arena_free',
-    'r_reg_arena_new', 'r_reg_arena_peek', 'r_reg_arena_poke',
-    'r_reg_arena_pop', 'r_reg_arena_push', 'r_reg_arena_set_bytes',
-    'r_reg_arena_shrink', 'r_reg_arena_swap', 'r_reg_arena_zero',
-    'r_reg_cond', 'r_reg_cond_apply', 'r_reg_cond_bits',
-    'r_reg_cond_bits_set', 'r_reg_cond_from_string', 'r_reg_cond_get',
+    'R_REG_NAME_RS', 'R_REG_NAME_SF', 'R_REG_NAME_SN',
+    'R_REG_NAME_SP', 'R_REG_NAME_SR', 'R_REG_NAME_ZF',
+    'R_REG_TYPE_ALL', 'R_REG_TYPE_DRX', 'R_REG_TYPE_FLG',
+    'R_REG_TYPE_FPU', 'R_REG_TYPE_GPR', 'R_REG_TYPE_LAST',
+    'R_REG_TYPE_MMX', 'R_REG_TYPE_SEG', 'R_REG_TYPE_XMM',
+    'R_REG_TYPE_YMM', 'c__EA_RRegisterId', 'c__EA_RRegisterType',
+    'r_reg_32_to_64', 'r_reg_64_to_32', 'r_reg_arena_dup',
+    'r_reg_arena_free', 'r_reg_arena_new', 'r_reg_arena_peek',
+    'r_reg_arena_poke', 'r_reg_arena_pop', 'r_reg_arena_push',
+    'r_reg_arena_set_bytes', 'r_reg_arena_shrink', 'r_reg_arena_swap',
+    'r_reg_arena_zero', 'r_reg_cond', 'r_reg_cond_apply',
+    'r_reg_cond_bits', 'r_reg_cond_bits_set',
+    'r_reg_cond_from_string', 'r_reg_cond_get',
     'r_reg_cond_get_value', 'r_reg_cond_retrieve', 'r_reg_cond_set',
-    'r_reg_cond_to_string', 'r_reg_fit_arena', 'r_reg_free',
-    'r_reg_free_internal', 'r_reg_get', 'r_reg_get_at',
+    'r_reg_cond_to_string', 'r_reg_default_bits', 'r_reg_fit_arena',
+    'r_reg_free', 'r_reg_free_internal', 'r_reg_get', 'r_reg_get_at',
     'r_reg_get_bvalue', 'r_reg_get_bytes', 'r_reg_get_double',
     'r_reg_get_float', 'r_reg_get_list', 'r_reg_get_longdouble',
     'r_reg_get_name', 'r_reg_get_name_by_type', 'r_reg_get_name_idx',
