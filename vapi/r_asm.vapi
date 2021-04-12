@@ -116,8 +116,8 @@ public class RAsm {
 		/**
 		 * The assembly representation.
 		 */
-		// public RStrBuf buf_asm;
-		public string buf_asm;
+		public RStrBuf buf_asm;
+		// public string buf_asm;
 
 		/**
 		 * Retrieves the hexadecimal representation of the instruction.

@@ -42,14 +42,6 @@ public class RCore {
 	 */
 	public RIO io;
 	/**
-	 * Current working file
-	 */
-	public RCore.File file;
-	/**
-	 * List containing all the opened files
-	 */
-	public RList<RCore.File> files;
-	/**
 	 * RNum instance with hooks to resolve flags and registers
 	 */
 	public RNum num;
@@ -159,19 +151,19 @@ public class RCore {
 	// public RList<RCore.AsmHit> asm_strsearch(string input, uint64 from, uint64 to, int maxhits, int regexp);
 	public RList<RCore.AsmHit> asm_bwdisassemble(uint64 addr, int n, int len);
 
+/*
 	// XXX mode = Radare.Io.Mode
 	[Compact]
 	[CCode (cname="RCoreFile", cprefix="r_core_file_", free_function="")]
 	public class File {
-		//public static bool set(string file, Core.File file);
-		//public static bool close(string file, Core.File file);
-		/* attributes */
+		// attributes
 		// public RIO.Map map;
 		public bool dbg;
 		// public RIO.Desc desc;
 		RCore core;
 		uint8 alive;
 	}
+*/
 
 	[CCode (cname="RCoreAsmHit", free_function="", ref_function="", unref_function="")]
 	public class AsmHit {
@@ -187,8 +179,7 @@ public class RCore {
 	public bool search_cb(uint64 from, uint64 to, SearchCallback cb);
 
 	/* files */
-	public RCore.File file_open(string file, int mode, uint64 loadaddr=0);
-	public bool file_close(RCore.File cf);
+	public RIO.Desc file_open(string file, int mode, uint64 loadaddr=0);
 	public bool file_close_fd(int fd);
 	public bool file_list(int mode);
 

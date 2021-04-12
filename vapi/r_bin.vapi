@@ -200,7 +200,7 @@ namespace Radare {
 		}
 
 		[CCode (cname="RBinField", free_function="", ref_function="", unref_function="")]
-		public class Field {
+		public compact class Field {
 			public string name; // FIXME proper static strings w/o hardcoded size
 			public uint64 vaddr;
 			public uint64 paddr;
