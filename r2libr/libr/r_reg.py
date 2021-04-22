@@ -290,13 +290,13 @@ RRegArena = struct_r_reg_arena_t
 class struct_r_reg_set_t(Structure):
     pass
 
+class struct_ht_pp_t(Structure):
+    pass
+
 class struct_r_list_iter_t(Structure):
     pass
 
 class struct_r_list_t(Structure):
-    pass
-
-class struct_ht_pp_t(Structure):
     pass
 
 struct_r_reg_set_t._pack_ = 1 # source:False

@@ -688,10 +688,10 @@ class struct_r_cons_t(Structure):
 class struct_r_num_t(Structure):
     pass
 
-class struct_r_line_t(Structure):
+class struct__IO_FILE(Structure):
     pass
 
-class struct__IO_FILE(Structure):
+class struct_r_line_t(Structure):
     pass
 
 class struct_termios(Structure):
@@ -791,13 +791,13 @@ struct_r_cons_t._fields_ = [
     ('cpos', RConsCursorPos),
 ]
 
+class struct__IO_wide_data(Structure):
+    pass
+
 class struct__IO_codecvt(Structure):
     pass
 
 class struct__IO_marker(Structure):
-    pass
-
-class struct__IO_wide_data(Structure):
     pass
 
 struct__IO_FILE._pack_ = 1 # source:False
@@ -1852,10 +1852,10 @@ struct_r_panels_menu_item._fields_ = [
     ('p', ctypes.POINTER(struct_r_panel_t)),
 ]
 
-class struct_r_panel_model_t(Structure):
+class struct_r_panel_view_t(Structure):
     pass
 
-class struct_r_panel_view_t(Structure):
+class struct_r_panel_model_t(Structure):
     pass
 
 struct_r_panel_t._pack_ = 1 # source:False
@@ -2032,6 +2032,24 @@ class struct_sdb_gperf_t(Structure):
 class struct_ls_t(Structure):
     pass
 
+class struct_cdb(Structure):
+    pass
+
+struct_cdb._pack_ = 1 # source:False
+struct_cdb._fields_ = [
+    ('map', ctypes.POINTER(ctypes.c_char)),
+    ('fd', ctypes.c_int32),
+    ('size', ctypes.c_uint32),
+    ('loop', ctypes.c_uint32),
+    ('khash', ctypes.c_uint32),
+    ('kpos', ctypes.c_uint32),
+    ('hpos', ctypes.c_uint32),
+    ('hslots', ctypes.c_uint32),
+    ('dpos', ctypes.c_uint32),
+    ('dlen', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
 class struct_cdb_make(Structure):
     pass
 
@@ -2090,24 +2108,6 @@ struct_sdb_kv._fields_ = [
     ('cas', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
     ('expire', ctypes.c_uint64),
-]
-
-class struct_cdb(Structure):
-    pass
-
-struct_cdb._pack_ = 1 # source:False
-struct_cdb._fields_ = [
-    ('map', ctypes.POINTER(ctypes.c_char)),
-    ('fd', ctypes.c_int32),
-    ('size', ctypes.c_uint32),
-    ('loop', ctypes.c_uint32),
-    ('khash', ctypes.c_uint32),
-    ('kpos', ctypes.c_uint32),
-    ('hpos', ctypes.c_uint32),
-    ('hslots', ctypes.c_uint32),
-    ('dpos', ctypes.c_uint32),
-    ('dlen', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
 struct_sdb_t._pack_ = 1 # source:False

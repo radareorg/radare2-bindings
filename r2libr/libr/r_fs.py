@@ -232,10 +232,13 @@ struct_r_io_bind_t._fields_ = [
     ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
 ]
 
-class struct_r_id_pool_t(Structure):
+class struct_r_id_storage_t(Structure):
     pass
 
 class struct_ls_t(Structure):
+    pass
+
+class struct_r_id_pool_t(Structure):
     pass
 
 class struct_r_cache_t(Structure):
@@ -243,30 +246,6 @@ class struct_r_cache_t(Structure):
 
 class struct_r_event_t(Structure):
     pass
-
-class struct_r_id_storage_t(Structure):
-    pass
-
-class struct_r_pvector_t(Structure):
-    pass
-
-class struct_r_vector_t(Structure):
-    pass
-
-struct_r_vector_t._pack_ = 1 # source:False
-struct_r_vector_t._fields_ = [
-    ('a', ctypes.POINTER(None)),
-    ('len', ctypes.c_uint64),
-    ('capacity', ctypes.c_uint64),
-    ('elem_size', ctypes.c_uint64),
-    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
-    ('free_user', ctypes.POINTER(None)),
-]
-
-struct_r_pvector_t._pack_ = 1 # source:False
-struct_r_pvector_t._fields_ = [
-    ('v', struct_r_vector_t),
-]
 
 class struct_r_io_undo_t(Structure):
     pass
@@ -291,6 +270,27 @@ struct_r_io_undo_t._fields_ = [
     ('undos', ctypes.c_int32),
     ('redos', ctypes.c_int32),
     ('seek', struct_r_io_undos_t * 64),
+]
+
+class struct_r_pvector_t(Structure):
+    pass
+
+class struct_r_vector_t(Structure):
+    pass
+
+struct_r_vector_t._pack_ = 1 # source:False
+struct_r_vector_t._fields_ = [
+    ('a', ctypes.POINTER(None)),
+    ('len', ctypes.c_uint64),
+    ('capacity', ctypes.c_uint64),
+    ('elem_size', ctypes.c_uint64),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
+    ('free_user', ctypes.POINTER(None)),
+]
+
+struct_r_pvector_t._pack_ = 1 # source:False
+struct_r_pvector_t._fields_ = [
+    ('v', struct_r_vector_t),
 ]
 
 class struct_r_skyline_t(Structure):
@@ -360,6 +360,8 @@ struct_r_io_t._fields_ = [
     ('event', ctypes.POINTER(struct_r_event_t)),
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
     ('corebind', struct_r_core_bind_t),
+    ('want_ptrace_wrap', ctypes.c_bool),
+    ('PADDING_4', ctypes.c_ubyte * 7),
 ]
 
 class struct_ht_up_t(Structure):

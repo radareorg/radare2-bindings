@@ -249,15 +249,6 @@ struct_mlist._fields_ = [
 class struct_r_magic_set(Structure):
     pass
 
-class struct_out(Structure):
-    pass
-
-struct_out._pack_ = 1 # source:False
-struct_out._fields_ = [
-    ('buf', ctypes.POINTER(ctypes.c_char)),
-    ('pbuf', ctypes.POINTER(ctypes.c_char)),
-]
-
 class struct_r_magic_set_2(Structure):
     pass
 
@@ -267,6 +258,15 @@ struct_r_magic_set_2._fields_ = [
     ('s_len', ctypes.c_uint64),
     ('offset', ctypes.c_uint64),
     ('rm_len', ctypes.c_uint64),
+]
+
+class struct_out(Structure):
+    pass
+
+struct_out._pack_ = 1 # source:False
+struct_out._fields_ = [
+    ('buf', ctypes.POINTER(ctypes.c_char)),
+    ('pbuf', ctypes.POINTER(ctypes.c_char)),
 ]
 
 class struct_cont(Structure):

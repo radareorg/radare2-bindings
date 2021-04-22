@@ -266,16 +266,16 @@ RFlagItem = struct_r_flag_item_t
 class struct_r_flag_t(Structure):
     pass
 
-class struct_sdb_t(Structure):
+class struct_r_num_t(Structure):
     pass
 
-class struct_ht_pp_t(Structure):
+class struct_sdb_t(Structure):
     pass
 
 class struct_r_skiplist_t(Structure):
     pass
 
-class struct_r_num_t(Structure):
+class struct_ht_pp_t(Structure):
     pass
 
 class struct_r_spaces_t(Structure):
@@ -381,11 +381,44 @@ struct_ht_up_kv._fields_ = [
     ('value_len', ctypes.c_uint32),
 ]
 
+class struct_ls_t(Structure):
+    pass
+
 class struct_sdb_gperf_t(Structure):
     pass
 
-class struct_ls_t(Structure):
+class struct_sdb_kv(Structure):
     pass
+
+class struct_ht_pp_kv(Structure):
+    pass
+
+struct_ht_pp_kv._pack_ = 1 # source:False
+struct_ht_pp_kv._fields_ = [
+    ('key', ctypes.POINTER(None)),
+    ('value', ctypes.POINTER(None)),
+    ('key_len', ctypes.c_uint32),
+    ('value_len', ctypes.c_uint32),
+]
+
+struct_sdb_kv._pack_ = 1 # source:False
+struct_sdb_kv._fields_ = [
+    ('base', struct_ht_pp_kv),
+    ('cas', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('expire', ctypes.c_uint64),
+]
+
+class struct_c__SA_dict(Structure):
+    pass
+
+struct_c__SA_dict._pack_ = 1 # source:False
+struct_c__SA_dict._fields_ = [
+    ('table', ctypes.POINTER(ctypes.POINTER(None))),
+    ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+    ('size', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
 
 class struct_cdb(Structure):
     pass
@@ -408,10 +441,10 @@ struct_cdb._fields_ = [
 class struct_cdb_make(Structure):
     pass
 
-class struct_cdb_hplist(Structure):
+class struct_cdb_hp(Structure):
     pass
 
-class struct_cdb_hp(Structure):
+class struct_cdb_hplist(Structure):
     pass
 
 class struct_buffer(Structure):
@@ -441,39 +474,6 @@ struct_cdb_make._fields_ = [
     ('b', struct_buffer),
     ('pos', ctypes.c_uint32),
     ('fd', ctypes.c_int32),
-]
-
-class struct_c__SA_dict(Structure):
-    pass
-
-struct_c__SA_dict._pack_ = 1 # source:False
-struct_c__SA_dict._fields_ = [
-    ('table', ctypes.POINTER(ctypes.POINTER(None))),
-    ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
-    ('size', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-]
-
-class struct_sdb_kv(Structure):
-    pass
-
-class struct_ht_pp_kv(Structure):
-    pass
-
-struct_ht_pp_kv._pack_ = 1 # source:False
-struct_ht_pp_kv._fields_ = [
-    ('key', ctypes.POINTER(None)),
-    ('value', ctypes.POINTER(None)),
-    ('key_len', ctypes.c_uint32),
-    ('value_len', ctypes.c_uint32),
-]
-
-struct_sdb_kv._pack_ = 1 # source:False
-struct_sdb_kv._fields_ = [
-    ('base', struct_ht_pp_kv),
-    ('cas', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-    ('expire', ctypes.c_uint64),
 ]
 
 struct_sdb_t._pack_ = 1 # source:False
@@ -587,6 +587,15 @@ struct_ls_iter_t._fields_ = [
 class struct_r_num_calc_t(Structure):
     pass
 
+class struct_c__SA_RNumCalcValue(Structure):
+    pass
+
+struct_c__SA_RNumCalcValue._pack_ = 1 # source:False
+struct_c__SA_RNumCalcValue._fields_ = [
+    ('d', ctypes.c_double),
+    ('n', ctypes.c_uint64),
+]
+
 
 # values for enumeration 'c__EA_RNumCalcToken'
 c__EA_RNumCalcToken__enumvalues = {
@@ -636,15 +645,6 @@ RNCSHR = 62
 RNCROL = 35
 RNCROR = 36
 c__EA_RNumCalcToken = ctypes.c_uint32 # enum
-class struct_c__SA_RNumCalcValue(Structure):
-    pass
-
-struct_c__SA_RNumCalcValue._pack_ = 1 # source:False
-struct_c__SA_RNumCalcValue._fields_ = [
-    ('d', ctypes.c_double),
-    ('n', ctypes.c_uint64),
-]
-
 struct_r_num_calc_t._pack_ = 1 # source:False
 struct_r_num_calc_t._fields_ = [
     ('curr_tok', c__EA_RNumCalcToken),
@@ -813,9 +813,6 @@ r_flag_relocate.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64, ct
 r_flag_move = _libr_flag.r_flag_move
 r_flag_move.restype = ctypes.c_bool
 r_flag_move.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64, ctypes.c_uint64]
-r_flag_color = _libraries['FIXME_STUB'].r_flag_color
-r_flag_color.restype = ctypes.POINTER(ctypes.c_char)
-r_flag_color.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(struct_r_flag_item_t), ctypes.POINTER(ctypes.c_char)]
 r_flag_count = _libr_flag.r_flag_count
 r_flag_count.restype = ctypes.c_int32
 r_flag_count.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char)]
@@ -910,8 +907,8 @@ __all__ = \
     'RNCNAME', 'RNCNEG', 'RNCNUMBER', 'RNCOR', 'RNCPLUS', 'RNCPRINT',
     'RNCRIGHTP', 'RNCROL', 'RNCROR', 'RNCSHL', 'RNCSHR', 'RNCXOR',
     'c__EA_RNumCalcToken', 'r_flag_all_list', 'r_flag_bind',
-    'r_flag_color', 'r_flag_count', 'r_flag_exist_at',
-    'r_flag_foreach', 'r_flag_foreach_glob', 'r_flag_foreach_prefix',
+    'r_flag_count', 'r_flag_exist_at', 'r_flag_foreach',
+    'r_flag_foreach_glob', 'r_flag_foreach_prefix',
     'r_flag_foreach_range', 'r_flag_foreach_space',
     'r_flag_foreach_space_glob', 'r_flag_free', 'r_flag_get',
     'r_flag_get_at', 'r_flag_get_by_spaces', 'r_flag_get_i',
