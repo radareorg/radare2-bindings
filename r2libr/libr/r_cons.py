@@ -597,10 +597,10 @@ RConsColorMode__enumvalues = c__EA_RConsColorMode__enumvalues
 class struct_r_cons_context_t(Structure):
     pass
 
-class struct_c__SA_RStrBuf(Structure):
+class struct_r_stack_t(Structure):
     pass
 
-class struct_r_stack_t(Structure):
+class struct_c__SA_RStrBuf(Structure):
     pass
 
 
@@ -685,13 +685,13 @@ RConsCursorPos = struct_c__SA_RConsCursorPos
 class struct_r_cons_t(Structure):
     pass
 
-class struct_r_num_t(Structure):
+class struct_r_line_t(Structure):
     pass
 
 class struct__IO_FILE(Structure):
     pass
 
-class struct_r_line_t(Structure):
+class struct_r_num_t(Structure):
     pass
 
 class struct_termios(Structure):
@@ -791,13 +791,13 @@ struct_r_cons_t._fields_ = [
     ('cpos', RConsCursorPos),
 ]
 
+class struct__IO_marker(Structure):
+    pass
+
 class struct__IO_wide_data(Structure):
     pass
 
 class struct__IO_codecvt(Structure):
-    pass
-
-class struct__IO_marker(Structure):
     pass
 
 struct__IO_FILE._pack_ = 1 # source:False
@@ -926,21 +926,35 @@ struct_r_num_t._fields_ = [
     ('nc', struct_r_num_calc_t),
 ]
 
-class struct_r_selection_widget_t(Structure):
+class struct_r_list_iter_t(Structure):
     pass
 
 class struct_r_list_t(Structure):
     pass
 
-class struct_r_list_iter_t(Structure):
+class struct_r_hud_t(Structure):
     pass
 
-class struct_r_hud_t(Structure):
+class struct_r_selection_widget_t(Structure):
     pass
 
 class struct_r_line_comp_t(Structure):
     pass
 
+class struct_r_line_buffer_t(Structure):
+    pass
+
+
+# values for enumeration 'c__EA_RLinePromptType'
+c__EA_RLinePromptType__enumvalues = {
+    0: 'R_LINE_PROMPT_DEFAULT',
+    1: 'R_LINE_PROMPT_OFFSET',
+    2: 'R_LINE_PROMPT_FILE',
+}
+R_LINE_PROMPT_DEFAULT = 0
+R_LINE_PROMPT_OFFSET = 1
+R_LINE_PROMPT_FILE = 2
+c__EA_RLinePromptType = ctypes.c_uint32 # enum
 class struct_r_pvector_t(Structure):
     pass
 
@@ -962,20 +976,6 @@ struct_r_pvector_t._fields_ = [
     ('v', struct_r_vector_t),
 ]
 
-class struct_r_line_buffer_t(Structure):
-    pass
-
-
-# values for enumeration 'c__EA_RLinePromptType'
-c__EA_RLinePromptType__enumvalues = {
-    0: 'R_LINE_PROMPT_DEFAULT',
-    1: 'R_LINE_PROMPT_OFFSET',
-    2: 'R_LINE_PROMPT_FILE',
-}
-R_LINE_PROMPT_DEFAULT = 0
-R_LINE_PROMPT_OFFSET = 1
-R_LINE_PROMPT_FILE = 2
-c__EA_RLinePromptType = ctypes.c_uint32 # enum
 struct_r_line_comp_t._pack_ = 1 # source:False
 struct_r_line_comp_t._fields_ = [
     ('opt', ctypes.c_bool),
@@ -2026,10 +2026,10 @@ struct_r_panels_t._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
 ]
 
-class struct_sdb_gperf_t(Structure):
+class struct_ls_t(Structure):
     pass
 
-class struct_ls_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
 class struct_cdb(Structure):

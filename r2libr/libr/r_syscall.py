@@ -221,13 +221,13 @@ struct_r_syscall_t._fields_ = [
     ('PADDING_1', ctypes.c_ubyte * 4),
 ]
 
-class struct__IO_wide_data(Structure):
-    pass
-
 class struct__IO_codecvt(Structure):
     pass
 
 class struct__IO_marker(Structure):
+    pass
+
+class struct__IO_wide_data(Structure):
     pass
 
 struct__IO_FILE._pack_ = 1 # source:False
@@ -265,14 +265,36 @@ struct__IO_FILE._fields_ = [
     ('_unused2', ctypes.c_char * 20),
 ]
 
-class struct_ls_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
-class struct_sdb_gperf_t(Structure):
+class struct_ls_t(Structure):
     pass
 
 class struct_ht_pp_t(Structure):
     pass
+
+class struct_sdb_kv(Structure):
+    pass
+
+class struct_ht_pp_kv(Structure):
+    pass
+
+struct_ht_pp_kv._pack_ = 1 # source:False
+struct_ht_pp_kv._fields_ = [
+    ('key', ctypes.POINTER(None)),
+    ('value', ctypes.POINTER(None)),
+    ('key_len', ctypes.c_uint32),
+    ('value_len', ctypes.c_uint32),
+]
+
+struct_sdb_kv._pack_ = 1 # source:False
+struct_sdb_kv._fields_ = [
+    ('base', struct_ht_pp_kv),
+    ('cas', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('expire', ctypes.c_uint64),
+]
 
 class struct_cdb(Structure):
     pass
@@ -295,10 +317,10 @@ struct_cdb._fields_ = [
 class struct_cdb_make(Structure):
     pass
 
-class struct_cdb_hplist(Structure):
+class struct_cdb_hp(Structure):
     pass
 
-class struct_cdb_hp(Structure):
+class struct_cdb_hplist(Structure):
     pass
 
 class struct_buffer(Structure):
@@ -339,28 +361,6 @@ struct_c__SA_dict._fields_ = [
     ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
     ('size', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
-]
-
-class struct_sdb_kv(Structure):
-    pass
-
-class struct_ht_pp_kv(Structure):
-    pass
-
-struct_ht_pp_kv._pack_ = 1 # source:False
-struct_ht_pp_kv._fields_ = [
-    ('key', ctypes.POINTER(None)),
-    ('value', ctypes.POINTER(None)),
-    ('key_len', ctypes.c_uint32),
-    ('value_len', ctypes.c_uint32),
-]
-
-struct_sdb_kv._pack_ = 1 # source:False
-struct_sdb_kv._fields_ = [
-    ('base', struct_ht_pp_kv),
-    ('cas', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-    ('expire', ctypes.c_uint64),
 ]
 
 struct_sdb_t._pack_ = 1 # source:False

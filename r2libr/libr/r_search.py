@@ -350,19 +350,19 @@ struct_r_list_iter_t._fields_ = [
     ('p', ctypes.POINTER(struct_r_list_iter_t)),
 ]
 
+class struct_r_id_pool_t(Structure):
+    pass
+
+class struct_r_cache_t(Structure):
+    pass
+
 class struct_ls_t(Structure):
     pass
 
 class struct_r_id_storage_t(Structure):
     pass
 
-class struct_r_id_pool_t(Structure):
-    pass
-
 class struct_r_event_t(Structure):
-    pass
-
-class struct_r_cache_t(Structure):
     pass
 
 class struct_r_skyline_t(Structure):
@@ -386,30 +386,11 @@ struct_r_skyline_t._fields_ = [
     ('v', struct_r_vector_t),
 ]
 
-class struct_r_core_bind_t(Structure):
-    pass
-
-struct_r_core_bind_t._pack_ = 1 # source:False
-struct_r_core_bind_t._fields_ = [
-    ('core', ctypes.POINTER(None)),
-    ('cmd', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('cmdf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('cmdstr', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('cmdstrf', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('puts', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
-    ('bphit', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(None))),
-    ('syshit', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
-    ('setab', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), ctypes.c_int32)),
-    ('getName', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
-    ('getNameDelta', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
-    ('archbits', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.c_uint64)),
-    ('cfggeti', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('cfgGet', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('numGet', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('isMapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_int32)),
-    ('syncDebugMaps', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None))),
-    ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
-]
+class struct_r_pvector_t(Structure):
+    _pack_ = 1 # source:False
+    _fields_ = [
+    ('v', struct_r_vector_t),
+     ]
 
 class struct_r_io_undo_t(Structure):
     pass
@@ -436,11 +417,30 @@ struct_r_io_undo_t._fields_ = [
     ('seek', struct_r_io_undos_t * 64),
 ]
 
-class struct_r_pvector_t(Structure):
-    _pack_ = 1 # source:False
-    _fields_ = [
-    ('v', struct_r_vector_t),
-     ]
+class struct_r_core_bind_t(Structure):
+    pass
+
+struct_r_core_bind_t._pack_ = 1 # source:False
+struct_r_core_bind_t._fields_ = [
+    ('core', ctypes.POINTER(None)),
+    ('cmd', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('cmdf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('cmdstr', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('cmdstrf', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('puts', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
+    ('bphit', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(None))),
+    ('syshit', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+    ('setab', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), ctypes.c_int32)),
+    ('getName', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
+    ('getNameDelta', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
+    ('archbits', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.c_uint64)),
+    ('cfggeti', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('cfgGet', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('numGet', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('isMapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_int32)),
+    ('syncDebugMaps', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None))),
+    ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
+]
 
 struct_r_io_t._pack_ = 1 # source:False
 struct_r_io_t._fields_ = [
@@ -472,6 +472,8 @@ struct_r_io_t._fields_ = [
     ('mask', ctypes.c_uint64),
     ('undo', struct_r_io_undo_t),
     ('plugins', ctypes.POINTER(struct_ls_t)),
+    ('nodup', ctypes.c_bool),
+    ('PADDING_4', ctypes.c_ubyte * 7),
     ('runprofile', ctypes.POINTER(ctypes.c_char)),
     ('envprofile', ctypes.POINTER(ctypes.c_char)),
     ('args', ctypes.POINTER(ctypes.c_char)),
@@ -479,7 +481,7 @@ struct_r_io_t._fields_ = [
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
     ('corebind', struct_r_core_bind_t),
     ('want_ptrace_wrap', ctypes.c_bool),
-    ('PADDING_4', ctypes.c_ubyte * 7),
+    ('PADDING_5', ctypes.c_ubyte * 7),
 ]
 
 class struct_r_io_plugin_t(Structure):
