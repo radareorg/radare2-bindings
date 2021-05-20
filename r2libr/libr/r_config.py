@@ -474,10 +474,10 @@ r_config_set_getter.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTE
 class struct_sdb_t(Structure):
     pass
 
-class struct_ls_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
-class struct_sdb_gperf_t(Structure):
+class struct_ls_t(Structure):
     pass
 
 class struct_cdb(Structure):
@@ -608,6 +608,7 @@ struct_sdb_gperf_t._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
     ('get', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char))),
     ('hash', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_char))),
+    ('foreach', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)), ctypes.POINTER(None))),
 ]
 
 class struct_ls_iter_t(Structure):

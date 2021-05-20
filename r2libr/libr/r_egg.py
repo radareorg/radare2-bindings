@@ -326,16 +326,16 @@ REggLang = struct_r_egg_lang_t
 class struct_r_egg_t(Structure):
     pass
 
-class struct_sdb_t(Structure):
-    pass
-
-class struct_r_asm_t(Structure):
+class struct_r_egg_emit_t(Structure):
     pass
 
 class struct_r_syscall_t(Structure):
     pass
 
-class struct_r_egg_emit_t(Structure):
+class struct_sdb_t(Structure):
+    pass
+
+class struct_r_asm_t(Structure):
     pass
 
 struct_r_egg_t._pack_ = 1 # source:False
@@ -359,13 +359,13 @@ struct_r_egg_t._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
-class struct_r_parse_t(Structure):
-    pass
-
 class struct_r_asm_plugin_t(Structure):
     pass
 
 class struct_r_num_t(Structure):
+    pass
+
+class struct_r_parse_t(Structure):
     pass
 
 class struct_ht_pp_t(Structure):
@@ -377,10 +377,10 @@ class struct_r_bin_bind_t(Structure):
 class struct_r_bin_t(Structure):
     pass
 
-class struct_r_bin_section_t(Structure):
+class struct_r_bin_file_t(Structure):
     pass
 
-class struct_r_bin_file_t(Structure):
+class struct_r_bin_section_t(Structure):
     pass
 
 struct_r_bin_bind_t._pack_ = 1 # source:False
@@ -504,10 +504,10 @@ class struct_r_io_bind_t(Structure):
 class struct_r_io_t(Structure):
     pass
 
-class struct_r_io_map_t(Structure):
+class struct_r_io_desc_t(Structure):
     pass
 
-class struct_r_io_desc_t(Structure):
+class struct_r_io_map_t(Structure):
     pass
 
 struct_r_io_bind_t._pack_ = 1 # source:False
@@ -624,13 +624,13 @@ struct_r_bin_file_t._fields_ = [
     ('rbin', ctypes.POINTER(struct_r_bin_t)),
 ]
 
-class struct_ht_up_t(Structure):
+class struct_r_bin_info_t(Structure):
     pass
 
 class struct_r_rb_node_t(Structure):
     pass
 
-class struct_r_bin_info_t(Structure):
+class struct_ht_up_t(Structure):
     pass
 
 class struct_r_bin_plugin_t(Structure):
@@ -1035,6 +1035,7 @@ struct_sdb_gperf_t._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
     ('get', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char))),
     ('hash', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_char))),
+    ('foreach', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)), ctypes.POINTER(None))),
 ]
 
 class struct_ls_iter_t(Structure):
@@ -1167,7 +1168,7 @@ class struct_r_cache_t(Structure):
 class struct_r_event_t(Structure):
     pass
 
-class struct_r_skyline_t(Structure):
+class struct_r_pvector_t(Structure):
     pass
 
 class struct_r_vector_t(Structure):
@@ -1183,10 +1184,16 @@ struct_r_vector_t._fields_ = [
     ('free_user', ctypes.POINTER(None)),
 ]
 
-struct_r_skyline_t._pack_ = 1 # source:False
-struct_r_skyline_t._fields_ = [
+struct_r_pvector_t._pack_ = 1 # source:False
+struct_r_pvector_t._fields_ = [
     ('v', struct_r_vector_t),
 ]
+
+class struct_r_skyline_t(Structure):
+    _pack_ = 1 # source:False
+    _fields_ = [
+    ('v', struct_r_vector_t),
+     ]
 
 class struct_r_core_bind_t(Structure):
     pass
@@ -1237,12 +1244,6 @@ struct_r_io_undo_t._fields_ = [
     ('redos', ctypes.c_int32),
     ('seek', struct_r_io_undos_t * 64),
 ]
-
-class struct_r_pvector_t(Structure):
-    _pack_ = 1 # source:False
-    _fields_ = [
-    ('v', struct_r_vector_t),
-     ]
 
 struct_r_io_t._pack_ = 1 # source:False
 struct_r_io_t._fields_ = [
@@ -1391,10 +1392,19 @@ struct_r_bin_section_t._fields_ = [
     ('is_segment', ctypes.c_bool),
 ]
 
+class struct_r_space_t(Structure):
+    pass
+
 class struct_r_parse_plugin_t(Structure):
     pass
 
-class struct_r_space_t(Structure):
+class struct_r_anal_function_t(Structure):
+    pass
+
+class struct_r_flag_item_t(Structure):
+    pass
+
+class struct_r_flag_t(Structure):
     pass
 
 class struct_r_anal_bind_t(Structure):
@@ -1406,21 +1416,12 @@ class struct_r_anal_t(Structure):
 class struct_r_anal_hint_t(Structure):
     pass
 
-class struct_r_anal_function_t(Structure):
-    pass
-
 struct_r_anal_bind_t._pack_ = 1 # source:False
 struct_r_anal_bind_t._fields_ = [
     ('anal', ctypes.POINTER(struct_r_anal_t)),
     ('get_fcn_in', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32)),
     ('get_hint', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_anal_hint_t), ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64)),
 ]
-
-class struct_r_flag_item_t(Structure):
-    pass
-
-class struct_r_flag_t(Structure):
-    pass
 
 struct_r_parse_t._pack_ = 1 # source:False
 struct_r_parse_t._fields_ = [
@@ -1663,40 +1664,20 @@ struct_r_anal_diff_t._fields_ = [
     ('PADDING_1', ctypes.c_ubyte * 4),
 ]
 
-class struct_r_anal_esil_plugin_t(Structure):
-    pass
-
-class struct_r_anal_plugin_t(Structure):
+class struct_r_reg_t(Structure):
     pass
 
 class struct_r_anal_range_t(Structure):
     pass
 
+class struct_r_anal_plugin_t(Structure):
+    pass
+
+class struct_r_anal_esil_plugin_t(Structure):
+    pass
+
 class struct_r_anal_esil_t(Structure):
     pass
-
-class struct_r_reg_t(Structure):
-    pass
-
-class struct_r_anal_hint_cb_t(Structure):
-    pass
-
-struct_r_anal_hint_cb_t._pack_ = 1 # source:False
-struct_r_anal_hint_cb_t._fields_ = [
-    ('on_bits', ctypes.CFUNCTYPE(None, ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_bool)),
-]
-
-class struct_r_interval_tree_t(Structure):
-    pass
-
-class struct_r_interval_node_t(Structure):
-    pass
-
-struct_r_interval_tree_t._pack_ = 1 # source:False
-struct_r_interval_tree_t._fields_ = [
-    ('root', ctypes.POINTER(struct_r_interval_node_t)),
-    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
-]
 
 class struct_r_anal_callbacks_t(Structure):
     pass
@@ -1779,6 +1760,26 @@ struct_r_flag_bind_t._fields_ = [
     ('set_fs', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_space_t), ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char))),
     ('push_fs', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char))),
     ('pop_fs', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_flag_t))),
+]
+
+class struct_r_anal_hint_cb_t(Structure):
+    pass
+
+struct_r_anal_hint_cb_t._pack_ = 1 # source:False
+struct_r_anal_hint_cb_t._fields_ = [
+    ('on_bits', ctypes.CFUNCTYPE(None, ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_bool)),
+]
+
+class struct_r_interval_tree_t(Structure):
+    pass
+
+class struct_r_interval_node_t(Structure):
+    pass
+
+struct_r_interval_tree_t._pack_ = 1 # source:False
+struct_r_interval_tree_t._fields_ = [
+    ('root', ctypes.POINTER(struct_r_interval_node_t)),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
 ]
 
 struct_r_anal_t._pack_ = 1 # source:False
@@ -1905,13 +1906,13 @@ struct_r_reg_arena_t._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
+class struct__IO_FILE(Structure):
+    pass
+
 class struct_r_syscall_port_t(Structure):
     pass
 
 class struct_r_syscall_item_t(Structure):
-    pass
-
-class struct__IO_FILE(Structure):
     pass
 
 struct_r_syscall_t._pack_ = 1 # source:False
@@ -1930,13 +1931,13 @@ struct_r_syscall_t._fields_ = [
     ('PADDING_1', ctypes.c_ubyte * 4),
 ]
 
-class struct__IO_marker(Structure):
-    pass
-
 class struct__IO_wide_data(Structure):
     pass
 
 class struct__IO_codecvt(Structure):
+    pass
+
+class struct__IO_marker(Structure):
     pass
 
 struct__IO_FILE._pack_ = 1 # source:False
@@ -2005,13 +2006,13 @@ struct_r_flag_item_t._fields_ = [
     ('alias', ctypes.POINTER(ctypes.c_char)),
 ]
 
+class struct_r_anal_esil_trace_t(Structure):
+    pass
+
 class struct_r_anal_esil_handler_t(Structure):
     pass
 
 class struct_r_anal_reil(Structure):
-    pass
-
-class struct_r_anal_esil_trace_t(Structure):
     pass
 
 class struct_r_anal_esil_callbacks_t(Structure):
@@ -2186,77 +2187,6 @@ class struct_r_anal_value_t(Structure):
     pass
 
 
-# values for enumeration 'c__EA_RAnalOpFamily'
-c__EA_RAnalOpFamily__enumvalues = {
-    -1: 'R_ANAL_OP_FAMILY_UNKNOWN',
-    0: 'R_ANAL_OP_FAMILY_CPU',
-    1: 'R_ANAL_OP_FAMILY_FPU',
-    2: 'R_ANAL_OP_FAMILY_MMX',
-    3: 'R_ANAL_OP_FAMILY_SSE',
-    4: 'R_ANAL_OP_FAMILY_PRIV',
-    5: 'R_ANAL_OP_FAMILY_CRYPTO',
-    6: 'R_ANAL_OP_FAMILY_THREAD',
-    7: 'R_ANAL_OP_FAMILY_VIRT',
-    8: 'R_ANAL_OP_FAMILY_SECURITY',
-    9: 'R_ANAL_OP_FAMILY_IO',
-    10: 'R_ANAL_OP_FAMILY_LAST',
-}
-R_ANAL_OP_FAMILY_UNKNOWN = -1
-R_ANAL_OP_FAMILY_CPU = 0
-R_ANAL_OP_FAMILY_FPU = 1
-R_ANAL_OP_FAMILY_MMX = 2
-R_ANAL_OP_FAMILY_SSE = 3
-R_ANAL_OP_FAMILY_PRIV = 4
-R_ANAL_OP_FAMILY_CRYPTO = 5
-R_ANAL_OP_FAMILY_THREAD = 6
-R_ANAL_OP_FAMILY_VIRT = 7
-R_ANAL_OP_FAMILY_SECURITY = 8
-R_ANAL_OP_FAMILY_IO = 9
-R_ANAL_OP_FAMILY_LAST = 10
-c__EA_RAnalOpFamily = ctypes.c_int32 # enum
-
-# values for enumeration 'r_anal_data_type_t'
-r_anal_data_type_t__enumvalues = {
-    0: 'R_ANAL_DATATYPE_NULL',
-    1: 'R_ANAL_DATATYPE_ARRAY',
-    2: 'R_ANAL_DATATYPE_OBJECT',
-    3: 'R_ANAL_DATATYPE_STRING',
-    4: 'R_ANAL_DATATYPE_CLASS',
-    5: 'R_ANAL_DATATYPE_BOOLEAN',
-    6: 'R_ANAL_DATATYPE_INT16',
-    7: 'R_ANAL_DATATYPE_INT32',
-    8: 'R_ANAL_DATATYPE_INT64',
-    9: 'R_ANAL_DATATYPE_FLOAT',
-}
-R_ANAL_DATATYPE_NULL = 0
-R_ANAL_DATATYPE_ARRAY = 1
-R_ANAL_DATATYPE_OBJECT = 2
-R_ANAL_DATATYPE_STRING = 3
-R_ANAL_DATATYPE_CLASS = 4
-R_ANAL_DATATYPE_BOOLEAN = 5
-R_ANAL_DATATYPE_INT16 = 6
-R_ANAL_DATATYPE_INT32 = 7
-R_ANAL_DATATYPE_INT64 = 8
-R_ANAL_DATATYPE_FLOAT = 9
-r_anal_data_type_t = ctypes.c_uint32 # enum
-
-# values for enumeration 'c__EA_RAnalOpPrefix'
-c__EA_RAnalOpPrefix__enumvalues = {
-    1: 'R_ANAL_OP_PREFIX_COND',
-    2: 'R_ANAL_OP_PREFIX_REP',
-    4: 'R_ANAL_OP_PREFIX_REPNE',
-    8: 'R_ANAL_OP_PREFIX_LOCK',
-    16: 'R_ANAL_OP_PREFIX_LIKELY',
-    32: 'R_ANAL_OP_PREFIX_UNLIKELY',
-}
-R_ANAL_OP_PREFIX_COND = 1
-R_ANAL_OP_PREFIX_REP = 2
-R_ANAL_OP_PREFIX_REPNE = 4
-R_ANAL_OP_PREFIX_LOCK = 8
-R_ANAL_OP_PREFIX_LIKELY = 16
-R_ANAL_OP_PREFIX_UNLIKELY = 32
-c__EA_RAnalOpPrefix = ctypes.c_uint32 # enum
-
 # values for enumeration 'c__EA_RAnalStackOp'
 c__EA_RAnalStackOp__enumvalues = {
     0: 'R_ANAL_STACK_NULL',
@@ -2351,6 +2281,77 @@ struct_r_anal_hint_t._fields_ = [
     ('stackframe', ctypes.c_uint64),
 ]
 
+
+# values for enumeration 'r_anal_data_type_t'
+r_anal_data_type_t__enumvalues = {
+    0: 'R_ANAL_DATATYPE_NULL',
+    1: 'R_ANAL_DATATYPE_ARRAY',
+    2: 'R_ANAL_DATATYPE_OBJECT',
+    3: 'R_ANAL_DATATYPE_STRING',
+    4: 'R_ANAL_DATATYPE_CLASS',
+    5: 'R_ANAL_DATATYPE_BOOLEAN',
+    6: 'R_ANAL_DATATYPE_INT16',
+    7: 'R_ANAL_DATATYPE_INT32',
+    8: 'R_ANAL_DATATYPE_INT64',
+    9: 'R_ANAL_DATATYPE_FLOAT',
+}
+R_ANAL_DATATYPE_NULL = 0
+R_ANAL_DATATYPE_ARRAY = 1
+R_ANAL_DATATYPE_OBJECT = 2
+R_ANAL_DATATYPE_STRING = 3
+R_ANAL_DATATYPE_CLASS = 4
+R_ANAL_DATATYPE_BOOLEAN = 5
+R_ANAL_DATATYPE_INT16 = 6
+R_ANAL_DATATYPE_INT32 = 7
+R_ANAL_DATATYPE_INT64 = 8
+R_ANAL_DATATYPE_FLOAT = 9
+r_anal_data_type_t = ctypes.c_uint32 # enum
+
+# values for enumeration 'c__EA_RAnalOpFamily'
+c__EA_RAnalOpFamily__enumvalues = {
+    -1: 'R_ANAL_OP_FAMILY_UNKNOWN',
+    0: 'R_ANAL_OP_FAMILY_CPU',
+    1: 'R_ANAL_OP_FAMILY_FPU',
+    2: 'R_ANAL_OP_FAMILY_MMX',
+    3: 'R_ANAL_OP_FAMILY_SSE',
+    4: 'R_ANAL_OP_FAMILY_PRIV',
+    5: 'R_ANAL_OP_FAMILY_CRYPTO',
+    6: 'R_ANAL_OP_FAMILY_THREAD',
+    7: 'R_ANAL_OP_FAMILY_VIRT',
+    8: 'R_ANAL_OP_FAMILY_SECURITY',
+    9: 'R_ANAL_OP_FAMILY_IO',
+    10: 'R_ANAL_OP_FAMILY_LAST',
+}
+R_ANAL_OP_FAMILY_UNKNOWN = -1
+R_ANAL_OP_FAMILY_CPU = 0
+R_ANAL_OP_FAMILY_FPU = 1
+R_ANAL_OP_FAMILY_MMX = 2
+R_ANAL_OP_FAMILY_SSE = 3
+R_ANAL_OP_FAMILY_PRIV = 4
+R_ANAL_OP_FAMILY_CRYPTO = 5
+R_ANAL_OP_FAMILY_THREAD = 6
+R_ANAL_OP_FAMILY_VIRT = 7
+R_ANAL_OP_FAMILY_SECURITY = 8
+R_ANAL_OP_FAMILY_IO = 9
+R_ANAL_OP_FAMILY_LAST = 10
+c__EA_RAnalOpFamily = ctypes.c_int32 # enum
+
+# values for enumeration 'c__EA_RAnalOpPrefix'
+c__EA_RAnalOpPrefix__enumvalues = {
+    1: 'R_ANAL_OP_PREFIX_COND',
+    2: 'R_ANAL_OP_PREFIX_REP',
+    4: 'R_ANAL_OP_PREFIX_REPNE',
+    8: 'R_ANAL_OP_PREFIX_LOCK',
+    16: 'R_ANAL_OP_PREFIX_LIKELY',
+    32: 'R_ANAL_OP_PREFIX_UNLIKELY',
+}
+R_ANAL_OP_PREFIX_COND = 1
+R_ANAL_OP_PREFIX_REP = 2
+R_ANAL_OP_PREFIX_REPNE = 4
+R_ANAL_OP_PREFIX_LOCK = 8
+R_ANAL_OP_PREFIX_LIKELY = 16
+R_ANAL_OP_PREFIX_UNLIKELY = 32
+c__EA_RAnalOpPrefix = ctypes.c_uint32 # enum
 struct_r_anal_op_t._pack_ = 1 # source:False
 struct_r_anal_op_t._fields_ = [
     ('mnemonic', ctypes.POINTER(ctypes.c_char)),
@@ -2402,17 +2403,6 @@ class struct_r_reg_item_t(Structure):
     pass
 
 
-# values for enumeration 'c__EA_RAnalValueAccess'
-c__EA_RAnalValueAccess__enumvalues = {
-    0: 'R_ANAL_ACC_UNKNOWN',
-    1: 'R_ANAL_ACC_R',
-    2: 'R_ANAL_ACC_W',
-}
-R_ANAL_ACC_UNKNOWN = 0
-R_ANAL_ACC_R = 1
-R_ANAL_ACC_W = 2
-c__EA_RAnalValueAccess = ctypes.c_uint32 # enum
-
 # values for enumeration 'c__EA_RAnalValueType'
 c__EA_RAnalValueType__enumvalues = {
     0: 'R_ANAL_VAL_REG',
@@ -2423,6 +2413,17 @@ R_ANAL_VAL_REG = 0
 R_ANAL_VAL_MEM = 1
 R_ANAL_VAL_IMM = 2
 c__EA_RAnalValueType = ctypes.c_uint32 # enum
+
+# values for enumeration 'c__EA_RAnalValueAccess'
+c__EA_RAnalValueAccess__enumvalues = {
+    0: 'R_ANAL_ACC_UNKNOWN',
+    1: 'R_ANAL_ACC_R',
+    2: 'R_ANAL_ACC_W',
+}
+R_ANAL_ACC_UNKNOWN = 0
+R_ANAL_ACC_R = 1
+R_ANAL_ACC_W = 2
+c__EA_RAnalValueAccess = ctypes.c_uint32 # enum
 struct_r_anal_value_t._pack_ = 1 # source:False
 struct_r_anal_value_t._fields_ = [
     ('type', c__EA_RAnalValueType),
@@ -2602,17 +2603,20 @@ r_egg_free = _libr_egg.r_egg_free
 r_egg_free.restype = None
 r_egg_free.argtypes = [ctypes.POINTER(struct_r_egg_t)]
 r_egg_add = _libr_egg.r_egg_add
-r_egg_add.restype = ctypes.c_int32
+r_egg_add.restype = ctypes.c_bool
 r_egg_add.argtypes = [ctypes.POINTER(struct_r_egg_t), ctypes.POINTER(struct_r_egg_plugin_t)]
 r_egg_reset = _libr_egg.r_egg_reset
 r_egg_reset.restype = None
 r_egg_reset.argtypes = [ctypes.POINTER(struct_r_egg_t)]
 r_egg_setup = _libr_egg.r_egg_setup
-r_egg_setup.restype = ctypes.c_int32
+r_egg_setup.restype = ctypes.c_bool
 r_egg_setup.argtypes = [ctypes.POINTER(struct_r_egg_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_char)]
 r_egg_include = _libr_egg.r_egg_include
-r_egg_include.restype = ctypes.c_int32
+r_egg_include.restype = ctypes.c_bool
 r_egg_include.argtypes = [ctypes.POINTER(struct_r_egg_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
+r_egg_include_str = _libr_egg.r_egg_include_str
+r_egg_include_str.restype = ctypes.c_bool
+r_egg_include_str.argtypes = [ctypes.POINTER(struct_r_egg_t), ctypes.POINTER(ctypes.c_char)]
 r_egg_load = _libr_egg.r_egg_load
 r_egg_load.restype = None
 r_egg_load.argtypes = [ctypes.POINTER(struct_r_egg_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
@@ -2626,13 +2630,13 @@ r_egg_label = _libr_egg.r_egg_label
 r_egg_label.restype = None
 r_egg_label.argtypes = [ctypes.POINTER(struct_r_egg_t), ctypes.POINTER(ctypes.c_char)]
 r_egg_raw = _libr_egg.r_egg_raw
-r_egg_raw.restype = ctypes.c_int32
+r_egg_raw.restype = ctypes.c_bool
 r_egg_raw.argtypes = [ctypes.POINTER(struct_r_egg_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_egg_encode = _libr_egg.r_egg_encode
-r_egg_encode.restype = ctypes.c_int32
+r_egg_encode.restype = ctypes.c_bool
 r_egg_encode.argtypes = [ctypes.POINTER(struct_r_egg_t), ctypes.POINTER(ctypes.c_char)]
 r_egg_shellcode = _libr_egg.r_egg_shellcode
-r_egg_shellcode.restype = ctypes.c_int32
+r_egg_shellcode.restype = ctypes.c_bool
 r_egg_shellcode.argtypes = [ctypes.POINTER(struct_r_egg_t), ctypes.POINTER(ctypes.c_char)]
 r_egg_option_set = _libr_egg.r_egg_option_set
 r_egg_option_set.restype = None
@@ -2647,10 +2651,10 @@ r_egg_printf = _libr_egg.r_egg_printf
 r_egg_printf.restype = None
 r_egg_printf.argtypes = [ctypes.POINTER(struct_r_egg_t), ctypes.POINTER(ctypes.c_char)]
 r_egg_compile = _libr_egg.r_egg_compile
-r_egg_compile.restype = ctypes.c_int32
+r_egg_compile.restype = ctypes.c_bool
 r_egg_compile.argtypes = [ctypes.POINTER(struct_r_egg_t)]
 r_egg_padding = _libr_egg.r_egg_padding
-r_egg_padding.restype = ctypes.c_int32
+r_egg_padding.restype = ctypes.c_bool
 r_egg_padding.argtypes = [ctypes.POINTER(struct_r_egg_t), ctypes.POINTER(ctypes.c_char)]
 r_egg_assemble = _libr_egg.r_egg_assemble
 r_egg_assemble.restype = ctypes.c_bool
@@ -2680,7 +2684,7 @@ r_egg_run_rop = _libr_egg.r_egg_run_rop
 r_egg_run_rop.restype = ctypes.c_int32
 r_egg_run_rop.argtypes = [ctypes.POINTER(struct_r_egg_t)]
 r_egg_patch = _libr_egg.r_egg_patch
-r_egg_patch.restype = ctypes.c_int32
+r_egg_patch.restype = ctypes.c_bool
 r_egg_patch.argtypes = [ctypes.POINTER(struct_r_egg_t), ctypes.c_int32, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_egg_finalize = _libr_egg.r_egg_finalize
 r_egg_finalize.restype = None
@@ -2747,21 +2751,21 @@ __all__ = \
     'r_egg_assemble_asm', 'r_egg_compile', 'r_egg_encode',
     'r_egg_finalize', 'r_egg_free', 'r_egg_get_assembly',
     'r_egg_get_bin', 'r_egg_get_source', 'r_egg_if', 'r_egg_include',
-    'r_egg_label', 'r_egg_lang_free', 'r_egg_lang_include_init',
-    'r_egg_lang_include_path', 'r_egg_lang_init',
-    'r_egg_lang_parsechar', 'r_egg_load', 'r_egg_mkvar', 'r_egg_new',
-    'r_egg_option_get', 'r_egg_option_set', 'r_egg_padding',
-    'r_egg_patch', 'r_egg_pattern', 'r_egg_plugin_exec',
-    'r_egg_plugin_shya', 'r_egg_plugin_xor', 'r_egg_printf',
-    'r_egg_raw', 'r_egg_reset', 'r_egg_run', 'r_egg_run_rop',
-    'r_egg_setup', 'r_egg_shellcode', 'r_egg_syscall',
-    'r_egg_to_string', 'r_egg_version', 'struct__IO_FILE',
-    'struct__IO_codecvt', 'struct__IO_marker', 'struct__IO_wide_data',
-    'struct_buffer', 'struct_c__SA_RNumCalcValue',
-    'struct_c__SA_RStrBuf', 'struct_c__SA_dict', 'struct_cdb',
-    'struct_cdb_hp', 'struct_cdb_hplist', 'struct_cdb_make',
-    'struct_ht_pp_bucket_t', 'struct_ht_pp_kv',
-    'struct_ht_pp_options_t', 'struct_ht_pp_t',
+    'r_egg_include_str', 'r_egg_label', 'r_egg_lang_free',
+    'r_egg_lang_include_init', 'r_egg_lang_include_path',
+    'r_egg_lang_init', 'r_egg_lang_parsechar', 'r_egg_load',
+    'r_egg_mkvar', 'r_egg_new', 'r_egg_option_get',
+    'r_egg_option_set', 'r_egg_padding', 'r_egg_patch',
+    'r_egg_pattern', 'r_egg_plugin_exec', 'r_egg_plugin_shya',
+    'r_egg_plugin_xor', 'r_egg_printf', 'r_egg_raw', 'r_egg_reset',
+    'r_egg_run', 'r_egg_run_rop', 'r_egg_setup', 'r_egg_shellcode',
+    'r_egg_syscall', 'r_egg_to_string', 'r_egg_version',
+    'struct__IO_FILE', 'struct__IO_codecvt', 'struct__IO_marker',
+    'struct__IO_wide_data', 'struct_buffer',
+    'struct_c__SA_RNumCalcValue', 'struct_c__SA_RStrBuf',
+    'struct_c__SA_dict', 'struct_cdb', 'struct_cdb_hp',
+    'struct_cdb_hplist', 'struct_cdb_make', 'struct_ht_pp_bucket_t',
+    'struct_ht_pp_kv', 'struct_ht_pp_options_t', 'struct_ht_pp_t',
     'struct_ht_up_bucket_t', 'struct_ht_up_kv',
     'struct_ht_up_options_t', 'struct_ht_up_t', 'struct_ls_iter_t',
     'struct_ls_t', 'struct_r_anal_bb_t', 'struct_r_anal_bind_t',

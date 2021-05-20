@@ -176,10 +176,10 @@ RCoreCmdfCallback = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctype
 class struct_r_lang_t(Structure):
     pass
 
-class struct_r_list_t(Structure):
+class struct_r_lang_plugin_t(Structure):
     pass
 
-class struct_r_lang_plugin_t(Structure):
+class struct_r_list_t(Structure):
     pass
 
 struct_r_lang_t._pack_ = 1 # source:False
