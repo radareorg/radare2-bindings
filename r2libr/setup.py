@@ -223,7 +223,7 @@ with open(Path(ROOT_DIR) / "README.md", "r+") as f:
 
 setuptools.setup(
     name="r2libr",
-    version="5.2.1",
+    version="5.2.1-1",
     author="mio",
     author_email="mio@lazym.io",
     description="Yet anohter radare2 python bindings.",
