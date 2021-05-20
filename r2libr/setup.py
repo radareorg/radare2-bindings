@@ -131,8 +131,6 @@ def build_radare2():
     DEBUG = os.getenv("DEBUG", "")
     BUILDDIR = os.getenv("R2BUILDDIR", "pyr2build")
     PREFIX = os.getenv("R2PREFIX", str(Path(ROOT_DIR) / "radare2" / "pyr2installdir"))
-    # Special environment variable to indicate whether we are generating bindings.
-    BINDINGS = os.getenv("BINDINGS", "")
     # if sys.platform == "win32":
     #     BACKEND = os.getenv("BACKEND", "vs2019")
     # else:
@@ -155,10 +153,8 @@ def build_radare2():
     args += ["--backend", BACKEND]
     args += ["--prefix", PREFIX]
     args += ["--install"]
-
     # On Windows, there is no ptrace so we shouldn't generate such symbols.
-    if BINDINGS:
-        args += ["--options", "debugger=false"]
+    args += ["--options", "debugger=false"]
 
     subprocess.call(args)
     if LIBS_DIR.exists():
