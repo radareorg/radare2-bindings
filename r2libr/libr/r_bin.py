@@ -138,14 +138,6 @@ class Union(ctypes.Union, AsDictMixin):
 
 
 
-c_int128 = ctypes.c_ubyte*16
-c_uint128 = c_int128
-void = None
-if ctypes.sizeof(ctypes.c_longdouble) == 16:
-    c_long_double_t = ctypes.c_longdouble
-else:
-    c_long_double_t = ctypes.c_ubyte*16
-
 def string_cast(char_pointer, encoding='utf-8', errors='strict'):
     value = ctypes.cast(char_pointer, ctypes.c_char_p).value
     if value is not None and encoding is not None:
@@ -164,6 +156,14 @@ def char_pointer_cast(string, encoding='utf-8'):
     return ctypes.cast(string, ctypes.POINTER(ctypes.c_char))
 
 
+
+c_int128 = ctypes.c_ubyte*16
+c_uint128 = c_int128
+void = None
+if ctypes.sizeof(ctypes.c_longdouble) == 16:
+    c_long_double_t = ctypes.c_longdouble
+else:
+    c_long_double_t = ctypes.c_ubyte*16
 
 _libraries = {}
 class FunctionFactoryStub:
@@ -184,14 +184,25 @@ class struct_r_bin_t(Structure):
 class struct_r_list_t(Structure):
     pass
 
-class struct_r_id_storage_t(Structure):
-    pass
-
 class struct_r_bin_file_t(Structure):
     pass
 
 class struct_sdb_t(Structure):
     pass
+
+class struct_r_id_storage_t(Structure):
+    pass
+
+class struct_r_str_constpool_t(Structure):
+    pass
+
+class struct_ht_pp_t(Structure):
+    pass
+
+struct_r_str_constpool_t._pack_ = 1 # source:False
+struct_r_str_constpool_t._fields_ = [
+    ('ht', ctypes.POINTER(struct_ht_pp_t)),
+]
 
 class struct_r_io_bind_t(Structure):
     pass
@@ -199,10 +210,10 @@ class struct_r_io_bind_t(Structure):
 class struct_r_io_t(Structure):
     pass
 
-class struct_r_io_desc_t(Structure):
+class struct_r_io_map_t(Structure):
     pass
 
-class struct_r_io_map_t(Structure):
+class struct_r_io_desc_t(Structure):
     pass
 
 struct_r_io_bind_t._pack_ = 1 # source:False
@@ -239,17 +250,6 @@ struct_r_io_bind_t._fields_ = [
     ('map_add', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)),
     ('v2p', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
     ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
-]
-
-class struct_r_str_constpool_t(Structure):
-    pass
-
-class struct_ht_pp_t(Structure):
-    pass
-
-struct_r_str_constpool_t._pack_ = 1 # source:False
-struct_r_str_constpool_t._fields_ = [
-    ('ht', ctypes.POINTER(struct_ht_pp_t)),
 ]
 
 class struct_r_cons_bind_t(Structure):
@@ -665,10 +665,10 @@ struct_ht_up_kv._fields_ = [
     ('value_len', ctypes.c_uint32),
 ]
 
-class struct_r_bin_write_t(Structure):
+class struct_r_bin_dbginfo_t(Structure):
     pass
 
-class struct_r_bin_dbginfo_t(Structure):
+class struct_r_bin_write_t(Structure):
     pass
 
 class struct_r_buf_t(Structure):
@@ -735,6 +735,24 @@ class struct_sdb_gperf_t(Structure):
 class struct_ls_t(Structure):
     pass
 
+class struct_cdb(Structure):
+    pass
+
+struct_cdb._pack_ = 1 # source:False
+struct_cdb._fields_ = [
+    ('map', ctypes.POINTER(ctypes.c_char)),
+    ('fd', ctypes.c_int32),
+    ('size', ctypes.c_uint32),
+    ('loop', ctypes.c_uint32),
+    ('khash', ctypes.c_uint32),
+    ('kpos', ctypes.c_uint32),
+    ('hpos', ctypes.c_uint32),
+    ('hslots', ctypes.c_uint32),
+    ('dpos', ctypes.c_uint32),
+    ('dlen', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
 class struct_cdb_make(Structure):
     pass
 
@@ -793,24 +811,6 @@ struct_sdb_kv._fields_ = [
     ('cas', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
     ('expire', ctypes.c_uint64),
-]
-
-class struct_cdb(Structure):
-    pass
-
-struct_cdb._pack_ = 1 # source:False
-struct_cdb._fields_ = [
-    ('map', ctypes.POINTER(ctypes.c_char)),
-    ('fd', ctypes.c_int32),
-    ('size', ctypes.c_uint32),
-    ('loop', ctypes.c_uint32),
-    ('khash', ctypes.c_uint32),
-    ('kpos', ctypes.c_uint32),
-    ('hpos', ctypes.c_uint32),
-    ('hslots', ctypes.c_uint32),
-    ('dpos', ctypes.c_uint32),
-    ('dlen', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
 struct_sdb_t._pack_ = 1 # source:False
@@ -1063,31 +1063,35 @@ struct_r_queue_t._fields_ = [
     ('size', ctypes.c_uint32),
 ]
 
-class struct_r_event_t(Structure):
-    pass
-
 class struct_r_cache_t(Structure):
     pass
 
-class struct_r_skyline_t(Structure):
+class struct_r_event_t(Structure):
     pass
 
-class struct_r_vector_t(Structure):
+class struct_r_io_undo_t(Structure):
     pass
 
-struct_r_vector_t._pack_ = 1 # source:False
-struct_r_vector_t._fields_ = [
-    ('a', ctypes.POINTER(None)),
-    ('len', ctypes.c_uint64),
-    ('capacity', ctypes.c_uint64),
-    ('elem_size', ctypes.c_uint64),
-    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
-    ('free_user', ctypes.POINTER(None)),
+class struct_r_io_undos_t(Structure):
+    pass
+
+struct_r_io_undos_t._pack_ = 1 # source:False
+struct_r_io_undos_t._fields_ = [
+    ('off', ctypes.c_uint64),
+    ('cursor', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
-struct_r_skyline_t._pack_ = 1 # source:False
-struct_r_skyline_t._fields_ = [
-    ('v', struct_r_vector_t),
+struct_r_io_undo_t._pack_ = 1 # source:False
+struct_r_io_undo_t._fields_ = [
+    ('s_enable', ctypes.c_int32),
+    ('w_enable', ctypes.c_int32),
+    ('w_list', ctypes.POINTER(struct_r_list_t)),
+    ('w_init', ctypes.c_int32),
+    ('idx', ctypes.c_int32),
+    ('undos', ctypes.c_int32),
+    ('redos', ctypes.c_int32),
+    ('seek', struct_r_io_undos_t * 64),
 ]
 
 class struct_r_core_bind_t(Structure):
@@ -1115,29 +1119,25 @@ struct_r_core_bind_t._fields_ = [
     ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
 ]
 
-class struct_r_io_undo_t(Structure):
+class struct_r_skyline_t(Structure):
     pass
 
-class struct_r_io_undos_t(Structure):
+class struct_r_vector_t(Structure):
     pass
 
-struct_r_io_undos_t._pack_ = 1 # source:False
-struct_r_io_undos_t._fields_ = [
-    ('off', ctypes.c_uint64),
-    ('cursor', ctypes.c_int32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+struct_r_vector_t._pack_ = 1 # source:False
+struct_r_vector_t._fields_ = [
+    ('a', ctypes.POINTER(None)),
+    ('len', ctypes.c_uint64),
+    ('capacity', ctypes.c_uint64),
+    ('elem_size', ctypes.c_uint64),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
+    ('free_user', ctypes.POINTER(None)),
 ]
 
-struct_r_io_undo_t._pack_ = 1 # source:False
-struct_r_io_undo_t._fields_ = [
-    ('s_enable', ctypes.c_int32),
-    ('w_enable', ctypes.c_int32),
-    ('w_list', ctypes.POINTER(struct_r_list_t)),
-    ('w_init', ctypes.c_int32),
-    ('idx', ctypes.c_int32),
-    ('undos', ctypes.c_int32),
-    ('redos', ctypes.c_int32),
-    ('seek', struct_r_io_undos_t * 64),
+struct_r_skyline_t._pack_ = 1 # source:False
+struct_r_skyline_t._fields_ = [
+    ('v', struct_r_vector_t),
 ]
 
 class struct_r_pvector_t(Structure):
@@ -1602,17 +1602,6 @@ class struct_pj_t(Structure):
     pass
 
 
-# values for enumeration 'PJEncodingNum'
-PJEncodingNum__enumvalues = {
-    0: 'PJ_ENCODING_NUM_DEFAULT',
-    1: 'PJ_ENCODING_NUM_STR',
-    2: 'PJ_ENCODING_NUM_HEX',
-}
-PJ_ENCODING_NUM_DEFAULT = 0
-PJ_ENCODING_NUM_STR = 1
-PJ_ENCODING_NUM_HEX = 2
-PJEncodingNum = ctypes.c_uint32 # enum
-
 # values for enumeration 'PJEncodingStr'
 PJEncodingStr__enumvalues = {
     0: 'PJ_ENCODING_STR_DEFAULT',
@@ -1640,6 +1629,17 @@ struct_c__SA_RStrBuf._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 7),
 ]
 
+
+# values for enumeration 'PJEncodingNum'
+PJEncodingNum__enumvalues = {
+    0: 'PJ_ENCODING_NUM_DEFAULT',
+    1: 'PJ_ENCODING_NUM_STR',
+    2: 'PJ_ENCODING_NUM_HEX',
+}
+PJ_ENCODING_NUM_DEFAULT = 0
+PJ_ENCODING_NUM_STR = 1
+PJ_ENCODING_NUM_HEX = 2
+PJEncodingNum = ctypes.c_uint32 # enum
 struct_pj_t._pack_ = 1 # source:False
 struct_pj_t._fields_ = [
     ('sb', struct_c__SA_RStrBuf),
@@ -2019,6 +2019,7 @@ r_bin_plugin_z64 = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 r_bin_plugin_prg = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 r_bin_plugin_dmp64 = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 r_bin_plugin_pyc = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
+r_bin_plugin_off = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 __all__ = \
     ['FREE_XTR', 'PJEncodingNum', 'PJEncodingStr',
     'PJ_ENCODING_NUM_DEFAULT', 'PJ_ENCODING_NUM_HEX',
@@ -2101,29 +2102,30 @@ __all__ = \
     'r_bin_plugin_mz', 'r_bin_plugin_ne', 'r_bin_plugin_nes',
     'r_bin_plugin_nin3ds', 'r_bin_plugin_ninds', 'r_bin_plugin_ningb',
     'r_bin_plugin_ningba', 'r_bin_plugin_nro', 'r_bin_plugin_nso',
-    'r_bin_plugin_omf', 'r_bin_plugin_p9', 'r_bin_plugin_pe',
-    'r_bin_plugin_pe64', 'r_bin_plugin_pebble', 'r_bin_plugin_prg',
-    'r_bin_plugin_psxexe', 'r_bin_plugin_pyc', 'r_bin_plugin_qnx',
-    'r_bin_plugin_sfc', 'r_bin_plugin_smd', 'r_bin_plugin_sms',
-    'r_bin_plugin_symbols', 'r_bin_plugin_te', 'r_bin_plugin_vsf',
-    'r_bin_plugin_wad', 'r_bin_plugin_wasm', 'r_bin_plugin_xbe',
-    'r_bin_plugin_xnu_kernelcache', 'r_bin_plugin_z64',
-    'r_bin_plugin_zimg', 'r_bin_raw_strings', 'r_bin_reload',
-    'r_bin_reset_strings', 'r_bin_section_free', 'r_bin_section_new',
-    'r_bin_select', 'r_bin_select_bfid', 'r_bin_set_baddr',
-    'r_bin_set_user_ptr', 'r_bin_string_filter', 'r_bin_string_free',
-    'r_bin_string_type', 'r_bin_strpurge', 'r_bin_symbol_free',
-    'r_bin_symbol_name', 'r_bin_symbol_new', 'r_bin_trycatch_free',
-    'r_bin_trycatch_new', 'r_bin_use_arch', 'r_bin_version',
-    'r_bin_wr_addlib', 'r_bin_wr_entry', 'r_bin_wr_output',
-    'r_bin_wr_rpath_del', 'r_bin_wr_scn_perms', 'r_bin_wr_scn_resize',
-    'r_bin_xtr_add', 'r_bin_xtr_plugin_xtr_dyldcache',
-    'r_bin_xtr_plugin_xtr_fatmach0', 'r_bin_xtr_plugin_xtr_pemixed',
-    'r_bin_xtr_plugin_xtr_sep64', 'r_bin_xtrdata_free',
-    'r_bin_xtrdata_new', 'struct_buffer', 'struct_c__SA_RStrBuf',
-    'struct_c__SA_dict', 'struct_cdb', 'struct_cdb_hp',
-    'struct_cdb_hplist', 'struct_cdb_make', 'struct_ht_pp_bucket_t',
-    'struct_ht_pp_kv', 'struct_ht_pp_options_t', 'struct_ht_pp_t',
+    'r_bin_plugin_off', 'r_bin_plugin_omf', 'r_bin_plugin_p9',
+    'r_bin_plugin_pe', 'r_bin_plugin_pe64', 'r_bin_plugin_pebble',
+    'r_bin_plugin_prg', 'r_bin_plugin_psxexe', 'r_bin_plugin_pyc',
+    'r_bin_plugin_qnx', 'r_bin_plugin_sfc', 'r_bin_plugin_smd',
+    'r_bin_plugin_sms', 'r_bin_plugin_symbols', 'r_bin_plugin_te',
+    'r_bin_plugin_vsf', 'r_bin_plugin_wad', 'r_bin_plugin_wasm',
+    'r_bin_plugin_xbe', 'r_bin_plugin_xnu_kernelcache',
+    'r_bin_plugin_z64', 'r_bin_plugin_zimg', 'r_bin_raw_strings',
+    'r_bin_reload', 'r_bin_reset_strings', 'r_bin_section_free',
+    'r_bin_section_new', 'r_bin_select', 'r_bin_select_bfid',
+    'r_bin_set_baddr', 'r_bin_set_user_ptr', 'r_bin_string_filter',
+    'r_bin_string_free', 'r_bin_string_type', 'r_bin_strpurge',
+    'r_bin_symbol_free', 'r_bin_symbol_name', 'r_bin_symbol_new',
+    'r_bin_trycatch_free', 'r_bin_trycatch_new', 'r_bin_use_arch',
+    'r_bin_version', 'r_bin_wr_addlib', 'r_bin_wr_entry',
+    'r_bin_wr_output', 'r_bin_wr_rpath_del', 'r_bin_wr_scn_perms',
+    'r_bin_wr_scn_resize', 'r_bin_xtr_add',
+    'r_bin_xtr_plugin_xtr_dyldcache', 'r_bin_xtr_plugin_xtr_fatmach0',
+    'r_bin_xtr_plugin_xtr_pemixed', 'r_bin_xtr_plugin_xtr_sep64',
+    'r_bin_xtrdata_free', 'r_bin_xtrdata_new', 'struct_buffer',
+    'struct_c__SA_RStrBuf', 'struct_c__SA_dict', 'struct_cdb',
+    'struct_cdb_hp', 'struct_cdb_hplist', 'struct_cdb_make',
+    'struct_ht_pp_bucket_t', 'struct_ht_pp_kv',
+    'struct_ht_pp_options_t', 'struct_ht_pp_t',
     'struct_ht_up_bucket_t', 'struct_ht_up_kv',
     'struct_ht_up_options_t', 'struct_ht_up_t', 'struct_ls_iter_t',
     'struct_ls_t', 'struct_pj_t', 'struct_r_bin_addr_t',

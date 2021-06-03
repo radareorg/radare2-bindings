@@ -231,10 +231,10 @@ r_config_node_type.argtypes = [ctypes.POINTER(struct_r_config_node_t)]
 class struct_r_config_t(Structure):
     pass
 
-class struct_ht_pp_t(Structure):
+class struct_r_num_t(Structure):
     pass
 
-class struct_r_num_t(Structure):
+class struct_ht_pp_t(Structure):
     pass
 
 struct_r_config_t._pack_ = 1 # source:False
@@ -454,7 +454,7 @@ r_config_get = _libr_config.r_config_get
 r_config_get.restype = ctypes.POINTER(ctypes.c_char)
 r_config_get.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTER(ctypes.c_char)]
 r_config_desc = _libr_config.r_config_desc
-r_config_desc.restype = ctypes.POINTER(ctypes.c_char)
+r_config_desc.restype = ctypes.POINTER(struct_r_config_node_t)
 r_config_desc.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
 r_config_list = _libr_config.r_config_list
 r_config_list.restype = None
@@ -474,29 +474,11 @@ r_config_set_getter.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTE
 class struct_sdb_t(Structure):
     pass
 
-class struct_sdb_gperf_t(Structure):
-    pass
-
 class struct_ls_t(Structure):
     pass
 
-class struct_cdb(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
-
-struct_cdb._pack_ = 1 # source:False
-struct_cdb._fields_ = [
-    ('map', ctypes.POINTER(ctypes.c_char)),
-    ('fd', ctypes.c_int32),
-    ('size', ctypes.c_uint32),
-    ('loop', ctypes.c_uint32),
-    ('khash', ctypes.c_uint32),
-    ('kpos', ctypes.c_uint32),
-    ('hpos', ctypes.c_uint32),
-    ('hslots', ctypes.c_uint32),
-    ('dpos', ctypes.c_uint32),
-    ('dlen', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-]
 
 class struct_cdb_make(Structure):
     pass
@@ -556,6 +538,24 @@ struct_sdb_kv._fields_ = [
     ('cas', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
     ('expire', ctypes.c_uint64),
+]
+
+class struct_cdb(Structure):
+    pass
+
+struct_cdb._pack_ = 1 # source:False
+struct_cdb._fields_ = [
+    ('map', ctypes.POINTER(ctypes.c_char)),
+    ('fd', ctypes.c_int32),
+    ('size', ctypes.c_uint32),
+    ('loop', ctypes.c_uint32),
+    ('khash', ctypes.c_uint32),
+    ('kpos', ctypes.c_uint32),
+    ('hpos', ctypes.c_uint32),
+    ('hslots', ctypes.c_uint32),
+    ('dpos', ctypes.c_uint32),
+    ('dlen', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
 struct_sdb_t._pack_ = 1 # source:False
@@ -639,7 +639,7 @@ r_config_unserialize = _libr_config.r_config_unserialize
 r_config_unserialize.restype = ctypes.c_bool
 r_config_unserialize.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
 r_config_node_desc = _libr_config.r_config_node_desc
-r_config_node_desc.restype = ctypes.POINTER(ctypes.c_char)
+r_config_node_desc.restype = ctypes.POINTER(struct_r_config_node_t)
 r_config_node_desc.argtypes = [ctypes.POINTER(struct_r_config_node_t), ctypes.POINTER(ctypes.c_char)]
 r_config_node_to_string = _libr_config.r_config_node_to_string
 r_config_node_to_string.restype = ctypes.POINTER(ctypes.c_char)

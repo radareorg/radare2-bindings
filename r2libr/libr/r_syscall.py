@@ -199,10 +199,10 @@ RSyscallPort = struct_r_syscall_port_t
 class struct_r_syscall_t(Structure):
     pass
 
-class struct__IO_FILE(Structure):
+class struct_sdb_t(Structure):
     pass
 
-class struct_sdb_t(Structure):
+class struct__IO_FILE(Structure):
     pass
 
 struct_r_syscall_t._pack_ = 1 # source:False
@@ -265,14 +265,70 @@ struct__IO_FILE._fields_ = [
     ('_unused2', ctypes.c_char * 20),
 ]
 
-class struct_sdb_gperf_t(Structure):
+class struct_ht_pp_t(Structure):
     pass
 
 class struct_ls_t(Structure):
     pass
 
-class struct_ht_pp_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
+
+class struct_cdb(Structure):
+    pass
+
+struct_cdb._pack_ = 1 # source:False
+struct_cdb._fields_ = [
+    ('map', ctypes.POINTER(ctypes.c_char)),
+    ('fd', ctypes.c_int32),
+    ('size', ctypes.c_uint32),
+    ('loop', ctypes.c_uint32),
+    ('khash', ctypes.c_uint32),
+    ('kpos', ctypes.c_uint32),
+    ('hpos', ctypes.c_uint32),
+    ('hslots', ctypes.c_uint32),
+    ('dpos', ctypes.c_uint32),
+    ('dlen', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
+class struct_cdb_make(Structure):
+    pass
+
+class struct_cdb_hp(Structure):
+    pass
+
+class struct_cdb_hplist(Structure):
+    pass
+
+class struct_buffer(Structure):
+    pass
+
+struct_buffer._pack_ = 1 # source:False
+struct_buffer._fields_ = [
+    ('x', ctypes.POINTER(ctypes.c_char)),
+    ('p', ctypes.c_uint32),
+    ('n', ctypes.c_uint32),
+    ('fd', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('op', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_char), ctypes.c_int32)),
+]
+
+struct_cdb_make._pack_ = 1 # source:False
+struct_cdb_make._fields_ = [
+    ('bspace', ctypes.c_char * 8192),
+    ('final', ctypes.c_char * 1024),
+    ('count', ctypes.c_uint32 * 256),
+    ('start', ctypes.c_uint32 * 256),
+    ('head', ctypes.POINTER(struct_cdb_hplist)),
+    ('split', ctypes.POINTER(struct_cdb_hp)),
+    ('hash', ctypes.POINTER(struct_cdb_hp)),
+    ('numentries', ctypes.c_uint32),
+    ('memsize', ctypes.c_uint32),
+    ('b', struct_buffer),
+    ('pos', ctypes.c_uint32),
+    ('fd', ctypes.c_int32),
+]
 
 class struct_c__SA_dict(Structure):
     pass
@@ -305,62 +361,6 @@ struct_sdb_kv._fields_ = [
     ('cas', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
     ('expire', ctypes.c_uint64),
-]
-
-class struct_cdb(Structure):
-    pass
-
-struct_cdb._pack_ = 1 # source:False
-struct_cdb._fields_ = [
-    ('map', ctypes.POINTER(ctypes.c_char)),
-    ('fd', ctypes.c_int32),
-    ('size', ctypes.c_uint32),
-    ('loop', ctypes.c_uint32),
-    ('khash', ctypes.c_uint32),
-    ('kpos', ctypes.c_uint32),
-    ('hpos', ctypes.c_uint32),
-    ('hslots', ctypes.c_uint32),
-    ('dpos', ctypes.c_uint32),
-    ('dlen', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-]
-
-class struct_cdb_make(Structure):
-    pass
-
-class struct_cdb_hplist(Structure):
-    pass
-
-class struct_cdb_hp(Structure):
-    pass
-
-class struct_buffer(Structure):
-    pass
-
-struct_buffer._pack_ = 1 # source:False
-struct_buffer._fields_ = [
-    ('x', ctypes.POINTER(ctypes.c_char)),
-    ('p', ctypes.c_uint32),
-    ('n', ctypes.c_uint32),
-    ('fd', ctypes.c_int32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-    ('op', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_char), ctypes.c_int32)),
-]
-
-struct_cdb_make._pack_ = 1 # source:False
-struct_cdb_make._fields_ = [
-    ('bspace', ctypes.c_char * 8192),
-    ('final', ctypes.c_char * 1024),
-    ('count', ctypes.c_uint32 * 256),
-    ('start', ctypes.c_uint32 * 256),
-    ('head', ctypes.POINTER(struct_cdb_hplist)),
-    ('split', ctypes.POINTER(struct_cdb_hp)),
-    ('hash', ctypes.POINTER(struct_cdb_hp)),
-    ('numentries', ctypes.c_uint32),
-    ('memsize', ctypes.c_uint32),
-    ('b', struct_buffer),
-    ('pos', ctypes.c_uint32),
-    ('fd', ctypes.c_int32),
 ]
 
 struct_sdb_t._pack_ = 1 # source:False

@@ -248,13 +248,13 @@ RIOUndoWrite = struct_r_io_undo_w_t
 class struct_r_io_t(Structure):
     pass
 
-class struct_r_id_pool_t(Structure):
-    pass
-
 class struct_ls_t(Structure):
     pass
 
 class struct_r_io_desc_t(Structure):
+    pass
+
+class struct_r_cache_t(Structure):
     pass
 
 class struct_r_event_t(Structure):
@@ -263,10 +263,10 @@ class struct_r_event_t(Structure):
 class struct_r_id_storage_t(Structure):
     pass
 
-class struct_r_cache_t(Structure):
+class struct_r_id_pool_t(Structure):
     pass
 
-class struct_r_pvector_t(Structure):
+class struct_r_skyline_t(Structure):
     pass
 
 class struct_r_vector_t(Structure):
@@ -282,16 +282,10 @@ struct_r_vector_t._fields_ = [
     ('free_user', ctypes.POINTER(None)),
 ]
 
-struct_r_pvector_t._pack_ = 1 # source:False
-struct_r_pvector_t._fields_ = [
+struct_r_skyline_t._pack_ = 1 # source:False
+struct_r_skyline_t._fields_ = [
     ('v', struct_r_vector_t),
 ]
-
-class struct_r_skyline_t(Structure):
-    _pack_ = 1 # source:False
-    _fields_ = [
-    ('v', struct_r_vector_t),
-     ]
 
 class struct_r_core_bind_t(Structure):
     pass
@@ -317,6 +311,12 @@ struct_r_core_bind_t._fields_ = [
     ('syncDebugMaps', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None))),
     ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
 ]
+
+class struct_r_pvector_t(Structure):
+    _pack_ = 1 # source:False
+    _fields_ = [
+    ('v', struct_r_vector_t),
+     ]
 
 struct_r_io_t._pack_ = 1 # source:False
 struct_r_io_t._fields_ = [
@@ -360,10 +360,10 @@ struct_r_io_t._fields_ = [
     ('PADDING_5', ctypes.c_ubyte * 7),
 ]
 
-class struct_r_io_plugin_t(Structure):
+class struct_ht_up_t(Structure):
     pass
 
-class struct_ht_up_t(Structure):
+class struct_r_io_plugin_t(Structure):
     pass
 
 struct_r_io_desc_t._pack_ = 1 # source:False
@@ -1235,7 +1235,7 @@ r_io_plugin_r2pipe = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_r2web = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_qnx = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_r2k = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
-r_io_plugin_tcp = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
+r_io_plugin_tcpslurp = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_bochs = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_null = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_ar = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
@@ -1243,6 +1243,7 @@ r_io_plugin_rbuf = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_winedbg = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_gprobe = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_fd = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
+r_io_plugin_socket = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 __all__ = \
     ['RIO', 'RIOAddrIsMapped', 'RIOBind', 'RIOCache', 'RIOClose',
     'RIODesc', 'RIODescCache', 'RIODescGet', 'RIODescSize',
@@ -1305,24 +1306,25 @@ __all__ = \
     'r_io_plugin_r2pipe', 'r_io_plugin_r2web', 'r_io_plugin_rap',
     'r_io_plugin_rbuf', 'r_io_plugin_read', 'r_io_plugin_read_at',
     'r_io_plugin_resolve', 'r_io_plugin_self', 'r_io_plugin_shm',
-    'r_io_plugin_sparse', 'r_io_plugin_tcp', 'r_io_plugin_w32',
-    'r_io_plugin_w32dbg', 'r_io_plugin_windbg', 'r_io_plugin_winedbg',
-    'r_io_plugin_winkd', 'r_io_plugin_write', 'r_io_plugin_write_at',
-    'r_io_plugin_zip', 'r_io_pread_at', 'r_io_pwrite_at', 'r_io_read',
-    'r_io_read_at', 'r_io_read_at_mapped', 'r_io_read_i',
-    'r_io_reopen', 'r_io_resize', 'r_io_seek', 'r_io_set_write_mask',
-    'r_io_shift', 'r_io_size', 'r_io_sundo', 'r_io_sundo_list',
-    'r_io_sundo_push', 'r_io_sundo_redo', 'r_io_sundo_reset',
-    'r_io_system', 'r_io_undo_enable', 'r_io_undo_init',
-    'r_io_update', 'r_io_use_fd', 'r_io_v2p', 'r_io_version',
-    'r_io_vread_at_mapped', 'r_io_write', 'r_io_write_at',
-    'r_io_write_i', 'r_io_wundo_apply', 'r_io_wundo_apply_all',
-    'r_io_wundo_clear', 'r_io_wundo_list', 'r_io_wundo_new',
-    'r_io_wundo_set', 'r_io_wundo_set_all', 'r_io_wundo_set_t',
-    'r_io_wundo_size', 'struct_c__SA_RIORap', 'struct_ht_up_bucket_t',
-    'struct_ht_up_kv', 'struct_ht_up_options_t', 'struct_ht_up_t',
-    'struct_in_addr', 'struct_ls_iter_t', 'struct_ls_t',
-    'struct_r_buf_t', 'struct_r_buffer_methods_t', 'struct_r_cache_t',
+    'r_io_plugin_socket', 'r_io_plugin_sparse',
+    'r_io_plugin_tcpslurp', 'r_io_plugin_w32', 'r_io_plugin_w32dbg',
+    'r_io_plugin_windbg', 'r_io_plugin_winedbg', 'r_io_plugin_winkd',
+    'r_io_plugin_write', 'r_io_plugin_write_at', 'r_io_plugin_zip',
+    'r_io_pread_at', 'r_io_pwrite_at', 'r_io_read', 'r_io_read_at',
+    'r_io_read_at_mapped', 'r_io_read_i', 'r_io_reopen',
+    'r_io_resize', 'r_io_seek', 'r_io_set_write_mask', 'r_io_shift',
+    'r_io_size', 'r_io_sundo', 'r_io_sundo_list', 'r_io_sundo_push',
+    'r_io_sundo_redo', 'r_io_sundo_reset', 'r_io_system',
+    'r_io_undo_enable', 'r_io_undo_init', 'r_io_update',
+    'r_io_use_fd', 'r_io_v2p', 'r_io_version', 'r_io_vread_at_mapped',
+    'r_io_write', 'r_io_write_at', 'r_io_write_i', 'r_io_wundo_apply',
+    'r_io_wundo_apply_all', 'r_io_wundo_clear', 'r_io_wundo_list',
+    'r_io_wundo_new', 'r_io_wundo_set', 'r_io_wundo_set_all',
+    'r_io_wundo_set_t', 'r_io_wundo_size', 'struct_c__SA_RIORap',
+    'struct_ht_up_bucket_t', 'struct_ht_up_kv',
+    'struct_ht_up_options_t', 'struct_ht_up_t', 'struct_in_addr',
+    'struct_ls_iter_t', 'struct_ls_t', 'struct_r_buf_t',
+    'struct_r_buffer_methods_t', 'struct_r_cache_t',
     'struct_r_core_bind_t', 'struct_r_event_t', 'struct_r_id_pool_t',
     'struct_r_id_storage_t', 'struct_r_interval_t',
     'struct_r_io_bind_t', 'struct_r_io_cache_t',

@@ -266,16 +266,16 @@ RFlagItem = struct_r_flag_item_t
 class struct_r_flag_t(Structure):
     pass
 
-class struct_r_skiplist_t(Structure):
-    pass
-
 class struct_sdb_t(Structure):
     pass
 
-class struct_ht_pp_t(Structure):
+class struct_r_skiplist_t(Structure):
     pass
 
 class struct_r_num_t(Structure):
+    pass
+
+class struct_ht_pp_t(Structure):
     pass
 
 class struct_r_spaces_t(Structure):
@@ -381,10 +381,10 @@ struct_ht_up_kv._fields_ = [
     ('value_len', ctypes.c_uint32),
 ]
 
-class struct_sdb_gperf_t(Structure):
+class struct_ls_t(Structure):
     pass
 
-class struct_ls_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
 class struct_cdb(Structure):
