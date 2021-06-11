@@ -248,25 +248,25 @@ RIOUndoWrite = struct_r_io_undo_w_t
 class struct_r_io_t(Structure):
     pass
 
-class struct_ls_t(Structure):
-    pass
-
-class struct_r_io_desc_t(Structure):
-    pass
-
 class struct_r_cache_t(Structure):
-    pass
-
-class struct_r_event_t(Structure):
     pass
 
 class struct_r_id_storage_t(Structure):
     pass
 
+class struct_ls_t(Structure):
+    pass
+
+class struct_r_event_t(Structure):
+    pass
+
 class struct_r_id_pool_t(Structure):
     pass
 
-class struct_r_skyline_t(Structure):
+class struct_r_io_desc_t(Structure):
+    pass
+
+class struct_r_pvector_t(Structure):
     pass
 
 class struct_r_vector_t(Structure):
@@ -282,8 +282,8 @@ struct_r_vector_t._fields_ = [
     ('free_user', ctypes.POINTER(None)),
 ]
 
-struct_r_skyline_t._pack_ = 1 # source:False
-struct_r_skyline_t._fields_ = [
+struct_r_pvector_t._pack_ = 1 # source:False
+struct_r_pvector_t._fields_ = [
     ('v', struct_r_vector_t),
 ]
 
@@ -312,7 +312,7 @@ struct_r_core_bind_t._fields_ = [
     ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
 ]
 
-class struct_r_pvector_t(Structure):
+class struct_r_skyline_t(Structure):
     _pack_ = 1 # source:False
     _fields_ = [
     ('v', struct_r_vector_t),

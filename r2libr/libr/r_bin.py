@@ -138,6 +138,14 @@ class Union(ctypes.Union, AsDictMixin):
 
 
 
+c_int128 = ctypes.c_ubyte*16
+c_uint128 = c_int128
+void = None
+if ctypes.sizeof(ctypes.c_longdouble) == 16:
+    c_long_double_t = ctypes.c_longdouble
+else:
+    c_long_double_t = ctypes.c_ubyte*16
+
 def string_cast(char_pointer, encoding='utf-8', errors='strict'):
     value = ctypes.cast(char_pointer, ctypes.c_char_p).value
     if value is not None and encoding is not None:
@@ -156,14 +164,6 @@ def char_pointer_cast(string, encoding='utf-8'):
     return ctypes.cast(string, ctypes.POINTER(ctypes.c_char))
 
 
-
-c_int128 = ctypes.c_ubyte*16
-c_uint128 = c_int128
-void = None
-if ctypes.sizeof(ctypes.c_longdouble) == 16:
-    c_long_double_t = ctypes.c_longdouble
-else:
-    c_long_double_t = ctypes.c_ubyte*16
 
 _libraries = {}
 class FunctionFactoryStub:
@@ -202,6 +202,19 @@ class struct_ht_pp_t(Structure):
 struct_r_str_constpool_t._pack_ = 1 # source:False
 struct_r_str_constpool_t._fields_ = [
     ('ht', ctypes.POINTER(struct_ht_pp_t)),
+]
+
+class struct_r_cons_bind_t(Structure):
+    pass
+
+struct_r_cons_bind_t._pack_ = 1 # source:False
+struct_r_cons_bind_t._fields_ = [
+    ('get_size', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
+    ('get_cursor', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
+    ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
+    ('is_breaked', ctypes.CFUNCTYPE(ctypes.c_bool)),
+    ('cb_flush', ctypes.CFUNCTYPE(None)),
+    ('cb_grep', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
 ]
 
 class struct_r_io_bind_t(Structure):
@@ -250,19 +263,6 @@ struct_r_io_bind_t._fields_ = [
     ('map_add', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)),
     ('v2p', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
     ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
-]
-
-class struct_r_cons_bind_t(Structure):
-    pass
-
-struct_r_cons_bind_t._pack_ = 1 # source:False
-struct_r_cons_bind_t._fields_ = [
-    ('get_size', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
-    ('get_cursor', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
-    ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
-    ('is_breaked', ctypes.CFUNCTYPE(ctypes.c_bool)),
-    ('cb_flush', ctypes.CFUNCTYPE(None)),
-    ('cb_grep', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
 ]
 
 struct_r_bin_t._pack_ = 1 # source:False
@@ -525,10 +525,10 @@ class struct_r_bin_object_t(Structure):
 class struct_r_bin_plugin_t(Structure):
     pass
 
-class struct_r_rb_node_t(Structure):
+class struct_ht_up_t(Structure):
     pass
 
-class struct_ht_up_t(Structure):
+class struct_r_rb_node_t(Structure):
     pass
 
 struct_r_bin_object_t._pack_ = 1 # source:False
@@ -729,10 +729,10 @@ struct_r_bin_plugin_t._fields_ = [
     ('user', ctypes.POINTER(None)),
 ]
 
-class struct_sdb_gperf_t(Structure):
+class struct_ls_t(Structure):
     pass
 
-class struct_ls_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
 class struct_cdb(Structure):
@@ -1063,11 +1063,32 @@ struct_r_queue_t._fields_ = [
     ('size', ctypes.c_uint32),
 ]
 
+class struct_r_event_t(Structure):
+    pass
+
 class struct_r_cache_t(Structure):
     pass
 
-class struct_r_event_t(Structure):
+class struct_r_skyline_t(Structure):
     pass
+
+class struct_r_vector_t(Structure):
+    pass
+
+struct_r_vector_t._pack_ = 1 # source:False
+struct_r_vector_t._fields_ = [
+    ('a', ctypes.POINTER(None)),
+    ('len', ctypes.c_uint64),
+    ('capacity', ctypes.c_uint64),
+    ('elem_size', ctypes.c_uint64),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
+    ('free_user', ctypes.POINTER(None)),
+]
+
+struct_r_skyline_t._pack_ = 1 # source:False
+struct_r_skyline_t._fields_ = [
+    ('v', struct_r_vector_t),
+]
 
 class struct_r_io_undo_t(Structure):
     pass
@@ -1117,27 +1138,6 @@ struct_r_core_bind_t._fields_ = [
     ('isMapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_int32)),
     ('syncDebugMaps', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None))),
     ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
-]
-
-class struct_r_skyline_t(Structure):
-    pass
-
-class struct_r_vector_t(Structure):
-    pass
-
-struct_r_vector_t._pack_ = 1 # source:False
-struct_r_vector_t._fields_ = [
-    ('a', ctypes.POINTER(None)),
-    ('len', ctypes.c_uint64),
-    ('capacity', ctypes.c_uint64),
-    ('elem_size', ctypes.c_uint64),
-    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
-    ('free_user', ctypes.POINTER(None)),
-]
-
-struct_r_skyline_t._pack_ = 1 # source:False
-struct_r_skyline_t._fields_ = [
-    ('v', struct_r_vector_t),
 ]
 
 class struct_r_pvector_t(Structure):
@@ -1601,21 +1601,6 @@ r_bin_ldr_add.argtypes = [ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(struct_
 class struct_pj_t(Structure):
     pass
 
-
-# values for enumeration 'PJEncodingStr'
-PJEncodingStr__enumvalues = {
-    0: 'PJ_ENCODING_STR_DEFAULT',
-    1: 'PJ_ENCODING_STR_BASE64',
-    2: 'PJ_ENCODING_STR_HEX',
-    3: 'PJ_ENCODING_STR_ARRAY',
-    4: 'PJ_ENCODING_STR_STRIP',
-}
-PJ_ENCODING_STR_DEFAULT = 0
-PJ_ENCODING_STR_BASE64 = 1
-PJ_ENCODING_STR_HEX = 2
-PJ_ENCODING_STR_ARRAY = 3
-PJ_ENCODING_STR_STRIP = 4
-PJEncodingStr = ctypes.c_uint32 # enum
 class struct_c__SA_RStrBuf(Structure):
     pass
 
@@ -1640,6 +1625,21 @@ PJ_ENCODING_NUM_DEFAULT = 0
 PJ_ENCODING_NUM_STR = 1
 PJ_ENCODING_NUM_HEX = 2
 PJEncodingNum = ctypes.c_uint32 # enum
+
+# values for enumeration 'PJEncodingStr'
+PJEncodingStr__enumvalues = {
+    0: 'PJ_ENCODING_STR_DEFAULT',
+    1: 'PJ_ENCODING_STR_BASE64',
+    2: 'PJ_ENCODING_STR_HEX',
+    3: 'PJ_ENCODING_STR_ARRAY',
+    4: 'PJ_ENCODING_STR_STRIP',
+}
+PJ_ENCODING_STR_DEFAULT = 0
+PJ_ENCODING_STR_BASE64 = 1
+PJ_ENCODING_STR_HEX = 2
+PJ_ENCODING_STR_ARRAY = 3
+PJ_ENCODING_STR_STRIP = 4
+PJEncodingStr = ctypes.c_uint32 # enum
 struct_pj_t._pack_ = 1 # source:False
 struct_pj_t._fields_ = [
     ('sb', struct_c__SA_RStrBuf),

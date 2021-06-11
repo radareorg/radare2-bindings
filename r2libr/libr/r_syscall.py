@@ -199,10 +199,10 @@ RSyscallPort = struct_r_syscall_port_t
 class struct_r_syscall_t(Structure):
     pass
 
-class struct_sdb_t(Structure):
+class struct__IO_FILE(Structure):
     pass
 
-class struct__IO_FILE(Structure):
+class struct_sdb_t(Structure):
     pass
 
 struct_r_syscall_t._pack_ = 1 # source:False
@@ -221,13 +221,13 @@ struct_r_syscall_t._fields_ = [
     ('PADDING_1', ctypes.c_ubyte * 4),
 ]
 
-class struct__IO_wide_data(Structure):
-    pass
-
 class struct__IO_codecvt(Structure):
     pass
 
 class struct__IO_marker(Structure):
+    pass
+
+class struct__IO_wide_data(Structure):
     pass
 
 struct__IO_FILE._pack_ = 1 # source:False
@@ -265,13 +265,13 @@ struct__IO_FILE._fields_ = [
     ('_unused2', ctypes.c_char * 20),
 ]
 
+class struct_sdb_gperf_t(Structure):
+    pass
+
 class struct_ht_pp_t(Structure):
     pass
 
 class struct_ls_t(Structure):
-    pass
-
-class struct_sdb_gperf_t(Structure):
     pass
 
 class struct_cdb(Structure):
