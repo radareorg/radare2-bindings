@@ -1,11 +1,11 @@
 use libc::*;
-use std::u64;
-use std::io::Write;
 use serde::Deserialize;
 use std::collections::HashMap;
+use std::io::Write;
+use std::u64;
 
-use bb::BlockType;
 use bb::BasicBlock;
+use bb::BlockType;
 
 use fcn::Function;
 
@@ -13,7 +13,7 @@ use radare2::*;
 
 pub struct Anal {
     pub blocks: Vec<BasicBlock>,
-    pub block_map : HashMap<u64, BasicBlock>,
+    pub block_map: HashMap<u64, BasicBlock>,
     pub calls: Vec<u64>,
     pub jumps: HashMap<u64, u64>,
     pub functions: Vec<Function>,
@@ -43,7 +43,7 @@ pub struct Section {
 
 impl Anal {
     pub fn new(core: *mut c_void) -> Anal {
-        Anal { 
+        Anal {
             blocks: Vec::new(),
             block_map: HashMap::new(),
             call_ref: HashMap::new(),
@@ -56,9 +56,23 @@ impl Anal {
     }
 
     pub fn add(&mut self, start: u64, end: u64, jump: u64, fail: u64, t: BlockType, score: i64) {
-        let block = BasicBlock { start: start, end: end, jump: jump, fail: fail, block_type: t, score: score};
+        let block = BasicBlock {
+            start: start,
+            end: end,
+            jump: jump,
+            fail: fail,
+            block_type: t,
+            score: score,
+        };
         if jump < u64::MAX {
-            let jump_bb = BasicBlock { start: jump, end: u64::MAX, jump: u64::MAX, fail: u64::MAX, block_type: t, score: score};
+            let jump_bb = BasicBlock {
+                start: jump,
+                end: u64::MAX,
+                jump: u64::MAX,
+                fail: u64::MAX,
+                block_type: t,
+                score: score,
+            };
             self.blocks.push(jump_bb);
         }
         self.blocks.push(block);
@@ -67,7 +81,7 @@ impl Anal {
     pub fn analyze(&mut self) {
         //r2_cmd(self.core, "e anal.afterjmp=false");
         //r2_cmd(self.core, "e anal.vars=false");
-        let section_json= r2_cmd(self.core, "iSj");
+        let section_json = r2_cmd(self.core, "iSj");
         let sections: Vec<Section> = serde_json::from_str(section_json).unwrap();
 
         let offset_inside = |x: u64| -> bool {
@@ -79,7 +93,7 @@ impl Anal {
             false
         };
 
-        for section in sections.iter().filter(| x | x.flags.contains("x")) {
+        for section in sections.iter().filter(|x| x.flags.contains("x")) {
             let start: u64 = section.vaddr;
             let size: u64 = section.size;
 
@@ -89,7 +103,7 @@ impl Anal {
             while cur < size {
                 unsafe {
                     let op: *mut RAnalOp;
-                    op = r_core_anal_op (self.core, start + cur);
+                    op = r_core_anal_op(self.core, start + cur);
 
                     if op.is_null() {
                         cur += 1;
@@ -97,28 +111,55 @@ impl Anal {
                         continue;
                     } else {
                         match (*op)._type {
-                            R_ANAL_OP_TYPE_NOP => {
-                            }
+                            R_ANAL_OP_TYPE_NOP => {}
                             R_ANAL_OP_TYPE_CALL => {
-                                self.add((*op).jump, u64::MAX, u64::MAX, u64::MAX, BlockType::Call, block_score);
+                                self.add(
+                                    (*op).jump,
+                                    u64::MAX,
+                                    u64::MAX,
+                                    u64::MAX,
+                                    BlockType::Call,
+                                    block_score,
+                                );
                                 if offset_inside((*op).jump) {
                                     self.call_ref.entry(start + cur).or_insert((*op).jump);
                                 }
                                 block_score = 0;
                             }
                             R_ANAL_OP_TYPE_RET => {
-                                self.add(b_start, start + cur + (*op).size as u64, u64::MAX, u64::MAX, BlockType::Normal, block_score);
+                                self.add(
+                                    b_start,
+                                    start + cur + (*op).size as u64,
+                                    u64::MAX,
+                                    u64::MAX,
+                                    BlockType::Normal,
+                                    block_score,
+                                );
                                 b_start = start + cur + (*op).size as u64;
                                 block_score = 0;
                             }
                             R_ANAL_OP_TYPE_CJMP => {
-                                self.add(b_start, start + cur + (*op).size as u64, (*op).jump, (*op).size as u64 + cur + start, BlockType::Normal, block_score);
+                                self.add(
+                                    b_start,
+                                    start + cur + (*op).size as u64,
+                                    (*op).jump,
+                                    (*op).size as u64 + cur + start,
+                                    BlockType::Normal,
+                                    block_score,
+                                );
                                 b_start = start + cur + (*op).size as u64;
                                 block_score = 0;
                             }
 
                             R_ANAL_OP_TYPE_JMP | R_ANAL_OP_TYPE_UJMP | R_ANAL_OP_TYPE_RJMP => {
-                                self.add(b_start, start + cur + (*op).size as u64, (*op).jump, u64::MAX, BlockType::Normal, block_score);
+                                self.add(
+                                    b_start,
+                                    start + cur + (*op).size as u64,
+                                    (*op).jump,
+                                    u64::MAX,
+                                    BlockType::Normal,
+                                    block_score,
+                                );
                                 b_start = start + cur + (*op).size as u64;
                                 block_score = 0;
                             }
@@ -128,7 +169,14 @@ impl Anal {
                             }
                             R_ANAL_OP_TYPE_TRAP => {
                                 if b_start < start + cur {
-                                    self.add(b_start, start + cur , u64::MAX, u64::MAX, BlockType::Normal, block_score);
+                                    self.add(
+                                        b_start,
+                                        start + cur,
+                                        u64::MAX,
+                                        u64::MAX,
+                                        BlockType::Normal,
+                                        block_score,
+                                    );
                                 }
                                 b_start = start + cur + (*op).size as u64;
                                 block_score = 0;
@@ -143,7 +191,9 @@ impl Anal {
                             _ => {
                                 if (*op).ptr != u64::MAX as i64 {
                                     if offset_inside((*op).ptr as u64) {
-                                        self.data_ref.entry(start + cur).or_insert((*op).ptr as u64);
+                                        self.data_ref
+                                            .entry(start + cur)
+                                            .or_insert((*op).ptr as u64);
                                     }
                                 }
                             }
@@ -154,7 +204,7 @@ impl Anal {
                         } else {
                             cur += (*op).size as u64;
                         }
-                        r_anal_op_free (op);
+                        r_anal_op_free(op);
                     }
                 }
             }
@@ -187,7 +237,8 @@ impl Anal {
 
                 // altering two blocks if the (*last) one points with its
                 // start address into the block before
-                if block.end < u64::MAX && (*last).start < block.end && (*last).start > block.start {
+                if block.end < u64::MAX && (*last).start < block.end && (*last).start > block.start
+                {
                     if (*last).jump == u64::MAX {
                         (*last).jump = block.jump;
                     }
@@ -200,7 +251,6 @@ impl Anal {
                     block.fail = u64::MAX;
                     (*last).block_type = block.block_type;
                 }
-
             }
 
             match block.block_type {
@@ -265,7 +315,7 @@ impl Anal {
             unsafe {
                 let s: String = format!("axd {} {}\n", to, from);
                 r_cons_strcat(s.as_ptr() as *const c_char); // CString::new(s).unwrap().as_ptr());
-                // r_cons_strcat(CString::new(s).unwrap().as_ptr());
+                                                            // r_cons_strcat(CString::new(s).unwrap().as_ptr());
             }
         }
     }
@@ -288,5 +338,4 @@ impl Anal {
 }
 
 #[cfg(test)]
-mod tests {
-}
+mod tests {}

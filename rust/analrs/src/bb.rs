@@ -1,6 +1,6 @@
-use std::u64;
-use std::fmt;
 use std::cmp::Ordering;
+use std::fmt;
+use std::u64;
 
 #[derive(Copy, Clone)]
 pub enum BlockType {
@@ -12,7 +12,7 @@ pub enum BlockType {
 }
 
 impl fmt::Display for BlockType {
-    fn fmt(&self, f: &mut  fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let printable = match *self {
             BlockType::Trap => "TRAP",
             BlockType::Normal => "NORMAL",
@@ -52,19 +52,28 @@ impl PartialEq for BasicBlock {
     }
 }
 
-impl Eq for BasicBlock {
-}
+impl Eq for BasicBlock {}
 
 impl fmt::Display for BasicBlock {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "s:0x{:016x}, e:0x{:016x} j:0x{:016x} f:0x{:016x} score:{} type:{}"
-               , self.start, self.end, self.jump, self.fail, self.score, self.block_type)
+        write!(
+            f,
+            "s:0x{:016x}, e:0x{:016x} j:0x{:016x} f:0x{:016x} score:{} type:{}",
+            self.start, self.end, self.jump, self.fail, self.score, self.block_type
+        )
     }
 }
 
 impl BasicBlock {
     pub fn new(start: u64, end: u64, jump: u64, fail: u64, t: BlockType, score: i64) -> BasicBlock {
-        BasicBlock { start: start, end: end, jump: jump, fail: fail, block_type: t, score: score}
+        BasicBlock {
+            start: start,
+            end: end,
+            jump: jump,
+            fail: fail,
+            block_type: t,
+            score: score,
+        }
     }
 
     pub fn size(&self) -> u64 {
