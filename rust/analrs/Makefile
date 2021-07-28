@@ -1,5 +1,5 @@
-SOEXT=$(shell r2 -H LIBEXT)
-USER_PLUGINS=$(shell r2 -H USER_PLUGINS)
+SOEXT=$(shell r2 -H R2_LIBEXT)
+USER_PLUGINS=$(shell r2 -H R2_USER_PLUGINS)
 
 all:
 	cargo build --release
