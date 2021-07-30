@@ -1,0 +1,7 @@
+[package]
+name = "r_asm"
+version = "0.1.0"
+authors = ["pancake"]
+
+[lib]
+crate-type = ["dylib"]

@@ -2,16 +2,19 @@
 // use libc::size_t;
 
 #[link(name = "r_asm")]
-extern {
-    #[no_mangle]
-    fn r_asm_new(source_length: i32) -> i32;
+#[link(name = "r_util")]
+extern "C" {
+  #[no_mangle]
+  pub fn r_asm_new(source_length: isize) -> usize;
 }
 
+/*
 struct Foo {
    test: i32
 }
+*/
 
-#[no_mangle]
+//#[no_mangle]
 pub extern "C" fn r3_asm_new() -> i32 {
     unsafe {
         let a = r_asm_new(32);

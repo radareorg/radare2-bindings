@@ -1,7 +1,14 @@
 [package]
 name = "r_asm"
 version = "0.1.0"
-authors = ["pancake"]
+edition = "2018"
+links = "r_asm"
+build = "build.rs"
 
-[lib]
-crate-type = ["dylib"]
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[build-dependencies]
+pkg-config = "0.3.16"
+bindgen = "0.53.1"
