@@ -1,6 +1,8 @@
 [package]
 name = "r_core"
 version = "0.1.0"
+description = "Rust bindings for radare2's r_core"
+license = "MIT"
 edition = "2018"
 links = "r_core"
 build = "build.rs"
