@@ -196,10 +196,10 @@ c__Ea_R_CRYPTO_DIR_CIPHER = ctypes.c_uint32 # enum
 class struct_r_crypto_t(Structure):
     pass
 
-class struct_r_list_t(Structure):
+class struct_r_crypto_plugin_t(Structure):
     pass
 
-class struct_r_crypto_plugin_t(Structure):
+class struct_r_list_t(Structure):
     pass
 
 struct_r_crypto_t._pack_ = 1 # source:False
@@ -312,6 +312,7 @@ r_crypto_plugin_punycode = struct_r_crypto_plugin_t # Variable struct_r_crypto_p
 r_crypto_plugin_rc6 = struct_r_crypto_plugin_t # Variable struct_r_crypto_plugin_t
 r_crypto_plugin_cps2 = struct_r_crypto_plugin_t # Variable struct_r_crypto_plugin_t
 r_crypto_plugin_serpent = struct_r_crypto_plugin_t # Variable struct_r_crypto_plugin_t
+r_crypto_plugin_aes_wrap = struct_r_crypto_plugin_t # Variable struct_r_crypto_plugin_t
 __all__ = \
     ['RCrypto', 'RCryptoPlugin', 'RCryptoSelector',
     'R_CRYPTO_DIR_CIPHER', 'R_CRYPTO_DIR_DECIPHER',
@@ -321,14 +322,14 @@ __all__ = \
     'r_crypto_as_new', 'r_crypto_codec_name', 'r_crypto_final',
     'r_crypto_free', 'r_crypto_get_output', 'r_crypto_init',
     'r_crypto_name', 'r_crypto_new', 'r_crypto_plugin_aes',
-    'r_crypto_plugin_aes_cbc', 'r_crypto_plugin_base64',
-    'r_crypto_plugin_base91', 'r_crypto_plugin_blowfish',
-    'r_crypto_plugin_cps2', 'r_crypto_plugin_des',
-    'r_crypto_plugin_punycode', 'r_crypto_plugin_rc2',
-    'r_crypto_plugin_rc4', 'r_crypto_plugin_rc6',
-    'r_crypto_plugin_rol', 'r_crypto_plugin_ror',
-    'r_crypto_plugin_rot', 'r_crypto_plugin_serpent',
-    'r_crypto_plugin_xor', 'r_crypto_set_iv', 'r_crypto_set_key',
-    'r_crypto_update', 'r_crypto_use', 'r_crypto_version',
-    'struct_r_crypto_plugin_t', 'struct_r_crypto_t',
-    'struct_r_list_iter_t', 'struct_r_list_t']
+    'r_crypto_plugin_aes_cbc', 'r_crypto_plugin_aes_wrap',
+    'r_crypto_plugin_base64', 'r_crypto_plugin_base91',
+    'r_crypto_plugin_blowfish', 'r_crypto_plugin_cps2',
+    'r_crypto_plugin_des', 'r_crypto_plugin_punycode',
+    'r_crypto_plugin_rc2', 'r_crypto_plugin_rc4',
+    'r_crypto_plugin_rc6', 'r_crypto_plugin_rol',
+    'r_crypto_plugin_ror', 'r_crypto_plugin_rot',
+    'r_crypto_plugin_serpent', 'r_crypto_plugin_xor',
+    'r_crypto_set_iv', 'r_crypto_set_key', 'r_crypto_update',
+    'r_crypto_use', 'r_crypto_version', 'struct_r_crypto_plugin_t',
+    'struct_r_crypto_t', 'struct_r_list_iter_t', 'struct_r_list_t']

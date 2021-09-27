@@ -194,9 +194,9 @@ r_main_run.argtypes = [ctypes.POINTER(struct_r_main_t), ctypes.c_int32, ctypes.P
 r_main_version_print = _libr_main.r_main_version_print
 r_main_version_print.restype = ctypes.c_int32
 r_main_version_print.argtypes = [ctypes.POINTER(ctypes.c_char)]
-r_main_rvc2 = _libr_main.r_main_rvc2
-r_main_rvc2.restype = ctypes.c_int32
-r_main_rvc2.argtypes = [ctypes.c_int32, ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
+r_main_ravc2 = _libr_main.r_main_ravc2
+r_main_ravc2.restype = ctypes.c_int32
+r_main_ravc2.argtypes = [ctypes.c_int32, ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
 r_main_rax2 = _libr_main.r_main_rax2
 r_main_rax2.restype = ctypes.c_int32
 r_main_rax2.argtypes = [ctypes.c_int32, ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
@@ -235,5 +235,5 @@ __all__ = \
     'r_main_r2agent', 'r_main_rabin2', 'r_main_radare2',
     'r_main_radiff2', 'r_main_rafind2', 'r_main_ragg2',
     'r_main_rahash2', 'r_main_rarun2', 'r_main_rasign2',
-    'r_main_rasm2', 'r_main_rax2', 'r_main_run', 'r_main_rvc2',
+    'r_main_rasm2', 'r_main_ravc2', 'r_main_rax2', 'r_main_run',
     'r_main_version', 'r_main_version_print', 'struct_r_main_t']
