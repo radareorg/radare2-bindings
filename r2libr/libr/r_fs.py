@@ -187,13 +187,16 @@ class struct_r_io_bind_t(Structure):
 class struct_r_io_t(Structure):
     pass
 
+class struct_r_io_map_t(Structure):
+    pass
+
 class struct_r_io_desc_t(Structure):
     pass
 
 class struct_r_list_t(Structure):
     pass
 
-class struct_r_io_map_t(Structure):
+class struct_r_io_bank_t(Structure):
     pass
 
 struct_r_io_bind_t._pack_ = 1 # source:False
@@ -225,6 +228,8 @@ struct_r_io_bind_t._fields_ = [
     ('fd_remap', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64)),
     ('is_valid_offset', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.c_int32)),
     ('addr_is_mapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
+    ('bank_get', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_bank_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint32)),
+    ('map_get', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint32)),
     ('map_get_at', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
     ('map_get_paddr', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
     ('map_add', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)),
@@ -232,19 +237,16 @@ struct_r_io_bind_t._fields_ = [
     ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
 ]
 
-class struct_r_id_pool_t(Structure):
-    pass
-
-class struct_r_id_storage_t(Structure):
+class struct_r_cache_t(Structure):
     pass
 
 class struct_ls_t(Structure):
     pass
 
-class struct_r_cache_t(Structure):
+class struct_r_event_t(Structure):
     pass
 
-class struct_r_event_t(Structure):
+class struct_r_id_storage_t(Structure):
     pass
 
 class struct_r_pvector_t(Structure):
@@ -329,40 +331,34 @@ struct_r_io_t._fields_ = [
     ('desc', ctypes.POINTER(struct_r_io_desc_t)),
     ('off', ctypes.c_uint64),
     ('bank', ctypes.c_uint32),
-    ('use_banks', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 3),
     ('bits', ctypes.c_int32),
     ('va', ctypes.c_int32),
     ('ff', ctypes.c_bool),
     ('Oxff', ctypes.c_ubyte),
-    ('PADDING_1', ctypes.c_ubyte * 6),
+    ('PADDING_0', ctypes.c_ubyte * 2),
     ('addrbytes', ctypes.c_uint64),
     ('aslr', ctypes.c_bool),
     ('autofd', ctypes.c_bool),
-    ('PADDING_2', ctypes.c_ubyte * 2),
+    ('PADDING_1', ctypes.c_ubyte * 2),
     ('cached', ctypes.c_uint32),
     ('cachemode', ctypes.c_bool),
-    ('PADDING_3', ctypes.c_ubyte * 3),
+    ('PADDING_2', ctypes.c_ubyte * 3),
     ('p_cache', ctypes.c_uint32),
     ('mts', ctypes.c_uint64),
-    ('curbank', ctypes.c_uint32),
-    ('PADDING_4', ctypes.c_ubyte * 4),
-    ('map_ids', ctypes.POINTER(struct_r_id_pool_t)),
-    ('maps', struct_r_pvector_t),
-    ('map_skyline', struct_r_skyline_t),
     ('files', ctypes.POINTER(struct_r_id_storage_t)),
+    ('maps', ctypes.POINTER(struct_r_id_storage_t)),
     ('banks', ctypes.POINTER(struct_r_id_storage_t)),
     ('buffer', ctypes.POINTER(struct_r_cache_t)),
     ('cache', struct_r_pvector_t),
     ('cache_skyline', struct_r_skyline_t),
     ('write_mask', ctypes.POINTER(ctypes.c_ubyte)),
     ('write_mask_len', ctypes.c_int32),
-    ('PADDING_5', ctypes.c_ubyte * 4),
+    ('PADDING_3', ctypes.c_ubyte * 4),
     ('mask', ctypes.c_uint64),
     ('undo', struct_r_io_undo_t),
     ('plugins', ctypes.POINTER(struct_ls_t)),
     ('nodup', ctypes.c_bool),
-    ('PADDING_6', ctypes.c_ubyte * 7),
+    ('PADDING_4', ctypes.c_ubyte * 7),
     ('runprofile', ctypes.POINTER(ctypes.c_char)),
     ('envprofile', ctypes.POINTER(ctypes.c_char)),
     ('args', ctypes.POINTER(ctypes.c_char)),
@@ -370,7 +366,7 @@ struct_r_io_t._fields_ = [
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
     ('corebind', struct_r_core_bind_t),
     ('want_ptrace_wrap', ctypes.c_bool),
-    ('PADDING_7', ctypes.c_ubyte * 7),
+    ('PADDING_5', ctypes.c_ubyte * 7),
 ]
 
 class struct_ht_up_t(Structure):
@@ -448,7 +444,7 @@ struct_r_io_plugin_t._fields_ = [
     ('widget', ctypes.POINTER(None)),
     ('uris', ctypes.POINTER(ctypes.c_char)),
     ('listener', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_desc_t))),
-    ('init', ctypes.CFUNCTYPE(ctypes.c_int32)),
+    ('init', ctypes.CFUNCTYPE(ctypes.c_bool)),
     ('undo', struct_r_io_undo_t),
     ('isdbg', ctypes.c_bool),
     ('PADDING_0', ctypes.c_ubyte * 7),
@@ -458,7 +454,7 @@ struct_r_io_plugin_t._fields_ = [
     ('read', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_desc_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
     ('seek', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_desc_t), ctypes.c_uint64, ctypes.c_int32)),
     ('write', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_desc_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
-    ('close', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_desc_t))),
+    ('close', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_desc_t))),
     ('is_blockdevice', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_desc_t))),
     ('is_chardevice', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_desc_t))),
     ('getpid', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_desc_t))),
@@ -491,6 +487,17 @@ struct_r_list_iter_t._fields_ = [
     ('p', ctypes.POINTER(struct_r_list_iter_t)),
 ]
 
+class struct_r_id_pool_t(Structure):
+    pass
+
+struct_r_id_storage_t._pack_ = 1 # source:False
+struct_r_id_storage_t._fields_ = [
+    ('pool', ctypes.POINTER(struct_r_id_pool_t)),
+    ('data', ctypes.POINTER(ctypes.POINTER(None))),
+    ('top_id', ctypes.c_uint32),
+    ('size', ctypes.c_uint32),
+]
+
 class struct_r_queue_t(Structure):
     pass
 
@@ -509,14 +516,6 @@ struct_r_queue_t._fields_ = [
     ('capacity', ctypes.c_uint32),
     ('front', ctypes.c_uint32),
     ('rear', ctypes.c_int32),
-    ('size', ctypes.c_uint32),
-]
-
-struct_r_id_storage_t._pack_ = 1 # source:False
-struct_r_id_storage_t._fields_ = [
-    ('pool', ctypes.POINTER(struct_r_id_pool_t)),
-    ('data', ctypes.POINTER(ctypes.POINTER(None))),
-    ('top_id', ctypes.c_uint32),
     ('size', ctypes.c_uint32),
 ]
 
@@ -557,6 +556,39 @@ struct_r_event_t._fields_ = [
     ('all_callbacks', struct_r_vector_t),
     ('next_handle', ctypes.c_int32),
     ('PADDING_1', ctypes.c_ubyte * 4),
+]
+
+class struct_r_crbtree_node(Structure):
+    pass
+
+class struct_r_crbtree_t(Structure):
+    pass
+
+struct_r_io_bank_t._pack_ = 1 # source:False
+struct_r_io_bank_t._fields_ = [
+    ('name', ctypes.POINTER(ctypes.c_char)),
+    ('submaps', ctypes.POINTER(struct_r_crbtree_t)),
+    ('maprefs', ctypes.POINTER(struct_r_list_t)),
+    ('todo', ctypes.POINTER(struct_r_queue_t)),
+    ('last_used', ctypes.POINTER(struct_r_crbtree_node)),
+    ('id', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
+struct_r_crbtree_t._pack_ = 1 # source:False
+struct_r_crbtree_t._fields_ = [
+    ('root', ctypes.POINTER(struct_r_crbtree_node)),
+    ('size', ctypes.c_uint64),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+]
+
+struct_r_crbtree_node._pack_ = 1 # source:False
+struct_r_crbtree_node._fields_ = [
+    ('link', ctypes.POINTER(struct_r_crbtree_node) * 2),
+    ('parent', ctypes.POINTER(struct_r_crbtree_node)),
+    ('red', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('data', ctypes.POINTER(None)),
 ]
 
 class struct_r_interval_t(Structure):
@@ -621,10 +653,10 @@ RFSPartitionPlugin = struct_r_fs_partition_plugin_t
 class struct_r_fs_file_t(Structure):
     pass
 
-class struct_r_fs_plugin_t(Structure):
+class struct_r_fs_root_t(Structure):
     pass
 
-class struct_r_fs_root_t(Structure):
+class struct_r_fs_plugin_t(Structure):
     pass
 
 struct_r_fs_file_t._pack_ = 1 # source:False
@@ -870,13 +902,14 @@ __all__ = \
     'r_fs_write', 'struct_ht_up_bucket_t', 'struct_ht_up_kv',
     'struct_ht_up_options_t', 'struct_ht_up_t', 'struct_ls_iter_t',
     'struct_ls_t', 'struct_r_cache_t', 'struct_r_cons_bind_t',
-    'struct_r_core_bind_t', 'struct_r_event_t', 'struct_r_fs_file_t',
+    'struct_r_core_bind_t', 'struct_r_crbtree_node',
+    'struct_r_crbtree_t', 'struct_r_event_t', 'struct_r_fs_file_t',
     'struct_r_fs_partition_plugin_t', 'struct_r_fs_partition_t',
     'struct_r_fs_partition_type_t', 'struct_r_fs_plugin_t',
     'struct_r_fs_root_t', 'struct_r_fs_shell_t', 'struct_r_fs_t',
     'struct_r_id_pool_t', 'struct_r_id_storage_t',
-    'struct_r_interval_t', 'struct_r_io_bind_t', 'struct_r_io_desc_t',
-    'struct_r_io_map_t', 'struct_r_io_plugin_t', 'struct_r_io_t',
-    'struct_r_io_undo_t', 'struct_r_io_undos_t',
+    'struct_r_interval_t', 'struct_r_io_bank_t', 'struct_r_io_bind_t',
+    'struct_r_io_desc_t', 'struct_r_io_map_t', 'struct_r_io_plugin_t',
+    'struct_r_io_t', 'struct_r_io_undo_t', 'struct_r_io_undos_t',
     'struct_r_list_iter_t', 'struct_r_list_t', 'struct_r_pvector_t',
     'struct_r_queue_t', 'struct_r_skyline_t', 'struct_r_vector_t']

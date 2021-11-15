@@ -248,25 +248,22 @@ RIOUndoWrite = struct_r_io_undo_w_t
 class struct_r_io_t(Structure):
     pass
 
-class struct_r_cache_t(Structure):
+class struct_r_id_storage_t(Structure):
     pass
 
 class struct_ls_t(Structure):
     pass
 
-class struct_r_id_storage_t(Structure):
+class struct_r_cache_t(Structure):
     pass
 
 class struct_r_event_t(Structure):
     pass
 
-class struct_r_id_pool_t(Structure):
-    pass
-
 class struct_r_io_desc_t(Structure):
     pass
 
-class struct_r_skyline_t(Structure):
+class struct_r_pvector_t(Structure):
     pass
 
 class struct_r_vector_t(Structure):
@@ -282,12 +279,12 @@ struct_r_vector_t._fields_ = [
     ('free_user', ctypes.POINTER(None)),
 ]
 
-struct_r_skyline_t._pack_ = 1 # source:False
-struct_r_skyline_t._fields_ = [
+struct_r_pvector_t._pack_ = 1 # source:False
+struct_r_pvector_t._fields_ = [
     ('v', struct_r_vector_t),
 ]
 
-class struct_r_pvector_t(Structure):
+class struct_r_skyline_t(Structure):
     _pack_ = 1 # source:False
     _fields_ = [
     ('v', struct_r_vector_t),
@@ -323,40 +320,34 @@ struct_r_io_t._fields_ = [
     ('desc', ctypes.POINTER(struct_r_io_desc_t)),
     ('off', ctypes.c_uint64),
     ('bank', ctypes.c_uint32),
-    ('use_banks', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 3),
     ('bits', ctypes.c_int32),
     ('va', ctypes.c_int32),
     ('ff', ctypes.c_bool),
     ('Oxff', ctypes.c_ubyte),
-    ('PADDING_1', ctypes.c_ubyte * 6),
+    ('PADDING_0', ctypes.c_ubyte * 2),
     ('addrbytes', ctypes.c_uint64),
     ('aslr', ctypes.c_bool),
     ('autofd', ctypes.c_bool),
-    ('PADDING_2', ctypes.c_ubyte * 2),
+    ('PADDING_1', ctypes.c_ubyte * 2),
     ('cached', ctypes.c_uint32),
     ('cachemode', ctypes.c_bool),
-    ('PADDING_3', ctypes.c_ubyte * 3),
+    ('PADDING_2', ctypes.c_ubyte * 3),
     ('p_cache', ctypes.c_uint32),
     ('mts', ctypes.c_uint64),
-    ('curbank', ctypes.c_uint32),
-    ('PADDING_4', ctypes.c_ubyte * 4),
-    ('map_ids', ctypes.POINTER(struct_r_id_pool_t)),
-    ('maps', struct_r_pvector_t),
-    ('map_skyline', struct_r_skyline_t),
     ('files', ctypes.POINTER(struct_r_id_storage_t)),
+    ('maps', ctypes.POINTER(struct_r_id_storage_t)),
     ('banks', ctypes.POINTER(struct_r_id_storage_t)),
     ('buffer', ctypes.POINTER(struct_r_cache_t)),
     ('cache', struct_r_pvector_t),
     ('cache_skyline', struct_r_skyline_t),
     ('write_mask', ctypes.POINTER(ctypes.c_ubyte)),
     ('write_mask_len', ctypes.c_int32),
-    ('PADDING_5', ctypes.c_ubyte * 4),
+    ('PADDING_3', ctypes.c_ubyte * 4),
     ('mask', ctypes.c_uint64),
     ('undo', RIOUndo),
     ('plugins', ctypes.POINTER(struct_ls_t)),
     ('nodup', ctypes.c_bool),
-    ('PADDING_6', ctypes.c_ubyte * 7),
+    ('PADDING_4', ctypes.c_ubyte * 7),
     ('runprofile', ctypes.POINTER(ctypes.c_char)),
     ('envprofile', ctypes.POINTER(ctypes.c_char)),
     ('args', ctypes.POINTER(ctypes.c_char)),
@@ -364,7 +355,7 @@ struct_r_io_t._fields_ = [
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
     ('corebind', struct_r_core_bind_t),
     ('want_ptrace_wrap', ctypes.c_bool),
-    ('PADDING_7', ctypes.c_ubyte * 7),
+    ('PADDING_5', ctypes.c_ubyte * 7),
 ]
 
 class struct_r_io_plugin_t(Structure):
@@ -442,7 +433,7 @@ struct_r_io_plugin_t._fields_ = [
     ('widget', ctypes.POINTER(None)),
     ('uris', ctypes.POINTER(ctypes.c_char)),
     ('listener', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_desc_t))),
-    ('init', ctypes.CFUNCTYPE(ctypes.c_int32)),
+    ('init', ctypes.CFUNCTYPE(ctypes.c_bool)),
     ('undo', RIOUndo),
     ('isdbg', ctypes.c_bool),
     ('PADDING_0', ctypes.c_ubyte * 7),
@@ -452,7 +443,7 @@ struct_r_io_plugin_t._fields_ = [
     ('read', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_desc_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
     ('seek', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_desc_t), ctypes.c_uint64, ctypes.c_int32)),
     ('write', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_desc_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
-    ('close', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_desc_t))),
+    ('close', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_desc_t))),
     ('is_blockdevice', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_desc_t))),
     ('is_chardevice', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_desc_t))),
     ('getpid', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_desc_t))),
@@ -463,6 +454,17 @@ struct_r_io_plugin_t._fields_ = [
     ('accept', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_desc_t), ctypes.c_int32)),
     ('create', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.c_int32)),
     ('check', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char), ctypes.c_bool)),
+]
+
+class struct_r_id_pool_t(Structure):
+    pass
+
+struct_r_id_storage_t._pack_ = 1 # source:False
+struct_r_id_storage_t._fields_ = [
+    ('pool', ctypes.POINTER(struct_r_id_pool_t)),
+    ('data', ctypes.POINTER(ctypes.POINTER(None))),
+    ('top_id', ctypes.c_uint32),
+    ('size', ctypes.c_uint32),
 ]
 
 class struct_r_queue_t(Structure):
@@ -483,14 +485,6 @@ struct_r_queue_t._fields_ = [
     ('capacity', ctypes.c_uint32),
     ('front', ctypes.c_uint32),
     ('rear', ctypes.c_int32),
-    ('size', ctypes.c_uint32),
-]
-
-struct_r_id_storage_t._pack_ = 1 # source:False
-struct_r_id_storage_t._fields_ = [
-    ('pool', ctypes.POINTER(struct_r_id_pool_t)),
-    ('data', ctypes.POINTER(ctypes.POINTER(None))),
-    ('top_id', ctypes.c_uint32),
     ('size', ctypes.c_uint32),
 ]
 
@@ -628,42 +622,36 @@ RIOSubMap = struct_r_io_submap_t
 class struct_r_io_bank_t(Structure):
     pass
 
-class struct_r_containing_rb_tree_t(Structure):
+class struct_r_crbtree_t(Structure):
+    pass
+
+class struct_r_crbtree_node(Structure):
     pass
 
 struct_r_io_bank_t._pack_ = 1 # source:False
 struct_r_io_bank_t._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
-    ('submaps', ctypes.POINTER(struct_r_containing_rb_tree_t)),
+    ('submaps', ctypes.POINTER(struct_r_crbtree_t)),
     ('maprefs', ctypes.POINTER(struct_r_list_t)),
     ('todo', ctypes.POINTER(struct_r_queue_t)),
+    ('last_used', ctypes.POINTER(struct_r_crbtree_node)),
     ('id', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
-class struct_r_containing_rb_node_t(Structure):
-    pass
-
-struct_r_containing_rb_tree_t._pack_ = 1 # source:False
-struct_r_containing_rb_tree_t._fields_ = [
-    ('root', ctypes.POINTER(struct_r_containing_rb_node_t)),
+struct_r_crbtree_t._pack_ = 1 # source:False
+struct_r_crbtree_t._fields_ = [
+    ('root', ctypes.POINTER(struct_r_crbtree_node)),
+    ('size', ctypes.c_uint64),
     ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
 ]
 
-class struct_r_rb_node_t(Structure):
-    pass
-
-struct_r_rb_node_t._pack_ = 1 # source:False
-struct_r_rb_node_t._fields_ = [
-    ('parent', ctypes.POINTER(struct_r_rb_node_t)),
-    ('child', ctypes.POINTER(struct_r_rb_node_t) * 2),
-    ('red', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 7),
-]
-
-struct_r_containing_rb_node_t._pack_ = 1 # source:False
-struct_r_containing_rb_node_t._fields_ = [
-    ('node', struct_r_rb_node_t),
+struct_r_crbtree_node._pack_ = 1 # source:False
+struct_r_crbtree_node._fields_ = [
+    ('link', ctypes.POINTER(struct_r_crbtree_node) * 2),
+    ('parent', ctypes.POINTER(struct_r_crbtree_node)),
+    ('red', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
     ('data', ctypes.POINTER(None)),
 ]
 
@@ -716,7 +704,9 @@ RIOFdGetName = ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(st
 RIOFdGetMap = ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_list_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32)
 RIOFdRemap = ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64)
 RIOIsValidOff = ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.c_int32)
-RIOMapGet = ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)
+RIOBankGet = ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_bank_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint32)
+RIOMapGet = ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint32)
+RIOMapGetAt = ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)
 RIOMapGetPaddr = ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)
 RIOAddrIsMapped = ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)
 RIOMapAdd = ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)
@@ -752,6 +742,8 @@ struct_r_io_bind_t._fields_ = [
     ('fd_remap', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64)),
     ('is_valid_offset', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.c_int32)),
     ('addr_is_mapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
+    ('bank_get', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_bank_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint32)),
+    ('map_get', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint32)),
     ('map_get_at', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
     ('map_get_paddr', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
     ('map_add', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)),
@@ -760,9 +752,6 @@ struct_r_io_bind_t._fields_ = [
 ]
 
 RIOBind = struct_r_io_bind_t
-r_io_map_new = _libr_io.r_io_map_new
-r_io_map_new.restype = ctypes.POINTER(struct_r_io_map_t)
-r_io_map_new.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64]
 r_io_map_init = _libr_io.r_io_map_init
 r_io_map_init.restype = None
 r_io_map_init.argtypes = [ctypes.POINTER(struct_r_io_t)]
@@ -772,9 +761,6 @@ r_io_map_remap.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctype
 r_io_map_remap_fd = _libr_io.r_io_map_remap_fd
 r_io_map_remap_fd.restype = ctypes.c_bool
 r_io_map_remap_fd.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64]
-r_io_map_location = _libr_io.r_io_map_location
-r_io_map_location.restype = ctypes.c_uint64
-r_io_map_location.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64]
 r_io_map_exists = _libr_io.r_io_map_exists
 r_io_map_exists.restype = ctypes.c_bool
 r_io_map_exists.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_map_t)]
@@ -787,18 +773,15 @@ r_io_map_get.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32]
 r_io_map_add = _libr_io.r_io_map_add
 r_io_map_add.restype = ctypes.POINTER(struct_r_io_map_t)
 r_io_map_add.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64]
-r_io_map_add_batch = _libr_io.r_io_map_add_batch
-r_io_map_add_batch.restype = ctypes.POINTER(struct_r_io_map_t)
-r_io_map_add_batch.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64]
+r_io_map_add_bottom = _libr_io.r_io_map_add_bottom
+r_io_map_add_bottom.restype = ctypes.POINTER(struct_r_io_map_t)
+r_io_map_add_bottom.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64]
 r_io_map_get_at = _libr_io.r_io_map_get_at
 r_io_map_get_at.restype = ctypes.POINTER(struct_r_io_map_t)
 r_io_map_get_at.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64]
 r_io_map_get_by_ref = _libr_io.r_io_map_get_by_ref
 r_io_map_get_by_ref.restype = ctypes.POINTER(struct_r_io_map_t)
 r_io_map_get_by_ref.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_map_ref_t)]
-r_io_update = _libr_io.r_io_update
-r_io_update.restype = None
-r_io_update.argtypes = [ctypes.POINTER(struct_r_io_t)]
 r_io_map_is_mapped = _libr_io.r_io_map_is_mapped
 r_io_map_is_mapped.restype = ctypes.c_bool
 r_io_map_is_mapped.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64]
@@ -809,7 +792,7 @@ r_io_map_reset = _libr_io.r_io_map_reset
 r_io_map_reset.restype = None
 r_io_map_reset.argtypes = [ctypes.POINTER(struct_r_io_t)]
 r_io_map_del = _libr_io.r_io_map_del
-r_io_map_del.restype = ctypes.c_bool
+r_io_map_del.restype = None
 r_io_map_del.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32]
 r_io_map_del_for_fd = _libr_io.r_io_map_del_for_fd
 r_io_map_del_for_fd.restype = ctypes.c_bool
@@ -844,12 +827,9 @@ r_io_map_get_by_fd.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_int32]
 r_io_map_resize = _libr_io.r_io_map_resize
 r_io_map_resize.restype = ctypes.c_bool
 r_io_map_resize.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint64]
-r_io_map_next_available = _libr_io.r_io_map_next_available
-r_io_map_next_available.restype = ctypes.c_uint64
-r_io_map_next_available.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64]
-r_io_map_next_address = _libr_io.r_io_map_next_address
-r_io_map_next_address.restype = ctypes.c_uint64
-r_io_map_next_address.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64]
+r_io_map_locate = _libr_io.r_io_map_locate
+r_io_map_locate.restype = ctypes.c_bool
+r_io_map_locate.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_uint64), ctypes.c_uint64, ctypes.c_uint64]
 r_io_p2v = _libr_io.r_io_p2v
 r_io_p2v.restype = ctypes.c_uint64
 r_io_p2v.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64]
@@ -874,12 +854,12 @@ r_io_bank_del.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32]
 r_io_bank_first = _libr_io.r_io_bank_first
 r_io_bank_first.restype = ctypes.c_uint32
 r_io_bank_first.argtypes = [ctypes.POINTER(struct_r_io_t)]
-r_io_bank_delete_map = _libr_io.r_io_bank_delete_map
-r_io_bank_delete_map.restype = None
-r_io_bank_delete_map.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint32]
 r_io_bank_add = _libr_io.r_io_bank_add
 r_io_bank_add.restype = ctypes.c_bool
 r_io_bank_add.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_bank_t)]
+r_io_bank_clear = _libr_io.r_io_bank_clear
+r_io_bank_clear.restype = None
+r_io_bank_clear.argtypes = [ctypes.POINTER(struct_r_io_bank_t)]
 r_io_bank_free = _libr_io.r_io_bank_free
 r_io_bank_free.restype = None
 r_io_bank_free.argtypes = [ctypes.POINTER(struct_r_io_bank_t)]
@@ -898,21 +878,39 @@ r_io_bank_use.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32]
 r_io_bank_map_add_top = _libr_io.r_io_bank_map_add_top
 r_io_bank_map_add_top.restype = ctypes.c_bool
 r_io_bank_map_add_top.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint32]
+r_io_bank_map_add_bottom = _libr_io.r_io_bank_map_add_bottom
+r_io_bank_map_add_bottom.restype = ctypes.c_bool
+r_io_bank_map_add_bottom.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint32]
 r_io_bank_map_priorize = _libr_io.r_io_bank_map_priorize
 r_io_bank_map_priorize.restype = ctypes.c_bool
 r_io_bank_map_priorize.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint32]
+r_io_bank_map_depriorize = _libr_io.r_io_bank_map_depriorize
+r_io_bank_map_depriorize.restype = ctypes.c_bool
+r_io_bank_map_depriorize.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint32]
 r_io_bank_update_map_boundaries = _libr_io.r_io_bank_update_map_boundaries
 r_io_bank_update_map_boundaries.restype = ctypes.c_bool
 r_io_bank_update_map_boundaries.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint32, ctypes.c_uint64, ctypes.c_uint64]
 r_io_bank_locate = _libr_io.r_io_bank_locate
 r_io_bank_locate.restype = ctypes.c_bool
-r_io_bank_locate.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64)]
+r_io_bank_locate.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint64), ctypes.c_uint64, ctypes.c_uint64]
+r_io_bank_del_map = _libr_io.r_io_bank_del_map
+r_io_bank_del_map.restype = None
+r_io_bank_del_map.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint32]
+r_io_bank_get_map_at = _libr_io.r_io_bank_get_map_at
+r_io_bank_get_map_at.restype = ctypes.POINTER(struct_r_io_map_t)
+r_io_bank_get_map_at.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint64]
 r_io_bank_read_at = _libr_io.r_io_bank_read_at
 r_io_bank_read_at.restype = ctypes.c_bool
 r_io_bank_read_at.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_io_bank_write_at = _libr_io.r_io_bank_write_at
 r_io_bank_write_at.restype = ctypes.c_bool
 r_io_bank_write_at.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_io_bank_read_from_submap_at = _libr_io.r_io_bank_read_from_submap_at
+r_io_bank_read_from_submap_at.restype = ctypes.c_int32
+r_io_bank_read_from_submap_at.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_io_bank_write_to_submap_at = _libr_io.r_io_bank_write_to_submap_at
+r_io_bank_write_to_submap_at.restype = ctypes.c_int32
+r_io_bank_write_to_submap_at.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32, ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_io_bank_drain = _libr_io.r_io_bank_drain
 r_io_bank_drain.restype = None
 r_io_bank_drain.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32]
@@ -975,7 +973,7 @@ r_io_reopen = _libr_io.r_io_reopen
 r_io_reopen.restype = ctypes.c_bool
 r_io_reopen.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_int32]
 r_io_close_all = _libr_io.r_io_close_all
-r_io_close_all.restype = ctypes.c_int32
+r_io_close_all.restype = None
 r_io_close_all.argtypes = [ctypes.POINTER(struct_r_io_t)]
 r_io_pread_at = _libr_io.r_io_pread_at
 r_io_pread_at.restype = ctypes.c_int32
@@ -983,9 +981,12 @@ r_io_pread_at.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes
 r_io_pwrite_at = _libr_io.r_io_pwrite_at
 r_io_pwrite_at.restype = ctypes.c_int32
 r_io_pwrite_at.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
-r_io_vread_at_mapped = _libr_io.r_io_vread_at_mapped
-r_io_vread_at_mapped.restype = ctypes.c_bool
-r_io_vread_at_mapped.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_io_vread_at = _libr_io.r_io_vread_at
+r_io_vread_at.restype = ctypes.c_bool
+r_io_vread_at.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_io_vwrite_at = _libr_io.r_io_vwrite_at
+r_io_vwrite_at.restype = ctypes.c_bool
+r_io_vwrite_at.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_io_read_at = _libr_io.r_io_read_at
 r_io_read_at.restype = ctypes.c_bool
 r_io_read_at.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
@@ -995,9 +996,6 @@ r_io_read_at_mapped.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, 
 r_io_nread_at = _libr_io.r_io_nread_at
 r_io_nread_at.restype = ctypes.c_int32
 r_io_nread_at.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
-r_io_alprint = _libraries['FIXME_STUB'].r_io_alprint
-r_io_alprint.restype = None
-r_io_alprint.argtypes = [ctypes.POINTER(struct_r_list_t)]
 r_io_write_at = _libr_io.r_io_write_at
 r_io_write_at.restype = ctypes.c_bool
 r_io_write_at.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
@@ -1035,7 +1033,7 @@ r_io_seek = _libr_io.r_io_seek
 r_io_seek.restype = ctypes.c_uint64
 r_io_seek.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.c_int32]
 r_io_fini = _libr_io.r_io_fini
-r_io_fini.restype = ctypes.c_int32
+r_io_fini.restype = None
 r_io_fini.argtypes = [ctypes.POINTER(struct_r_io_t)]
 r_io_free = _libr_io.r_io_free
 r_io_free.restype = None
@@ -1070,39 +1068,6 @@ r_io_plugin_resolve.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ct
 r_io_plugin_get_default = _libr_io.r_io_plugin_get_default
 r_io_plugin_get_default.restype = ctypes.POINTER(struct_r_io_plugin_t)
 r_io_plugin_get_default.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char), ctypes.c_bool]
-r_io_use_bank = _libraries['FIXME_STUB'].r_io_use_bank
-r_io_use_bank.restype = None
-r_io_use_bank.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_bank_t)]
-r_io_new_bank = _libraries['FIXME_STUB'].r_io_new_bank
-r_io_new_bank.restype = ctypes.POINTER(struct_r_io_bank_t)
-r_io_new_bank.argtypes = [ctypes.POINTER(ctypes.c_char)]
-r_io_bank_add_map = _libraries['FIXME_STUB'].r_io_bank_add_map
-r_io_bank_add_map.restype = ctypes.c_bool
-r_io_bank_add_map.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_bank_t), ctypes.c_uint32]
-r_io_bank_rename = _libraries['FIXME_STUB'].r_io_bank_rename
-r_io_bank_rename.restype = None
-r_io_bank_rename.argtypes = [ctypes.POINTER(struct_r_io_bank_t), ctypes.POINTER(ctypes.c_char)]
-r_io_banks_reset = _libraries['FIXME_STUB'].r_io_banks_reset
-r_io_banks_reset.restype = None
-r_io_banks_reset.argtypes = [ctypes.POINTER(struct_r_io_t)]
-r_io_banks_add = _libraries['FIXME_STUB'].r_io_banks_add
-r_io_banks_add.restype = ctypes.c_bool
-r_io_banks_add.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_bank_t)]
-r_io_banks_del = _libraries['FIXME_STUB'].r_io_banks_del
-r_io_banks_del.restype = ctypes.c_bool
-r_io_banks_del.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_bank_t)]
-r_io_banks_list = _libraries['FIXME_STUB'].r_io_banks_list
-r_io_banks_list.restype = ctypes.POINTER(ctypes.c_char)
-r_io_banks_list.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_int32]
-r_io_banks_use = _libraries['FIXME_STUB'].r_io_banks_use
-r_io_banks_use.restype = ctypes.c_bool
-r_io_banks_use.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32]
-r_io_bank_get_by_name = _libraries['FIXME_STUB'].r_io_bank_get_by_name
-r_io_bank_get_by_name.restype = ctypes.POINTER(struct_r_io_bank_t)
-r_io_bank_get_by_name.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char)]
-r_io_bank_get_by_id = _libraries['FIXME_STUB'].r_io_bank_get_by_id
-r_io_bank_get_by_id.restype = ctypes.POINTER(struct_r_io_bank_t)
-r_io_bank_get_by_id.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint32]
 r_io_undo_init = _libr_io.r_io_undo_init
 r_io_undo_init.restype = ctypes.c_int32
 r_io_undo_init.argtypes = [ctypes.POINTER(struct_r_io_t)]
@@ -1181,6 +1146,9 @@ r_io_desc_del.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_int32]
 r_io_desc_get = _libr_io.r_io_desc_get
 r_io_desc_get.restype = ctypes.POINTER(struct_r_io_desc_t)
 r_io_desc_get.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_int32]
+r_io_desc_get_byuri = _libr_io.r_io_desc_get_byuri
+r_io_desc_get_byuri.restype = ctypes.POINTER(struct_r_io_desc_t)
+r_io_desc_get_byuri.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char)]
 r_io_desc_get_next = _libr_io.r_io_desc_get_next
 r_io_desc_get_next.restype = ctypes.POINTER(struct_r_io_desc_t)
 r_io_desc_get_next.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_desc_t)]
@@ -1233,7 +1201,7 @@ r_io_desc_init = _libraries['FIXME_STUB'].r_io_desc_init
 r_io_desc_init.restype = ctypes.c_bool
 r_io_desc_init.argtypes = [ctypes.POINTER(struct_r_io_t)]
 r_io_desc_fini = _libraries['FIXME_STUB'].r_io_desc_fini
-r_io_desc_fini.restype = ctypes.c_bool
+r_io_desc_fini.restype = None
 r_io_desc_fini.argtypes = [ctypes.POINTER(struct_r_io_t)]
 r_io_cache_invalidate = _libr_io.r_io_cache_invalidate
 r_io_cache_invalidate.restype = ctypes.c_int32
@@ -1412,37 +1380,38 @@ r_io_plugin_fd = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_socket = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_isotp = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 __all__ = \
-    ['RIO', 'RIOAddrIsMapped', 'RIOBank', 'RIOBind', 'RIOCache',
-    'RIOClose', 'RIODesc', 'RIODescCache', 'RIODescGet',
+    ['RIO', 'RIOAddrIsMapped', 'RIOBank', 'RIOBankGet', 'RIOBind',
+    'RIOCache', 'RIOClose', 'RIODesc', 'RIODescCache', 'RIODescGet',
     'RIODescSize', 'RIODescUse', 'RIOFdClose', 'RIOFdGetMap',
     'RIOFdGetName', 'RIOFdIsDbg', 'RIOFdOpen', 'RIOFdRead',
     'RIOFdReadAt', 'RIOFdRemap', 'RIOFdResize', 'RIOFdSeek',
     'RIOFdSize', 'RIOFdWrite', 'RIOFdWriteAt', 'RIOIsValidOff',
-    'RIOMap', 'RIOMapAdd', 'RIOMapGet', 'RIOMapGetPaddr', 'RIOMapRef',
-    'RIOOpen', 'RIOOpenAt', 'RIOP2V', 'RIOPlugin', 'RIORap',
-    'RIOReadAt', 'RIOSubMap', 'RIOSystem', 'RIOUndo', 'RIOUndoWrite',
-    'RIOUndos', 'RIOV2P', 'RIOWriteAt', 'r_io_addr_is_mapped',
-    'r_io_alprint', 'r_io_bank_add', 'r_io_bank_add_map',
-    'r_io_bank_del', 'r_io_bank_delete_map', 'r_io_bank_drain',
+    'RIOMap', 'RIOMapAdd', 'RIOMapGet', 'RIOMapGetAt',
+    'RIOMapGetPaddr', 'RIOMapRef', 'RIOOpen', 'RIOOpenAt', 'RIOP2V',
+    'RIOPlugin', 'RIORap', 'RIOReadAt', 'RIOSubMap', 'RIOSystem',
+    'RIOUndo', 'RIOUndoWrite', 'RIOUndos', 'RIOV2P', 'RIOWriteAt',
+    'r_io_addr_is_mapped', 'r_io_bank_add', 'r_io_bank_clear',
+    'r_io_bank_del', 'r_io_bank_del_map', 'r_io_bank_drain',
     'r_io_bank_fini', 'r_io_bank_first', 'r_io_bank_free',
-    'r_io_bank_get', 'r_io_bank_get_by_id', 'r_io_bank_get_by_name',
-    'r_io_bank_init', 'r_io_bank_locate', 'r_io_bank_map_add_top',
+    'r_io_bank_get', 'r_io_bank_get_map_at', 'r_io_bank_init',
+    'r_io_bank_locate', 'r_io_bank_map_add_bottom',
+    'r_io_bank_map_add_top', 'r_io_bank_map_depriorize',
     'r_io_bank_map_priorize', 'r_io_bank_new', 'r_io_bank_read_at',
-    'r_io_bank_rename', 'r_io_bank_update_map_boundaries',
-    'r_io_bank_use', 'r_io_bank_write_at', 'r_io_banks_add',
-    'r_io_banks_del', 'r_io_banks_list', 'r_io_banks_reset',
-    'r_io_banks_use', 'r_io_bind', 'r_io_buffer_close',
-    'r_io_buffer_load', 'r_io_buffer_read', 'r_io_cache_at',
-    'r_io_cache_commit', 'r_io_cache_fini', 'r_io_cache_init',
-    'r_io_cache_invalidate', 'r_io_cache_list', 'r_io_cache_read',
-    'r_io_cache_reset', 'r_io_cache_write', 'r_io_close',
-    'r_io_close_all', 'r_io_desc_add', 'r_io_desc_cache_cleanup',
-    'r_io_desc_cache_commit', 'r_io_desc_cache_fini',
-    'r_io_desc_cache_fini_all', 'r_io_desc_cache_init',
-    'r_io_desc_cache_list', 'r_io_desc_cache_read',
-    'r_io_desc_cache_write', 'r_io_desc_close', 'r_io_desc_del',
-    'r_io_desc_exchange', 'r_io_desc_extend', 'r_io_desc_fini',
-    'r_io_desc_free', 'r_io_desc_get', 'r_io_desc_get_base',
+    'r_io_bank_read_from_submap_at',
+    'r_io_bank_update_map_boundaries', 'r_io_bank_use',
+    'r_io_bank_write_at', 'r_io_bank_write_to_submap_at', 'r_io_bind',
+    'r_io_buffer_close', 'r_io_buffer_load', 'r_io_buffer_read',
+    'r_io_cache_at', 'r_io_cache_commit', 'r_io_cache_fini',
+    'r_io_cache_init', 'r_io_cache_invalidate', 'r_io_cache_list',
+    'r_io_cache_read', 'r_io_cache_reset', 'r_io_cache_write',
+    'r_io_close', 'r_io_close_all', 'r_io_desc_add',
+    'r_io_desc_cache_cleanup', 'r_io_desc_cache_commit',
+    'r_io_desc_cache_fini', 'r_io_desc_cache_fini_all',
+    'r_io_desc_cache_init', 'r_io_desc_cache_list',
+    'r_io_desc_cache_read', 'r_io_desc_cache_write',
+    'r_io_desc_close', 'r_io_desc_del', 'r_io_desc_exchange',
+    'r_io_desc_extend', 'r_io_desc_fini', 'r_io_desc_free',
+    'r_io_desc_get', 'r_io_desc_get_base', 'r_io_desc_get_byuri',
     'r_io_desc_get_highest', 'r_io_desc_get_lowest',
     'r_io_desc_get_next', 'r_io_desc_get_pid', 'r_io_desc_get_prev',
     'r_io_desc_get_tid', 'r_io_desc_init', 'r_io_desc_is_blockdevice',
@@ -1459,31 +1428,30 @@ __all__ = \
     'r_io_fd_read_at', 'r_io_fd_resize', 'r_io_fd_seek',
     'r_io_fd_size', 'r_io_fd_write', 'r_io_fd_write_at', 'r_io_fini',
     'r_io_free', 'r_io_init', 'r_io_is_listener',
-    'r_io_is_valid_offset', 'r_io_map_add', 'r_io_map_add_batch',
+    'r_io_is_valid_offset', 'r_io_map_add', 'r_io_map_add_bottom',
     'r_io_map_cleanup', 'r_io_map_del', 'r_io_map_del_for_fd',
     'r_io_map_del_name', 'r_io_map_depriorize', 'r_io_map_exists',
     'r_io_map_exists_for_id', 'r_io_map_fini', 'r_io_map_get',
     'r_io_map_get_at', 'r_io_map_get_by_fd', 'r_io_map_get_by_ref',
     'r_io_map_get_paddr', 'r_io_map_init', 'r_io_map_is_in_range',
-    'r_io_map_is_mapped', 'r_io_map_location', 'r_io_map_new',
-    'r_io_map_next_address', 'r_io_map_next_available',
-    'r_io_map_priorize', 'r_io_map_priorize_for_fd', 'r_io_map_remap',
-    'r_io_map_remap_fd', 'r_io_map_reset', 'r_io_map_resize',
-    'r_io_map_set_name', 'r_io_new', 'r_io_new_bank', 'r_io_nread_at',
-    'r_io_open', 'r_io_open_at', 'r_io_open_buffer', 'r_io_open_many',
-    'r_io_open_nomap', 'r_io_p2v', 'r_io_plugin_add',
-    'r_io_plugin_ar', 'r_io_plugin_bfdbg', 'r_io_plugin_bochs',
-    'r_io_plugin_debug', 'r_io_plugin_default', 'r_io_plugin_fd',
-    'r_io_plugin_gdb', 'r_io_plugin_get_default',
-    'r_io_plugin_gprobe', 'r_io_plugin_gzip', 'r_io_plugin_http',
-    'r_io_plugin_ihex', 'r_io_plugin_init', 'r_io_plugin_isotp',
-    'r_io_plugin_list', 'r_io_plugin_list_json', 'r_io_plugin_mach',
-    'r_io_plugin_malloc', 'r_io_plugin_mmap', 'r_io_plugin_null',
-    'r_io_plugin_procpid', 'r_io_plugin_ptrace', 'r_io_plugin_qnx',
-    'r_io_plugin_r2k', 'r_io_plugin_r2pipe', 'r_io_plugin_r2web',
-    'r_io_plugin_rap', 'r_io_plugin_rbuf', 'r_io_plugin_read',
-    'r_io_plugin_read_at', 'r_io_plugin_resolve', 'r_io_plugin_self',
-    'r_io_plugin_shm', 'r_io_plugin_socket', 'r_io_plugin_sparse',
+    'r_io_map_is_mapped', 'r_io_map_locate', 'r_io_map_priorize',
+    'r_io_map_priorize_for_fd', 'r_io_map_remap', 'r_io_map_remap_fd',
+    'r_io_map_reset', 'r_io_map_resize', 'r_io_map_set_name',
+    'r_io_new', 'r_io_nread_at', 'r_io_open', 'r_io_open_at',
+    'r_io_open_buffer', 'r_io_open_many', 'r_io_open_nomap',
+    'r_io_p2v', 'r_io_plugin_add', 'r_io_plugin_ar',
+    'r_io_plugin_bfdbg', 'r_io_plugin_bochs', 'r_io_plugin_debug',
+    'r_io_plugin_default', 'r_io_plugin_fd', 'r_io_plugin_gdb',
+    'r_io_plugin_get_default', 'r_io_plugin_gprobe',
+    'r_io_plugin_gzip', 'r_io_plugin_http', 'r_io_plugin_ihex',
+    'r_io_plugin_init', 'r_io_plugin_isotp', 'r_io_plugin_list',
+    'r_io_plugin_list_json', 'r_io_plugin_mach', 'r_io_plugin_malloc',
+    'r_io_plugin_mmap', 'r_io_plugin_null', 'r_io_plugin_procpid',
+    'r_io_plugin_ptrace', 'r_io_plugin_qnx', 'r_io_plugin_r2k',
+    'r_io_plugin_r2pipe', 'r_io_plugin_r2web', 'r_io_plugin_rap',
+    'r_io_plugin_rbuf', 'r_io_plugin_read', 'r_io_plugin_read_at',
+    'r_io_plugin_resolve', 'r_io_plugin_self', 'r_io_plugin_shm',
+    'r_io_plugin_socket', 'r_io_plugin_sparse',
     'r_io_plugin_tcpslurp', 'r_io_plugin_w32', 'r_io_plugin_w32dbg',
     'r_io_plugin_windbg', 'r_io_plugin_winedbg', 'r_io_plugin_winkd',
     'r_io_plugin_write', 'r_io_plugin_write_at', 'r_io_plugin_zip',
@@ -1494,18 +1462,17 @@ __all__ = \
     'r_io_submap_set_to', 'r_io_sundo', 'r_io_sundo_list',
     'r_io_sundo_push', 'r_io_sundo_redo', 'r_io_sundo_reset',
     'r_io_system', 'r_io_undo_enable', 'r_io_undo_init',
-    'r_io_update', 'r_io_use_bank', 'r_io_use_fd', 'r_io_v2p',
-    'r_io_version', 'r_io_vread_at_mapped', 'r_io_write',
-    'r_io_write_at', 'r_io_write_i', 'r_io_wundo_apply',
-    'r_io_wundo_apply_all', 'r_io_wundo_clear', 'r_io_wundo_list',
-    'r_io_wundo_new', 'r_io_wundo_set', 'r_io_wundo_set_all',
-    'r_io_wundo_set_t', 'r_io_wundo_size', 'struct_c__SA_RIORap',
-    'struct_ht_up_bucket_t', 'struct_ht_up_kv',
+    'r_io_use_fd', 'r_io_v2p', 'r_io_version', 'r_io_vread_at',
+    'r_io_vwrite_at', 'r_io_write', 'r_io_write_at', 'r_io_write_i',
+    'r_io_wundo_apply', 'r_io_wundo_apply_all', 'r_io_wundo_clear',
+    'r_io_wundo_list', 'r_io_wundo_new', 'r_io_wundo_set',
+    'r_io_wundo_set_all', 'r_io_wundo_set_t', 'r_io_wundo_size',
+    'struct_c__SA_RIORap', 'struct_ht_up_bucket_t', 'struct_ht_up_kv',
     'struct_ht_up_options_t', 'struct_ht_up_t', 'struct_in_addr',
     'struct_ls_iter_t', 'struct_ls_t', 'struct_r_buf_t',
     'struct_r_buffer_methods_t', 'struct_r_cache_t',
-    'struct_r_containing_rb_node_t', 'struct_r_containing_rb_tree_t',
-    'struct_r_core_bind_t', 'struct_r_event_t', 'struct_r_id_pool_t',
+    'struct_r_core_bind_t', 'struct_r_crbtree_node',
+    'struct_r_crbtree_t', 'struct_r_event_t', 'struct_r_id_pool_t',
     'struct_r_id_storage_t', 'struct_r_interval_t',
     'struct_r_io_bank_t', 'struct_r_io_bind_t', 'struct_r_io_cache_t',
     'struct_r_io_desc_cache_t', 'struct_r_io_desc_t',
@@ -1513,6 +1480,5 @@ __all__ = \
     'struct_r_io_plugin_t', 'struct_r_io_submap_t', 'struct_r_io_t',
     'struct_r_io_undo_t', 'struct_r_io_undo_w_t',
     'struct_r_io_undos_t', 'struct_r_list_iter_t', 'struct_r_list_t',
-    'struct_r_pvector_t', 'struct_r_queue_t', 'struct_r_rb_node_t',
-    'struct_r_skyline_t', 'struct_r_socket_t', 'struct_r_vector_t',
-    'struct_sockaddr_in']
+    'struct_r_pvector_t', 'struct_r_queue_t', 'struct_r_skyline_t',
+    'struct_r_socket_t', 'struct_r_vector_t', 'struct_sockaddr_in']

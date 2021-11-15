@@ -184,25 +184,14 @@ class struct_r_bin_t(Structure):
 class struct_r_list_t(Structure):
     pass
 
-class struct_r_bin_file_t(Structure):
+class struct_sdb_t(Structure):
     pass
 
 class struct_r_id_storage_t(Structure):
     pass
 
-class struct_sdb_t(Structure):
+class struct_r_bin_file_t(Structure):
     pass
-
-class struct_r_str_constpool_t(Structure):
-    pass
-
-class struct_ht_pp_t(Structure):
-    pass
-
-struct_r_str_constpool_t._pack_ = 1 # source:False
-struct_r_str_constpool_t._fields_ = [
-    ('ht', ctypes.POINTER(struct_ht_pp_t)),
-]
 
 class struct_r_cons_bind_t(Structure):
     pass
@@ -217,6 +206,17 @@ struct_r_cons_bind_t._fields_ = [
     ('cb_grep', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
 ]
 
+class struct_r_str_constpool_t(Structure):
+    pass
+
+class struct_ht_pp_t(Structure):
+    pass
+
+struct_r_str_constpool_t._pack_ = 1 # source:False
+struct_r_str_constpool_t._fields_ = [
+    ('ht', ctypes.POINTER(struct_ht_pp_t)),
+]
+
 class struct_r_io_bind_t(Structure):
     pass
 
@@ -227,6 +227,9 @@ class struct_r_io_desc_t(Structure):
     pass
 
 class struct_r_io_map_t(Structure):
+    pass
+
+class struct_r_io_bank_t(Structure):
     pass
 
 struct_r_io_bind_t._pack_ = 1 # source:False
@@ -258,6 +261,8 @@ struct_r_io_bind_t._fields_ = [
     ('fd_remap', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_uint64)),
     ('is_valid_offset', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.c_int32)),
     ('addr_is_mapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
+    ('bank_get', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_bank_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint32)),
+    ('map_get', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint32)),
     ('map_get_at', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
     ('map_get_paddr', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
     ('map_add', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)),
@@ -301,11 +306,12 @@ struct_r_bin_t._fields_ = [
     ('prefix', ctypes.POINTER(ctypes.c_char)),
     ('strenc', ctypes.POINTER(ctypes.c_char)),
     ('filter_rules', ctypes.c_uint64),
-    ('demanglercmd', ctypes.c_bool),
+    ('demangle_usecmd', ctypes.c_bool),
+    ('demangle_trylib', ctypes.c_bool),
     ('verbose', ctypes.c_bool),
     ('use_xtr', ctypes.c_bool),
     ('use_ldr', ctypes.c_bool),
-    ('PADDING_6', ctypes.c_ubyte * 4),
+    ('PADDING_6', ctypes.c_ubyte * 3),
     ('constpool', struct_r_str_constpool_t),
     ('is_reloc_patched', ctypes.c_bool),
     ('PADDING_7', ctypes.c_ubyte * 7),
@@ -528,7 +534,7 @@ class struct_r_bin_plugin_t(Structure):
 class struct_ht_up_t(Structure):
     pass
 
-class struct_r_rb_node_t(Structure):
+class struct_r_crbtree_t(Structure):
     pass
 
 struct_r_bin_object_t._pack_ = 1 # source:False
@@ -545,7 +551,7 @@ struct_r_bin_object_t._fields_ = [
     ('entries', ctypes.POINTER(struct_r_list_t)),
     ('fields', ctypes.POINTER(struct_r_list_t)),
     ('libs', ctypes.POINTER(struct_r_list_t)),
-    ('relocs', ctypes.POINTER(struct_r_rb_node_t)),
+    ('relocs', ctypes.POINTER(struct_r_crbtree_t)),
     ('strings', ctypes.POINTER(struct_r_list_t)),
     ('classes', ctypes.POINTER(struct_r_list_t)),
     ('classes_ht', ctypes.POINTER(struct_ht_pp_t)),
@@ -565,12 +571,23 @@ struct_r_bin_object_t._fields_ = [
     ('bin_obj', ctypes.POINTER(None)),
 ]
 
-struct_r_rb_node_t._pack_ = 1 # source:False
-struct_r_rb_node_t._fields_ = [
-    ('parent', ctypes.POINTER(struct_r_rb_node_t)),
-    ('child', ctypes.POINTER(struct_r_rb_node_t) * 2),
-    ('red', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 7),
+class struct_r_crbtree_node(Structure):
+    pass
+
+struct_r_crbtree_t._pack_ = 1 # source:False
+struct_r_crbtree_t._fields_ = [
+    ('root', ctypes.POINTER(struct_r_crbtree_node)),
+    ('size', ctypes.c_uint64),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+]
+
+struct_r_crbtree_node._pack_ = 1 # source:False
+struct_r_crbtree_node._fields_ = [
+    ('link', ctypes.POINTER(struct_r_crbtree_node) * 2),
+    ('parent', ctypes.POINTER(struct_r_crbtree_node)),
+    ('red', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('data', ctypes.POINTER(None)),
 ]
 
 class struct_ht_pp_bucket_t(Structure):
@@ -1022,12 +1039,15 @@ class struct_r_bin_file_options_t(Structure):
 
 struct_r_bin_file_options_t._pack_ = 1 # source:False
 struct_r_bin_file_options_t._fields_ = [
+    ('pluginname', ctypes.POINTER(ctypes.c_char)),
+    ('baseaddr', ctypes.c_uint64),
+    ('loadaddr', ctypes.c_uint64),
+    ('sz', ctypes.c_uint64),
+    ('xtr_idx', ctypes.c_int32),
     ('rawstr', ctypes.c_int32),
+    ('fd', ctypes.c_int32),
     ('PADDING_0', ctypes.c_ubyte * 4),
-    ('baddr', ctypes.c_uint64),
-    ('laddr', ctypes.c_uint64),
-    ('paddr', ctypes.c_uint64),
-    ('plugname', ctypes.POINTER(ctypes.c_char)),
+    ('filename', ctypes.POINTER(ctypes.c_char)),
 ]
 
 RBinFileOptions = struct_r_bin_file_options_t
@@ -1068,33 +1088,6 @@ class struct_r_event_t(Structure):
 
 class struct_r_cache_t(Structure):
     pass
-
-class struct_r_pvector_t(Structure):
-    pass
-
-class struct_r_vector_t(Structure):
-    pass
-
-struct_r_vector_t._pack_ = 1 # source:False
-struct_r_vector_t._fields_ = [
-    ('a', ctypes.POINTER(None)),
-    ('len', ctypes.c_uint64),
-    ('capacity', ctypes.c_uint64),
-    ('elem_size', ctypes.c_uint64),
-    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
-    ('free_user', ctypes.POINTER(None)),
-]
-
-struct_r_pvector_t._pack_ = 1 # source:False
-struct_r_pvector_t._fields_ = [
-    ('v', struct_r_vector_t),
-]
-
-class struct_r_skyline_t(Structure):
-    _pack_ = 1 # source:False
-    _fields_ = [
-    ('v', struct_r_vector_t),
-     ]
 
 class struct_r_io_undo_t(Structure):
     pass
@@ -1146,45 +1139,66 @@ struct_r_core_bind_t._fields_ = [
     ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
 ]
 
+class struct_r_skyline_t(Structure):
+    pass
+
+class struct_r_vector_t(Structure):
+    pass
+
+struct_r_vector_t._pack_ = 1 # source:False
+struct_r_vector_t._fields_ = [
+    ('a', ctypes.POINTER(None)),
+    ('len', ctypes.c_uint64),
+    ('capacity', ctypes.c_uint64),
+    ('elem_size', ctypes.c_uint64),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
+    ('free_user', ctypes.POINTER(None)),
+]
+
+struct_r_skyline_t._pack_ = 1 # source:False
+struct_r_skyline_t._fields_ = [
+    ('v', struct_r_vector_t),
+]
+
+class struct_r_pvector_t(Structure):
+    _pack_ = 1 # source:False
+    _fields_ = [
+    ('v', struct_r_vector_t),
+     ]
+
 struct_r_io_t._pack_ = 1 # source:False
 struct_r_io_t._fields_ = [
     ('desc', ctypes.POINTER(struct_r_io_desc_t)),
     ('off', ctypes.c_uint64),
     ('bank', ctypes.c_uint32),
-    ('use_banks', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 3),
     ('bits', ctypes.c_int32),
     ('va', ctypes.c_int32),
     ('ff', ctypes.c_bool),
     ('Oxff', ctypes.c_ubyte),
-    ('PADDING_1', ctypes.c_ubyte * 6),
+    ('PADDING_0', ctypes.c_ubyte * 2),
     ('addrbytes', ctypes.c_uint64),
     ('aslr', ctypes.c_bool),
     ('autofd', ctypes.c_bool),
-    ('PADDING_2', ctypes.c_ubyte * 2),
+    ('PADDING_1', ctypes.c_ubyte * 2),
     ('cached', ctypes.c_uint32),
     ('cachemode', ctypes.c_bool),
-    ('PADDING_3', ctypes.c_ubyte * 3),
+    ('PADDING_2', ctypes.c_ubyte * 3),
     ('p_cache', ctypes.c_uint32),
     ('mts', ctypes.c_uint64),
-    ('curbank', ctypes.c_uint32),
-    ('PADDING_4', ctypes.c_ubyte * 4),
-    ('map_ids', ctypes.POINTER(struct_r_id_pool_t)),
-    ('maps', struct_r_pvector_t),
-    ('map_skyline', struct_r_skyline_t),
     ('files', ctypes.POINTER(struct_r_id_storage_t)),
+    ('maps', ctypes.POINTER(struct_r_id_storage_t)),
     ('banks', ctypes.POINTER(struct_r_id_storage_t)),
     ('buffer', ctypes.POINTER(struct_r_cache_t)),
     ('cache', struct_r_pvector_t),
     ('cache_skyline', struct_r_skyline_t),
     ('write_mask', ctypes.POINTER(ctypes.c_ubyte)),
     ('write_mask_len', ctypes.c_int32),
-    ('PADDING_5', ctypes.c_ubyte * 4),
+    ('PADDING_3', ctypes.c_ubyte * 4),
     ('mask', ctypes.c_uint64),
     ('undo', struct_r_io_undo_t),
     ('plugins', ctypes.POINTER(struct_ls_t)),
     ('nodup', ctypes.c_bool),
-    ('PADDING_6', ctypes.c_ubyte * 7),
+    ('PADDING_4', ctypes.c_ubyte * 7),
     ('runprofile', ctypes.POINTER(ctypes.c_char)),
     ('envprofile', ctypes.POINTER(ctypes.c_char)),
     ('args', ctypes.POINTER(ctypes.c_char)),
@@ -1192,7 +1206,7 @@ struct_r_io_t._fields_ = [
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
     ('corebind', struct_r_core_bind_t),
     ('want_ptrace_wrap', ctypes.c_bool),
-    ('PADDING_7', ctypes.c_ubyte * 7),
+    ('PADDING_5', ctypes.c_ubyte * 7),
 ]
 
 class struct_r_io_plugin_t(Structure):
@@ -1221,7 +1235,7 @@ struct_r_io_plugin_t._fields_ = [
     ('widget', ctypes.POINTER(None)),
     ('uris', ctypes.POINTER(ctypes.c_char)),
     ('listener', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_desc_t))),
-    ('init', ctypes.CFUNCTYPE(ctypes.c_int32)),
+    ('init', ctypes.CFUNCTYPE(ctypes.c_bool)),
     ('undo', struct_r_io_undo_t),
     ('isdbg', ctypes.c_bool),
     ('PADDING_0', ctypes.c_ubyte * 7),
@@ -1231,7 +1245,7 @@ struct_r_io_plugin_t._fields_ = [
     ('read', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_desc_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
     ('seek', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_desc_t), ctypes.c_uint64, ctypes.c_int32)),
     ('write', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_t), ctypes.POINTER(struct_r_io_desc_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
-    ('close', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_desc_t))),
+    ('close', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_desc_t))),
     ('is_blockdevice', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_desc_t))),
     ('is_chardevice', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_desc_t))),
     ('getpid', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_io_desc_t))),
@@ -1260,6 +1274,17 @@ struct_r_event_t._fields_ = [
     ('all_callbacks', struct_r_vector_t),
     ('next_handle', ctypes.c_int32),
     ('PADDING_1', ctypes.c_ubyte * 4),
+]
+
+struct_r_io_bank_t._pack_ = 1 # source:False
+struct_r_io_bank_t._fields_ = [
+    ('name', ctypes.POINTER(ctypes.c_char)),
+    ('submaps', ctypes.POINTER(struct_r_crbtree_t)),
+    ('maprefs', ctypes.POINTER(struct_r_list_t)),
+    ('todo', ctypes.POINTER(struct_r_queue_t)),
+    ('last_used', ctypes.POINTER(struct_r_crbtree_node)),
+    ('id', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
 class struct_r_interval_t(Structure):
@@ -1429,7 +1454,6 @@ struct_r_bin_reloc_t._fields_ = [
     ('visibility', ctypes.c_uint32),
     ('is_ifunc', ctypes.c_bool),
     ('PADDING_1', ctypes.c_ubyte * 3),
-    ('vrb', struct_r_rb_node_t),
 ]
 
 RBinReloc = struct_r_bin_reloc_t
@@ -1546,23 +1570,6 @@ r_bin_symbol_new.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, cty
 r_bin_string_free = _libr_bin.r_bin_string_free
 r_bin_string_free.restype = None
 r_bin_string_free.argtypes = [ctypes.POINTER(None)]
-class struct_r_bin_options_t(Structure):
-    pass
-
-struct_r_bin_options_t._pack_ = 1 # source:False
-struct_r_bin_options_t._fields_ = [
-    ('pluginname', ctypes.POINTER(ctypes.c_char)),
-    ('baseaddr', ctypes.c_uint64),
-    ('loadaddr', ctypes.c_uint64),
-    ('sz', ctypes.c_uint64),
-    ('xtr_idx', ctypes.c_int32),
-    ('rawstr', ctypes.c_int32),
-    ('fd', ctypes.c_int32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-    ('filename', ctypes.POINTER(ctypes.c_char)),
-]
-
-RBinOptions = struct_r_bin_options_t
 r_bin_import_clone = _libr_bin.r_bin_import_clone
 r_bin_import_clone.restype = ctypes.POINTER(struct_r_bin_import_t)
 r_bin_import_clone.argtypes = [ctypes.POINTER(struct_r_bin_import_t)]
@@ -1570,9 +1577,9 @@ r_bin_symbol_name = _libr_bin.r_bin_symbol_name
 r_bin_symbol_name.restype = ctypes.POINTER(ctypes.c_char)
 r_bin_symbol_name.argtypes = [ctypes.POINTER(struct_r_bin_symbol_t)]
 RBinSymbolCallback = ctypes.CFUNCTYPE(None, ctypes.POINTER(struct_r_bin_object_t), ctypes.POINTER(struct_r_bin_symbol_t))
-r_bin_options_init = _libr_bin.r_bin_options_init
-r_bin_options_init.restype = None
-r_bin_options_init.argtypes = [ctypes.POINTER(struct_r_bin_options_t), ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_int32]
+r_bin_file_options_init = _libr_bin.r_bin_file_options_init
+r_bin_file_options_init.restype = None
+r_bin_file_options_init.argtypes = [ctypes.POINTER(struct_r_bin_file_options_t), ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_int32]
 r_bin_arch_options_init = _libr_bin.r_bin_arch_options_init
 r_bin_arch_options_init.restype = None
 r_bin_arch_options_init.argtypes = [ctypes.POINTER(struct_r_bin_arch_options_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
@@ -1584,13 +1591,13 @@ r_bin_free.restype = None
 r_bin_free.argtypes = [ctypes.POINTER(struct_r_bin_t)]
 r_bin_open = _libr_bin.r_bin_open
 r_bin_open.restype = ctypes.c_bool
-r_bin_open.argtypes = [ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_bin_options_t)]
+r_bin_open.argtypes = [ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_bin_file_options_t)]
 r_bin_open_io = _libr_bin.r_bin_open_io
 r_bin_open_io.restype = ctypes.c_bool
-r_bin_open_io.argtypes = [ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(struct_r_bin_options_t)]
+r_bin_open_io.argtypes = [ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(struct_r_bin_file_options_t)]
 r_bin_open_buf = _libr_bin.r_bin_open_buf
 r_bin_open_buf.restype = ctypes.c_bool
-r_bin_open_buf.argtypes = [ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(struct_r_bin_options_t)]
+r_bin_open_buf.argtypes = [ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(struct_r_bin_file_options_t)]
 r_bin_reload = _libr_bin.r_bin_reload
 r_bin_reload.restype = ctypes.c_bool
 r_bin_reload.argtypes = [ctypes.POINTER(struct_r_bin_t), ctypes.c_uint32, ctypes.c_uint64]
@@ -1608,6 +1615,19 @@ r_bin_ldr_add.restype = ctypes.c_bool
 r_bin_ldr_add.argtypes = [ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(struct_r_bin_ldr_plugin_t)]
 class struct_pj_t(Structure):
     pass
+
+class struct_c__SA_RStrBuf(Structure):
+    pass
+
+struct_c__SA_RStrBuf._pack_ = 1 # source:False
+struct_c__SA_RStrBuf._fields_ = [
+    ('buf', ctypes.c_char * 32),
+    ('len', ctypes.c_uint64),
+    ('ptr', ctypes.POINTER(ctypes.c_char)),
+    ('ptrlen', ctypes.c_uint64),
+    ('weakref', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 7),
+]
 
 
 # values for enumeration 'PJEncodingStr'
@@ -1635,19 +1655,6 @@ PJ_ENCODING_NUM_DEFAULT = 0
 PJ_ENCODING_NUM_STR = 1
 PJ_ENCODING_NUM_HEX = 2
 PJEncodingNum = ctypes.c_uint32 # enum
-class struct_c__SA_RStrBuf(Structure):
-    pass
-
-struct_c__SA_RStrBuf._pack_ = 1 # source:False
-struct_c__SA_RStrBuf._fields_ = [
-    ('buf', ctypes.c_char * 32),
-    ('len', ctypes.c_uint64),
-    ('ptr', ctypes.POINTER(ctypes.c_char)),
-    ('ptrlen', ctypes.c_uint64),
-    ('weakref', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 7),
-]
-
 struct_pj_t._pack_ = 1 # source:False
 struct_pj_t._fields_ = [
     ('sb', struct_c__SA_RStrBuf),
@@ -1715,13 +1722,13 @@ r_bin_get_libs = _libr_bin.r_bin_get_libs
 r_bin_get_libs.restype = ctypes.POINTER(struct_r_list_t)
 r_bin_get_libs.argtypes = [ctypes.POINTER(struct_r_bin_t)]
 r_bin_patch_relocs = _libr_bin.r_bin_patch_relocs
-r_bin_patch_relocs.restype = ctypes.POINTER(struct_r_rb_node_t)
+r_bin_patch_relocs.restype = ctypes.POINTER(struct_r_crbtree_t)
 r_bin_patch_relocs.argtypes = [ctypes.POINTER(struct_r_bin_t)]
 r_bin_patch_relocs_list = _libr_bin.r_bin_patch_relocs_list
 r_bin_patch_relocs_list.restype = ctypes.POINTER(struct_r_list_t)
 r_bin_patch_relocs_list.argtypes = [ctypes.POINTER(struct_r_bin_t)]
 r_bin_get_relocs = _libr_bin.r_bin_get_relocs
-r_bin_get_relocs.restype = ctypes.POINTER(struct_r_rb_node_t)
+r_bin_get_relocs.restype = ctypes.POINTER(struct_r_crbtree_t)
 r_bin_get_relocs.argtypes = [ctypes.POINTER(struct_r_bin_t)]
 r_bin_get_relocs_list = _libr_bin.r_bin_get_relocs_list
 r_bin_get_relocs_list.restype = ctypes.POINTER(struct_r_list_t)
@@ -1890,7 +1897,7 @@ r_bin_demangle_msvc.restype = ctypes.POINTER(ctypes.c_char)
 r_bin_demangle_msvc.argtypes = [ctypes.POINTER(ctypes.c_char)]
 r_bin_demangle_swift = _libr_bin.r_bin_demangle_swift
 r_bin_demangle_swift.restype = ctypes.POINTER(ctypes.c_char)
-r_bin_demangle_swift.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_bool]
+r_bin_demangle_swift.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_bool, ctypes.c_bool]
 r_bin_demangle_objc = _libr_bin.r_bin_demangle_objc
 r_bin_demangle_objc.restype = ctypes.POINTER(ctypes.c_char)
 r_bin_demangle_objc.argtypes = [ctypes.POINTER(struct_r_bin_file_t), ctypes.POINTER(ctypes.c_char)]
@@ -2057,6 +2064,7 @@ r_bin_plugin_nes = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 r_bin_plugin_qnx = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 r_bin_plugin_mbn = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 r_bin_plugin_smd = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
+r_bin_plugin_msx = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 r_bin_plugin_sms = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 r_bin_plugin_psxexe = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 r_bin_plugin_vsf = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
@@ -2075,6 +2083,7 @@ r_bin_plugin_dmp64 = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 r_bin_plugin_pyc = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 r_bin_plugin_off = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 r_bin_plugin_tic = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
+r_bin_plugin_hunk = struct_r_bin_plugin_t # Variable struct_r_bin_plugin_t
 __all__ = \
     ['FREE_XTR', 'PJEncodingNum', 'PJEncodingStr',
     'PJ_ENCODING_NUM_DEFAULT', 'PJ_ENCODING_NUM_HEX',
@@ -2086,29 +2095,28 @@ __all__ = \
     'RBinFileHash', 'RBinFileOptions', 'RBinGetName', 'RBinGetOffset',
     'RBinGetSectionAt', 'RBinGetSections', 'RBinHash', 'RBinImport',
     'RBinInfo', 'RBinLdrPlugin', 'RBinMap', 'RBinMem', 'RBinObject',
-    'RBinOptions', 'RBinPlugin', 'RBinReloc', 'RBinSection',
-    'RBinString', 'RBinSymbol', 'RBinSymbolCallback',
-    'RBinSymbollCallback', 'RBinTrycatch', 'RBinWrite', 'RBinXtrData',
-    'RBinXtrMetadata', 'RBinXtrPlugin', 'R_BIN_CLASS_FRIENDLY',
-    'R_BIN_CLASS_PRIVATE', 'R_BIN_CLASS_PROTECTED',
-    'R_BIN_CLASS_PUBLIC', 'R_BIN_NM_ANY', 'R_BIN_NM_BLOCKS',
-    'R_BIN_NM_C', 'R_BIN_NM_CXX', 'R_BIN_NM_DLANG', 'R_BIN_NM_GO',
-    'R_BIN_NM_JAVA', 'R_BIN_NM_KOTLIN', 'R_BIN_NM_MSVC',
-    'R_BIN_NM_NONE', 'R_BIN_NM_OBJC', 'R_BIN_NM_RUST',
-    'R_BIN_NM_SWIFT', 'R_BIN_RELOC_16', 'R_BIN_RELOC_32',
-    'R_BIN_RELOC_64', 'R_BIN_RELOC_8', 'R_BIN_SYM_ENTRY',
-    'R_BIN_SYM_FINI', 'R_BIN_SYM_INIT', 'R_BIN_SYM_LAST',
-    'R_BIN_SYM_MAIN', 'R_BIN_TYPE_CORE', 'R_BIN_TYPE_DEFAULT',
-    'R_STRING_TYPE_ASCII', 'R_STRING_TYPE_BASE64',
-    'R_STRING_TYPE_DETECT', 'R_STRING_TYPE_UTF8',
-    'R_STRING_TYPE_WIDE', 'R_STRING_TYPE_WIDE32',
-    'c__Ea_R_BIN_CLASS_PRIVATE', 'c__Ea_R_BIN_NM_NONE',
-    'c__Ea_R_BIN_RELOC_8', 'c__Ea_R_BIN_SYM_ENTRY',
-    'c__Ea_R_BIN_TYPE_DEFAULT', 'c__Ea_R_STRING_TYPE_DETECT',
-    'r_bin_a2b', 'r_bin_add', 'r_bin_addr2fileline',
-    'r_bin_addr2line', 'r_bin_addr2line2', 'r_bin_addr2text',
-    'r_bin_arch_options_init', 'r_bin_bind', 'r_bin_create',
-    'r_bin_cur', 'r_bin_cur_object', 'r_bin_demangle',
+    'RBinPlugin', 'RBinReloc', 'RBinSection', 'RBinString',
+    'RBinSymbol', 'RBinSymbolCallback', 'RBinSymbollCallback',
+    'RBinTrycatch', 'RBinWrite', 'RBinXtrData', 'RBinXtrMetadata',
+    'RBinXtrPlugin', 'R_BIN_CLASS_FRIENDLY', 'R_BIN_CLASS_PRIVATE',
+    'R_BIN_CLASS_PROTECTED', 'R_BIN_CLASS_PUBLIC', 'R_BIN_NM_ANY',
+    'R_BIN_NM_BLOCKS', 'R_BIN_NM_C', 'R_BIN_NM_CXX', 'R_BIN_NM_DLANG',
+    'R_BIN_NM_GO', 'R_BIN_NM_JAVA', 'R_BIN_NM_KOTLIN',
+    'R_BIN_NM_MSVC', 'R_BIN_NM_NONE', 'R_BIN_NM_OBJC',
+    'R_BIN_NM_RUST', 'R_BIN_NM_SWIFT', 'R_BIN_RELOC_16',
+    'R_BIN_RELOC_32', 'R_BIN_RELOC_64', 'R_BIN_RELOC_8',
+    'R_BIN_SYM_ENTRY', 'R_BIN_SYM_FINI', 'R_BIN_SYM_INIT',
+    'R_BIN_SYM_LAST', 'R_BIN_SYM_MAIN', 'R_BIN_TYPE_CORE',
+    'R_BIN_TYPE_DEFAULT', 'R_STRING_TYPE_ASCII',
+    'R_STRING_TYPE_BASE64', 'R_STRING_TYPE_DETECT',
+    'R_STRING_TYPE_UTF8', 'R_STRING_TYPE_WIDE',
+    'R_STRING_TYPE_WIDE32', 'c__Ea_R_BIN_CLASS_PRIVATE',
+    'c__Ea_R_BIN_NM_NONE', 'c__Ea_R_BIN_RELOC_8',
+    'c__Ea_R_BIN_SYM_ENTRY', 'c__Ea_R_BIN_TYPE_DEFAULT',
+    'c__Ea_R_STRING_TYPE_DETECT', 'r_bin_a2b', 'r_bin_add',
+    'r_bin_addr2fileline', 'r_bin_addr2line', 'r_bin_addr2line2',
+    'r_bin_addr2text', 'r_bin_arch_options_init', 'r_bin_bind',
+    'r_bin_create', 'r_bin_cur', 'r_bin_cur_object', 'r_bin_demangle',
     'r_bin_demangle_cxx', 'r_bin_demangle_java',
     'r_bin_demangle_list', 'r_bin_demangle_msvc',
     'r_bin_demangle_objc', 'r_bin_demangle_plugin',
@@ -2125,10 +2133,10 @@ __all__ = \
     'r_bin_file_get_baddr', 'r_bin_file_get_symbols',
     'r_bin_file_get_trycatch', 'r_bin_file_get_vaddr',
     'r_bin_file_hash_free', 'r_bin_file_object_new_from_xtr_data',
-    'r_bin_file_set_cur_binfile', 'r_bin_file_set_cur_by_fd',
-    'r_bin_file_set_cur_by_id', 'r_bin_file_set_cur_by_name',
-    'r_bin_file_set_hashes', 'r_bin_filter_name',
-    'r_bin_filter_sections', 'r_bin_filter_sym',
+    'r_bin_file_options_init', 'r_bin_file_set_cur_binfile',
+    'r_bin_file_set_cur_by_fd', 'r_bin_file_set_cur_by_id',
+    'r_bin_file_set_cur_by_name', 'r_bin_file_set_hashes',
+    'r_bin_filter_name', 'r_bin_filter_sections', 'r_bin_filter_sym',
     'r_bin_filter_symbols', 'r_bin_force_plugin', 'r_bin_free',
     'r_bin_get_baddr', 'r_bin_get_binplugin_by_buffer',
     'r_bin_get_classes', 'r_bin_get_entries', 'r_bin_get_fields',
@@ -2143,43 +2151,44 @@ __all__ = \
     'r_bin_list', 'r_bin_list_archs', 'r_bin_list_plugin',
     'r_bin_load_filter', 'r_bin_load_languages', 'r_bin_mem_free',
     'r_bin_new', 'r_bin_object_delete', 'r_bin_object_set_items',
-    'r_bin_open', 'r_bin_open_buf', 'r_bin_open_io',
-    'r_bin_options_init', 'r_bin_package', 'r_bin_patch_relocs',
-    'r_bin_patch_relocs_list', 'r_bin_plugin_any', 'r_bin_plugin_art',
-    'r_bin_plugin_avr', 'r_bin_plugin_bf', 'r_bin_plugin_bflt',
-    'r_bin_plugin_bios', 'r_bin_plugin_bootimg', 'r_bin_plugin_cgc',
-    'r_bin_plugin_coff', 'r_bin_plugin_dex', 'r_bin_plugin_dmp64',
-    'r_bin_plugin_dol', 'r_bin_plugin_dyldcache', 'r_bin_plugin_elf',
-    'r_bin_plugin_elf64', 'r_bin_plugin_fs', 'r_bin_plugin_java',
-    'r_bin_plugin_le', 'r_bin_plugin_mach0', 'r_bin_plugin_mach064',
-    'r_bin_plugin_mbn', 'r_bin_plugin_mdmp', 'r_bin_plugin_menuet',
-    'r_bin_plugin_mz', 'r_bin_plugin_ne', 'r_bin_plugin_nes',
-    'r_bin_plugin_nin3ds', 'r_bin_plugin_ninds', 'r_bin_plugin_ningb',
-    'r_bin_plugin_ningba', 'r_bin_plugin_nro', 'r_bin_plugin_nso',
-    'r_bin_plugin_off', 'r_bin_plugin_omf', 'r_bin_plugin_p9',
-    'r_bin_plugin_pe', 'r_bin_plugin_pe64', 'r_bin_plugin_pebble',
-    'r_bin_plugin_prg', 'r_bin_plugin_psxexe', 'r_bin_plugin_pyc',
-    'r_bin_plugin_qnx', 'r_bin_plugin_sfc', 'r_bin_plugin_smd',
-    'r_bin_plugin_sms', 'r_bin_plugin_symbols', 'r_bin_plugin_te',
-    'r_bin_plugin_tic', 'r_bin_plugin_vsf', 'r_bin_plugin_wad',
-    'r_bin_plugin_wasm', 'r_bin_plugin_xbe',
-    'r_bin_plugin_xnu_kernelcache', 'r_bin_plugin_z64',
-    'r_bin_plugin_zimg', 'r_bin_raw_strings', 'r_bin_reload',
-    'r_bin_reset_strings', 'r_bin_section_free', 'r_bin_section_new',
-    'r_bin_select', 'r_bin_select_bfid', 'r_bin_set_baddr',
-    'r_bin_set_user_ptr', 'r_bin_string_filter', 'r_bin_string_free',
-    'r_bin_string_type', 'r_bin_strpurge', 'r_bin_symbol_free',
-    'r_bin_symbol_name', 'r_bin_symbol_new', 'r_bin_trycatch_free',
-    'r_bin_trycatch_new', 'r_bin_use_arch', 'r_bin_version',
-    'r_bin_wr_addlib', 'r_bin_wr_entry', 'r_bin_wr_output',
-    'r_bin_wr_rpath_del', 'r_bin_wr_scn_perms', 'r_bin_wr_scn_resize',
-    'r_bin_xtr_add', 'r_bin_xtr_plugin_xtr_dyldcache',
-    'r_bin_xtr_plugin_xtr_fatmach0', 'r_bin_xtr_plugin_xtr_pemixed',
-    'r_bin_xtr_plugin_xtr_sep64', 'r_bin_xtrdata_free',
-    'r_bin_xtrdata_new', 'struct_buffer', 'struct_c__SA_RStrBuf',
-    'struct_c__SA_dict', 'struct_cdb', 'struct_cdb_hp',
-    'struct_cdb_hplist', 'struct_cdb_make', 'struct_ht_pp_bucket_t',
-    'struct_ht_pp_kv', 'struct_ht_pp_options_t', 'struct_ht_pp_t',
+    'r_bin_open', 'r_bin_open_buf', 'r_bin_open_io', 'r_bin_package',
+    'r_bin_patch_relocs', 'r_bin_patch_relocs_list',
+    'r_bin_plugin_any', 'r_bin_plugin_art', 'r_bin_plugin_avr',
+    'r_bin_plugin_bf', 'r_bin_plugin_bflt', 'r_bin_plugin_bios',
+    'r_bin_plugin_bootimg', 'r_bin_plugin_cgc', 'r_bin_plugin_coff',
+    'r_bin_plugin_dex', 'r_bin_plugin_dmp64', 'r_bin_plugin_dol',
+    'r_bin_plugin_dyldcache', 'r_bin_plugin_elf',
+    'r_bin_plugin_elf64', 'r_bin_plugin_fs', 'r_bin_plugin_hunk',
+    'r_bin_plugin_java', 'r_bin_plugin_le', 'r_bin_plugin_mach0',
+    'r_bin_plugin_mach064', 'r_bin_plugin_mbn', 'r_bin_plugin_mdmp',
+    'r_bin_plugin_menuet', 'r_bin_plugin_msx', 'r_bin_plugin_mz',
+    'r_bin_plugin_ne', 'r_bin_plugin_nes', 'r_bin_plugin_nin3ds',
+    'r_bin_plugin_ninds', 'r_bin_plugin_ningb', 'r_bin_plugin_ningba',
+    'r_bin_plugin_nro', 'r_bin_plugin_nso', 'r_bin_plugin_off',
+    'r_bin_plugin_omf', 'r_bin_plugin_p9', 'r_bin_plugin_pe',
+    'r_bin_plugin_pe64', 'r_bin_plugin_pebble', 'r_bin_plugin_prg',
+    'r_bin_plugin_psxexe', 'r_bin_plugin_pyc', 'r_bin_plugin_qnx',
+    'r_bin_plugin_sfc', 'r_bin_plugin_smd', 'r_bin_plugin_sms',
+    'r_bin_plugin_symbols', 'r_bin_plugin_te', 'r_bin_plugin_tic',
+    'r_bin_plugin_vsf', 'r_bin_plugin_wad', 'r_bin_plugin_wasm',
+    'r_bin_plugin_xbe', 'r_bin_plugin_xnu_kernelcache',
+    'r_bin_plugin_z64', 'r_bin_plugin_zimg', 'r_bin_raw_strings',
+    'r_bin_reload', 'r_bin_reset_strings', 'r_bin_section_free',
+    'r_bin_section_new', 'r_bin_select', 'r_bin_select_bfid',
+    'r_bin_set_baddr', 'r_bin_set_user_ptr', 'r_bin_string_filter',
+    'r_bin_string_free', 'r_bin_string_type', 'r_bin_strpurge',
+    'r_bin_symbol_free', 'r_bin_symbol_name', 'r_bin_symbol_new',
+    'r_bin_trycatch_free', 'r_bin_trycatch_new', 'r_bin_use_arch',
+    'r_bin_version', 'r_bin_wr_addlib', 'r_bin_wr_entry',
+    'r_bin_wr_output', 'r_bin_wr_rpath_del', 'r_bin_wr_scn_perms',
+    'r_bin_wr_scn_resize', 'r_bin_xtr_add',
+    'r_bin_xtr_plugin_xtr_dyldcache', 'r_bin_xtr_plugin_xtr_fatmach0',
+    'r_bin_xtr_plugin_xtr_pemixed', 'r_bin_xtr_plugin_xtr_sep64',
+    'r_bin_xtrdata_free', 'r_bin_xtrdata_new', 'struct_buffer',
+    'struct_c__SA_RStrBuf', 'struct_c__SA_dict', 'struct_cdb',
+    'struct_cdb_hp', 'struct_cdb_hplist', 'struct_cdb_make',
+    'struct_ht_pp_bucket_t', 'struct_ht_pp_kv',
+    'struct_ht_pp_options_t', 'struct_ht_pp_t',
     'struct_ht_pu_bucket_t', 'struct_ht_pu_kv',
     'struct_ht_pu_options_t', 'struct_ht_pu_t',
     'struct_ht_up_bucket_t', 'struct_ht_up_kv',
@@ -2192,20 +2201,20 @@ __all__ = \
     'struct_r_bin_hash_t', 'struct_r_bin_import_t',
     'struct_r_bin_info_t', 'struct_r_bin_ldr_plugin_t',
     'struct_r_bin_map_t', 'struct_r_bin_mem_t',
-    'struct_r_bin_object_t', 'struct_r_bin_options_t',
-    'struct_r_bin_plugin_t', 'struct_r_bin_reloc_t',
-    'struct_r_bin_section_t', 'struct_r_bin_string_t',
-    'struct_r_bin_symbol_t', 'struct_r_bin_t',
-    'struct_r_bin_trycatch_t', 'struct_r_bin_write_t',
-    'struct_r_bin_xtr_extract_t', 'struct_r_bin_xtr_metadata_t',
-    'struct_r_bin_xtr_plugin_t', 'struct_r_buf_t',
-    'struct_r_buffer_methods_t', 'struct_r_cache_t',
+    'struct_r_bin_object_t', 'struct_r_bin_plugin_t',
+    'struct_r_bin_reloc_t', 'struct_r_bin_section_t',
+    'struct_r_bin_string_t', 'struct_r_bin_symbol_t',
+    'struct_r_bin_t', 'struct_r_bin_trycatch_t',
+    'struct_r_bin_write_t', 'struct_r_bin_xtr_extract_t',
+    'struct_r_bin_xtr_metadata_t', 'struct_r_bin_xtr_plugin_t',
+    'struct_r_buf_t', 'struct_r_buffer_methods_t', 'struct_r_cache_t',
     'struct_r_cons_bind_t', 'struct_r_core_bind_t',
-    'struct_r_event_t', 'struct_r_id_pool_t', 'struct_r_id_storage_t',
-    'struct_r_interval_t', 'struct_r_io_bind_t', 'struct_r_io_desc_t',
-    'struct_r_io_map_t', 'struct_r_io_plugin_t', 'struct_r_io_t',
-    'struct_r_io_undo_t', 'struct_r_io_undos_t',
+    'struct_r_crbtree_node', 'struct_r_crbtree_t', 'struct_r_event_t',
+    'struct_r_id_pool_t', 'struct_r_id_storage_t',
+    'struct_r_interval_t', 'struct_r_io_bank_t', 'struct_r_io_bind_t',
+    'struct_r_io_desc_t', 'struct_r_io_map_t', 'struct_r_io_plugin_t',
+    'struct_r_io_t', 'struct_r_io_undo_t', 'struct_r_io_undos_t',
     'struct_r_list_iter_t', 'struct_r_list_t', 'struct_r_pvector_t',
-    'struct_r_queue_t', 'struct_r_rb_node_t', 'struct_r_skyline_t',
+    'struct_r_queue_t', 'struct_r_skyline_t',
     'struct_r_str_constpool_t', 'struct_r_vector_t',
     'struct_sdb_gperf_t', 'struct_sdb_kv', 'struct_sdb_t']

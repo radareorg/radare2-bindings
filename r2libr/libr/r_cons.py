@@ -235,8 +235,9 @@ struct_r_cons_grep_t._fields_ = [
     ('neg', ctypes.c_int32),
     ('begin', ctypes.c_int32),
     ('end', ctypes.c_int32),
-    ('icase', ctypes.c_int32),
-    ('PADDING_5', ctypes.c_ubyte * 4),
+    ('icase', ctypes.c_bool),
+    ('ascart', ctypes.c_bool),
+    ('PADDING_5', ctypes.c_ubyte * 6),
 ]
 
 RConsGrep = struct_r_cons_grep_t
@@ -597,13 +598,13 @@ RConsColorMode__enumvalues = c__EA_RConsColorMode__enumvalues
 class struct_r_cons_context_t(Structure):
     pass
 
-class struct_r_stack_t(Structure):
-    pass
-
 class struct_r_list_t(Structure):
     pass
 
 class struct_c__SA_RStrBuf(Structure):
+    pass
+
+class struct_r_stack_t(Structure):
     pass
 
 
@@ -643,7 +644,9 @@ struct_r_cons_context_t._fields_ = [
     ('event_interrupt', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
     ('event_interrupt_data', ctypes.POINTER(None)),
     ('cmd_depth', ctypes.c_int32),
-    ('PADDING_1', ctypes.c_ubyte * 4),
+    ('cmd_str_depth', ctypes.c_int32),
+    ('noflush', ctypes.c_bool),
+    ('PADDING_1', ctypes.c_ubyte * 7),
     ('log_callback', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_uint32, r_log_level, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char))),
     ('lastOutput', ctypes.POINTER(ctypes.c_char)),
     ('lastLength', ctypes.c_int32),
@@ -658,6 +661,14 @@ struct_r_cons_context_t._fields_ = [
     ('sorted_lines', ctypes.POINTER(struct_r_list_t)),
     ('unsorted_lines', ctypes.POINTER(struct_r_list_t)),
     ('sorted_column', ctypes.c_int32),
+    ('demo', ctypes.c_bool),
+    ('is_html', ctypes.c_bool),
+    ('was_html', ctypes.c_bool),
+    ('grep_color', ctypes.c_bool),
+    ('grep_highlight', ctypes.c_bool),
+    ('filter', ctypes.c_bool),
+    ('use_tts', ctypes.c_bool),
+    ('flush', ctypes.c_bool),
     ('PADDING_3', ctypes.c_ubyte * 4),
 ]
 
@@ -716,10 +727,10 @@ class struct_r_cons_t(Structure):
 class struct_r_line_t(Structure):
     pass
 
-class struct__IO_FILE(Structure):
+class struct_r_num_t(Structure):
     pass
 
-class struct_r_num_t(Structure):
+class struct__IO_FILE(Structure):
     pass
 
 class struct_termios(Structure):
@@ -742,9 +753,6 @@ struct_r_cons_t._pack_ = 1 # source:False
 struct_r_cons_t._fields_ = [
     ('context', ctypes.POINTER(struct_r_cons_context_t)),
     ('lastline', ctypes.POINTER(ctypes.c_char)),
-    ('is_html', ctypes.c_bool),
-    ('was_html', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 2),
     ('lines', ctypes.c_int32),
     ('rows', ctypes.c_int32),
     ('echo', ctypes.c_int32),
@@ -755,20 +763,19 @@ struct_r_cons_t._fields_ = [
     ('fix_rows', ctypes.c_int32),
     ('fix_columns', ctypes.c_int32),
     ('break_lines', ctypes.c_bool),
-    ('PADDING_1', ctypes.c_ubyte * 3),
-    ('noflush', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 3),
     ('optimize', ctypes.c_int32),
     ('show_autocomplete_widget', ctypes.c_bool),
-    ('PADDING_2', ctypes.c_ubyte * 3),
+    ('PADDING_1', ctypes.c_ubyte * 3),
     ('fdin', ctypes.POINTER(struct__IO_FILE)),
     ('fdout', ctypes.c_int32),
-    ('PADDING_3', ctypes.c_ubyte * 4),
+    ('PADDING_2', ctypes.c_ubyte * 4),
     ('teefile', ctypes.POINTER(ctypes.c_char)),
     ('user_fgets', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char), ctypes.c_int32)),
     ('event_resize', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
     ('event_data', ctypes.POINTER(None)),
     ('mouse_event', ctypes.c_int32),
-    ('PADDING_4', ctypes.c_ubyte * 4),
+    ('PADDING_3', ctypes.c_ubyte * 4),
     ('cb_editor', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char))),
     ('cb_break', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
     ('cb_sleep_begin', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
@@ -782,10 +789,10 @@ struct_r_cons_t._fields_ = [
     ('num', ctypes.POINTER(struct_r_num_t)),
     ('pager', ctypes.POINTER(ctypes.c_char)),
     ('blankline', ctypes.c_int32),
-    ('PADDING_5', ctypes.c_ubyte * 4),
+    ('PADDING_4', ctypes.c_ubyte * 4),
     ('highlight', ctypes.POINTER(ctypes.c_char)),
     ('enable_highlight', ctypes.c_bool),
-    ('PADDING_6', ctypes.c_ubyte * 3),
+    ('PADDING_5', ctypes.c_ubyte * 3),
     ('null', ctypes.c_int32),
     ('mouse', ctypes.c_int32),
     ('is_wine', ctypes.c_int32),
@@ -793,40 +800,35 @@ struct_r_cons_t._fields_ = [
     ('vline', ctypes.POINTER(ctypes.POINTER(ctypes.c_char))),
     ('refcnt', ctypes.c_int32),
     ('newline', ctypes.c_bool),
-    ('PADDING_7', ctypes.c_ubyte * 3),
+    ('PADDING_6', ctypes.c_ubyte * 3),
     ('vtmode', ctypes.c_int32),
-    ('flush', ctypes.c_bool),
     ('use_utf8', ctypes.c_bool),
     ('use_utf8_curvy', ctypes.c_bool),
     ('dotted_lines', ctypes.c_bool),
+    ('PADDING_7', ctypes.c_ubyte),
     ('linesleep', ctypes.c_int32),
     ('pagesize', ctypes.c_int32),
     ('break_word', ctypes.POINTER(ctypes.c_char)),
     ('break_word_len', ctypes.c_int32),
     ('PADDING_8', ctypes.c_ubyte * 4),
     ('timeout', ctypes.c_uint64),
-    ('grep_color', ctypes.c_bool),
-    ('grep_highlight', ctypes.c_bool),
-    ('use_tts', ctypes.c_bool),
-    ('filter', ctypes.c_bool),
-    ('PADDING_9', ctypes.c_ubyte * 4),
     ('rgbstr', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_uint64)),
     ('click_set', ctypes.c_bool),
-    ('PADDING_10', ctypes.c_ubyte * 3),
+    ('PADDING_9', ctypes.c_ubyte * 3),
     ('click_x', ctypes.c_int32),
     ('click_y', ctypes.c_int32),
     ('show_vals', ctypes.c_bool),
-    ('PADDING_11', ctypes.c_ubyte * 3),
+    ('PADDING_10', ctypes.c_ubyte * 3),
     ('cpos', RConsCursorPos),
 ]
-
-class struct__IO_wide_data(Structure):
-    pass
 
 class struct__IO_codecvt(Structure):
     pass
 
 class struct__IO_marker(Structure):
+    pass
+
+class struct__IO_wide_data(Structure):
     pass
 
 struct__IO_FILE._pack_ = 1 # source:False
@@ -866,15 +868,6 @@ struct__IO_FILE._fields_ = [
 
 class struct_r_num_calc_t(Structure):
     pass
-
-class struct_c__SA_RNumCalcValue(Structure):
-    pass
-
-struct_c__SA_RNumCalcValue._pack_ = 1 # source:False
-struct_c__SA_RNumCalcValue._fields_ = [
-    ('d', ctypes.c_double),
-    ('n', ctypes.c_uint64),
-]
 
 
 # values for enumeration 'c__EA_RNumCalcToken'
@@ -929,6 +922,15 @@ RNCSHR = 62
 RNCROL = 35
 RNCROR = 36
 c__EA_RNumCalcToken = ctypes.c_uint32 # enum
+class struct_c__SA_RNumCalcValue(Structure):
+    pass
+
+struct_c__SA_RNumCalcValue._pack_ = 1 # source:False
+struct_c__SA_RNumCalcValue._fields_ = [
+    ('d', ctypes.c_double),
+    ('n', ctypes.c_uint64),
+]
+
 struct_r_num_calc_t._pack_ = 1 # source:False
 struct_r_num_calc_t._fields_ = [
     ('curr_tok', c__EA_RNumCalcToken),
@@ -959,21 +961,11 @@ struct_r_num_t._fields_ = [
     ('nc', struct_r_num_calc_t),
 ]
 
-class struct_r_hud_t(Structure):
-    pass
-
 class struct_r_selection_widget_t(Structure):
     pass
 
-class struct_r_line_buffer_t(Structure):
+class struct_r_hud_t(Structure):
     pass
-
-struct_r_line_buffer_t._pack_ = 1 # source:False
-struct_r_line_buffer_t._fields_ = [
-    ('data', ctypes.c_char * 4096),
-    ('index', ctypes.c_int32),
-    ('length', ctypes.c_int32),
-]
 
 class struct_r_line_hist_t(Structure):
     pass
@@ -993,17 +985,6 @@ struct_r_line_hist_t._fields_ = [
 class struct_r_line_comp_t(Structure):
     pass
 
-
-# values for enumeration 'c__EA_RLinePromptType'
-c__EA_RLinePromptType__enumvalues = {
-    0: 'R_LINE_PROMPT_DEFAULT',
-    1: 'R_LINE_PROMPT_OFFSET',
-    2: 'R_LINE_PROMPT_FILE',
-}
-R_LINE_PROMPT_DEFAULT = 0
-R_LINE_PROMPT_OFFSET = 1
-R_LINE_PROMPT_FILE = 2
-c__EA_RLinePromptType = ctypes.c_uint32 # enum
 class struct_r_pvector_t(Structure):
     pass
 
@@ -1025,6 +1006,20 @@ struct_r_pvector_t._fields_ = [
     ('v', struct_r_vector_t),
 ]
 
+class struct_r_line_buffer_t(Structure):
+    pass
+
+
+# values for enumeration 'c__EA_RLinePromptType'
+c__EA_RLinePromptType__enumvalues = {
+    0: 'R_LINE_PROMPT_DEFAULT',
+    1: 'R_LINE_PROMPT_OFFSET',
+    2: 'R_LINE_PROMPT_FILE',
+}
+R_LINE_PROMPT_DEFAULT = 0
+R_LINE_PROMPT_OFFSET = 1
+R_LINE_PROMPT_FILE = 2
+c__EA_RLinePromptType = ctypes.c_uint32 # enum
 struct_r_line_comp_t._pack_ = 1 # source:False
 struct_r_line_comp_t._fields_ = [
     ('opt', ctypes.c_bool),
@@ -1035,6 +1030,13 @@ struct_r_line_comp_t._fields_ = [
     ('args', struct_r_pvector_t),
     ('run', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_line_comp_t), ctypes.POINTER(struct_r_line_buffer_t), c__EA_RLinePromptType, ctypes.POINTER(None))),
     ('run_user', ctypes.POINTER(None)),
+]
+
+struct_r_line_buffer_t._pack_ = 1 # source:False
+struct_r_line_buffer_t._fields_ = [
+    ('data', ctypes.c_char * 4096),
+    ('index', ctypes.c_int32),
+    ('length', ctypes.c_int32),
 ]
 
 struct_r_line_t._pack_ = 1 # source:False
@@ -1253,6 +1255,9 @@ r_cons_new.argtypes = []
 r_cons_singleton = _libr_cons.r_cons_singleton
 r_cons_singleton.restype = ctypes.POINTER(struct_r_cons_t)
 r_cons_singleton.argtypes = []
+r_cons_context = _libr_cons.r_cons_context
+r_cons_context.restype = ctypes.POINTER(struct_r_cons_context_t)
+r_cons_context.argtypes = []
 r_cons_free = _libr_cons.r_cons_free
 r_cons_free.restype = ctypes.POINTER(struct_r_cons_t)
 r_cons_free.argtypes = []
@@ -1759,9 +1764,12 @@ r_cons_pixel_flush.argtypes = [ctypes.POINTER(struct_c__SA_RConsPixel), ctypes.c
 r_cons_pixel_drain = _libr_cons.r_cons_pixel_drain
 r_cons_pixel_drain.restype = ctypes.POINTER(ctypes.c_char)
 r_cons_pixel_drain.argtypes = [ctypes.POINTER(struct_c__SA_RConsPixel)]
+r_cons_pixel_get = _libr_cons.r_cons_pixel_get
+r_cons_pixel_get.restype = ctypes.c_ubyte
+r_cons_pixel_get.argtypes = [ctypes.POINTER(struct_c__SA_RConsPixel), ctypes.c_int32, ctypes.c_int32]
 r_cons_pixel_set = _libr_cons.r_cons_pixel_set
 r_cons_pixel_set.restype = None
-r_cons_pixel_set.argtypes = [ctypes.POINTER(struct_c__SA_RConsPixel), ctypes.c_int32, ctypes.c_int32, ctypes.c_int32]
+r_cons_pixel_set.argtypes = [ctypes.POINTER(struct_c__SA_RConsPixel), ctypes.c_int32, ctypes.c_int32, ctypes.c_ubyte]
 r_cons_pixel_sets = _libr_cons.r_cons_pixel_sets
 r_cons_pixel_sets.restype = None
 r_cons_pixel_sets.argtypes = [ctypes.POINTER(struct_c__SA_RConsPixel), ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_char)]
@@ -1876,10 +1884,10 @@ struct_r_panels_menu_item._fields_ = [
     ('p', ctypes.POINTER(struct_r_panel_t)),
 ]
 
-class struct_r_panel_view_t(Structure):
+class struct_r_panel_model_t(Structure):
     pass
 
-class struct_r_panel_model_t(Structure):
+class struct_r_panel_view_t(Structure):
     pass
 
 struct_r_panel_t._pack_ = 1 # source:False
@@ -2050,10 +2058,10 @@ struct_r_panels_t._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
 ]
 
-class struct_ls_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
-class struct_sdb_gperf_t(Structure):
+class struct_ls_t(Structure):
     pass
 
 class struct_cdb(Structure):
@@ -2077,10 +2085,10 @@ struct_cdb._fields_ = [
 class struct_cdb_make(Structure):
     pass
 
-class struct_cdb_hplist(Structure):
+class struct_cdb_hp(Structure):
     pass
 
-class struct_cdb_hp(Structure):
+class struct_cdb_hplist(Structure):
     pass
 
 class struct_buffer(Structure):
@@ -2304,7 +2312,7 @@ __all__ = \
     'r_cons_canvas_write', 'r_cons_chop', 'r_cons_clear',
     'r_cons_clear00', 'r_cons_clear_buffer', 'r_cons_clear_line',
     'r_cons_cmd_help', 'r_cons_color', 'r_cons_color_random',
-    'r_cons_column', 'r_cons_context_break',
+    'r_cons_column', 'r_cons_context', 'r_cons_context_break',
     'r_cons_context_break_pop', 'r_cons_context_break_push',
     'r_cons_context_free', 'r_cons_context_is_main',
     'r_cons_context_load', 'r_cons_context_new',
@@ -2336,37 +2344,38 @@ __all__ = \
     'r_cons_pal_set', 'r_cons_pal_show', 'r_cons_pal_update_event',
     'r_cons_palette_init', 'r_cons_password', 'r_cons_pipe_close',
     'r_cons_pipe_open', 'r_cons_pixel_drain', 'r_cons_pixel_fill',
-    'r_cons_pixel_flush', 'r_cons_pixel_free', 'r_cons_pixel_new',
-    'r_cons_pixel_set', 'r_cons_pixel_sets', 'r_cons_pixel_tostring',
-    'r_cons_pop', 'r_cons_print_clear', 'r_cons_print_fps',
-    'r_cons_printat', 'r_cons_printf', 'r_cons_printf_list',
-    'r_cons_println', 'r_cons_push', 'r_cons_rainbow_free',
-    'r_cons_rainbow_get', 'r_cons_rainbow_new', 'r_cons_readchar',
-    'r_cons_readchar_timeout', 'r_cons_readflush', 'r_cons_readpush',
-    'r_cons_reset', 'r_cons_reset_colors', 'r_cons_rgb',
-    'r_cons_rgb_fgbg', 'r_cons_rgb_init', 'r_cons_rgb_parse',
-    'r_cons_rgb_str', 'r_cons_rgb_str_mode', 'r_cons_rgb_str_off',
-    'r_cons_rgb_tostring', 'r_cons_set_click', 'r_cons_set_cup',
-    'r_cons_set_interactive', 'r_cons_set_last_interactive',
-    'r_cons_set_raw', 'r_cons_set_title', 'r_cons_set_utf8',
-    'r_cons_show_cursor', 'r_cons_singleton', 'r_cons_sleep_begin',
-    'r_cons_sleep_end', 'r_cons_stdout_open', 'r_cons_stdout_set_fd',
-    'r_cons_strcat', 'r_cons_strcat_at', 'r_cons_strcat_justify',
-    'r_cons_swap_ground', 'r_cons_switchbuf', 'r_cons_version',
-    'r_cons_visual_flush', 'r_cons_visual_write',
-    'r_cons_was_breaked', 'r_cons_write', 'r_cons_yesno',
-    'r_cons_zero', 'r_line_clipboard_push', 'r_line_completion_clear',
-    'r_line_completion_fini', 'r_line_completion_init',
-    'r_line_completion_push', 'r_line_completion_set',
-    'r_line_dietline_init', 'r_line_free', 'r_line_get_prompt',
-    'r_line_hist_add', 'r_line_hist_cmd_down', 'r_line_hist_cmd_up',
-    'r_line_hist_free', 'r_line_hist_get', 'r_line_hist_label',
-    'r_line_hist_list', 'r_line_hist_load', 'r_line_hist_save',
-    'r_line_label_show', 'r_line_new', 'r_line_readline',
-    'r_line_readline_cb', 'r_line_set_hist_callback',
-    'r_line_set_prompt', 'r_line_singleton', 'r_log_level', 'size_t',
-    'struct__IO_FILE', 'struct__IO_codecvt', 'struct__IO_marker',
-    'struct__IO_wide_data', 'struct___va_list_tag', 'struct_buffer',
+    'r_cons_pixel_flush', 'r_cons_pixel_free', 'r_cons_pixel_get',
+    'r_cons_pixel_new', 'r_cons_pixel_set', 'r_cons_pixel_sets',
+    'r_cons_pixel_tostring', 'r_cons_pop', 'r_cons_print_clear',
+    'r_cons_print_fps', 'r_cons_printat', 'r_cons_printf',
+    'r_cons_printf_list', 'r_cons_println', 'r_cons_push',
+    'r_cons_rainbow_free', 'r_cons_rainbow_get', 'r_cons_rainbow_new',
+    'r_cons_readchar', 'r_cons_readchar_timeout', 'r_cons_readflush',
+    'r_cons_readpush', 'r_cons_reset', 'r_cons_reset_colors',
+    'r_cons_rgb', 'r_cons_rgb_fgbg', 'r_cons_rgb_init',
+    'r_cons_rgb_parse', 'r_cons_rgb_str', 'r_cons_rgb_str_mode',
+    'r_cons_rgb_str_off', 'r_cons_rgb_tostring', 'r_cons_set_click',
+    'r_cons_set_cup', 'r_cons_set_interactive',
+    'r_cons_set_last_interactive', 'r_cons_set_raw',
+    'r_cons_set_title', 'r_cons_set_utf8', 'r_cons_show_cursor',
+    'r_cons_singleton', 'r_cons_sleep_begin', 'r_cons_sleep_end',
+    'r_cons_stdout_open', 'r_cons_stdout_set_fd', 'r_cons_strcat',
+    'r_cons_strcat_at', 'r_cons_strcat_justify', 'r_cons_swap_ground',
+    'r_cons_switchbuf', 'r_cons_version', 'r_cons_visual_flush',
+    'r_cons_visual_write', 'r_cons_was_breaked', 'r_cons_write',
+    'r_cons_yesno', 'r_cons_zero', 'r_line_clipboard_push',
+    'r_line_completion_clear', 'r_line_completion_fini',
+    'r_line_completion_init', 'r_line_completion_push',
+    'r_line_completion_set', 'r_line_dietline_init', 'r_line_free',
+    'r_line_get_prompt', 'r_line_hist_add', 'r_line_hist_cmd_down',
+    'r_line_hist_cmd_up', 'r_line_hist_free', 'r_line_hist_get',
+    'r_line_hist_label', 'r_line_hist_list', 'r_line_hist_load',
+    'r_line_hist_save', 'r_line_label_show', 'r_line_new',
+    'r_line_readline', 'r_line_readline_cb',
+    'r_line_set_hist_callback', 'r_line_set_prompt',
+    'r_line_singleton', 'r_log_level', 'size_t', 'struct__IO_FILE',
+    'struct__IO_codecvt', 'struct__IO_marker', 'struct__IO_wide_data',
+    'struct___va_list_tag', 'struct_buffer',
     'struct_c__SA_RConsCursorPos', 'struct_c__SA_RConsPixel',
     'struct_c__SA_RModal', 'struct_c__SA_RNumCalcValue',
     'struct_c__SA_RPanelsSnow', 'struct_c__SA_RStrBuf',

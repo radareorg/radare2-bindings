@@ -290,13 +290,13 @@ RRegArena = struct_r_reg_arena_t
 class struct_r_reg_set_t(Structure):
     pass
 
-class struct_r_list_iter_t(Structure):
+class struct_r_list_t(Structure):
     pass
 
 class struct_ht_pp_t(Structure):
     pass
 
-class struct_r_list_t(Structure):
+class struct_r_list_iter_t(Structure):
     pass
 
 struct_r_reg_set_t._pack_ = 1 # source:False
@@ -525,6 +525,16 @@ r_reg_get_value.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struc
 class struct__utX(Structure):
     pass
 
+class struct__ut96(Structure):
+    pass
+
+struct__ut96._pack_ = 1 # source:False
+struct__ut96._fields_ = [
+    ('Low', ctypes.c_uint64),
+    ('High', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
 class struct__ut80(Structure):
     pass
 
@@ -551,16 +561,6 @@ struct__ut256._pack_ = 1 # source:False
 struct__ut256._fields_ = [
     ('Low', struct__ut128),
     ('High', struct__ut128),
-]
-
-class struct__ut96(Structure):
-    pass
-
-struct__ut96._pack_ = 1 # source:False
-struct__ut96._fields_ = [
-    ('Low', ctypes.c_uint64),
-    ('High', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
 struct__utX._pack_ = 1 # source:False
@@ -651,10 +651,10 @@ r_reg_arena_zero.restype = None
 r_reg_arena_zero.argtypes = [ctypes.POINTER(struct_r_reg_t)]
 r_reg_arena_peek = _libr_reg.r_reg_arena_peek
 r_reg_arena_peek.restype = ctypes.POINTER(ctypes.c_ubyte)
-r_reg_arena_peek.argtypes = [ctypes.POINTER(struct_r_reg_t)]
+r_reg_arena_peek.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(ctypes.c_int32)]
 r_reg_arena_poke = _libr_reg.r_reg_arena_poke
 r_reg_arena_poke.restype = None
-r_reg_arena_poke.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(ctypes.c_ubyte)]
+r_reg_arena_poke.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_reg_arena_dup = _libr_reg.r_reg_arena_dup
 r_reg_arena_dup.restype = ctypes.POINTER(ctypes.c_ubyte)
 r_reg_arena_dup.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(ctypes.c_ubyte)]

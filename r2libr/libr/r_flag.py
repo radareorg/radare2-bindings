@@ -243,6 +243,7 @@ struct_r_flag_item_t._fields_ = [
     ('color', ctypes.POINTER(ctypes.c_char)),
     ('comment', ctypes.POINTER(ctypes.c_char)),
     ('alias', ctypes.POINTER(ctypes.c_char)),
+    ('type', ctypes.POINTER(ctypes.c_char)),
 ]
 
 class struct_r_rb_node_t(Structure):
@@ -266,6 +267,9 @@ RFlagItem = struct_r_flag_item_t
 class struct_r_flag_t(Structure):
     pass
 
+class struct_r_num_t(Structure):
+    pass
+
 class struct_r_skiplist_t(Structure):
     pass
 
@@ -273,9 +277,6 @@ class struct_ht_pp_t(Structure):
     pass
 
 class struct_sdb_t(Structure):
-    pass
-
-class struct_r_num_t(Structure):
     pass
 
 class struct_r_spaces_t(Structure):
@@ -387,6 +388,44 @@ class struct_ls_t(Structure):
 class struct_sdb_gperf_t(Structure):
     pass
 
+class struct_cdb_make(Structure):
+    pass
+
+class struct_cdb_hp(Structure):
+    pass
+
+class struct_cdb_hplist(Structure):
+    pass
+
+class struct_buffer(Structure):
+    pass
+
+struct_buffer._pack_ = 1 # source:False
+struct_buffer._fields_ = [
+    ('x', ctypes.POINTER(ctypes.c_char)),
+    ('p', ctypes.c_uint32),
+    ('n', ctypes.c_uint32),
+    ('fd', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('op', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_char), ctypes.c_int32)),
+]
+
+struct_cdb_make._pack_ = 1 # source:False
+struct_cdb_make._fields_ = [
+    ('bspace', ctypes.c_char * 8192),
+    ('final', ctypes.c_char * 1024),
+    ('count', ctypes.c_uint32 * 256),
+    ('start', ctypes.c_uint32 * 256),
+    ('head', ctypes.POINTER(struct_cdb_hplist)),
+    ('split', ctypes.POINTER(struct_cdb_hp)),
+    ('hash', ctypes.POINTER(struct_cdb_hp)),
+    ('numentries', ctypes.c_uint32),
+    ('memsize', ctypes.c_uint32),
+    ('b', struct_buffer),
+    ('pos', ctypes.c_uint32),
+    ('fd', ctypes.c_int32),
+]
+
 class struct_sdb_kv(Structure):
     pass
 
@@ -418,44 +457,6 @@ struct_c__SA_dict._fields_ = [
     ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
     ('size', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
-]
-
-class struct_cdb_make(Structure):
-    pass
-
-class struct_cdb_hplist(Structure):
-    pass
-
-class struct_cdb_hp(Structure):
-    pass
-
-class struct_buffer(Structure):
-    pass
-
-struct_buffer._pack_ = 1 # source:False
-struct_buffer._fields_ = [
-    ('x', ctypes.POINTER(ctypes.c_char)),
-    ('p', ctypes.c_uint32),
-    ('n', ctypes.c_uint32),
-    ('fd', ctypes.c_int32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-    ('op', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_char), ctypes.c_int32)),
-]
-
-struct_cdb_make._pack_ = 1 # source:False
-struct_cdb_make._fields_ = [
-    ('bspace', ctypes.c_char * 8192),
-    ('final', ctypes.c_char * 1024),
-    ('count', ctypes.c_uint32 * 256),
-    ('start', ctypes.c_uint32 * 256),
-    ('head', ctypes.POINTER(struct_cdb_hplist)),
-    ('split', ctypes.POINTER(struct_cdb_hp)),
-    ('hash', ctypes.POINTER(struct_cdb_hp)),
-    ('numentries', ctypes.c_uint32),
-    ('memsize', ctypes.c_uint32),
-    ('b', struct_buffer),
-    ('pos', ctypes.c_uint32),
-    ('fd', ctypes.c_int32),
 ]
 
 class struct_cdb(Structure):
@@ -776,6 +777,9 @@ r_flag_unset.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(struct_
 r_flag_unset_name = _libr_flag.r_flag_unset_name
 r_flag_unset_name.restype = ctypes.c_bool
 r_flag_unset_name.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char)]
+r_flag_item_set_type = _libr_flag.r_flag_item_set_type
+r_flag_item_set_type.restype = None
+r_flag_item_set_type.argtypes = [ctypes.POINTER(struct_r_flag_item_t), ctypes.POINTER(ctypes.c_char)]
 r_flag_unset_off = _libr_flag.r_flag_unset_off
 r_flag_unset_off.restype = ctypes.c_bool
 r_flag_unset_off.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64]
@@ -785,6 +789,9 @@ r_flag_unset_all.argtypes = [ctypes.POINTER(struct_r_flag_t)]
 r_flag_set = _libr_flag.r_flag_set
 r_flag_set.restype = ctypes.POINTER(struct_r_flag_item_t)
 r_flag_set.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_uint32]
+r_flag_set_inspace = _libr_flag.r_flag_set_inspace
+r_flag_set_inspace.restype = ctypes.POINTER(struct_r_flag_item_t)
+r_flag_set_inspace.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_uint32]
 r_flag_set_next = _libr_flag.r_flag_set_next
 r_flag_set_next.restype = ctypes.POINTER(struct_r_flag_item_t)
 r_flag_set_next.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_uint32]
@@ -920,22 +927,22 @@ __all__ = \
     'r_flag_get_list', 'r_flag_get_liststr', 'r_flag_item_clone',
     'r_flag_item_free', 'r_flag_item_set_alias',
     'r_flag_item_set_color', 'r_flag_item_set_comment',
-    'r_flag_item_set_realname', 'r_flag_list', 'r_flag_move',
-    'r_flag_new', 'r_flag_relocate', 'r_flag_rename', 'r_flag_set',
-    'r_flag_set_next', 'r_flag_space_count', 'r_flag_space_cur',
-    'r_flag_space_cur_name', 'r_flag_space_get',
-    'r_flag_space_is_empty', 'r_flag_space_pop', 'r_flag_space_push',
-    'r_flag_space_rename', 'r_flag_space_set', 'r_flag_space_unset',
-    'r_flag_tags_get', 'r_flag_tags_list', 'r_flag_tags_reset',
-    'r_flag_tags_set', 'r_flag_unset', 'r_flag_unset_all',
-    'r_flag_unset_glob', 'r_flag_unset_name', 'r_flag_unset_off',
-    'r_flag_version', 'r_flag_zone_add', 'r_flag_zone_around',
-    'r_flag_zone_barlist', 'r_flag_zone_del', 'r_flag_zone_item_free',
-    'r_flag_zone_list', 'r_flag_zone_reset', 'struct_buffer',
-    'struct_c__SA_RNumCalcValue', 'struct_c__SA_dict', 'struct_cdb',
-    'struct_cdb_hp', 'struct_cdb_hplist', 'struct_cdb_make',
-    'struct_ht_pp_bucket_t', 'struct_ht_pp_kv',
-    'struct_ht_pp_options_t', 'struct_ht_pp_t',
+    'r_flag_item_set_realname', 'r_flag_item_set_type', 'r_flag_list',
+    'r_flag_move', 'r_flag_new', 'r_flag_relocate', 'r_flag_rename',
+    'r_flag_set', 'r_flag_set_inspace', 'r_flag_set_next',
+    'r_flag_space_count', 'r_flag_space_cur', 'r_flag_space_cur_name',
+    'r_flag_space_get', 'r_flag_space_is_empty', 'r_flag_space_pop',
+    'r_flag_space_push', 'r_flag_space_rename', 'r_flag_space_set',
+    'r_flag_space_unset', 'r_flag_tags_get', 'r_flag_tags_list',
+    'r_flag_tags_reset', 'r_flag_tags_set', 'r_flag_unset',
+    'r_flag_unset_all', 'r_flag_unset_glob', 'r_flag_unset_name',
+    'r_flag_unset_off', 'r_flag_version', 'r_flag_zone_add',
+    'r_flag_zone_around', 'r_flag_zone_barlist', 'r_flag_zone_del',
+    'r_flag_zone_item_free', 'r_flag_zone_list', 'r_flag_zone_reset',
+    'struct_buffer', 'struct_c__SA_RNumCalcValue',
+    'struct_c__SA_dict', 'struct_cdb', 'struct_cdb_hp',
+    'struct_cdb_hplist', 'struct_cdb_make', 'struct_ht_pp_bucket_t',
+    'struct_ht_pp_kv', 'struct_ht_pp_options_t', 'struct_ht_pp_t',
     'struct_ht_up_bucket_t', 'struct_ht_up_kv',
     'struct_ht_up_options_t', 'struct_ht_up_t', 'struct_ls_iter_t',
     'struct_ls_t', 'struct_r_event_t', 'struct_r_flag_bind_t',
