@@ -1741,10 +1741,10 @@ RTypeKind = ctypes.c_uint32 # enum
 class struct_sdb_t(Structure):
     pass
 
-class struct_ht_pp_t(Structure):
+class struct_ls_t(Structure):
     pass
 
-class struct_ls_t(Structure):
+class struct_ht_pp_t(Structure):
     pass
 
 class struct_sdb_gperf_t(Structure):
@@ -1765,17 +1765,6 @@ struct_cdb._fields_ = [
     ('hslots', ctypes.c_uint32),
     ('dpos', ctypes.c_uint32),
     ('dlen', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-]
-
-class struct_c__SA_dict(Structure):
-    pass
-
-struct_c__SA_dict._pack_ = 1 # source:False
-struct_c__SA_dict._fields_ = [
-    ('table', ctypes.POINTER(ctypes.POINTER(None))),
-    ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
-    ('size', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
@@ -1815,6 +1804,17 @@ struct_cdb_make._fields_ = [
     ('b', struct_buffer),
     ('pos', ctypes.c_uint32),
     ('fd', ctypes.c_int32),
+]
+
+class struct_c__SA_dict(Structure):
+    pass
+
+struct_c__SA_dict._pack_ = 1 # source:False
+struct_c__SA_dict._fields_ = [
+    ('table', ctypes.POINTER(ctypes.POINTER(None))),
+    ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+    ('size', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
 class struct_sdb_kv(Structure):
@@ -3948,6 +3948,17 @@ class struct_pj_t(Structure):
     pass
 
 
+# values for enumeration 'PJEncodingNum'
+PJEncodingNum__enumvalues = {
+    0: 'PJ_ENCODING_NUM_DEFAULT',
+    1: 'PJ_ENCODING_NUM_STR',
+    2: 'PJ_ENCODING_NUM_HEX',
+}
+PJ_ENCODING_NUM_DEFAULT = 0
+PJ_ENCODING_NUM_STR = 1
+PJ_ENCODING_NUM_HEX = 2
+PJEncodingNum = ctypes.c_uint32 # enum
+
 # values for enumeration 'PJEncodingStr'
 PJEncodingStr__enumvalues = {
     0: 'PJ_ENCODING_STR_DEFAULT',
@@ -3962,17 +3973,6 @@ PJ_ENCODING_STR_HEX = 2
 PJ_ENCODING_STR_ARRAY = 3
 PJ_ENCODING_STR_STRIP = 4
 PJEncodingStr = ctypes.c_uint32 # enum
-
-# values for enumeration 'PJEncodingNum'
-PJEncodingNum__enumvalues = {
-    0: 'PJ_ENCODING_NUM_DEFAULT',
-    1: 'PJ_ENCODING_NUM_STR',
-    2: 'PJ_ENCODING_NUM_HEX',
-}
-PJ_ENCODING_NUM_DEFAULT = 0
-PJ_ENCODING_NUM_STR = 1
-PJ_ENCODING_NUM_HEX = 2
-PJEncodingNum = ctypes.c_uint32 # enum
 struct_pj_t._pack_ = 1 # source:False
 struct_pj_t._fields_ = [
     ('sb', struct_c__SA_RStrBuf),
@@ -4184,6 +4184,93 @@ r_protobuf_decode.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64, c
 r_axml_decode = _libr_util.r_axml_decode
 r_axml_decode.restype = ctypes.POINTER(ctypes.c_char)
 r_axml_decode.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64]
+
+# values for enumeration 'r_json_type_t'
+r_json_type_t__enumvalues = {
+    0: 'R_JSON_NULL',
+    1: 'R_JSON_OBJECT',
+    2: 'R_JSON_ARRAY',
+    3: 'R_JSON_STRING',
+    4: 'R_JSON_INTEGER',
+    5: 'R_JSON_DOUBLE',
+    6: 'R_JSON_BOOLEAN',
+}
+R_JSON_NULL = 0
+R_JSON_OBJECT = 1
+R_JSON_ARRAY = 2
+R_JSON_STRING = 3
+R_JSON_INTEGER = 4
+R_JSON_DOUBLE = 5
+R_JSON_BOOLEAN = 6
+r_json_type_t = ctypes.c_uint32 # enum
+RJsonType = r_json_type_t
+RJsonType__enumvalues = r_json_type_t__enumvalues
+class struct_r_json_t(Structure):
+    pass
+
+class union_r_json_t_0(Union):
+    pass
+
+class struct_r_json_t_0_0(Structure):
+    pass
+
+class union_r_json_t_0_0_0(Union):
+    pass
+
+union_r_json_t_0_0_0._pack_ = 1 # source:False
+union_r_json_t_0_0_0._fields_ = [
+    ('u_value', ctypes.c_uint64),
+    ('s_value', ctypes.c_int64),
+]
+
+struct_r_json_t_0_0._pack_ = 1 # source:False
+struct_r_json_t_0_0._anonymous_ = ('_0',)
+struct_r_json_t_0_0._fields_ = [
+    ('_0', union_r_json_t_0_0_0),
+    ('dbl_value', ctypes.c_double),
+]
+
+class struct_r_json_t_0_1(Structure):
+    pass
+
+struct_r_json_t_0_1._pack_ = 1 # source:False
+struct_r_json_t_0_1._fields_ = [
+    ('count', ctypes.c_uint64),
+    ('first', ctypes.POINTER(struct_r_json_t)),
+    ('last', ctypes.POINTER(struct_r_json_t)),
+]
+
+union_r_json_t_0._pack_ = 1 # source:False
+union_r_json_t_0._anonymous_ = ('_0', '_1',)
+union_r_json_t_0._fields_ = [
+    ('str_value', ctypes.POINTER(ctypes.c_char)),
+    ('_0', struct_r_json_t_0_0),
+    ('_1', struct_r_json_t_0_1),
+]
+
+struct_r_json_t._pack_ = 1 # source:False
+struct_r_json_t._anonymous_ = ('_0',)
+struct_r_json_t._fields_ = [
+    ('type', RJsonType),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('key', ctypes.POINTER(ctypes.c_char)),
+    ('_0', union_r_json_t_0),
+    ('next', ctypes.POINTER(struct_r_json_t)),
+]
+
+RJson = struct_r_json_t
+r_json_parse = _libr_util.r_json_parse
+r_json_parse.restype = ctypes.POINTER(struct_r_json_t)
+r_json_parse.argtypes = [ctypes.POINTER(ctypes.c_char)]
+r_json_free = _libr_util.r_json_free
+r_json_free.restype = None
+r_json_free.argtypes = [ctypes.POINTER(struct_r_json_t)]
+r_json_get = _libr_util.r_json_get
+r_json_get.restype = ctypes.POINTER(struct_r_json_t)
+r_json_get.argtypes = [ctypes.POINTER(struct_r_json_t), ctypes.POINTER(ctypes.c_char)]
+r_json_item = _libr_util.r_json_item
+r_json_item.restype = ctypes.POINTER(struct_r_json_t)
+r_json_item.argtypes = [ctypes.POINTER(struct_r_json_t), size_t]
 class struct_c__SA_RBraile(Structure):
     pass
 
@@ -4219,13 +4306,13 @@ RPrintZoom = struct_r_print_zoom_t
 class struct_r_print_t(Structure):
     pass
 
-class struct_r_reg_t(Structure):
-    pass
-
 class struct_r_charset_t(Structure):
     pass
 
 class struct_r_cons_t(Structure):
+    pass
+
+class struct_r_reg_t(Structure):
     pass
 
 class struct_r_reg_item_t(Structure):
@@ -4237,100 +4324,15 @@ class struct_r_io_bind_t(Structure):
 class struct_r_io_t(Structure):
     pass
 
+class struct_r_io_desc_t(Structure):
+    pass
+
 class struct_r_io_map_t(Structure):
     pass
 
 class struct_r_io_bank_t(Structure):
     pass
 
-class struct_r_io_desc_t(Structure):
-    pass
-
-
-# values for enumeration '__ptrace_request'
-__ptrace_request__enumvalues = {
-    0: 'PTRACE_TRACEME',
-    1: 'PTRACE_PEEKTEXT',
-    2: 'PTRACE_PEEKDATA',
-    3: 'PTRACE_PEEKUSER',
-    4: 'PTRACE_POKETEXT',
-    5: 'PTRACE_POKEDATA',
-    6: 'PTRACE_POKEUSER',
-    7: 'PTRACE_CONT',
-    8: 'PTRACE_KILL',
-    9: 'PTRACE_SINGLESTEP',
-    12: 'PTRACE_GETREGS',
-    13: 'PTRACE_SETREGS',
-    14: 'PTRACE_GETFPREGS',
-    15: 'PTRACE_SETFPREGS',
-    16: 'PTRACE_ATTACH',
-    17: 'PTRACE_DETACH',
-    18: 'PTRACE_GETFPXREGS',
-    19: 'PTRACE_SETFPXREGS',
-    24: 'PTRACE_SYSCALL',
-    25: 'PTRACE_GET_THREAD_AREA',
-    26: 'PTRACE_SET_THREAD_AREA',
-    30: 'PTRACE_ARCH_PRCTL',
-    31: 'PTRACE_SYSEMU',
-    32: 'PTRACE_SYSEMU_SINGLESTEP',
-    33: 'PTRACE_SINGLEBLOCK',
-    16896: 'PTRACE_SETOPTIONS',
-    16897: 'PTRACE_GETEVENTMSG',
-    16898: 'PTRACE_GETSIGINFO',
-    16899: 'PTRACE_SETSIGINFO',
-    16900: 'PTRACE_GETREGSET',
-    16901: 'PTRACE_SETREGSET',
-    16902: 'PTRACE_SEIZE',
-    16903: 'PTRACE_INTERRUPT',
-    16904: 'PTRACE_LISTEN',
-    16905: 'PTRACE_PEEKSIGINFO',
-    16906: 'PTRACE_GETSIGMASK',
-    16907: 'PTRACE_SETSIGMASK',
-    16908: 'PTRACE_SECCOMP_GET_FILTER',
-    16909: 'PTRACE_SECCOMP_GET_METADATA',
-    16910: 'PTRACE_GET_SYSCALL_INFO',
-}
-PTRACE_TRACEME = 0
-PTRACE_PEEKTEXT = 1
-PTRACE_PEEKDATA = 2
-PTRACE_PEEKUSER = 3
-PTRACE_POKETEXT = 4
-PTRACE_POKEDATA = 5
-PTRACE_POKEUSER = 6
-PTRACE_CONT = 7
-PTRACE_KILL = 8
-PTRACE_SINGLESTEP = 9
-PTRACE_GETREGS = 12
-PTRACE_SETREGS = 13
-PTRACE_GETFPREGS = 14
-PTRACE_SETFPREGS = 15
-PTRACE_ATTACH = 16
-PTRACE_DETACH = 17
-PTRACE_GETFPXREGS = 18
-PTRACE_SETFPXREGS = 19
-PTRACE_SYSCALL = 24
-PTRACE_GET_THREAD_AREA = 25
-PTRACE_SET_THREAD_AREA = 26
-PTRACE_ARCH_PRCTL = 30
-PTRACE_SYSEMU = 31
-PTRACE_SYSEMU_SINGLESTEP = 32
-PTRACE_SINGLEBLOCK = 33
-PTRACE_SETOPTIONS = 16896
-PTRACE_GETEVENTMSG = 16897
-PTRACE_GETSIGINFO = 16898
-PTRACE_SETSIGINFO = 16899
-PTRACE_GETREGSET = 16900
-PTRACE_SETREGSET = 16901
-PTRACE_SEIZE = 16902
-PTRACE_INTERRUPT = 16903
-PTRACE_LISTEN = 16904
-PTRACE_PEEKSIGINFO = 16905
-PTRACE_GETSIGMASK = 16906
-PTRACE_SETSIGMASK = 16907
-PTRACE_SECCOMP_GET_FILTER = 16908
-PTRACE_SECCOMP_GET_METADATA = 16909
-PTRACE_GET_SYSCALL_INFO = 16910
-__ptrace_request = ctypes.c_uint32 # enum
 struct_r_io_bind_t._pack_ = 1 # source:False
 struct_r_io_bind_t._fields_ = [
     ('init', ctypes.c_int32),
@@ -4367,8 +4369,19 @@ struct_r_io_bind_t._fields_ = [
     ('map_add', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)),
     ('v2p', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
     ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
-    ('ptrace', ctypes.CFUNCTYPE(ctypes.c_int64, ctypes.POINTER(struct_r_io_t), __ptrace_request, ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(None))),
-    ('ptrace_func', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(struct_r_io_t), ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None)), ctypes.POINTER(None))),
+]
+
+class struct_r_cons_bind_t(Structure):
+    pass
+
+struct_r_cons_bind_t._pack_ = 1 # source:False
+struct_r_cons_bind_t._fields_ = [
+    ('get_size', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
+    ('get_cursor', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
+    ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
+    ('is_breaked', ctypes.CFUNCTYPE(ctypes.c_bool)),
+    ('cb_flush', ctypes.CFUNCTYPE(None)),
+    ('cb_grep', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
 ]
 
 class struct_r_core_bind_t(Structure):
@@ -4394,19 +4407,6 @@ struct_r_core_bind_t._fields_ = [
     ('isMapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_int32)),
     ('syncDebugMaps', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None))),
     ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
-]
-
-class struct_r_cons_bind_t(Structure):
-    pass
-
-struct_r_cons_bind_t._pack_ = 1 # source:False
-struct_r_cons_bind_t._fields_ = [
-    ('get_size', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
-    ('get_cursor', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
-    ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
-    ('is_breaked', ctypes.CFUNCTYPE(ctypes.c_bool)),
-    ('cb_flush', ctypes.CFUNCTYPE(None)),
-    ('cb_grep', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
 ]
 
 struct_r_print_t._pack_ = 1 # source:False
@@ -4490,8 +4490,11 @@ struct_r_print_t._fields_ = [
     ('PADDING_10', ctypes.c_ubyte * 4),
 ]
 
-class struct_ptrace_wrap_instance_t(Structure):
-    pass
+class struct_r_skyline_t(Structure):
+    _pack_ = 1 # source:False
+    _fields_ = [
+    ('v', struct_r_vector_t),
+     ]
 
 class struct_r_io_undo_t(Structure):
     pass
@@ -4519,12 +4522,6 @@ struct_r_io_undo_t._fields_ = [
 ]
 
 class struct_r_pvector_t(Structure):
-    _pack_ = 1 # source:False
-    _fields_ = [
-    ('v', struct_r_vector_t),
-     ]
-
-class struct_r_skyline_t(Structure):
     _pack_ = 1 # source:False
     _fields_ = [
     ('v', struct_r_vector_t),
@@ -4571,7 +4568,6 @@ struct_r_io_t._fields_ = [
     ('corebind', struct_r_core_bind_t),
     ('want_ptrace_wrap', ctypes.c_bool),
     ('PADDING_5', ctypes.c_ubyte * 7),
-    ('ptrace_wrap', ctypes.POINTER(struct_ptrace_wrap_instance_t)),
 ]
 
 class struct_r_io_plugin_t(Structure):
@@ -4646,13 +4642,13 @@ struct_r_io_map_t._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
 ]
 
-class struct__IO_FILE(Structure):
-    pass
-
 class struct_r_cons_context_t(Structure):
     pass
 
 class struct_r_line_t(Structure):
+    pass
+
+class struct__IO_FILE(Structure):
     pass
 
 class struct_c__SA_RConsCursorPos(Structure):
@@ -4837,27 +4833,6 @@ struct_r_cons_printable_palette_t._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
-
-# values for enumeration 'r_log_level'
-r_log_level__enumvalues = {
-    0: 'R_LOGLVL_SILLY',
-    1: 'R_LOGLVL_DEBUG',
-    2: 'R_LOGLVL_VERBOSE',
-    3: 'R_LOGLVL_INFO',
-    4: 'R_LOGLVL_WARN',
-    5: 'R_LOGLVL_ERROR',
-    6: 'R_LOGLVL_FATAL',
-    255: 'R_LOGLVL_NONE',
-}
-R_LOGLVL_SILLY = 0
-R_LOGLVL_DEBUG = 1
-R_LOGLVL_VERBOSE = 2
-R_LOGLVL_INFO = 3
-R_LOGLVL_WARN = 4
-R_LOGLVL_ERROR = 5
-R_LOGLVL_FATAL = 6
-R_LOGLVL_NONE = 255
-r_log_level = ctypes.c_uint32 # enum
 class struct_r_cons_palette_t(Structure):
     pass
 
@@ -4991,6 +4966,27 @@ struct_r_cons_grep_t._fields_ = [
     ('PADDING_5', ctypes.c_ubyte * 6),
 ]
 
+
+# values for enumeration 'r_log_level'
+r_log_level__enumvalues = {
+    0: 'R_LOGLVL_SILLY',
+    1: 'R_LOGLVL_DEBUG',
+    2: 'R_LOGLVL_VERBOSE',
+    3: 'R_LOGLVL_INFO',
+    4: 'R_LOGLVL_WARN',
+    5: 'R_LOGLVL_ERROR',
+    6: 'R_LOGLVL_FATAL',
+    255: 'R_LOGLVL_NONE',
+}
+R_LOGLVL_SILLY = 0
+R_LOGLVL_DEBUG = 1
+R_LOGLVL_VERBOSE = 2
+R_LOGLVL_INFO = 3
+R_LOGLVL_WARN = 4
+R_LOGLVL_ERROR = 5
+R_LOGLVL_FATAL = 6
+R_LOGLVL_NONE = 255
+r_log_level = ctypes.c_uint32 # enum
 struct_r_cons_context_t._pack_ = 1 # source:False
 struct_r_cons_context_t._fields_ = [
     ('grep', struct_r_cons_grep_t),
@@ -5093,34 +5089,8 @@ class struct_r_selection_widget_t(Structure):
 class struct_r_hud_t(Structure):
     pass
 
-
-# values for enumeration 'c__EA_RLinePromptType'
-c__EA_RLinePromptType__enumvalues = {
-    0: 'R_LINE_PROMPT_DEFAULT',
-    1: 'R_LINE_PROMPT_OFFSET',
-    2: 'R_LINE_PROMPT_FILE',
-}
-R_LINE_PROMPT_DEFAULT = 0
-R_LINE_PROMPT_OFFSET = 1
-R_LINE_PROMPT_FILE = 2
-c__EA_RLinePromptType = ctypes.c_uint32 # enum
-class struct_r_line_comp_t(Structure):
-    pass
-
 class struct_r_line_buffer_t(Structure):
     pass
-
-struct_r_line_comp_t._pack_ = 1 # source:False
-struct_r_line_comp_t._fields_ = [
-    ('opt', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 7),
-    ('args_limit', ctypes.c_uint64),
-    ('quit', ctypes.c_bool),
-    ('PADDING_1', ctypes.c_ubyte * 7),
-    ('args', struct_r_pvector_t),
-    ('run', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_line_comp_t), ctypes.POINTER(struct_r_line_buffer_t), c__EA_RLinePromptType, ctypes.POINTER(None))),
-    ('run_user', ctypes.POINTER(None)),
-]
 
 struct_r_line_buffer_t._pack_ = 1 # source:False
 struct_r_line_buffer_t._fields_ = [
@@ -5142,6 +5112,32 @@ struct_r_line_hist_t._fields_ = [
     ('autosave', ctypes.c_int32),
     ('do_setup_match', ctypes.c_bool),
     ('PADDING_0', ctypes.c_ubyte * 7),
+]
+
+
+# values for enumeration 'c__EA_RLinePromptType'
+c__EA_RLinePromptType__enumvalues = {
+    0: 'R_LINE_PROMPT_DEFAULT',
+    1: 'R_LINE_PROMPT_OFFSET',
+    2: 'R_LINE_PROMPT_FILE',
+}
+R_LINE_PROMPT_DEFAULT = 0
+R_LINE_PROMPT_OFFSET = 1
+R_LINE_PROMPT_FILE = 2
+c__EA_RLinePromptType = ctypes.c_uint32 # enum
+class struct_r_line_comp_t(Structure):
+    pass
+
+struct_r_line_comp_t._pack_ = 1 # source:False
+struct_r_line_comp_t._fields_ = [
+    ('opt', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 7),
+    ('args_limit', ctypes.c_uint64),
+    ('quit', ctypes.c_bool),
+    ('PADDING_1', ctypes.c_ubyte * 7),
+    ('args', struct_r_pvector_t),
+    ('run', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_line_comp_t), ctypes.POINTER(struct_r_line_buffer_t), c__EA_RLinePromptType, ctypes.POINTER(None))),
+    ('run_user', ctypes.POINTER(None)),
 ]
 
 struct_r_line_t._pack_ = 1 # source:False
@@ -5505,93 +5501,6 @@ r_print_json_human.argtypes = [ctypes.POINTER(ctypes.c_char)]
 r_print_json_path = _libr_util.r_print_json_path
 r_print_json_path.restype = ctypes.POINTER(ctypes.c_char)
 r_print_json_path.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
-
-# values for enumeration 'r_json_type_t'
-r_json_type_t__enumvalues = {
-    0: 'R_JSON_NULL',
-    1: 'R_JSON_OBJECT',
-    2: 'R_JSON_ARRAY',
-    3: 'R_JSON_STRING',
-    4: 'R_JSON_INTEGER',
-    5: 'R_JSON_DOUBLE',
-    6: 'R_JSON_BOOLEAN',
-}
-R_JSON_NULL = 0
-R_JSON_OBJECT = 1
-R_JSON_ARRAY = 2
-R_JSON_STRING = 3
-R_JSON_INTEGER = 4
-R_JSON_DOUBLE = 5
-R_JSON_BOOLEAN = 6
-r_json_type_t = ctypes.c_uint32 # enum
-RJsonType = r_json_type_t
-RJsonType__enumvalues = r_json_type_t__enumvalues
-class struct_r_json_t(Structure):
-    pass
-
-class union_r_json_t_0(Union):
-    pass
-
-class struct_r_json_t_0_1(Structure):
-    pass
-
-struct_r_json_t_0_1._pack_ = 1 # source:False
-struct_r_json_t_0_1._fields_ = [
-    ('count', ctypes.c_uint64),
-    ('first', ctypes.POINTER(struct_r_json_t)),
-    ('last', ctypes.POINTER(struct_r_json_t)),
-]
-
-class struct_r_json_t_0_0(Structure):
-    pass
-
-class union_r_json_t_0_0_0(Union):
-    pass
-
-union_r_json_t_0_0_0._pack_ = 1 # source:False
-union_r_json_t_0_0_0._fields_ = [
-    ('u_value', ctypes.c_uint64),
-    ('s_value', ctypes.c_int64),
-]
-
-struct_r_json_t_0_0._pack_ = 1 # source:False
-struct_r_json_t_0_0._anonymous_ = ('_0',)
-struct_r_json_t_0_0._fields_ = [
-    ('_0', union_r_json_t_0_0_0),
-    ('dbl_value', ctypes.c_double),
-]
-
-union_r_json_t_0._pack_ = 1 # source:False
-union_r_json_t_0._anonymous_ = ('_0', '_1',)
-union_r_json_t_0._fields_ = [
-    ('str_value', ctypes.POINTER(ctypes.c_char)),
-    ('_0', struct_r_json_t_0_0),
-    ('_1', struct_r_json_t_0_1),
-]
-
-struct_r_json_t._pack_ = 1 # source:False
-struct_r_json_t._anonymous_ = ('_0',)
-struct_r_json_t._fields_ = [
-    ('type', RJsonType),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-    ('key', ctypes.POINTER(ctypes.c_char)),
-    ('_0', union_r_json_t_0),
-    ('next', ctypes.POINTER(struct_r_json_t)),
-]
-
-RJson = struct_r_json_t
-r_json_parse = _libr_util.r_json_parse
-r_json_parse.restype = ctypes.POINTER(struct_r_json_t)
-r_json_parse.argtypes = [ctypes.POINTER(ctypes.c_char)]
-r_json_free = _libr_util.r_json_free
-r_json_free.restype = None
-r_json_free.argtypes = [ctypes.POINTER(struct_r_json_t)]
-r_json_get = _libr_util.r_json_get
-r_json_get.restype = ctypes.POINTER(struct_r_json_t)
-r_json_get.argtypes = [ctypes.POINTER(struct_r_json_t), ctypes.POINTER(ctypes.c_char)]
-r_json_item = _libr_util.r_json_item
-r_json_item.restype = ctypes.POINTER(struct_r_json_t)
-r_json_item.argtypes = [ctypes.POINTER(struct_r_json_t), size_t]
 class struct_r_anal_graph_node_info_t(Structure):
     pass
 
@@ -5630,30 +5539,15 @@ __all__ = \
     'PJ_ENCODING_NUM_HEX', 'PJ_ENCODING_NUM_STR',
     'PJ_ENCODING_STR_ARRAY', 'PJ_ENCODING_STR_BASE64',
     'PJ_ENCODING_STR_DEFAULT', 'PJ_ENCODING_STR_HEX',
-    'PJ_ENCODING_STR_STRIP', 'PTRACE_ARCH_PRCTL', 'PTRACE_ATTACH',
-    'PTRACE_CONT', 'PTRACE_DETACH', 'PTRACE_GETEVENTMSG',
-    'PTRACE_GETFPREGS', 'PTRACE_GETFPXREGS', 'PTRACE_GETREGS',
-    'PTRACE_GETREGSET', 'PTRACE_GETSIGINFO', 'PTRACE_GETSIGMASK',
-    'PTRACE_GET_SYSCALL_INFO', 'PTRACE_GET_THREAD_AREA',
-    'PTRACE_INTERRUPT', 'PTRACE_KILL', 'PTRACE_LISTEN',
-    'PTRACE_PEEKDATA', 'PTRACE_PEEKSIGINFO', 'PTRACE_PEEKTEXT',
-    'PTRACE_PEEKUSER', 'PTRACE_POKEDATA', 'PTRACE_POKETEXT',
-    'PTRACE_POKEUSER', 'PTRACE_SECCOMP_GET_FILTER',
-    'PTRACE_SECCOMP_GET_METADATA', 'PTRACE_SEIZE', 'PTRACE_SETFPREGS',
-    'PTRACE_SETFPXREGS', 'PTRACE_SETOPTIONS', 'PTRACE_SETREGS',
-    'PTRACE_SETREGSET', 'PTRACE_SETSIGINFO', 'PTRACE_SETSIGMASK',
-    'PTRACE_SET_THREAD_AREA', 'PTRACE_SINGLEBLOCK',
-    'PTRACE_SINGLESTEP', 'PTRACE_SYSCALL', 'PTRACE_SYSEMU',
-    'PTRACE_SYSEMU_SINGLESTEP', 'PTRACE_TRACEME', 'PrintfCallback',
-    'RASN1Binary', 'RASN1Object', 'RASN1String', 'RBComparator',
-    'RBIter', 'RBNode', 'RBNodeFree', 'RBNodeSum', 'RBTree',
-    'RBitmap', 'RBraile', 'RBuffer', 'RBufferFini',
-    'RBufferFreeWholeBuf', 'RBufferGetSize', 'RBufferGetWholeBuf',
-    'RBufferInit', 'RBufferMethods', 'RBufferNonEmptyList',
-    'RBufferRead', 'RBufferResize', 'RBufferSeek', 'RBufferSparse',
-    'RBufferWrite', 'RCMS', 'RCache', 'RCalloc', 'RDiff',
-    'RDiffCallback', 'RDiffChar', 'RDiffOp', 'REvent',
-    'REventCallback', 'REventCallbackHandle', 'REventClass',
+    'PJ_ENCODING_STR_STRIP', 'PrintfCallback', 'RASN1Binary',
+    'RASN1Object', 'RASN1String', 'RBComparator', 'RBIter', 'RBNode',
+    'RBNodeFree', 'RBNodeSum', 'RBTree', 'RBitmap', 'RBraile',
+    'RBuffer', 'RBufferFini', 'RBufferFreeWholeBuf', 'RBufferGetSize',
+    'RBufferGetWholeBuf', 'RBufferInit', 'RBufferMethods',
+    'RBufferNonEmptyList', 'RBufferRead', 'RBufferResize',
+    'RBufferSeek', 'RBufferSparse', 'RBufferWrite', 'RCMS', 'RCache',
+    'RCalloc', 'RDiff', 'RDiffCallback', 'RDiffChar', 'RDiffOp',
+    'REvent', 'REventCallback', 'REventCallbackHandle', 'REventClass',
     'REventClassAttr', 'REventClassAttrRename', 'REventClassAttrSet',
     'REventClassRename', 'REventDebugProcessFinished',
     'REventIOWrite', 'REventMeta', 'REventType',
@@ -5735,15 +5629,15 @@ __all__ = \
     'R_TABLE_ALIGN_RIGHT', 'R_TH_FREED', 'R_TH_REPEAT', 'R_TH_STOP',
     'R_TYPE_BASIC', 'R_TYPE_ENUM', 'R_TYPE_STRUCT', 'R_TYPE_TYPEDEF',
     'R_TYPE_UNION', 'SpcAttributeTypeAndOptionalValue',
-    'SpcDigestInfo', 'SpcIndirectDataContent', '__ptrace_request',
-    'asn1_setformat', 'c__EA_REventType', 'c__EA_RLevOp',
-    'c__EA_RLinePromptType', 'c__EA_RNumCalcToken',
-    'c__EA_RPanelEdge', 'c__EA_RPanelLayout', 'c__EA_RPanelType',
-    'c__EA_RSpaceEventType', 'c__EA_RStrEnc', 'c__EA_RSysArch',
-    'c__EA_RThreadFunctionRet', 'c__Ea_R_TABLE_ALIGN_LEFT',
-    'pthread_t', 'r_asctime_r', 'r_asn1_create_binary',
-    'r_asn1_create_object', 'r_asn1_create_string',
-    'r_asn1_free_binary', 'r_asn1_free_object', 'r_asn1_free_string',
+    'SpcDigestInfo', 'SpcIndirectDataContent', 'asn1_setformat',
+    'c__EA_REventType', 'c__EA_RLevOp', 'c__EA_RLinePromptType',
+    'c__EA_RNumCalcToken', 'c__EA_RPanelEdge', 'c__EA_RPanelLayout',
+    'c__EA_RPanelType', 'c__EA_RSpaceEventType', 'c__EA_RStrEnc',
+    'c__EA_RSysArch', 'c__EA_RThreadFunctionRet',
+    'c__Ea_R_TABLE_ALIGN_LEFT', 'pthread_t', 'r_asctime_r',
+    'r_asn1_create_binary', 'r_asn1_create_object',
+    'r_asn1_create_string', 'r_asn1_free_binary',
+    'r_asn1_free_object', 'r_asn1_free_string',
     'r_asn1_stringify_bits', 'r_asn1_stringify_boolean',
     'r_asn1_stringify_bytes', 'r_asn1_stringify_integer',
     'r_asn1_stringify_oid', 'r_asn1_stringify_string',
@@ -6002,11 +5896,10 @@ __all__ = \
     'struct_ht_pp_kv', 'struct_ht_pp_options_t', 'struct_ht_pp_t',
     'struct_ht_up_bucket_t', 'struct_ht_up_kv',
     'struct_ht_up_options_t', 'struct_ht_up_t', 'struct_ls_iter_t',
-    'struct_ls_t', 'struct_pj_t', 'struct_ptrace_wrap_instance_t',
-    'struct_r_anal_graph_node_info_t', 'struct_r_asn1_bin_t',
-    'struct_r_asn1_list_t', 'struct_r_asn1_object_t',
-    'struct_r_asn1_string_t', 'struct_r_bitmap_t',
-    'struct_r_buf_cache_t', 'struct_r_buf_t',
+    'struct_ls_t', 'struct_pj_t', 'struct_r_anal_graph_node_info_t',
+    'struct_r_asn1_bin_t', 'struct_r_asn1_list_t',
+    'struct_r_asn1_object_t', 'struct_r_asn1_string_t',
+    'struct_r_bitmap_t', 'struct_r_buf_cache_t', 'struct_r_buf_t',
     'struct_r_buffer_methods_t', 'struct_r_cache_t',
     'struct_r_charset_rune_t', 'struct_r_charset_t',
     'struct_r_cons_bind_t', 'struct_r_cons_context_t',

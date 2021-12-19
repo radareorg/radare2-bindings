@@ -30,14 +30,6 @@ from .r_libs import r_syscall as _libr_syscall
 from .r_libs import r_util as _libr_util
 
 
-c_int128 = ctypes.c_ubyte*16
-c_uint128 = c_int128
-void = None
-if ctypes.sizeof(ctypes.c_longdouble) == 16:
-    c_long_double_t = ctypes.c_longdouble
-else:
-    c_long_double_t = ctypes.c_ubyte*16
-
 _libraries = {}
 def string_cast(char_pointer, encoding='utf-8', errors='strict'):
     value = ctypes.cast(char_pointer, ctypes.c_char_p).value
@@ -166,6 +158,14 @@ class Union(ctypes.Union, AsDictMixin):
 
 
 
+c_int128 = ctypes.c_ubyte*16
+c_uint128 = c_int128
+void = None
+if ctypes.sizeof(ctypes.c_longdouble) == 16:
+    c_long_double_t = ctypes.c_longdouble
+else:
+    c_long_double_t = ctypes.c_ubyte*16
+
 class FunctionFactoryStub:
     def __getattr__(self, _):
       return ctypes.CFUNCTYPE(lambda y:y)
@@ -178,94 +178,6 @@ class FunctionFactoryStub:
 _libraries['FIXME_STUB'] = FunctionFactoryStub() #  ctypes.CDLL('FIXME_STUB')
 
 
-
-# values for enumeration '__ptrace_request'
-__ptrace_request__enumvalues = {
-    0: 'PTRACE_TRACEME',
-    1: 'PTRACE_PEEKTEXT',
-    2: 'PTRACE_PEEKDATA',
-    3: 'PTRACE_PEEKUSER',
-    4: 'PTRACE_POKETEXT',
-    5: 'PTRACE_POKEDATA',
-    6: 'PTRACE_POKEUSER',
-    7: 'PTRACE_CONT',
-    8: 'PTRACE_KILL',
-    9: 'PTRACE_SINGLESTEP',
-    12: 'PTRACE_GETREGS',
-    13: 'PTRACE_SETREGS',
-    14: 'PTRACE_GETFPREGS',
-    15: 'PTRACE_SETFPREGS',
-    16: 'PTRACE_ATTACH',
-    17: 'PTRACE_DETACH',
-    18: 'PTRACE_GETFPXREGS',
-    19: 'PTRACE_SETFPXREGS',
-    24: 'PTRACE_SYSCALL',
-    25: 'PTRACE_GET_THREAD_AREA',
-    26: 'PTRACE_SET_THREAD_AREA',
-    30: 'PTRACE_ARCH_PRCTL',
-    31: 'PTRACE_SYSEMU',
-    32: 'PTRACE_SYSEMU_SINGLESTEP',
-    33: 'PTRACE_SINGLEBLOCK',
-    16896: 'PTRACE_SETOPTIONS',
-    16897: 'PTRACE_GETEVENTMSG',
-    16898: 'PTRACE_GETSIGINFO',
-    16899: 'PTRACE_SETSIGINFO',
-    16900: 'PTRACE_GETREGSET',
-    16901: 'PTRACE_SETREGSET',
-    16902: 'PTRACE_SEIZE',
-    16903: 'PTRACE_INTERRUPT',
-    16904: 'PTRACE_LISTEN',
-    16905: 'PTRACE_PEEKSIGINFO',
-    16906: 'PTRACE_GETSIGMASK',
-    16907: 'PTRACE_SETSIGMASK',
-    16908: 'PTRACE_SECCOMP_GET_FILTER',
-    16909: 'PTRACE_SECCOMP_GET_METADATA',
-    16910: 'PTRACE_GET_SYSCALL_INFO',
-}
-PTRACE_TRACEME = 0
-PTRACE_PEEKTEXT = 1
-PTRACE_PEEKDATA = 2
-PTRACE_PEEKUSER = 3
-PTRACE_POKETEXT = 4
-PTRACE_POKEDATA = 5
-PTRACE_POKEUSER = 6
-PTRACE_CONT = 7
-PTRACE_KILL = 8
-PTRACE_SINGLESTEP = 9
-PTRACE_GETREGS = 12
-PTRACE_SETREGS = 13
-PTRACE_GETFPREGS = 14
-PTRACE_SETFPREGS = 15
-PTRACE_ATTACH = 16
-PTRACE_DETACH = 17
-PTRACE_GETFPXREGS = 18
-PTRACE_SETFPXREGS = 19
-PTRACE_SYSCALL = 24
-PTRACE_GET_THREAD_AREA = 25
-PTRACE_SET_THREAD_AREA = 26
-PTRACE_ARCH_PRCTL = 30
-PTRACE_SYSEMU = 31
-PTRACE_SYSEMU_SINGLESTEP = 32
-PTRACE_SINGLEBLOCK = 33
-PTRACE_SETOPTIONS = 16896
-PTRACE_GETEVENTMSG = 16897
-PTRACE_GETSIGINFO = 16898
-PTRACE_SETSIGINFO = 16899
-PTRACE_GETREGSET = 16900
-PTRACE_SETREGSET = 16901
-PTRACE_SEIZE = 16902
-PTRACE_INTERRUPT = 16903
-PTRACE_LISTEN = 16904
-PTRACE_PEEKSIGINFO = 16905
-PTRACE_GETSIGMASK = 16906
-PTRACE_SETSIGMASK = 16907
-PTRACE_SECCOMP_GET_FILTER = 16908
-PTRACE_SECCOMP_GET_METADATA = 16909
-PTRACE_GET_SYSCALL_INFO = 16910
-__ptrace_request = ctypes.c_uint32 # enum
-r_ptrace_request_t = __ptrace_request
-r_ptrace_request_t__enumvalues = __ptrace_request__enumvalues
-r_ptrace_data_t = ctypes.POINTER(None)
 r_io_version = _libr_io.r_io_version
 r_io_version.restype = ctypes.POINTER(ctypes.c_char)
 r_io_version.argtypes = []
@@ -336,22 +248,19 @@ RIOUndoWrite = struct_r_io_undo_w_t
 class struct_r_io_t(Structure):
     pass
 
-class struct_ptrace_wrap_instance_t(Structure):
-    pass
-
-class struct_r_io_desc_t(Structure):
-    pass
-
-class struct_r_cache_t(Structure):
-    pass
-
-class struct_ls_t(Structure):
+class struct_r_id_storage_t(Structure):
     pass
 
 class struct_r_event_t(Structure):
     pass
 
-class struct_r_id_storage_t(Structure):
+class struct_ls_t(Structure):
+    pass
+
+class struct_r_cache_t(Structure):
+    pass
+
+class struct_r_io_desc_t(Structure):
     pass
 
 class struct_r_skyline_t(Structure):
@@ -447,13 +356,12 @@ struct_r_io_t._fields_ = [
     ('corebind', struct_r_core_bind_t),
     ('want_ptrace_wrap', ctypes.c_bool),
     ('PADDING_5', ctypes.c_ubyte * 7),
-    ('ptrace_wrap', ctypes.POINTER(struct_ptrace_wrap_instance_t)),
 ]
 
-class struct_ht_up_t(Structure):
+class struct_r_io_plugin_t(Structure):
     pass
 
-class struct_r_io_plugin_t(Structure):
+class struct_ht_up_t(Structure):
     pass
 
 struct_r_io_desc_t._pack_ = 1 # source:False
@@ -714,10 +622,10 @@ RIOSubMap = struct_r_io_submap_t
 class struct_r_io_bank_t(Structure):
     pass
 
-class struct_r_crbtree_node(Structure):
+class struct_r_crbtree_t(Structure):
     pass
 
-class struct_r_crbtree_t(Structure):
+class struct_r_crbtree_node(Structure):
     pass
 
 struct_r_io_bank_t._pack_ = 1 # source:False
@@ -802,8 +710,6 @@ RIOMapGetAt = ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER
 RIOMapGetPaddr = ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)
 RIOAddrIsMapped = ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)
 RIOMapAdd = ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)
-RIOPtraceFn = ctypes.CFUNCTYPE(ctypes.c_int64, ctypes.POINTER(struct_r_io_t), __ptrace_request, ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(None))
-RIOPtraceFuncFn = ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(struct_r_io_t), ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None)), ctypes.POINTER(None))
 class struct_r_io_bind_t(Structure):
     pass
 
@@ -843,8 +749,6 @@ struct_r_io_bind_t._fields_ = [
     ('map_add', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)),
     ('v2p', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
     ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
-    ('ptrace', ctypes.CFUNCTYPE(ctypes.c_int64, ctypes.POINTER(struct_r_io_t), __ptrace_request, ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(None))),
-    ('ptrace_func', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(struct_r_io_t), ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None)), ctypes.POINTER(None))),
 ]
 
 RIOBind = struct_r_io_bind_t
@@ -1440,16 +1344,6 @@ r_io_read_i.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.P
 r_io_write_i = _libr_io.r_io_write_i
 r_io_write_i.restype = ctypes.c_bool
 r_io_write_i.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64), ctypes.c_int32, ctypes.c_bool]
-pid_t = ctypes.c_int32
-r_io_ptrace = _libr_io.r_io_ptrace
-r_io_ptrace.restype = ctypes.c_int64
-r_io_ptrace.argtypes = [ctypes.POINTER(struct_r_io_t), r_ptrace_request_t, pid_t, ctypes.POINTER(None), r_ptrace_data_t]
-r_io_ptrace_fork = _libr_io.r_io_ptrace_fork
-r_io_ptrace_fork.restype = pid_t
-r_io_ptrace_fork.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.CFUNCTYPE(None, ctypes.POINTER(None)), ctypes.POINTER(None)]
-r_io_ptrace_func = _libr_io.r_io_ptrace_func
-r_io_ptrace_func.restype = ctypes.POINTER(None)
-r_io_ptrace_func.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None)), ctypes.POINTER(None)]
 r_io_plugin_procpid = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_malloc = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_sparse = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
@@ -1486,32 +1380,16 @@ r_io_plugin_fd = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_socket = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 r_io_plugin_isotp = struct_r_io_plugin_t # Variable struct_r_io_plugin_t
 __all__ = \
-    ['PTRACE_ARCH_PRCTL', 'PTRACE_ATTACH', 'PTRACE_CONT',
-    'PTRACE_DETACH', 'PTRACE_GETEVENTMSG', 'PTRACE_GETFPREGS',
-    'PTRACE_GETFPXREGS', 'PTRACE_GETREGS', 'PTRACE_GETREGSET',
-    'PTRACE_GETSIGINFO', 'PTRACE_GETSIGMASK',
-    'PTRACE_GET_SYSCALL_INFO', 'PTRACE_GET_THREAD_AREA',
-    'PTRACE_INTERRUPT', 'PTRACE_KILL', 'PTRACE_LISTEN',
-    'PTRACE_PEEKDATA', 'PTRACE_PEEKSIGINFO', 'PTRACE_PEEKTEXT',
-    'PTRACE_PEEKUSER', 'PTRACE_POKEDATA', 'PTRACE_POKETEXT',
-    'PTRACE_POKEUSER', 'PTRACE_SECCOMP_GET_FILTER',
-    'PTRACE_SECCOMP_GET_METADATA', 'PTRACE_SEIZE', 'PTRACE_SETFPREGS',
-    'PTRACE_SETFPXREGS', 'PTRACE_SETOPTIONS', 'PTRACE_SETREGS',
-    'PTRACE_SETREGSET', 'PTRACE_SETSIGINFO', 'PTRACE_SETSIGMASK',
-    'PTRACE_SET_THREAD_AREA', 'PTRACE_SINGLEBLOCK',
-    'PTRACE_SINGLESTEP', 'PTRACE_SYSCALL', 'PTRACE_SYSEMU',
-    'PTRACE_SYSEMU_SINGLESTEP', 'PTRACE_TRACEME', 'RIO',
-    'RIOAddrIsMapped', 'RIOBank', 'RIOBankGet', 'RIOBind', 'RIOCache',
-    'RIOClose', 'RIODesc', 'RIODescCache', 'RIODescGet',
+    ['RIO', 'RIOAddrIsMapped', 'RIOBank', 'RIOBankGet', 'RIOBind',
+    'RIOCache', 'RIOClose', 'RIODesc', 'RIODescCache', 'RIODescGet',
     'RIODescSize', 'RIODescUse', 'RIOFdClose', 'RIOFdGetMap',
     'RIOFdGetName', 'RIOFdIsDbg', 'RIOFdOpen', 'RIOFdRead',
     'RIOFdReadAt', 'RIOFdRemap', 'RIOFdResize', 'RIOFdSeek',
     'RIOFdSize', 'RIOFdWrite', 'RIOFdWriteAt', 'RIOIsValidOff',
     'RIOMap', 'RIOMapAdd', 'RIOMapGet', 'RIOMapGetAt',
     'RIOMapGetPaddr', 'RIOMapRef', 'RIOOpen', 'RIOOpenAt', 'RIOP2V',
-    'RIOPlugin', 'RIOPtraceFn', 'RIOPtraceFuncFn', 'RIORap',
-    'RIOReadAt', 'RIOSubMap', 'RIOSystem', 'RIOUndo', 'RIOUndoWrite',
-    'RIOUndos', 'RIOV2P', 'RIOWriteAt', '__ptrace_request', 'pid_t',
+    'RIOPlugin', 'RIORap', 'RIOReadAt', 'RIOSubMap', 'RIOSystem',
+    'RIOUndo', 'RIOUndoWrite', 'RIOUndos', 'RIOV2P', 'RIOWriteAt',
     'r_io_addr_is_mapped', 'r_io_bank_add', 'r_io_bank_clear',
     'r_io_bank_del', 'r_io_bank_del_map', 'r_io_bank_drain',
     'r_io_bank_fini', 'r_io_bank_first', 'r_io_bank_free',
@@ -1577,8 +1455,7 @@ __all__ = \
     'r_io_plugin_tcpslurp', 'r_io_plugin_w32', 'r_io_plugin_w32dbg',
     'r_io_plugin_windbg', 'r_io_plugin_winedbg', 'r_io_plugin_winkd',
     'r_io_plugin_write', 'r_io_plugin_write_at', 'r_io_plugin_zip',
-    'r_io_pread_at', 'r_io_ptrace', 'r_io_ptrace_fork',
-    'r_io_ptrace_func', 'r_io_pwrite_at', 'r_io_read', 'r_io_read_at',
+    'r_io_pread_at', 'r_io_pwrite_at', 'r_io_read', 'r_io_read_at',
     'r_io_read_at_mapped', 'r_io_read_i', 'r_io_reopen',
     'r_io_resize', 'r_io_seek', 'r_io_set_write_mask', 'r_io_shift',
     'r_io_size', 'r_io_submap_new', 'r_io_submap_set_from',
@@ -1590,12 +1467,9 @@ __all__ = \
     'r_io_wundo_apply', 'r_io_wundo_apply_all', 'r_io_wundo_clear',
     'r_io_wundo_list', 'r_io_wundo_new', 'r_io_wundo_set',
     'r_io_wundo_set_all', 'r_io_wundo_set_t', 'r_io_wundo_size',
-    'r_ptrace_data_t', 'r_ptrace_request_t',
-    'r_ptrace_request_t__enumvalues', 'struct_c__SA_RIORap',
-    'struct_ht_up_bucket_t', 'struct_ht_up_kv',
+    'struct_c__SA_RIORap', 'struct_ht_up_bucket_t', 'struct_ht_up_kv',
     'struct_ht_up_options_t', 'struct_ht_up_t', 'struct_in_addr',
-    'struct_ls_iter_t', 'struct_ls_t',
-    'struct_ptrace_wrap_instance_t', 'struct_r_buf_t',
+    'struct_ls_iter_t', 'struct_ls_t', 'struct_r_buf_t',
     'struct_r_buffer_methods_t', 'struct_r_cache_t',
     'struct_r_core_bind_t', 'struct_r_crbtree_node',
     'struct_r_crbtree_t', 'struct_r_event_t', 'struct_r_id_pool_t',

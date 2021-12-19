@@ -255,16 +255,16 @@ RFlagItem = struct_r_flag_item_t
 class struct_r_flag_t(Structure):
     pass
 
-class struct_r_skiplist_t(Structure):
+class struct_ht_pp_t(Structure):
     pass
 
 class struct_r_num_t(Structure):
     pass
 
-class struct_ht_pp_t(Structure):
+class struct_sdb_t(Structure):
     pass
 
-class struct_sdb_t(Structure):
+class struct_r_skiplist_t(Structure):
     pass
 
 class struct_r_spaces_t(Structure):

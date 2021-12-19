@@ -196,91 +196,6 @@ class struct_r_io_map_t(Structure):
 class struct_r_list_t(Structure):
     pass
 
-
-# values for enumeration '__ptrace_request'
-__ptrace_request__enumvalues = {
-    0: 'PTRACE_TRACEME',
-    1: 'PTRACE_PEEKTEXT',
-    2: 'PTRACE_PEEKDATA',
-    3: 'PTRACE_PEEKUSER',
-    4: 'PTRACE_POKETEXT',
-    5: 'PTRACE_POKEDATA',
-    6: 'PTRACE_POKEUSER',
-    7: 'PTRACE_CONT',
-    8: 'PTRACE_KILL',
-    9: 'PTRACE_SINGLESTEP',
-    12: 'PTRACE_GETREGS',
-    13: 'PTRACE_SETREGS',
-    14: 'PTRACE_GETFPREGS',
-    15: 'PTRACE_SETFPREGS',
-    16: 'PTRACE_ATTACH',
-    17: 'PTRACE_DETACH',
-    18: 'PTRACE_GETFPXREGS',
-    19: 'PTRACE_SETFPXREGS',
-    24: 'PTRACE_SYSCALL',
-    25: 'PTRACE_GET_THREAD_AREA',
-    26: 'PTRACE_SET_THREAD_AREA',
-    30: 'PTRACE_ARCH_PRCTL',
-    31: 'PTRACE_SYSEMU',
-    32: 'PTRACE_SYSEMU_SINGLESTEP',
-    33: 'PTRACE_SINGLEBLOCK',
-    16896: 'PTRACE_SETOPTIONS',
-    16897: 'PTRACE_GETEVENTMSG',
-    16898: 'PTRACE_GETSIGINFO',
-    16899: 'PTRACE_SETSIGINFO',
-    16900: 'PTRACE_GETREGSET',
-    16901: 'PTRACE_SETREGSET',
-    16902: 'PTRACE_SEIZE',
-    16903: 'PTRACE_INTERRUPT',
-    16904: 'PTRACE_LISTEN',
-    16905: 'PTRACE_PEEKSIGINFO',
-    16906: 'PTRACE_GETSIGMASK',
-    16907: 'PTRACE_SETSIGMASK',
-    16908: 'PTRACE_SECCOMP_GET_FILTER',
-    16909: 'PTRACE_SECCOMP_GET_METADATA',
-    16910: 'PTRACE_GET_SYSCALL_INFO',
-}
-PTRACE_TRACEME = 0
-PTRACE_PEEKTEXT = 1
-PTRACE_PEEKDATA = 2
-PTRACE_PEEKUSER = 3
-PTRACE_POKETEXT = 4
-PTRACE_POKEDATA = 5
-PTRACE_POKEUSER = 6
-PTRACE_CONT = 7
-PTRACE_KILL = 8
-PTRACE_SINGLESTEP = 9
-PTRACE_GETREGS = 12
-PTRACE_SETREGS = 13
-PTRACE_GETFPREGS = 14
-PTRACE_SETFPREGS = 15
-PTRACE_ATTACH = 16
-PTRACE_DETACH = 17
-PTRACE_GETFPXREGS = 18
-PTRACE_SETFPXREGS = 19
-PTRACE_SYSCALL = 24
-PTRACE_GET_THREAD_AREA = 25
-PTRACE_SET_THREAD_AREA = 26
-PTRACE_ARCH_PRCTL = 30
-PTRACE_SYSEMU = 31
-PTRACE_SYSEMU_SINGLESTEP = 32
-PTRACE_SINGLEBLOCK = 33
-PTRACE_SETOPTIONS = 16896
-PTRACE_GETEVENTMSG = 16897
-PTRACE_GETSIGINFO = 16898
-PTRACE_SETSIGINFO = 16899
-PTRACE_GETREGSET = 16900
-PTRACE_SETREGSET = 16901
-PTRACE_SEIZE = 16902
-PTRACE_INTERRUPT = 16903
-PTRACE_LISTEN = 16904
-PTRACE_PEEKSIGINFO = 16905
-PTRACE_GETSIGMASK = 16906
-PTRACE_SETSIGMASK = 16907
-PTRACE_SECCOMP_GET_FILTER = 16908
-PTRACE_SECCOMP_GET_METADATA = 16909
-PTRACE_GET_SYSCALL_INFO = 16910
-__ptrace_request = ctypes.c_uint32 # enum
 class struct_r_io_bank_t(Structure):
     pass
 
@@ -320,45 +235,19 @@ struct_r_io_bind_t._fields_ = [
     ('map_add', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)),
     ('v2p', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
     ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
-    ('ptrace', ctypes.CFUNCTYPE(ctypes.c_int64, ctypes.POINTER(struct_r_io_t), __ptrace_request, ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(None))),
-    ('ptrace_func', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(struct_r_io_t), ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None)), ctypes.POINTER(None))),
 ]
 
 class struct_r_id_storage_t(Structure):
     pass
 
-class struct_ptrace_wrap_instance_t(Structure):
+class struct_ls_t(Structure):
     pass
 
 class struct_r_event_t(Structure):
     pass
 
-class struct_ls_t(Structure):
-    pass
-
 class struct_r_cache_t(Structure):
     pass
-
-class struct_r_skyline_t(Structure):
-    pass
-
-class struct_r_vector_t(Structure):
-    pass
-
-struct_r_vector_t._pack_ = 1 # source:False
-struct_r_vector_t._fields_ = [
-    ('a', ctypes.POINTER(None)),
-    ('len', ctypes.c_uint64),
-    ('capacity', ctypes.c_uint64),
-    ('elem_size', ctypes.c_uint64),
-    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
-    ('free_user', ctypes.POINTER(None)),
-]
-
-struct_r_skyline_t._pack_ = 1 # source:False
-struct_r_skyline_t._fields_ = [
-    ('v', struct_r_vector_t),
-]
 
 class struct_r_core_bind_t(Structure):
     pass
@@ -385,6 +274,33 @@ struct_r_core_bind_t._fields_ = [
     ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
 ]
 
+class struct_r_skyline_t(Structure):
+    pass
+
+class struct_r_vector_t(Structure):
+    pass
+
+struct_r_vector_t._pack_ = 1 # source:False
+struct_r_vector_t._fields_ = [
+    ('a', ctypes.POINTER(None)),
+    ('len', ctypes.c_uint64),
+    ('capacity', ctypes.c_uint64),
+    ('elem_size', ctypes.c_uint64),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
+    ('free_user', ctypes.POINTER(None)),
+]
+
+struct_r_skyline_t._pack_ = 1 # source:False
+struct_r_skyline_t._fields_ = [
+    ('v', struct_r_vector_t),
+]
+
+class struct_r_pvector_t(Structure):
+    _pack_ = 1 # source:False
+    _fields_ = [
+    ('v', struct_r_vector_t),
+     ]
+
 class struct_r_io_undo_t(Structure):
     pass
 
@@ -409,12 +325,6 @@ struct_r_io_undo_t._fields_ = [
     ('redos', ctypes.c_int32),
     ('seek', struct_r_io_undos_t * 64),
 ]
-
-class struct_r_pvector_t(Structure):
-    _pack_ = 1 # source:False
-    _fields_ = [
-    ('v', struct_r_vector_t),
-     ]
 
 struct_r_io_t._pack_ = 1 # source:False
 struct_r_io_t._fields_ = [
@@ -457,7 +367,6 @@ struct_r_io_t._fields_ = [
     ('corebind', struct_r_core_bind_t),
     ('want_ptrace_wrap', ctypes.c_bool),
     ('PADDING_5', ctypes.c_ubyte * 7),
-    ('ptrace_wrap', ctypes.POINTER(struct_ptrace_wrap_instance_t)),
 ]
 
 class struct_ht_up_t(Structure):
@@ -649,10 +558,10 @@ struct_r_event_t._fields_ = [
     ('PADDING_1', ctypes.c_ubyte * 4),
 ]
 
-class struct_r_crbtree_node(Structure):
+class struct_r_crbtree_t(Structure):
     pass
 
-class struct_r_crbtree_t(Structure):
+class struct_r_crbtree_node(Structure):
     pass
 
 struct_r_io_bank_t._pack_ = 1 # source:False
@@ -744,10 +653,10 @@ RFSPartitionPlugin = struct_r_fs_partition_plugin_t
 class struct_r_fs_file_t(Structure):
     pass
 
-class struct_r_fs_root_t(Structure):
+class struct_r_fs_plugin_t(Structure):
     pass
 
-class struct_r_fs_plugin_t(Structure):
+class struct_r_fs_root_t(Structure):
     pass
 
 struct_r_fs_file_t._pack_ = 1 # source:False
@@ -969,25 +878,10 @@ r_fs_plugin_fb = struct_r_fs_plugin_t # Variable struct_r_fs_plugin_t
 r_fs_plugin_minix = struct_r_fs_plugin_t # Variable struct_r_fs_plugin_t
 r_fs_plugin_posix = struct_r_fs_plugin_t # Variable struct_r_fs_plugin_t
 __all__ = \
-    ['PTRACE_ARCH_PRCTL', 'PTRACE_ATTACH', 'PTRACE_CONT',
-    'PTRACE_DETACH', 'PTRACE_GETEVENTMSG', 'PTRACE_GETFPREGS',
-    'PTRACE_GETFPXREGS', 'PTRACE_GETREGS', 'PTRACE_GETREGSET',
-    'PTRACE_GETSIGINFO', 'PTRACE_GETSIGMASK',
-    'PTRACE_GET_SYSCALL_INFO', 'PTRACE_GET_THREAD_AREA',
-    'PTRACE_INTERRUPT', 'PTRACE_KILL', 'PTRACE_LISTEN',
-    'PTRACE_PEEKDATA', 'PTRACE_PEEKSIGINFO', 'PTRACE_PEEKTEXT',
-    'PTRACE_PEEKUSER', 'PTRACE_POKEDATA', 'PTRACE_POKETEXT',
-    'PTRACE_POKEUSER', 'PTRACE_SECCOMP_GET_FILTER',
-    'PTRACE_SECCOMP_GET_METADATA', 'PTRACE_SEIZE', 'PTRACE_SETFPREGS',
-    'PTRACE_SETFPXREGS', 'PTRACE_SETOPTIONS', 'PTRACE_SETREGS',
-    'PTRACE_SETREGSET', 'PTRACE_SETSIGINFO', 'PTRACE_SETSIGMASK',
-    'PTRACE_SET_THREAD_AREA', 'PTRACE_SINGLEBLOCK',
-    'PTRACE_SINGLESTEP', 'PTRACE_SYSCALL', 'PTRACE_SYSEMU',
-    'PTRACE_SYSEMU_SINGLESTEP', 'PTRACE_TRACEME', 'RFS', 'RFSFile',
-    'RFSPartition', 'RFSPartitionIterator', 'RFSPartitionPlugin',
-    'RFSPartitionType', 'RFSPlugin', 'RFSRoot', 'RFSShell',
-    'R_FS_VIEW_ALL', 'R_FS_VIEW_DELETED', 'R_FS_VIEW_NORMAL',
-    'R_FS_VIEW_SPECIAL', '__ptrace_request', 'c__Ea_R_FS_VIEW_NORMAL',
+    ['RFS', 'RFSFile', 'RFSPartition', 'RFSPartitionIterator',
+    'RFSPartitionPlugin', 'RFSPartitionType', 'RFSPlugin', 'RFSRoot',
+    'RFSShell', 'R_FS_VIEW_ALL', 'R_FS_VIEW_DELETED',
+    'R_FS_VIEW_NORMAL', 'R_FS_VIEW_SPECIAL', 'c__Ea_R_FS_VIEW_NORMAL',
     'r_fs_add', 'r_fs_check', 'r_fs_close', 'r_fs_del', 'r_fs_dir',
     'r_fs_dir_dump', 'r_fs_file_copy_abs_path', 'r_fs_file_free',
     'r_fs_file_new', 'r_fs_find_name', 'r_fs_find_off', 'r_fs_free',
@@ -1007,8 +901,7 @@ __all__ = \
     'r_fs_slurp', 'r_fs_umount', 'r_fs_version', 'r_fs_view',
     'r_fs_write', 'struct_ht_up_bucket_t', 'struct_ht_up_kv',
     'struct_ht_up_options_t', 'struct_ht_up_t', 'struct_ls_iter_t',
-    'struct_ls_t', 'struct_ptrace_wrap_instance_t',
-    'struct_r_cache_t', 'struct_r_cons_bind_t',
+    'struct_ls_t', 'struct_r_cache_t', 'struct_r_cons_bind_t',
     'struct_r_core_bind_t', 'struct_r_crbtree_node',
     'struct_r_crbtree_t', 'struct_r_event_t', 'struct_r_fs_file_t',
     'struct_r_fs_partition_plugin_t', 'struct_r_fs_partition_t',
