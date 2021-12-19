@@ -154,9 +154,7 @@ def build_radare2():
     args += ["--prefix", PREFIX]
     args += ["--install"]
     # On Windows, there is no ptrace so we shouldn't generate such symbols.
-    args += ["--options", "debugger=false"]
-    # Fix building on Windows
-    args += ["--options", "sdb_cgen=false"]
+    args += ["--options", "debugger=false", "sdb_cgen=false"]
 
     subprocess.call(args)
     if LIBS_DIR.exists():
