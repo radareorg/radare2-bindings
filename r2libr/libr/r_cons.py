@@ -598,13 +598,13 @@ RConsColorMode__enumvalues = c__EA_RConsColorMode__enumvalues
 class struct_r_cons_context_t(Structure):
     pass
 
+class struct_r_stack_t(Structure):
+    pass
+
 class struct_r_list_t(Structure):
     pass
 
 class struct_c__SA_RStrBuf(Structure):
-    pass
-
-class struct_r_stack_t(Structure):
     pass
 
 
@@ -724,10 +724,10 @@ RConsCursorPos = struct_c__SA_RConsCursorPos
 class struct_r_cons_t(Structure):
     pass
 
-class struct_r_line_t(Structure):
+class struct_r_num_t(Structure):
     pass
 
-class struct_r_num_t(Structure):
+class struct_r_line_t(Structure):
     pass
 
 class struct__IO_FILE(Structure):
@@ -822,13 +822,13 @@ struct_r_cons_t._fields_ = [
     ('cpos', RConsCursorPos),
 ]
 
+class struct__IO_wide_data(Structure):
+    pass
+
 class struct__IO_codecvt(Structure):
     pass
 
 class struct__IO_marker(Structure):
-    pass
-
-class struct__IO_wide_data(Structure):
     pass
 
 struct__IO_FILE._pack_ = 1 # source:False
@@ -868,6 +868,15 @@ struct__IO_FILE._fields_ = [
 
 class struct_r_num_calc_t(Structure):
     pass
+
+class struct_c__SA_RNumCalcValue(Structure):
+    pass
+
+struct_c__SA_RNumCalcValue._pack_ = 1 # source:False
+struct_c__SA_RNumCalcValue._fields_ = [
+    ('d', ctypes.c_double),
+    ('n', ctypes.c_uint64),
+]
 
 
 # values for enumeration 'c__EA_RNumCalcToken'
@@ -922,15 +931,6 @@ RNCSHR = 62
 RNCROL = 35
 RNCROR = 36
 c__EA_RNumCalcToken = ctypes.c_uint32 # enum
-class struct_c__SA_RNumCalcValue(Structure):
-    pass
-
-struct_c__SA_RNumCalcValue._pack_ = 1 # source:False
-struct_c__SA_RNumCalcValue._fields_ = [
-    ('d', ctypes.c_double),
-    ('n', ctypes.c_uint64),
-]
-
 struct_r_num_calc_t._pack_ = 1 # source:False
 struct_r_num_calc_t._fields_ = [
     ('curr_tok', c__EA_RNumCalcToken),
@@ -961,10 +961,10 @@ struct_r_num_t._fields_ = [
     ('nc', struct_r_num_calc_t),
 ]
 
-class struct_r_selection_widget_t(Structure):
+class struct_r_hud_t(Structure):
     pass
 
-class struct_r_hud_t(Structure):
+class struct_r_selection_widget_t(Structure):
     pass
 
 class struct_r_line_hist_t(Structure):
@@ -985,6 +985,20 @@ struct_r_line_hist_t._fields_ = [
 class struct_r_line_comp_t(Structure):
     pass
 
+class struct_r_line_buffer_t(Structure):
+    pass
+
+
+# values for enumeration 'c__EA_RLinePromptType'
+c__EA_RLinePromptType__enumvalues = {
+    0: 'R_LINE_PROMPT_DEFAULT',
+    1: 'R_LINE_PROMPT_OFFSET',
+    2: 'R_LINE_PROMPT_FILE',
+}
+R_LINE_PROMPT_DEFAULT = 0
+R_LINE_PROMPT_OFFSET = 1
+R_LINE_PROMPT_FILE = 2
+c__EA_RLinePromptType = ctypes.c_uint32 # enum
 class struct_r_pvector_t(Structure):
     pass
 
@@ -1006,20 +1020,6 @@ struct_r_pvector_t._fields_ = [
     ('v', struct_r_vector_t),
 ]
 
-class struct_r_line_buffer_t(Structure):
-    pass
-
-
-# values for enumeration 'c__EA_RLinePromptType'
-c__EA_RLinePromptType__enumvalues = {
-    0: 'R_LINE_PROMPT_DEFAULT',
-    1: 'R_LINE_PROMPT_OFFSET',
-    2: 'R_LINE_PROMPT_FILE',
-}
-R_LINE_PROMPT_DEFAULT = 0
-R_LINE_PROMPT_OFFSET = 1
-R_LINE_PROMPT_FILE = 2
-c__EA_RLinePromptType = ctypes.c_uint32 # enum
 struct_r_line_comp_t._pack_ = 1 # source:False
 struct_r_line_comp_t._fields_ = [
     ('opt', ctypes.c_bool),
@@ -2011,6 +2011,8 @@ struct_c__SA_RPanelsSnow._pack_ = 1 # source:False
 struct_c__SA_RPanelsSnow._fields_ = [
     ('x', ctypes.c_int32),
     ('y', ctypes.c_int32),
+    ('stuck', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 3),
 ]
 
 RPanelsSnow = struct_c__SA_RPanelsSnow
@@ -2058,27 +2060,20 @@ struct_r_panels_t._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
 ]
 
-class struct_sdb_gperf_t(Structure):
-    pass
-
 class struct_ls_t(Structure):
     pass
 
-class struct_cdb(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
-struct_cdb._pack_ = 1 # source:False
-struct_cdb._fields_ = [
-    ('map', ctypes.POINTER(ctypes.c_char)),
-    ('fd', ctypes.c_int32),
+class struct_c__SA_dict(Structure):
+    pass
+
+struct_c__SA_dict._pack_ = 1 # source:False
+struct_c__SA_dict._fields_ = [
+    ('table', ctypes.POINTER(ctypes.POINTER(None))),
+    ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
     ('size', ctypes.c_uint32),
-    ('loop', ctypes.c_uint32),
-    ('khash', ctypes.c_uint32),
-    ('kpos', ctypes.c_uint32),
-    ('hpos', ctypes.c_uint32),
-    ('hslots', ctypes.c_uint32),
-    ('dpos', ctypes.c_uint32),
-    ('dlen', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
@@ -2120,17 +2115,6 @@ struct_cdb_make._fields_ = [
     ('fd', ctypes.c_int32),
 ]
 
-class struct_c__SA_dict(Structure):
-    pass
-
-struct_c__SA_dict._pack_ = 1 # source:False
-struct_c__SA_dict._fields_ = [
-    ('table', ctypes.POINTER(ctypes.POINTER(None))),
-    ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
-    ('size', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-]
-
 class struct_sdb_kv(Structure):
     pass
 
@@ -2140,6 +2124,24 @@ struct_sdb_kv._fields_ = [
     ('cas', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
     ('expire', ctypes.c_uint64),
+]
+
+class struct_cdb(Structure):
+    pass
+
+struct_cdb._pack_ = 1 # source:False
+struct_cdb._fields_ = [
+    ('map', ctypes.POINTER(ctypes.c_char)),
+    ('fd', ctypes.c_int32),
+    ('size', ctypes.c_uint32),
+    ('loop', ctypes.c_uint32),
+    ('khash', ctypes.c_uint32),
+    ('kpos', ctypes.c_uint32),
+    ('hpos', ctypes.c_uint32),
+    ('hslots', ctypes.c_uint32),
+    ('dpos', ctypes.c_uint32),
+    ('dlen', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
 struct_sdb_t._pack_ = 1 # source:False

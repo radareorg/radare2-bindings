@@ -230,10 +230,14 @@ r_main_ragg2.argtypes = [ctypes.c_int32, ctypes.POINTER(ctypes.POINTER(ctypes.c_
 r_main_rasign2 = _libr_main.r_main_rasign2
 r_main_rasign2.restype = ctypes.c_int32
 r_main_rasign2.argtypes = [ctypes.c_int32, ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
+r_main_r2pm = _libr_main.r_main_r2pm
+r_main_r2pm.restype = ctypes.c_int32
+r_main_r2pm.argtypes = [ctypes.c_int32, ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
 __all__ = \
     ['RMain', 'RMainCallback', 'r_main_free', 'r_main_new',
-    'r_main_r2agent', 'r_main_rabin2', 'r_main_radare2',
-    'r_main_radiff2', 'r_main_rafind2', 'r_main_ragg2',
-    'r_main_rahash2', 'r_main_rarun2', 'r_main_rasign2',
-    'r_main_rasm2', 'r_main_ravc2', 'r_main_rax2', 'r_main_run',
-    'r_main_version', 'r_main_version_print', 'struct_r_main_t']
+    'r_main_r2agent', 'r_main_r2pm', 'r_main_rabin2',
+    'r_main_radare2', 'r_main_radiff2', 'r_main_rafind2',
+    'r_main_ragg2', 'r_main_rahash2', 'r_main_rarun2',
+    'r_main_rasign2', 'r_main_rasm2', 'r_main_ravc2', 'r_main_rax2',
+    'r_main_run', 'r_main_version', 'r_main_version_print',
+    'struct_r_main_t']

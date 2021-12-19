@@ -246,31 +246,19 @@ struct_r_flag_item_t._fields_ = [
     ('type', ctypes.POINTER(ctypes.c_char)),
 ]
 
-class struct_r_rb_node_t(Structure):
-    pass
-
-struct_r_rb_node_t._pack_ = 1 # source:False
-struct_r_rb_node_t._fields_ = [
-    ('parent', ctypes.POINTER(struct_r_rb_node_t)),
-    ('child', ctypes.POINTER(struct_r_rb_node_t) * 2),
-    ('red', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 7),
-]
-
 struct_r_space_t._pack_ = 1 # source:False
 struct_r_space_t._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
-    ('rb', struct_r_rb_node_t),
 ]
 
 RFlagItem = struct_r_flag_item_t
 class struct_r_flag_t(Structure):
     pass
 
-class struct_r_num_t(Structure):
+class struct_r_skiplist_t(Structure):
     pass
 
-class struct_r_skiplist_t(Structure):
+class struct_r_num_t(Structure):
     pass
 
 class struct_ht_pp_t(Structure):
@@ -285,11 +273,14 @@ class struct_r_spaces_t(Structure):
 class struct_r_event_t(Structure):
     pass
 
+class struct_r_crbtree_t(Structure):
+    pass
+
 struct_r_spaces_t._pack_ = 1 # source:False
 struct_r_spaces_t._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
     ('current', ctypes.POINTER(struct_r_space_t)),
-    ('spaces', ctypes.POINTER(struct_r_rb_node_t)),
+    ('spaces', ctypes.POINTER(struct_r_crbtree_t)),
     ('spacestack', ctypes.POINTER(struct_r_list_t)),
     ('event', ctypes.POINTER(struct_r_event_t)),
 ]
@@ -307,6 +298,25 @@ struct_r_flag_t._fields_ = [
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
     ('zones', ctypes.POINTER(struct_r_list_t)),
     ('mask', ctypes.c_uint64),
+]
+
+class struct_r_crbtree_node(Structure):
+    pass
+
+struct_r_crbtree_t._pack_ = 1 # source:False
+struct_r_crbtree_t._fields_ = [
+    ('root', ctypes.POINTER(struct_r_crbtree_node)),
+    ('size', ctypes.c_uint64),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+]
+
+struct_r_crbtree_node._pack_ = 1 # source:False
+struct_r_crbtree_node._fields_ = [
+    ('link', ctypes.POINTER(struct_r_crbtree_node) * 2),
+    ('parent', ctypes.POINTER(struct_r_crbtree_node)),
+    ('red', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('data', ctypes.POINTER(None)),
 ]
 
 class struct_ht_up_t(Structure):
@@ -388,6 +398,57 @@ class struct_ls_t(Structure):
 class struct_sdb_gperf_t(Structure):
     pass
 
+class struct_c__SA_dict(Structure):
+    pass
+
+struct_c__SA_dict._pack_ = 1 # source:False
+struct_c__SA_dict._fields_ = [
+    ('table', ctypes.POINTER(ctypes.POINTER(None))),
+    ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+    ('size', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
+class struct_cdb(Structure):
+    pass
+
+struct_cdb._pack_ = 1 # source:False
+struct_cdb._fields_ = [
+    ('map', ctypes.POINTER(ctypes.c_char)),
+    ('fd', ctypes.c_int32),
+    ('size', ctypes.c_uint32),
+    ('loop', ctypes.c_uint32),
+    ('khash', ctypes.c_uint32),
+    ('kpos', ctypes.c_uint32),
+    ('hpos', ctypes.c_uint32),
+    ('hslots', ctypes.c_uint32),
+    ('dpos', ctypes.c_uint32),
+    ('dlen', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
+class struct_sdb_kv(Structure):
+    pass
+
+class struct_ht_pp_kv(Structure):
+    pass
+
+struct_ht_pp_kv._pack_ = 1 # source:False
+struct_ht_pp_kv._fields_ = [
+    ('key', ctypes.POINTER(None)),
+    ('value', ctypes.POINTER(None)),
+    ('key_len', ctypes.c_uint32),
+    ('value_len', ctypes.c_uint32),
+]
+
+struct_sdb_kv._pack_ = 1 # source:False
+struct_sdb_kv._fields_ = [
+    ('base', struct_ht_pp_kv),
+    ('cas', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('expire', ctypes.c_uint64),
+]
+
 class struct_cdb_make(Structure):
     pass
 
@@ -424,57 +485,6 @@ struct_cdb_make._fields_ = [
     ('b', struct_buffer),
     ('pos', ctypes.c_uint32),
     ('fd', ctypes.c_int32),
-]
-
-class struct_sdb_kv(Structure):
-    pass
-
-class struct_ht_pp_kv(Structure):
-    pass
-
-struct_ht_pp_kv._pack_ = 1 # source:False
-struct_ht_pp_kv._fields_ = [
-    ('key', ctypes.POINTER(None)),
-    ('value', ctypes.POINTER(None)),
-    ('key_len', ctypes.c_uint32),
-    ('value_len', ctypes.c_uint32),
-]
-
-struct_sdb_kv._pack_ = 1 # source:False
-struct_sdb_kv._fields_ = [
-    ('base', struct_ht_pp_kv),
-    ('cas', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-    ('expire', ctypes.c_uint64),
-]
-
-class struct_c__SA_dict(Structure):
-    pass
-
-struct_c__SA_dict._pack_ = 1 # source:False
-struct_c__SA_dict._fields_ = [
-    ('table', ctypes.POINTER(ctypes.POINTER(None))),
-    ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
-    ('size', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-]
-
-class struct_cdb(Structure):
-    pass
-
-struct_cdb._pack_ = 1 # source:False
-struct_cdb._fields_ = [
-    ('map', ctypes.POINTER(ctypes.c_char)),
-    ('fd', ctypes.c_int32),
-    ('size', ctypes.c_uint32),
-    ('loop', ctypes.c_uint32),
-    ('khash', ctypes.c_uint32),
-    ('kpos', ctypes.c_uint32),
-    ('hpos', ctypes.c_uint32),
-    ('hslots', ctypes.c_uint32),
-    ('dpos', ctypes.c_uint32),
-    ('dlen', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
 struct_sdb_t._pack_ = 1 # source:False
@@ -945,11 +955,12 @@ __all__ = \
     'struct_ht_pp_kv', 'struct_ht_pp_options_t', 'struct_ht_pp_t',
     'struct_ht_up_bucket_t', 'struct_ht_up_kv',
     'struct_ht_up_options_t', 'struct_ht_up_t', 'struct_ls_iter_t',
-    'struct_ls_t', 'struct_r_event_t', 'struct_r_flag_bind_t',
+    'struct_ls_t', 'struct_r_crbtree_node', 'struct_r_crbtree_t',
+    'struct_r_event_t', 'struct_r_flag_bind_t',
     'struct_r_flag_item_t', 'struct_r_flag_t',
     'struct_r_flag_zone_item_t', 'struct_r_flags_at_offset_t',
     'struct_r_list_iter_t', 'struct_r_list_t', 'struct_r_num_calc_t',
-    'struct_r_num_t', 'struct_r_rb_node_t',
-    'struct_r_skiplist_node_t', 'struct_r_skiplist_t',
-    'struct_r_space_t', 'struct_r_spaces_t', 'struct_r_vector_t',
-    'struct_sdb_gperf_t', 'struct_sdb_kv', 'struct_sdb_t']
+    'struct_r_num_t', 'struct_r_skiplist_node_t',
+    'struct_r_skiplist_t', 'struct_r_space_t', 'struct_r_spaces_t',
+    'struct_r_vector_t', 'struct_sdb_gperf_t', 'struct_sdb_kv',
+    'struct_sdb_t']

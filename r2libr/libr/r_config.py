@@ -478,10 +478,10 @@ r_config_set_getter.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTE
 class struct_sdb_t(Structure):
     pass
 
-class struct_ls_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
-class struct_sdb_gperf_t(Structure):
+class struct_ls_t(Structure):
     pass
 
 class struct_cdb(Structure):
