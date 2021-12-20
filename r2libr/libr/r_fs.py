@@ -369,10 +369,10 @@ struct_r_io_t._fields_ = [
     ('PADDING_5', ctypes.c_ubyte * 7),
 ]
 
-class struct_ht_up_t(Structure):
+class struct_r_io_plugin_t(Structure):
     pass
 
-class struct_r_io_plugin_t(Structure):
+class struct_ht_up_t(Structure):
     pass
 
 struct_r_io_desc_t._pack_ = 1 # source:False
@@ -653,10 +653,10 @@ RFSPartitionPlugin = struct_r_fs_partition_plugin_t
 class struct_r_fs_file_t(Structure):
     pass
 
-class struct_r_fs_plugin_t(Structure):
+class struct_r_fs_root_t(Structure):
     pass
 
-class struct_r_fs_root_t(Structure):
+class struct_r_fs_plugin_t(Structure):
     pass
 
 struct_r_fs_file_t._pack_ = 1 # source:False
