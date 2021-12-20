@@ -692,10 +692,10 @@ struct_ht_up_kv._fields_ = [
     ('value_len', ctypes.c_uint32),
 ]
 
-class struct_r_bin_write_t(Structure):
+class struct_r_bin_dbginfo_t(Structure):
     pass
 
-class struct_r_bin_dbginfo_t(Structure):
+class struct_r_bin_write_t(Structure):
     pass
 
 class struct_r_buf_t(Structure):
@@ -1093,10 +1093,10 @@ struct_r_queue_t._fields_ = [
     ('size', ctypes.c_uint32),
 ]
 
-class struct_r_event_t(Structure):
+class struct_r_cache_t(Structure):
     pass
 
-class struct_r_cache_t(Structure):
+class struct_r_event_t(Structure):
     pass
 
 class struct_r_pvector_t(Structure):

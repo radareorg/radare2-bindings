@@ -671,37 +671,37 @@ RDebugTracepoint = struct_r_debug_tracepoint_t
 class struct_r_debug_t(Structure):
     pass
 
-class struct_r_num_t(Structure):
-    pass
-
 class struct_r_debug_plugin_t(Structure):
-    pass
-
-class struct_sdb_t(Structure):
-    pass
-
-class struct_r_event_t(Structure):
     pass
 
 class struct_r_anal_op_t(Structure):
     pass
 
+class struct_sdb_t(Structure):
+    pass
+
 class struct_pj_t(Structure):
+    pass
+
+class struct_r_event_t(Structure):
+    pass
+
+class struct_r_bp_t(Structure):
     pass
 
 class struct_r_tree_t(Structure):
     pass
 
-class struct_r_egg_t(Structure):
-    pass
-
-class struct_r_bp_t(Structure):
+class struct_r_num_t(Structure):
     pass
 
 class struct_r_reg_t(Structure):
     pass
 
 class struct_r_anal_t(Structure):
+    pass
+
+class struct_r_egg_t(Structure):
     pass
 
 class struct_r_io_bind_t(Structure):
@@ -858,10 +858,10 @@ struct_r_debug_t._fields_ = [
     ('glibc_version', ctypes.c_int32),
 ]
 
-class struct_sdb_gperf_t(Structure):
+class struct_ls_t(Structure):
     pass
 
-class struct_ls_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
 class struct_cdb(Structure):
@@ -1467,16 +1467,19 @@ struct_r_buffer_methods_t._fields_ = [
     ('nonempty_list', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_list_t), ctypes.POINTER(struct_r_buf_t))),
 ]
 
-class struct_r_anal_plugin_t(Structure):
+class struct_r_print_t(Structure):
     pass
 
-class struct_r_print_t(Structure):
+class struct_r_rb_node_t(Structure):
+    pass
+
+class struct_r_anal_plugin_t(Structure):
     pass
 
 class struct_r_anal_range_t(Structure):
     pass
 
-class struct_r_rb_node_t(Structure):
+class struct_r_anal_esil_plugin_t(Structure):
     pass
 
 class struct_r_syscall_t(Structure):
@@ -1485,20 +1488,11 @@ class struct_r_syscall_t(Structure):
 class struct_r_anal_esil_t(Structure):
     pass
 
-class struct_r_anal_esil_plugin_t(Structure):
+class struct_r_flag_item_t(Structure):
     pass
 
-class struct_r_interval_tree_t(Structure):
+class struct_r_flag_t(Structure):
     pass
-
-class struct_r_interval_node_t(Structure):
-    pass
-
-struct_r_interval_tree_t._pack_ = 1 # source:False
-struct_r_interval_tree_t._fields_ = [
-    ('root', ctypes.POINTER(struct_r_interval_node_t)),
-    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
-]
 
 class struct_r_anal_options_t(Structure):
     pass
@@ -1540,12 +1534,6 @@ struct_r_anal_options_t._fields_ = [
 ]
 
 class struct_r_flag_bind_t(Structure):
-    pass
-
-class struct_r_flag_t(Structure):
-    pass
-
-class struct_r_flag_item_t(Structure):
     pass
 
 class struct_r_space_t(Structure):
@@ -1620,10 +1608,10 @@ class struct_r_bin_bind_t(Structure):
 class struct_r_bin_t(Structure):
     pass
 
-class struct_r_bin_file_t(Structure):
+class struct_r_bin_section_t(Structure):
     pass
 
-class struct_r_bin_section_t(Structure):
+class struct_r_bin_file_t(Structure):
     pass
 
 struct_r_bin_bind_t._pack_ = 1 # source:False
@@ -1636,6 +1624,18 @@ struct_r_bin_bind_t._fields_ = [
     ('demangle', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_bin_file_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_bool)),
     ('visibility', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
+class struct_r_interval_tree_t(Structure):
+    pass
+
+class struct_r_interval_node_t(Structure):
+    pass
+
+struct_r_interval_tree_t._pack_ = 1 # source:False
+struct_r_interval_tree_t._fields_ = [
+    ('root', ctypes.POINTER(struct_r_interval_node_t)),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
 ]
 
 
@@ -1740,13 +1740,13 @@ struct_r_rb_node_t._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 7),
 ]
 
-class struct_r_syscall_port_t(Structure):
-    pass
-
 class struct__IO_FILE(Structure):
     pass
 
 class struct_r_syscall_item_t(Structure):
+    pass
+
+class struct_r_syscall_port_t(Structure):
     pass
 
 struct_r_syscall_t._pack_ = 1 # source:False
@@ -2179,10 +2179,10 @@ struct_r_bin_addr_t._fields_ = [
     ('bits', ctypes.c_int32),
 ]
 
-class struct_r_bin_write_t(Structure):
+class struct_r_bin_dbginfo_t(Structure):
     pass
 
-class struct_r_bin_dbginfo_t(Structure):
+class struct_r_bin_write_t(Structure):
     pass
 
 class struct_r_bin_arch_options_t(Structure):
@@ -2332,10 +2332,10 @@ struct_r_bin_section_t._fields_ = [
 class struct_r_anal_esil_handler_t(Structure):
     pass
 
-class struct_r_anal_reil(Structure):
+class struct_r_anal_esil_trace_t(Structure):
     pass
 
-class struct_r_anal_esil_trace_t(Structure):
+class struct_r_anal_reil(Structure):
     pass
 
 class struct_r_anal_esil_callbacks_t(Structure):
@@ -2500,12 +2500,41 @@ struct_r_anal_plugin_t._fields_ = [
     ('esil_fini', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_esil_t))),
 ]
 
-class struct_r_anal_value_t(Structure):
-    pass
-
 class struct_r_anal_switch_obj_t(Structure):
     pass
 
+class struct_r_anal_value_t(Structure):
+    pass
+
+
+# values for enumeration 'c__EA_RAnalOpFamily'
+c__EA_RAnalOpFamily__enumvalues = {
+    -1: 'R_ANAL_OP_FAMILY_UNKNOWN',
+    0: 'R_ANAL_OP_FAMILY_CPU',
+    1: 'R_ANAL_OP_FAMILY_FPU',
+    2: 'R_ANAL_OP_FAMILY_MMX',
+    3: 'R_ANAL_OP_FAMILY_SSE',
+    4: 'R_ANAL_OP_FAMILY_PRIV',
+    5: 'R_ANAL_OP_FAMILY_CRYPTO',
+    6: 'R_ANAL_OP_FAMILY_THREAD',
+    7: 'R_ANAL_OP_FAMILY_VIRT',
+    8: 'R_ANAL_OP_FAMILY_SECURITY',
+    9: 'R_ANAL_OP_FAMILY_IO',
+    10: 'R_ANAL_OP_FAMILY_LAST',
+}
+R_ANAL_OP_FAMILY_UNKNOWN = -1
+R_ANAL_OP_FAMILY_CPU = 0
+R_ANAL_OP_FAMILY_FPU = 1
+R_ANAL_OP_FAMILY_MMX = 2
+R_ANAL_OP_FAMILY_SSE = 3
+R_ANAL_OP_FAMILY_PRIV = 4
+R_ANAL_OP_FAMILY_CRYPTO = 5
+R_ANAL_OP_FAMILY_THREAD = 6
+R_ANAL_OP_FAMILY_VIRT = 7
+R_ANAL_OP_FAMILY_SECURITY = 8
+R_ANAL_OP_FAMILY_IO = 9
+R_ANAL_OP_FAMILY_LAST = 10
+c__EA_RAnalOpFamily = ctypes.c_int32 # enum
 
 # values for enumeration 'c__EA_RAnalStackOp'
 c__EA_RAnalStackOp__enumvalues = {
@@ -2659,35 +2688,6 @@ struct_c__SA_RStrBuf._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 7),
 ]
 
-
-# values for enumeration 'c__EA_RAnalOpFamily'
-c__EA_RAnalOpFamily__enumvalues = {
-    -1: 'R_ANAL_OP_FAMILY_UNKNOWN',
-    0: 'R_ANAL_OP_FAMILY_CPU',
-    1: 'R_ANAL_OP_FAMILY_FPU',
-    2: 'R_ANAL_OP_FAMILY_MMX',
-    3: 'R_ANAL_OP_FAMILY_SSE',
-    4: 'R_ANAL_OP_FAMILY_PRIV',
-    5: 'R_ANAL_OP_FAMILY_CRYPTO',
-    6: 'R_ANAL_OP_FAMILY_THREAD',
-    7: 'R_ANAL_OP_FAMILY_VIRT',
-    8: 'R_ANAL_OP_FAMILY_SECURITY',
-    9: 'R_ANAL_OP_FAMILY_IO',
-    10: 'R_ANAL_OP_FAMILY_LAST',
-}
-R_ANAL_OP_FAMILY_UNKNOWN = -1
-R_ANAL_OP_FAMILY_CPU = 0
-R_ANAL_OP_FAMILY_FPU = 1
-R_ANAL_OP_FAMILY_MMX = 2
-R_ANAL_OP_FAMILY_SSE = 3
-R_ANAL_OP_FAMILY_PRIV = 4
-R_ANAL_OP_FAMILY_CRYPTO = 5
-R_ANAL_OP_FAMILY_THREAD = 6
-R_ANAL_OP_FAMILY_VIRT = 7
-R_ANAL_OP_FAMILY_SECURITY = 8
-R_ANAL_OP_FAMILY_IO = 9
-R_ANAL_OP_FAMILY_LAST = 10
-c__EA_RAnalOpFamily = ctypes.c_int32 # enum
 struct_r_anal_op_t._pack_ = 1 # source:False
 struct_r_anal_op_t._fields_ = [
     ('mnemonic', ctypes.POINTER(ctypes.c_char)),
@@ -2943,10 +2943,10 @@ struct_r_anal_range_t._fields_ = [
 class struct_r_charset_t(Structure):
     pass
 
-class struct_r_print_zoom_t(Structure):
+class struct_r_cons_t(Structure):
     pass
 
-class struct_r_cons_t(Structure):
+class struct_r_print_zoom_t(Structure):
     pass
 
 struct_r_print_t._pack_ = 1 # source:False
@@ -3146,6 +3146,27 @@ struct_r_cons_t._fields_ = [
 class struct_r_stack_t(Structure):
     pass
 
+
+# values for enumeration 'r_log_level'
+r_log_level__enumvalues = {
+    0: 'R_LOGLVL_SILLY',
+    1: 'R_LOGLVL_DEBUG',
+    2: 'R_LOGLVL_VERBOSE',
+    3: 'R_LOGLVL_INFO',
+    4: 'R_LOGLVL_WARN',
+    5: 'R_LOGLVL_ERROR',
+    6: 'R_LOGLVL_FATAL',
+    255: 'R_LOGLVL_NONE',
+}
+R_LOGLVL_SILLY = 0
+R_LOGLVL_DEBUG = 1
+R_LOGLVL_VERBOSE = 2
+R_LOGLVL_INFO = 3
+R_LOGLVL_WARN = 4
+R_LOGLVL_ERROR = 5
+R_LOGLVL_FATAL = 6
+R_LOGLVL_NONE = 255
+r_log_level = ctypes.c_uint32 # enum
 class struct_r_cons_printable_palette_t(Structure):
     pass
 
@@ -3342,27 +3363,6 @@ struct_r_cons_grep_t._fields_ = [
     ('PADDING_5', ctypes.c_ubyte * 6),
 ]
 
-
-# values for enumeration 'r_log_level'
-r_log_level__enumvalues = {
-    0: 'R_LOGLVL_SILLY',
-    1: 'R_LOGLVL_DEBUG',
-    2: 'R_LOGLVL_VERBOSE',
-    3: 'R_LOGLVL_INFO',
-    4: 'R_LOGLVL_WARN',
-    5: 'R_LOGLVL_ERROR',
-    6: 'R_LOGLVL_FATAL',
-    255: 'R_LOGLVL_NONE',
-}
-R_LOGLVL_SILLY = 0
-R_LOGLVL_DEBUG = 1
-R_LOGLVL_VERBOSE = 2
-R_LOGLVL_INFO = 3
-R_LOGLVL_WARN = 4
-R_LOGLVL_ERROR = 5
-R_LOGLVL_FATAL = 6
-R_LOGLVL_NONE = 255
-r_log_level = ctypes.c_uint32 # enum
 struct_r_cons_context_t._pack_ = 1 # source:False
 struct_r_cons_context_t._fields_ = [
     ('grep', struct_r_cons_grep_t),
@@ -3604,10 +3604,10 @@ struct_pj_t._fields_ = [
     ('num_encoding', PJEncodingNum),
 ]
 
-class struct_r_egg_emit_t(Structure):
+class struct_r_asm_t(Structure):
     pass
 
-class struct_r_asm_t(Structure):
+class struct_r_egg_emit_t(Structure):
     pass
 
 class struct_r_egg_lang_t(Structure):
@@ -4101,6 +4101,16 @@ r_debug_reg_get.argtypes = [ctypes.POINTER(struct_r_debug_t), ctypes.POINTER(cty
 class struct__utX(Structure):
     pass
 
+class struct__ut96(Structure):
+    pass
+
+struct__ut96._pack_ = 1 # source:False
+struct__ut96._fields_ = [
+    ('Low', ctypes.c_uint64),
+    ('High', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
 class struct__ut80(Structure):
     pass
 
@@ -4127,16 +4137,6 @@ struct__ut256._pack_ = 1 # source:False
 struct__ut256._fields_ = [
     ('Low', struct__ut128),
     ('High', struct__ut128),
-]
-
-class struct__ut96(Structure):
-    pass
-
-struct__ut96._pack_ = 1 # source:False
-struct__ut96._fields_ = [
-    ('Low', ctypes.c_uint64),
-    ('High', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
 struct__utX._pack_ = 1 # source:False
