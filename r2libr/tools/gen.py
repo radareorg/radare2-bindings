@@ -62,6 +62,7 @@ def clang2py_common_args(pargs):
     args = ["clang2py"]
     #args += ['-x']
     args += ["-v"]
+    print(libs_path)
     for _, v in libs_path.items():
         args += ["-l", str(v.resolve())]
     clang_args = gen_clang_include_args(pargs.build)
@@ -119,6 +120,9 @@ def expand_util(pargs):
             output_util += ln
         else:
             for header in headers:
+                # Skip signal.
+                if header == "r_signal.h":
+                    continue
                 with open(Path(pargs.build) / "include" / "libr" / header) as f:
                     output_util += f.read()
                     output_util += "\n"
