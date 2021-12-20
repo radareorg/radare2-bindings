@@ -121,7 +121,7 @@ def expand_util(pargs):
         else:
             for header in headers:
                 # Skip signal.
-                if header == "r_signal.h":
+                if "r_signal.h" in header:
                     continue
                 with open(Path(pargs.build) / "include" / "libr" / header) as f:
                     output_util += f.read()
