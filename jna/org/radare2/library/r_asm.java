@@ -31,6 +31,8 @@ public interface r_asm extends Library {
 
     void r_asm_free(RAsm ras);
 
+    int r_hex_str2bin(String in, byte[] out);
+
     RAsmOp r_asm_op_new();
 
     Pointer r_asm_op_get_hex(RAsmOp aop);
