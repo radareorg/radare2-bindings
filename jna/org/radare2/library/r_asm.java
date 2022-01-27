@@ -15,10 +15,10 @@ public interface r_asm extends Library {
 
     int r_asm_syntax_from_string(RAsm self, String syn);
 
-    int r_asm_use(RAsm self,String arch);
-	
-	int r_asm_set_bits(RAsm self,int bits);
-	
+    int r_asm_use(RAsm self, String arch);
+
+    int r_asm_set_bits(RAsm self, int bits);
+
     int r_asm_set_arch(RAsm self, String arch, int bits);
 
     int r_asm_is_valid(RAsm self, String str);
@@ -31,6 +31,8 @@ public interface r_asm extends Library {
 
     void r_asm_free(RAsm ras);
 
+    int r_hex_str2bin(String in, byte[] out);
+
     RAsmOp r_asm_op_new();
 
     Pointer r_asm_op_get_hex(RAsmOp aop);
@@ -40,5 +42,4 @@ public interface r_asm extends Library {
     int r_asm_op_get_size(RAsmOp aop);
 
     void r_asm_op_free(RAsmOp aop);
-	
 }
