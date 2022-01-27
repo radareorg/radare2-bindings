@@ -4,7 +4,7 @@ public class example{
 public static void main(String[] args){
 try(rasm2 ras = new rasm2();){
 ras.set_arch("x86",32);
-String asm = "add x0 ,1";
+String asm = "add eax ,1";
 RAsmOp aop = ras.assemble(asm);
 System.out.println("assemble : "+asm);
 System.out.println("len : "+aop.get_size() + "\nhex : "+aop.get_hex());
