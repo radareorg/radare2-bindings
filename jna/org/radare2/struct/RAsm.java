@@ -4,7 +4,6 @@ import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import java.io.Closeable;
 import org.radare2.library.r_asm;
-import org.radare2.utils.StringUtils;
 
 @Structure.FieldOrder({"user"})
 public class RAsm extends Structure implements Closeable {
@@ -26,14 +25,14 @@ public class RAsm extends Structure implements Closeable {
     public int set_syntax_from_string(String syn) {
         return r_asm.instance.r_asm_syntax_from_string(this, syn);
     }
-	
-	public boolean use(String arch){
-		return r_asm.instance.r_asm_use(this,arch)==1;
-	}
-	
-	public int set_bits(int bits){
-		return r_asm.instance.r_asm_set_bits(this,bits);
-	}
+
+    public boolean use(String arch) {
+        return r_asm.instance.r_asm_use(this, arch) == 1;
+    }
+
+    public int set_bits(int bits) {
+        return r_asm.instance.r_asm_set_bits(this, bits);
+    }
 
     public boolean set_arch(String arch, int bits) {
         return r_asm.instance.r_asm_set_arch(this, arch, bits) == 1;
@@ -49,8 +48,10 @@ public class RAsm extends Structure implements Closeable {
 
     public RAsmOp disassemble(String hex) {
         RAsmOp aop = RAsmOp.getInstance();
-        r_asm.instance.r_asm_disassemble(
-                this, aop, StringUtils.fromHexString(hex), hex.length() / 2);
+        int len = hex.length() / 2;
+        byte[] data = new byte[len];
+        r_asm.instance.r_hex_str2bin(hex, data);
+        r_asm.instance.r_asm_disassemble(this, aop, data, len);
         return aop;
     }
 
