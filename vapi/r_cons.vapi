@@ -29,7 +29,6 @@ namespace Radare {
 		/* TODO : add bold colors */
 
 		// public static bool is_interactive;
-		public static bool is_html;
 		public static int lines;
 		public static bool echo;
 		public static int fix_rows;

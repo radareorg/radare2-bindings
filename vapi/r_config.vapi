@@ -25,7 +25,7 @@ namespace Radare {
 		public unowned RConfigNode node_get (string name);
 		public static RConfigNode node_new (string name, string val);
 
-		public unowned string desc (string name, string? desc);
+		// public unowned string desc (string name, string? desc);
 		public int toggle (string name);
 		public unowned RConfigNode set(string name, string val);
 		public unowned RConfigNode set_i(string name, uint64 val);

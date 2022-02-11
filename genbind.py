@@ -109,7 +109,7 @@ def read_file_list():
         basedir + "r_flag.h",
         basedir + "r_sign.h",
         basedir + "r_hash.h",
-        basedir + "r_diff.h",
+        # basedir + "r_diff.h",
         basedir + "r_egg.h",
         basedir + "r_fs.h",
         basedir + "r_lang.h",

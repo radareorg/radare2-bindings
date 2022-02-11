@@ -60,7 +60,7 @@ public class RCore {
 
 	public RFS fs;
 	public REgg egg;
-	public string cmdqueue;
+	// public string cmdqueue;
 	public string lastcmd;
 	public int cmdrepeat;
 	/**

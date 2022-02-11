@@ -2,8 +2,8 @@
 
 namespace Radare {
 	[Compact]
-	[CCode (cheader_filename="r_bin.h,r_list.h,r_types_base.h", cname="RBinOptions", free_function="", cprefix="r_bin_")]
-	public class RBinOptions {
+	[CCode (cheader_filename="r_bin.h,r_list.h,r_types_base.h", cname="RBinFileOptions", free_function="", cprefix="r_bin_")]
+	public class RBinFileOptions {
 		int rawstr;
 		uint64 baddr;
 		uint64 laddr;
@@ -40,7 +40,7 @@ namespace Radare {
 		public int wr_rpath_del ();
 		public int wr_output (string filename);
 
-		public int open(string file, RBinOptions opts);
+		public int open(string file, RBinFileOptions opts);
 		public RBuffer create(string plugin_name,uint8 *code, int codelen, uint8 *data, int datalen, RBinArchOptions *opt);
 		public int use_arch(string arch, int bits, string name);
 		public int select(string arch, int bits, string name);
@@ -50,7 +50,7 @@ namespace Radare {
 		public RBin.Addr get_sym(int sym); // XXX: use RBin.Sym here ?
 		public unowned RList<unowned RBin.Addr> get_entries();
 		public unowned RList<unowned RBin.Field> get_fields();
-		public unowned RList<unowned RBin.Import> get_imports();
+		// public unowned RList<unowned RBin.Import> get_imports();
 		public unowned RList<unowned RBin.Section> get_sections();
 		public unowned RList<unowned RBin.String> get_strings();
 		public unowned RList<unowned RBin.Symbol> get_symbols();
