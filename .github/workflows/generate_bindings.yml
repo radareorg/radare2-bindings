@@ -56,7 +56,6 @@ jobs:
       run: git status | grep -q "changes"  && git add -u && git commit -m "r2libr generated on `date`"
 
     - name: Push new bindings
-      if: startsWith(github.ref, 'refs/tags')
       run: mkdir -p ~/.ssh && echo "$BINDINGS_DEPLOY_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa && ssh-keyscan github.com >> ~/.ssh/known_hosts && git remote add orig git@github.com:radareorg/radare2-bindings.git && git push orig
       env:
         BINDINGS_DEPLOY_KEY: ${{ secrets.BINDINGS_DEPLOY_KEY }}
