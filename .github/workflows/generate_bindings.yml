@@ -1,6 +1,8 @@
 name: Generate bindings for r2libr 🚀
 
 on:
+  tags:
+    - "*"
   push:
     paths:
       - 'r2libr/**'
