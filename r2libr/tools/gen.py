@@ -118,6 +118,9 @@ def expand_util(pargs):
             print("\n".join(headers))
         if len(headers) == 0:
             output_util += ln
+
+            if "#define R2_UTIL_H" in ln:
+                output_util += "\n #ifndef R_DIRTY_VAR\n#define R_DIRTY_VAR bool is_dirty\n#endif\n"
         else:
             for header in headers:
                 # Skip signal.
