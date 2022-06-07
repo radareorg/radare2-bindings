@@ -245,7 +245,8 @@ struct_r_config_t._fields_ = [
     ('nodes', ctypes.POINTER(struct_r_list_t)),
     ('ht', ctypes.POINTER(struct_ht_pp_t)),
     ('lock', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 7),
+    ('is_dirty', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 6),
 ]
 
 class struct_r_num_calc_t(Structure):
@@ -378,7 +379,7 @@ struct_ht_pp_bucket_t._pack_ = 1 # source:False
 struct_ht_pp_bucket_t._fields_ = [
     ('arr', ctypes.POINTER(struct_ht_pp_kv)),
     ('count', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('size', ctypes.c_uint32),
 ]
 
 struct_ht_pp_kv._pack_ = 1 # source:False
@@ -436,9 +437,10 @@ r_config_get_b.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTER(cty
 r_config_set_b = _libr_config.r_config_set_b
 r_config_set_b.restype = ctypes.POINTER(struct_r_config_node_t)
 r_config_set_b.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTER(ctypes.c_char), ctypes.c_bool]
+uint64_t = ctypes.c_uint64
 r_config_set_i = _libr_config.r_config_set_i
 r_config_set_i.restype = ctypes.POINTER(struct_r_config_node_t)
-r_config_set_i.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_config_set_i.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTER(ctypes.c_char), uint64_t]
 r_config_set_cb = _libr_config.r_config_set_cb
 r_config_set_cb.restype = ctypes.POINTER(struct_r_config_node_t)
 r_config_set_cb.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), RConfigCallback]
@@ -452,7 +454,7 @@ r_config_rm = _libr_config.r_config_rm
 r_config_rm.restype = ctypes.c_bool
 r_config_rm.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTER(ctypes.c_char)]
 r_config_get_i = _libr_config.r_config_get_i
-r_config_get_i.restype = ctypes.c_uint64
+r_config_get_i.restype = uint64_t
 r_config_get_i.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTER(ctypes.c_char)]
 r_config_get = _libr_config.r_config_get
 r_config_get.restype = ctypes.POINTER(ctypes.c_char)
@@ -478,10 +480,10 @@ r_config_set_getter.argtypes = [ctypes.POINTER(struct_r_config_t), ctypes.POINTE
 class struct_sdb_t(Structure):
     pass
 
-class struct_sdb_gperf_t(Structure):
+class struct_ls_t(Structure):
     pass
 
-class struct_ls_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
 class struct_cdb(Structure):
@@ -666,7 +668,7 @@ r_config_node_free.argtypes = [ctypes.POINTER(None)]
 size_t = ctypes.c_uint64
 r_config_node_value_format_i = _libr_config.r_config_node_value_format_i
 r_config_node_value_format_i.restype = None
-r_config_node_value_format_i.argtypes = [ctypes.POINTER(ctypes.c_char), size_t, ctypes.c_uint64, ctypes.POINTER(struct_r_config_node_t)]
+r_config_node_value_format_i.argtypes = [ctypes.POINTER(ctypes.c_char), size_t, uint64_t, ctypes.POINTER(struct_r_config_node_t)]
 r_config_node_is_bool = _libraries['FIXME_STUB'].r_config_node_is_bool
 r_config_node_is_bool.restype = ctypes.c_bool
 r_config_node_is_bool.argtypes = [ctypes.POINTER(struct_r_config_node_t)]
@@ -709,4 +711,4 @@ __all__ = \
     'struct_r_config_node_t', 'struct_r_config_t',
     'struct_r_list_iter_t', 'struct_r_list_t', 'struct_r_num_calc_t',
     'struct_r_num_t', 'struct_sdb_gperf_t', 'struct_sdb_kv',
-    'struct_sdb_t']
+    'struct_sdb_t', 'uint64_t']

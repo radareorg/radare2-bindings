@@ -221,12 +221,16 @@ c__EA_RRegisterId__enumvalues = {
     17: 'R_REG_NAME_R1',
     18: 'R_REG_NAME_R2',
     19: 'R_REG_NAME_R3',
-    20: 'R_REG_NAME_ZF',
-    21: 'R_REG_NAME_SF',
-    22: 'R_REG_NAME_CF',
-    23: 'R_REG_NAME_OF',
-    24: 'R_REG_NAME_SN',
-    25: 'R_REG_NAME_LAST',
+    20: 'R_REG_NAME_F0',
+    21: 'R_REG_NAME_F1',
+    22: 'R_REG_NAME_F2',
+    23: 'R_REG_NAME_F3',
+    24: 'R_REG_NAME_ZF',
+    25: 'R_REG_NAME_SF',
+    26: 'R_REG_NAME_CF',
+    27: 'R_REG_NAME_OF',
+    28: 'R_REG_NAME_SN',
+    29: 'R_REG_NAME_LAST',
 }
 R_REG_NAME_PC = 0
 R_REG_NAME_SP = 1
@@ -248,12 +252,16 @@ R_REG_NAME_R0 = 16
 R_REG_NAME_R1 = 17
 R_REG_NAME_R2 = 18
 R_REG_NAME_R3 = 19
-R_REG_NAME_ZF = 20
-R_REG_NAME_SF = 21
-R_REG_NAME_CF = 22
-R_REG_NAME_OF = 23
-R_REG_NAME_SN = 24
-R_REG_NAME_LAST = 25
+R_REG_NAME_F0 = 20
+R_REG_NAME_F1 = 21
+R_REG_NAME_F2 = 22
+R_REG_NAME_F3 = 23
+R_REG_NAME_ZF = 24
+R_REG_NAME_SF = 25
+R_REG_NAME_CF = 26
+R_REG_NAME_OF = 27
+R_REG_NAME_SN = 28
+R_REG_NAME_LAST = 29
 c__EA_RRegisterId = ctypes.c_uint32 # enum
 RRegisterId = c__EA_RRegisterId
 RRegisterId__enumvalues = c__EA_RRegisterId__enumvalues
@@ -290,13 +298,13 @@ RRegArena = struct_r_reg_arena_t
 class struct_r_reg_set_t(Structure):
     pass
 
+class struct_r_list_iter_t(Structure):
+    pass
+
 class struct_r_list_t(Structure):
     pass
 
 class struct_ht_pp_t(Structure):
-    pass
-
-class struct_r_list_iter_t(Structure):
     pass
 
 struct_r_reg_set_t._pack_ = 1 # source:False
@@ -362,7 +370,7 @@ struct_ht_pp_bucket_t._pack_ = 1 # source:False
 struct_ht_pp_bucket_t._fields_ = [
     ('arr', ctypes.POINTER(struct_ht_pp_kv)),
     ('count', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('size', ctypes.c_uint32),
 ]
 
 struct_ht_pp_kv._pack_ = 1 # source:False
@@ -377,26 +385,57 @@ RRegSet = struct_r_reg_set_t
 class struct_r_reg_t(Structure):
     pass
 
+class struct_r_arch_config_t(Structure):
+    pass
+
 struct_r_reg_t._pack_ = 1 # source:False
 struct_r_reg_t._fields_ = [
     ('profile', ctypes.POINTER(ctypes.c_char)),
     ('reg_profile_cmt', ctypes.POINTER(ctypes.c_char)),
     ('reg_profile_str', ctypes.POINTER(ctypes.c_char)),
-    ('name', ctypes.POINTER(ctypes.c_char) * 25),
+    ('name', ctypes.POINTER(ctypes.c_char) * 29),
     ('regset', struct_r_reg_set_t * 8),
     ('allregs', ctypes.POINTER(struct_r_list_t)),
     ('roregs', ctypes.POINTER(struct_r_list_t)),
     ('iters', ctypes.c_int32),
-    ('arch', ctypes.c_int32),
-    ('bits', ctypes.c_int32),
     ('size', ctypes.c_int32),
     ('bits_default', ctypes.c_int32),
-    ('is_thumb', ctypes.c_bool),
-    ('big_endian', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 2),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('hasbits', ctypes.c_uint64),
+    ('config', ctypes.POINTER(struct_r_arch_config_t)),
+]
+
+struct_r_arch_config_t._pack_ = 1 # source:False
+struct_r_arch_config_t._fields_ = [
+    ('arch', ctypes.POINTER(ctypes.c_char)),
+    ('cpu', ctypes.POINTER(ctypes.c_char)),
+    ('os', ctypes.POINTER(ctypes.c_char)),
+    ('bits', ctypes.c_int32),
+    ('big_endian', ctypes.c_int32),
+    ('syntax', ctypes.c_int32),
+    ('pcalign', ctypes.c_int32),
+    ('dataalign', ctypes.c_int32),
+    ('segbas', ctypes.c_int32),
+    ('seggrn', ctypes.c_int32),
+    ('invhex', ctypes.c_int32),
+    ('bitshift', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('features', ctypes.POINTER(ctypes.c_char)),
+    ('refcount', ctypes.c_int32),
+    ('PADDING_1', ctypes.c_ubyte * 4),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
 ]
 
 RReg = struct_r_reg_t
+r_reg_hasbits_check = _libr_reg.r_reg_hasbits_check
+r_reg_hasbits_check.restype = ctypes.c_bool
+r_reg_hasbits_check.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.c_int32]
+r_reg_hasbits_use = _libr_reg.r_reg_hasbits_use
+r_reg_hasbits_use.restype = ctypes.c_bool
+r_reg_hasbits_use.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.c_int32]
+r_reg_hasbits_clear = _libr_reg.r_reg_hasbits_clear
+r_reg_hasbits_clear.restype = None
+r_reg_hasbits_clear.argtypes = [ctypes.POINTER(struct_r_reg_t)]
 class struct_r_reg_flags_t(Structure):
     pass
 
@@ -444,12 +483,13 @@ r_reg_is_readonly.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(str
 r_reg_regset_get = _libr_reg.r_reg_regset_get
 r_reg_regset_get.restype = ctypes.POINTER(struct_r_reg_set_t)
 r_reg_regset_get.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.c_int32]
+uint64_t = ctypes.c_uint64
 r_reg_getv = _libr_reg.r_reg_getv
-r_reg_getv.restype = ctypes.c_uint64
+r_reg_getv.restype = uint64_t
 r_reg_getv.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(ctypes.c_char)]
 r_reg_setv = _libr_reg.r_reg_setv
-r_reg_setv.restype = ctypes.c_uint64
-r_reg_setv.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_reg_setv.restype = uint64_t
+r_reg_setv.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(ctypes.c_char), uint64_t]
 r_reg_32_to_64 = _libr_reg.r_reg_32_to_64
 r_reg_32_to_64.restype = ctypes.POINTER(ctypes.c_char)
 r_reg_32_to_64.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(ctypes.c_char)]
@@ -520,10 +560,28 @@ r_reg_cond = _libr_reg.r_reg_cond
 r_reg_cond.restype = ctypes.c_int32
 r_reg_cond.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.c_int32]
 r_reg_get_value = _libr_reg.r_reg_get_value
-r_reg_get_value.restype = ctypes.c_uint64
+r_reg_get_value.restype = uint64_t
 r_reg_get_value.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struct_r_reg_item_t)]
 class struct__utX(Structure):
     pass
+
+class struct__ut256(Structure):
+    pass
+
+class struct__ut128(Structure):
+    pass
+
+struct__ut128._pack_ = 1 # source:False
+struct__ut128._fields_ = [
+    ('Low', ctypes.c_uint64),
+    ('High', ctypes.c_int64),
+]
+
+struct__ut256._pack_ = 1 # source:False
+struct__ut256._fields_ = [
+    ('Low', struct__ut128),
+    ('High', struct__ut128),
+]
 
 class struct__ut96(Structure):
     pass
@@ -545,22 +603,6 @@ struct__ut80._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 6),
 ]
 
-class struct__ut128(Structure):
-    pass
-
-struct__ut128._pack_ = 1 # source:False
-struct__ut128._fields_ = [
-    ('Low', ctypes.c_uint64),
-    ('High', ctypes.c_int64),
-]
-
-class struct__ut256(Structure):
-    _pack_ = 1 # source:False
-    _fields_ = [
-    ('Low', struct__ut128),
-    ('High', struct__ut128),
-     ]
-
 struct__utX._pack_ = 1 # source:False
 struct__utX._fields_ = [
     ('v80', struct__ut80),
@@ -570,17 +612,17 @@ struct__utX._fields_ = [
 ]
 
 r_reg_get_value_big = _libr_reg.r_reg_get_value_big
-r_reg_get_value_big.restype = ctypes.c_uint64
+r_reg_get_value_big.restype = uint64_t
 r_reg_get_value_big.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struct_r_reg_item_t), ctypes.POINTER(struct__utX)]
 r_reg_get_value_by_role = _libr_reg.r_reg_get_value_by_role
-r_reg_get_value_by_role.restype = ctypes.c_uint64
+r_reg_get_value_by_role.restype = uint64_t
 r_reg_get_value_by_role.argtypes = [ctypes.POINTER(struct_r_reg_t), RRegisterId]
 r_reg_set_value = _libr_reg.r_reg_set_value
 r_reg_set_value.restype = ctypes.c_bool
-r_reg_set_value.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struct_r_reg_item_t), ctypes.c_uint64]
+r_reg_set_value.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struct_r_reg_item_t), uint64_t]
 r_reg_set_value_by_role = _libr_reg.r_reg_set_value_by_role
 r_reg_set_value_by_role.restype = ctypes.c_bool
-r_reg_set_value_by_role.argtypes = [ctypes.POINTER(struct_r_reg_t), RRegisterId, ctypes.c_uint64]
+r_reg_set_value_by_role.argtypes = [ctypes.POINTER(struct_r_reg_t), RRegisterId, uint64_t]
 r_reg_get_float = _libr_reg.r_reg_get_float
 r_reg_get_float.restype = ctypes.c_float
 r_reg_get_float.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struct_r_reg_item_t)]
@@ -603,13 +645,13 @@ r_reg_get_bvalue = _libr_reg.r_reg_get_bvalue
 r_reg_get_bvalue.restype = ctypes.POINTER(ctypes.c_char)
 r_reg_get_bvalue.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struct_r_reg_item_t)]
 r_reg_set_bvalue = _libr_reg.r_reg_set_bvalue
-r_reg_set_bvalue.restype = ctypes.c_uint64
+r_reg_set_bvalue.restype = uint64_t
 r_reg_set_bvalue.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struct_r_reg_item_t), ctypes.POINTER(ctypes.c_char)]
 r_reg_set_pack = _libr_reg.r_reg_set_pack
 r_reg_set_pack.restype = ctypes.c_int32
-r_reg_set_pack.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struct_r_reg_item_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64]
+r_reg_set_pack.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struct_r_reg_item_t), ctypes.c_int32, ctypes.c_int32, uint64_t]
 r_reg_get_pack = _libr_reg.r_reg_get_pack
-r_reg_get_pack.restype = ctypes.c_uint64
+r_reg_get_pack.restype = uint64_t
 r_reg_get_pack.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struct_r_reg_item_t), ctypes.c_int32, ctypes.c_int32]
 r_reg_default_bits = _libr_reg.r_reg_default_bits
 r_reg_default_bits.restype = ctypes.c_int32
@@ -672,21 +714,22 @@ __all__ = \
     'R_REG_NAME_A2', 'R_REG_NAME_A3', 'R_REG_NAME_A4',
     'R_REG_NAME_A5', 'R_REG_NAME_A6', 'R_REG_NAME_A7',
     'R_REG_NAME_A8', 'R_REG_NAME_A9', 'R_REG_NAME_BP',
-    'R_REG_NAME_CF', 'R_REG_NAME_LAST', 'R_REG_NAME_LR',
-    'R_REG_NAME_OF', 'R_REG_NAME_PC', 'R_REG_NAME_R0',
-    'R_REG_NAME_R1', 'R_REG_NAME_R2', 'R_REG_NAME_R3',
-    'R_REG_NAME_RS', 'R_REG_NAME_SF', 'R_REG_NAME_SN',
-    'R_REG_NAME_SP', 'R_REG_NAME_SR', 'R_REG_NAME_ZF',
-    'R_REG_TYPE_ALL', 'R_REG_TYPE_DRX', 'R_REG_TYPE_FLG',
-    'R_REG_TYPE_FPU', 'R_REG_TYPE_GPR', 'R_REG_TYPE_LAST',
-    'R_REG_TYPE_MMX', 'R_REG_TYPE_SEG', 'R_REG_TYPE_XMM',
-    'R_REG_TYPE_YMM', 'c__EA_RRegisterId', 'c__EA_RRegisterType',
-    'r_reg_32_to_64', 'r_reg_64_to_32', 'r_reg_arena_dup',
-    'r_reg_arena_free', 'r_reg_arena_new', 'r_reg_arena_peek',
-    'r_reg_arena_poke', 'r_reg_arena_pop', 'r_reg_arena_push',
-    'r_reg_arena_set_bytes', 'r_reg_arena_shrink', 'r_reg_arena_swap',
-    'r_reg_arena_zero', 'r_reg_cond', 'r_reg_cond_apply',
-    'r_reg_cond_bits', 'r_reg_cond_bits_set',
+    'R_REG_NAME_CF', 'R_REG_NAME_F0', 'R_REG_NAME_F1',
+    'R_REG_NAME_F2', 'R_REG_NAME_F3', 'R_REG_NAME_LAST',
+    'R_REG_NAME_LR', 'R_REG_NAME_OF', 'R_REG_NAME_PC',
+    'R_REG_NAME_R0', 'R_REG_NAME_R1', 'R_REG_NAME_R2',
+    'R_REG_NAME_R3', 'R_REG_NAME_RS', 'R_REG_NAME_SF',
+    'R_REG_NAME_SN', 'R_REG_NAME_SP', 'R_REG_NAME_SR',
+    'R_REG_NAME_ZF', 'R_REG_TYPE_ALL', 'R_REG_TYPE_DRX',
+    'R_REG_TYPE_FLG', 'R_REG_TYPE_FPU', 'R_REG_TYPE_GPR',
+    'R_REG_TYPE_LAST', 'R_REG_TYPE_MMX', 'R_REG_TYPE_SEG',
+    'R_REG_TYPE_XMM', 'R_REG_TYPE_YMM', 'c__EA_RRegisterId',
+    'c__EA_RRegisterType', 'r_reg_32_to_64', 'r_reg_64_to_32',
+    'r_reg_arena_dup', 'r_reg_arena_free', 'r_reg_arena_new',
+    'r_reg_arena_peek', 'r_reg_arena_poke', 'r_reg_arena_pop',
+    'r_reg_arena_push', 'r_reg_arena_set_bytes', 'r_reg_arena_shrink',
+    'r_reg_arena_swap', 'r_reg_arena_zero', 'r_reg_cond',
+    'r_reg_cond_apply', 'r_reg_cond_bits', 'r_reg_cond_bits_set',
     'r_reg_cond_from_string', 'r_reg_cond_get',
     'r_reg_cond_get_value', 'r_reg_cond_retrieve', 'r_reg_cond_set',
     'r_reg_cond_to_string', 'r_reg_default_bits', 'r_reg_fit_arena',
@@ -696,7 +739,8 @@ __all__ = \
     'r_reg_get_name', 'r_reg_get_name_by_type', 'r_reg_get_name_idx',
     'r_reg_get_pack', 'r_reg_get_role', 'r_reg_get_type',
     'r_reg_get_value', 'r_reg_get_value_big',
-    'r_reg_get_value_by_role', 'r_reg_getv', 'r_reg_index_get',
+    'r_reg_get_value_by_role', 'r_reg_getv', 'r_reg_hasbits_check',
+    'r_reg_hasbits_clear', 'r_reg_hasbits_use', 'r_reg_index_get',
     'r_reg_init', 'r_reg_is_readonly', 'r_reg_item_free', 'r_reg_new',
     'r_reg_next_diff', 'r_reg_parse_gdb_profile',
     'r_reg_profile_to_cc', 'r_reg_read_regs', 'r_reg_regset_get',
@@ -708,6 +752,7 @@ __all__ = \
     'r_reg_version', 'struct__ut128', 'struct__ut256', 'struct__ut80',
     'struct__ut96', 'struct__utX', 'struct_ht_pp_bucket_t',
     'struct_ht_pp_kv', 'struct_ht_pp_options_t', 'struct_ht_pp_t',
-    'struct_r_list_iter_t', 'struct_r_list_t', 'struct_r_reg_arena_t',
-    'struct_r_reg_flags_t', 'struct_r_reg_item_t',
-    'struct_r_reg_set_t', 'struct_r_reg_t']
+    'struct_r_arch_config_t', 'struct_r_list_iter_t',
+    'struct_r_list_t', 'struct_r_reg_arena_t', 'struct_r_reg_flags_t',
+    'struct_r_reg_item_t', 'struct_r_reg_set_t', 'struct_r_reg_t',
+    'uint64_t']

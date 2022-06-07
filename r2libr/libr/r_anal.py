@@ -255,6 +255,33 @@ struct_c__SA_RBinDwarfDie._fields_ = [
     ('attr_values', ctypes.POINTER(struct_dwarf_attr_kind)),
 ]
 
+
+# values for enumeration 'c__EA_RBinDwarfAttrKind'
+c__EA_RBinDwarfAttrKind__enumvalues = {
+    0: 'DW_AT_KIND_ADDRESS',
+    1: 'DW_AT_KIND_BLOCK',
+    2: 'DW_AT_KIND_CONSTANT',
+    3: 'DW_AT_KIND_EXPRLOC',
+    4: 'DW_AT_KIND_FLAG',
+    5: 'DW_AT_KIND_LINEPTR',
+    6: 'DW_AT_KIND_LOCLISTPTR',
+    7: 'DW_AT_KIND_MACPTR',
+    8: 'DW_AT_KIND_RANGELISTPTR',
+    9: 'DW_AT_KIND_REFERENCE',
+    10: 'DW_AT_KIND_STRING',
+}
+DW_AT_KIND_ADDRESS = 0
+DW_AT_KIND_BLOCK = 1
+DW_AT_KIND_CONSTANT = 2
+DW_AT_KIND_EXPRLOC = 3
+DW_AT_KIND_FLAG = 4
+DW_AT_KIND_LINEPTR = 5
+DW_AT_KIND_LOCLISTPTR = 6
+DW_AT_KIND_MACPTR = 7
+DW_AT_KIND_RANGELISTPTR = 8
+DW_AT_KIND_REFERENCE = 9
+DW_AT_KIND_STRING = 10
+c__EA_RBinDwarfAttrKind = ctypes.c_uint32 # enum
 class union_dwarf_attr_kind_0(Union):
     pass
 
@@ -288,33 +315,6 @@ union_dwarf_attr_kind_0._fields_ = [
     ('_0', struct_dwarf_attr_kind_0_0),
 ]
 
-
-# values for enumeration 'c__EA_RBinDwarfAttrKind'
-c__EA_RBinDwarfAttrKind__enumvalues = {
-    0: 'DW_AT_KIND_ADDRESS',
-    1: 'DW_AT_KIND_BLOCK',
-    2: 'DW_AT_KIND_CONSTANT',
-    3: 'DW_AT_KIND_EXPRLOC',
-    4: 'DW_AT_KIND_FLAG',
-    5: 'DW_AT_KIND_LINEPTR',
-    6: 'DW_AT_KIND_LOCLISTPTR',
-    7: 'DW_AT_KIND_MACPTR',
-    8: 'DW_AT_KIND_RANGELISTPTR',
-    9: 'DW_AT_KIND_REFERENCE',
-    10: 'DW_AT_KIND_STRING',
-}
-DW_AT_KIND_ADDRESS = 0
-DW_AT_KIND_BLOCK = 1
-DW_AT_KIND_CONSTANT = 2
-DW_AT_KIND_EXPRLOC = 3
-DW_AT_KIND_FLAG = 4
-DW_AT_KIND_LINEPTR = 5
-DW_AT_KIND_LOCLISTPTR = 6
-DW_AT_KIND_MACPTR = 7
-DW_AT_KIND_RANGELISTPTR = 8
-DW_AT_KIND_REFERENCE = 9
-DW_AT_KIND_STRING = 10
-c__EA_RBinDwarfAttrKind = ctypes.c_uint32 # enum
 struct_dwarf_attr_kind._pack_ = 1 # source:False
 struct_dwarf_attr_kind._anonymous_ = ('_0',)
 struct_dwarf_attr_kind._fields_ = [
@@ -360,7 +360,7 @@ struct_ht_up_bucket_t._pack_ = 1 # source:False
 struct_ht_up_bucket_t._fields_ = [
     ('arr', ctypes.POINTER(struct_ht_up_kv)),
     ('count', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('size', ctypes.c_uint32),
 ]
 
 struct_ht_up_kv._pack_ = 1 # source:False
@@ -375,13 +375,13 @@ RAnalDwarfContext = struct_r_anal_dwarf_context
 class struct_c__SA_RAnalMetaUserItem(Structure):
     pass
 
-class struct_pj_t(Structure):
+class struct_r_anal_function_t(Structure):
     pass
 
 class struct_r_anal_t(Structure):
     pass
 
-class struct_r_anal_function_t(Structure):
+class struct_pj_t(Structure):
     pass
 
 struct_c__SA_RAnalMetaUserItem._pack_ = 1 # source:False
@@ -397,53 +397,44 @@ struct_c__SA_RAnalMetaUserItem._fields_ = [
     ('pj', ctypes.POINTER(struct_pj_t)),
 ]
 
-class struct_r_print_t(Structure):
-    pass
-
-class struct_sdb_t(Structure):
+class struct_r_arch_config_t(Structure):
     pass
 
 class struct_r_rb_node_t(Structure):
     pass
 
-class struct_ht_pp_t(Structure):
-    pass
-
-class struct_r_event_t(Structure):
-    pass
-
-class struct_r_anal_range_t(Structure):
+class struct_r_anal_esil_t(Structure):
     pass
 
 class struct_r_list_t(Structure):
     pass
 
-class struct_r_anal_esil_t(Structure):
-    pass
-
-class struct_r_anal_plugin_t(Structure):
-    pass
-
 class struct_r_anal_esil_plugin_t(Structure):
     pass
 
-class struct_r_reg_t(Structure):
+class struct_sdb_t(Structure):
     pass
 
 class struct_r_syscall_t(Structure):
     pass
 
-class struct_r_interval_tree_t(Structure):
+class struct_r_reg_t(Structure):
     pass
 
-class struct_r_interval_node_t(Structure):
+class struct_r_anal_plugin_t(Structure):
     pass
 
-struct_r_interval_tree_t._pack_ = 1 # source:False
-struct_r_interval_tree_t._fields_ = [
-    ('root', ctypes.POINTER(struct_r_interval_node_t)),
-    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
-]
+class struct_r_event_t(Structure):
+    pass
+
+class struct_ht_pp_t(Structure):
+    pass
+
+class struct_r_print_t(Structure):
+    pass
+
+class struct_r_anal_range_t(Structure):
+    pass
 
 class struct_r_flag_bind_t(Structure):
     pass
@@ -475,43 +466,52 @@ struct_r_flag_bind_t._fields_ = [
     ('pop_fs', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_flag_t))),
 ]
 
-class struct_r_spaces_t(Structure):
+class struct_r_anal_hint_cb_t(Structure):
     pass
 
-class struct_r_crbtree_t(Structure):
-    pass
-
-struct_r_spaces_t._pack_ = 1 # source:False
-struct_r_spaces_t._fields_ = [
-    ('name', ctypes.POINTER(ctypes.c_char)),
-    ('current', ctypes.POINTER(struct_r_space_t)),
-    ('spaces', ctypes.POINTER(struct_r_crbtree_t)),
-    ('spacestack', ctypes.POINTER(struct_r_list_t)),
-    ('event', ctypes.POINTER(struct_r_event_t)),
+struct_r_anal_hint_cb_t._pack_ = 1 # source:False
+struct_r_anal_hint_cb_t._fields_ = [
+    ('on_bits', ctypes.CFUNCTYPE(None, ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_bool)),
 ]
 
+class struct_r_core_bind_t(Structure):
+    pass
 
-# values for enumeration 'c__EA_RAnalCPPABI'
-c__EA_RAnalCPPABI__enumvalues = {
-    0: 'R_ANAL_CPP_ABI_ITANIUM',
-    1: 'R_ANAL_CPP_ABI_MSVC',
-}
-R_ANAL_CPP_ABI_ITANIUM = 0
-R_ANAL_CPP_ABI_MSVC = 1
-c__EA_RAnalCPPABI = ctypes.c_uint32 # enum
+struct_r_core_bind_t._pack_ = 1 # source:False
+struct_r_core_bind_t._fields_ = [
+    ('core', ctypes.POINTER(None)),
+    ('cmd', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('cmdf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('cmdstr', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('cmdstrf', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('puts', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
+    ('bphit', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(None))),
+    ('syshit', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+    ('setab', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), ctypes.c_int32)),
+    ('getName', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
+    ('getNameDelta', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
+    ('archbits', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.c_uint64)),
+    ('cfggeti', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('cfgGet', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('numGet', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('isMapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_int32)),
+    ('syncDebugMaps', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None))),
+    ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
+]
+
 class struct_r_io_bind_t(Structure):
     pass
 
 class struct_r_io_t(Structure):
     pass
 
-class struct_r_io_bank_t(Structure):
-    pass
-
 class struct_r_io_desc_t(Structure):
     pass
 
 class struct_r_io_map_t(Structure):
+    pass
+
+class struct_r_io_bank_t(Structure):
     pass
 
 struct_r_io_bind_t._pack_ = 1 # source:False
@@ -552,22 +552,6 @@ struct_r_io_bind_t._fields_ = [
     ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
 ]
 
-class struct_r_anal_hint_cb_t(Structure):
-    pass
-
-struct_r_anal_hint_cb_t._pack_ = 1 # source:False
-struct_r_anal_hint_cb_t._fields_ = [
-    ('on_bits', ctypes.CFUNCTYPE(None, ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_bool)),
-]
-
-class struct_r_str_constpool_t(Structure):
-    pass
-
-struct_r_str_constpool_t._pack_ = 1 # source:False
-struct_r_str_constpool_t._fields_ = [
-    ('ht', ctypes.POINTER(struct_ht_pp_t)),
-]
-
 class struct_r_bin_bind_t(Structure):
     pass
 
@@ -592,45 +576,30 @@ struct_r_bin_bind_t._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
-class struct_r_core_bind_t(Structure):
+class struct_r_spaces_t(Structure):
     pass
 
-struct_r_core_bind_t._pack_ = 1 # source:False
-struct_r_core_bind_t._fields_ = [
-    ('core', ctypes.POINTER(None)),
-    ('cmd', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('cmdf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('cmdstr', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('cmdstrf', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('puts', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
-    ('bphit', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(None))),
-    ('syshit', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
-    ('setab', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), ctypes.c_int32)),
-    ('getName', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
-    ('getNameDelta', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
-    ('archbits', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.c_uint64)),
-    ('cfggeti', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('cfgGet', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('numGet', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('isMapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_int32)),
-    ('syncDebugMaps', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None))),
-    ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
+class struct_r_crbtree_t(Structure):
+    pass
+
+struct_r_spaces_t._pack_ = 1 # source:False
+struct_r_spaces_t._fields_ = [
+    ('name', ctypes.POINTER(ctypes.c_char)),
+    ('current', ctypes.POINTER(struct_r_space_t)),
+    ('spaces', ctypes.POINTER(struct_r_crbtree_t)),
+    ('spacestack', ctypes.POINTER(struct_r_list_t)),
+    ('event', ctypes.POINTER(struct_r_event_t)),
 ]
 
-class struct_r_anal_callbacks_t(Structure):
-    pass
 
-class struct_r_anal_bb_t(Structure):
-    pass
-
-struct_r_anal_callbacks_t._pack_ = 1 # source:False
-struct_r_anal_callbacks_t._fields_ = [
-    ('on_fcn_new', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(None), ctypes.POINTER(struct_r_anal_function_t))),
-    ('on_fcn_delete', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(None), ctypes.POINTER(struct_r_anal_function_t))),
-    ('on_fcn_rename', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(None), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(ctypes.c_char))),
-    ('on_fcn_bb_new', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(None), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t))),
-]
-
+# values for enumeration 'c__EA_RAnalCPPABI'
+c__EA_RAnalCPPABI__enumvalues = {
+    0: 'R_ANAL_CPP_ABI_ITANIUM',
+    1: 'R_ANAL_CPP_ABI_MSVC',
+}
+R_ANAL_CPP_ABI_ITANIUM = 0
+R_ANAL_CPP_ABI_MSVC = 1
+c__EA_RAnalCPPABI = ctypes.c_uint32 # enum
 class struct_r_anal_options_t(Structure):
     pass
 
@@ -663,22 +632,53 @@ struct_r_anal_options_t._fields_ = [
     ('nonull', ctypes.c_int32),
     ('pushret', ctypes.c_bool),
     ('armthumb', ctypes.c_bool),
-    ('endsize', ctypes.c_bool),
     ('delay', ctypes.c_bool),
+    ('PADDING_2', ctypes.c_ubyte),
     ('tailcall', ctypes.c_int32),
     ('retpoline', ctypes.c_bool),
-    ('PADDING_2', ctypes.c_ubyte * 3),
+    ('PADDING_3', ctypes.c_ubyte * 3),
+]
+
+class struct_r_interval_tree_t(Structure):
+    pass
+
+class struct_r_interval_node_t(Structure):
+    pass
+
+struct_r_interval_tree_t._pack_ = 1 # source:False
+struct_r_interval_tree_t._fields_ = [
+    ('root', ctypes.POINTER(struct_r_interval_node_t)),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+]
+
+class struct_r_anal_callbacks_t(Structure):
+    pass
+
+class struct_r_anal_bb_t(Structure):
+    pass
+
+struct_r_anal_callbacks_t._pack_ = 1 # source:False
+struct_r_anal_callbacks_t._fields_ = [
+    ('on_fcn_new', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(None), ctypes.POINTER(struct_r_anal_function_t))),
+    ('on_fcn_delete', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(None), ctypes.POINTER(struct_r_anal_function_t))),
+    ('on_fcn_rename', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(None), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(ctypes.c_char))),
+    ('on_fcn_bb_new', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(None), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t))),
+]
+
+class struct_r_str_constpool_t(Structure):
+    pass
+
+struct_r_str_constpool_t._pack_ = 1 # source:False
+struct_r_str_constpool_t._fields_ = [
+    ('ht', ctypes.POINTER(struct_ht_pp_t)),
 ]
 
 struct_r_anal_t._pack_ = 1 # source:False
 struct_r_anal_t._fields_ = [
-    ('cpu', ctypes.POINTER(ctypes.c_char)),
-    ('os', ctypes.POINTER(ctypes.c_char)),
-    ('bits', ctypes.c_int32),
+    ('config', ctypes.POINTER(struct_r_arch_config_t)),
     ('lineswidth', ctypes.c_int32),
-    ('big_endian', ctypes.c_int32),
     ('sleep', ctypes.c_int32),
-    ('cpp_abi', c__EA_RAnalCPPABI),
+    ('cxxabi', c__EA_RAnalCPPABI),
     ('PADDING_0', ctypes.c_ubyte * 4),
     ('user', ctypes.POINTER(None)),
     ('gp', ctypes.c_uint64),
@@ -704,8 +704,6 @@ struct_r_anal_t._fields_ = [
     ('coreb', struct_r_core_bind_t),
     ('maxreflines', ctypes.c_int32),
     ('esil_goto_limit', ctypes.c_int32),
-    ('pcalign', ctypes.c_int32),
-    ('PADDING_3', ctypes.c_ubyte * 4),
     ('esil', ctypes.POINTER(struct_r_anal_esil_t)),
     ('cur', ctypes.POINTER(struct_r_anal_plugin_t)),
     ('esil_cur', ctypes.POINTER(struct_r_anal_esil_plugin_t)),
@@ -718,7 +716,7 @@ struct_r_anal_t._fields_ = [
     ('dict_refs', ctypes.POINTER(struct_ht_up_t)),
     ('dict_xrefs', ctypes.POINTER(struct_ht_up_t)),
     ('recursive_noreturn', ctypes.c_bool),
-    ('PADDING_4', ctypes.c_ubyte * 7),
+    ('PADDING_3', ctypes.c_ubyte * 7),
     ('zign_spaces', struct_r_spaces_t),
     ('zign_path', ctypes.POINTER(ctypes.c_char)),
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
@@ -736,16 +734,15 @@ struct_r_anal_t._fields_ = [
     ('sdb_classes_attrs', ctypes.POINTER(struct_sdb_t)),
     ('cb', struct_r_anal_callbacks_t),
     ('opt', struct_r_anal_options_t),
-    ('PADDING_5', ctypes.c_ubyte * 4),
+    ('PADDING_4', ctypes.c_ubyte * 4),
     ('reflines', ctypes.POINTER(struct_r_list_t)),
     ('columnSort', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(None))),
     ('stackptr', ctypes.c_int32),
-    ('PADDING_6', ctypes.c_ubyte * 4),
+    ('PADDING_5', ctypes.c_ubyte * 4),
     ('log', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char))),
     ('read_at', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
     ('verbose', ctypes.c_bool),
-    ('PADDING_7', ctypes.c_ubyte * 3),
-    ('seggrn', ctypes.c_int32),
+    ('PADDING_6', ctypes.c_ubyte * 7),
     ('flag_get', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_flag_item_t), ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64)),
     ('ev', ctypes.POINTER(struct_r_event_t)),
     ('imports', ctypes.POINTER(struct_r_list_t)),
@@ -753,6 +750,29 @@ struct_r_anal_t._fields_ = [
     ('constpool', struct_r_str_constpool_t),
     ('leaddrs', ctypes.POINTER(struct_r_list_t)),
     ('pincmd', ctypes.POINTER(ctypes.c_char)),
+    ('is_dirty', ctypes.c_bool),
+    ('PADDING_7', ctypes.c_ubyte * 7),
+]
+
+struct_r_arch_config_t._pack_ = 1 # source:False
+struct_r_arch_config_t._fields_ = [
+    ('arch', ctypes.POINTER(ctypes.c_char)),
+    ('cpu', ctypes.POINTER(ctypes.c_char)),
+    ('os', ctypes.POINTER(ctypes.c_char)),
+    ('bits', ctypes.c_int32),
+    ('big_endian', ctypes.c_int32),
+    ('syntax', ctypes.c_int32),
+    ('pcalign', ctypes.c_int32),
+    ('dataalign', ctypes.c_int32),
+    ('segbas', ctypes.c_int32),
+    ('seggrn', ctypes.c_int32),
+    ('invhex', ctypes.c_int32),
+    ('bitshift', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('features', ctypes.POINTER(ctypes.c_char)),
+    ('refcount', ctypes.c_int32),
+    ('PADDING_1', ctypes.c_ubyte * 4),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
 ]
 
 struct_r_rb_node_t._pack_ = 1 # source:False
@@ -818,7 +838,7 @@ struct_ht_pp_bucket_t._pack_ = 1 # source:False
 struct_ht_pp_bucket_t._fields_ = [
     ('arr', ctypes.POINTER(struct_ht_pp_kv)),
     ('count', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('size', ctypes.c_uint32),
 ]
 
 struct_ht_pp_kv._pack_ = 1 # source:False
@@ -851,18 +871,16 @@ struct_r_reg_t._fields_ = [
     ('profile', ctypes.POINTER(ctypes.c_char)),
     ('reg_profile_cmt', ctypes.POINTER(ctypes.c_char)),
     ('reg_profile_str', ctypes.POINTER(ctypes.c_char)),
-    ('name', ctypes.POINTER(ctypes.c_char) * 25),
+    ('name', ctypes.POINTER(ctypes.c_char) * 29),
     ('regset', struct_r_reg_set_t * 8),
     ('allregs', ctypes.POINTER(struct_r_list_t)),
     ('roregs', ctypes.POINTER(struct_r_list_t)),
     ('iters', ctypes.c_int32),
-    ('arch', ctypes.c_int32),
-    ('bits', ctypes.c_int32),
     ('size', ctypes.c_int32),
     ('bits_default', ctypes.c_int32),
-    ('is_thumb', ctypes.c_bool),
-    ('big_endian', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 2),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('hasbits', ctypes.c_uint64),
+    ('config', ctypes.POINTER(struct_r_arch_config_t)),
 ]
 
 struct_r_reg_arena_t._pack_ = 1 # source:False
@@ -872,13 +890,13 @@ struct_r_reg_arena_t._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
+class struct_r_syscall_port_t(Structure):
+    pass
+
 class struct_r_syscall_item_t(Structure):
     pass
 
 class struct__IO_FILE(Structure):
-    pass
-
-class struct_r_syscall_port_t(Structure):
     pass
 
 struct_r_syscall_t._pack_ = 1 # source:False
@@ -897,13 +915,13 @@ struct_r_syscall_t._fields_ = [
     ('PADDING_1', ctypes.c_ubyte * 4),
 ]
 
+class struct__IO_marker(Structure):
+    pass
+
 class struct__IO_wide_data(Structure):
     pass
 
 class struct__IO_codecvt(Structure):
-    pass
-
-class struct__IO_marker(Structure):
     pass
 
 struct__IO_FILE._pack_ = 1 # source:False
@@ -1147,7 +1165,7 @@ struct_r_io_undo_t._fields_ = [
     ('seek', struct_r_io_undos_t * 64),
 ]
 
-class struct_r_pvector_t(Structure):
+class struct_r_skyline_t(Structure):
     pass
 
 class struct_r_vector_t(Structure):
@@ -1163,12 +1181,12 @@ struct_r_vector_t._fields_ = [
     ('free_user', ctypes.POINTER(None)),
 ]
 
-struct_r_pvector_t._pack_ = 1 # source:False
-struct_r_pvector_t._fields_ = [
+struct_r_skyline_t._pack_ = 1 # source:False
+struct_r_skyline_t._fields_ = [
     ('v', struct_r_vector_t),
 ]
 
-class struct_r_skyline_t(Structure):
+class struct_r_pvector_t(Structure):
     _pack_ = 1 # source:False
     _fields_ = [
     ('v', struct_r_vector_t),
@@ -1212,7 +1230,7 @@ struct_r_io_t._fields_ = [
     ('args', ctypes.POINTER(ctypes.c_char)),
     ('event', ctypes.POINTER(struct_r_event_t)),
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
-    ('corebind', struct_r_core_bind_t),
+    ('coreb', struct_r_core_bind_t),
     ('want_ptrace_wrap', ctypes.c_bool),
     ('PADDING_5', ctypes.c_ubyte * 7),
 ]
@@ -1327,7 +1345,8 @@ struct_r_io_bank_t._fields_ = [
     ('todo', ctypes.POINTER(struct_r_queue_t)),
     ('last_used', ctypes.POINTER(struct_r_crbtree_node)),
     ('id', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('drain_me', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 3),
 ]
 
 struct_r_crbtree_t._pack_ = 1 # source:False
@@ -1386,6 +1405,8 @@ struct_r_flag_t._fields_ = [
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
     ('zones', ctypes.POINTER(struct_r_list_t)),
     ('mask', ctypes.c_uint64),
+    ('is_dirty', ctypes.c_bool),
+    ('PADDING_1', ctypes.c_ubyte * 7),
 ]
 
 struct_r_space_t._pack_ = 1 # source:False
@@ -1544,10 +1565,10 @@ struct_r_bin_t._fields_ = [
     ('debase64', ctypes.c_int32),
     ('minstrlen', ctypes.c_int32),
     ('maxstrlen', ctypes.c_int32),
-    ('PADDING_1', ctypes.c_ubyte * 4),
+    ('maxsymlen', ctypes.c_int32),
     ('maxstrbuf', ctypes.c_uint64),
     ('rawstr', ctypes.c_int32),
-    ('PADDING_2', ctypes.c_ubyte * 4),
+    ('PADDING_1', ctypes.c_ubyte * 4),
     ('sdb', ctypes.POINTER(struct_sdb_t)),
     ('ids', ctypes.POINTER(struct_r_id_storage_t)),
     ('plugins', ctypes.POINTER(struct_r_list_t)),
@@ -1556,15 +1577,15 @@ struct_r_bin_t._fields_ = [
     ('binfiles', ctypes.POINTER(struct_r_list_t)),
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
     ('loadany', ctypes.c_int32),
-    ('PADDING_3', ctypes.c_ubyte * 4),
+    ('PADDING_2', ctypes.c_ubyte * 4),
     ('iob', struct_r_io_bind_t),
     ('consb', struct_r_cons_bind_t),
     ('force', ctypes.POINTER(ctypes.c_char)),
     ('want_dbginfo', ctypes.c_bool),
-    ('PADDING_4', ctypes.c_ubyte * 3),
+    ('PADDING_3', ctypes.c_ubyte * 3),
     ('filter', ctypes.c_int32),
     ('strfilter', ctypes.c_char),
-    ('PADDING_5', ctypes.c_ubyte * 7),
+    ('PADDING_4', ctypes.c_ubyte * 7),
     ('strpurge', ctypes.POINTER(ctypes.c_char)),
     ('srcdir', ctypes.POINTER(ctypes.c_char)),
     ('prefix', ctypes.POINTER(ctypes.c_char)),
@@ -1575,10 +1596,10 @@ struct_r_bin_t._fields_ = [
     ('verbose', ctypes.c_bool),
     ('use_xtr', ctypes.c_bool),
     ('use_ldr', ctypes.c_bool),
-    ('PADDING_6', ctypes.c_ubyte * 3),
+    ('PADDING_5', ctypes.c_ubyte * 3),
     ('constpool', struct_r_str_constpool_t),
     ('is_reloc_patched', ctypes.c_bool),
-    ('PADDING_7', ctypes.c_ubyte * 7),
+    ('PADDING_6', ctypes.c_ubyte * 7),
 ]
 
 class struct_r_bin_xtr_plugin_t(Structure):
@@ -1594,11 +1615,12 @@ struct_r_bin_file_t._pack_ = 1 # source:False
 struct_r_bin_file_t._fields_ = [
     ('file', ctypes.POINTER(ctypes.c_char)),
     ('fd', ctypes.c_int32),
-    ('size', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('size', ctypes.c_uint64),
     ('rawstr', ctypes.c_int32),
     ('strmode', ctypes.c_int32),
     ('id', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('PADDING_1', ctypes.c_ubyte * 4),
     ('buf', ctypes.POINTER(struct_r_buf_t)),
     ('offset', ctypes.c_uint64),
     ('o', ctypes.POINTER(struct_r_bin_object_t)),
@@ -1607,7 +1629,7 @@ struct_r_bin_file_t._fields_ = [
     ('minstrlen', ctypes.c_int32),
     ('maxstrlen', ctypes.c_int32),
     ('narch', ctypes.c_int32),
-    ('PADDING_1', ctypes.c_ubyte * 4),
+    ('PADDING_2', ctypes.c_ubyte * 4),
     ('curxtr', ctypes.POINTER(struct_r_bin_xtr_plugin_t)),
     ('xtr_data', ctypes.POINTER(struct_r_list_t)),
     ('sdb', ctypes.POINTER(struct_sdb_t)),
@@ -1644,10 +1666,10 @@ struct_r_buffer_methods_t._fields_ = [
     ('nonempty_list', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_list_t), ctypes.POINTER(struct_r_buf_t))),
 ]
 
-class struct_r_bin_info_t(Structure):
+class struct_r_bin_plugin_t(Structure):
     pass
 
-class struct_r_bin_plugin_t(Structure):
+class struct_r_bin_info_t(Structure):
     pass
 
 class struct_r_bin_addr_t(Structure):
@@ -1742,6 +1764,7 @@ struct_r_bin_info_t._fields_ = [
     ('baddr', ctypes.c_uint64),
     ('intrp', ctypes.POINTER(ctypes.c_char)),
     ('compiler', ctypes.POINTER(ctypes.c_char)),
+    ('charset', ctypes.POINTER(ctypes.c_char)),
 ]
 
 struct_r_bin_addr_t._pack_ = 1 # source:False
@@ -1754,10 +1777,10 @@ struct_r_bin_addr_t._fields_ = [
     ('bits', ctypes.c_int32),
 ]
 
-class struct_r_bin_write_t(Structure):
+class struct_r_bin_dbginfo_t(Structure):
     pass
 
-class struct_r_bin_dbginfo_t(Structure):
+class struct_r_bin_write_t(Structure):
     pass
 
 class struct_r_bin_arch_options_t(Structure):
@@ -1835,7 +1858,7 @@ struct_r_bin_arch_options_t._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
-class struct_r_bin_xtr_extract_t(Structure):
+class struct_r_bin_xtr_data_t(Structure):
     pass
 
 struct_r_bin_xtr_plugin_t._pack_ = 1 # source:False
@@ -1846,12 +1869,14 @@ struct_r_bin_xtr_plugin_t._fields_ = [
     ('init', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None))),
     ('fini', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None))),
     ('check_buffer', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_bin_file_t), ctypes.POINTER(struct_r_buf_t))),
-    ('extract_from_bytes', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_bin_xtr_extract_t), ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64, ctypes.c_int32)),
-    ('extract_from_buffer', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_bin_xtr_extract_t), ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(struct_r_buf_t), ctypes.c_int32)),
+    ('extract_from_bytes', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_bin_xtr_data_t), ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64, ctypes.c_int32)),
+    ('extract_from_buffer', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_bin_xtr_data_t), ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(struct_r_buf_t), ctypes.c_int32)),
     ('extractall_from_bytes', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_list_t), ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64)),
     ('extractall_from_buffer', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_list_t), ctypes.POINTER(struct_r_bin_t), ctypes.POINTER(struct_r_buf_t))),
-    ('extract', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_bin_xtr_extract_t), ctypes.POINTER(struct_r_bin_t), ctypes.c_int32)),
+    ('extract', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_bin_xtr_data_t), ctypes.POINTER(struct_r_bin_t), ctypes.c_int32)),
     ('extractall', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_list_t), ctypes.POINTER(struct_r_bin_t))),
+    ('loadbuf', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 7),
     ('load', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_bin_t))),
     ('size', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_bin_t))),
     ('destroy', ctypes.CFUNCTYPE(None, ctypes.POINTER(struct_r_bin_t))),
@@ -1861,8 +1886,8 @@ struct_r_bin_xtr_plugin_t._fields_ = [
 class struct_r_bin_xtr_metadata_t(Structure):
     pass
 
-struct_r_bin_xtr_extract_t._pack_ = 1 # source:False
-struct_r_bin_xtr_extract_t._fields_ = [
+struct_r_bin_xtr_data_t._pack_ = 1 # source:False
+struct_r_bin_xtr_data_t._fields_ = [
     ('file', ctypes.POINTER(ctypes.c_char)),
     ('buf', ctypes.POINTER(struct_r_buf_t)),
     ('size', ctypes.c_uint64),
@@ -1904,10 +1929,10 @@ struct_r_bin_section_t._fields_ = [
     ('is_segment', ctypes.c_bool),
 ]
 
-class struct_r_anal_esil_trace_t(Structure):
+class struct_r_anal_esil_handler_t(Structure):
     pass
 
-class struct_r_anal_esil_handler_t(Structure):
+class struct_r_anal_esil_trace_t(Structure):
     pass
 
 class struct_r_anal_reil(Structure):
@@ -2053,17 +2078,20 @@ struct_r_anal_plugin_t._fields_ = [
     ('arch', ctypes.POINTER(ctypes.c_char)),
     ('author', ctypes.POINTER(ctypes.c_char)),
     ('version', ctypes.POINTER(ctypes.c_char)),
+    ('endian', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
     ('cpus', ctypes.POINTER(ctypes.c_char)),
     ('bits', ctypes.c_int32),
     ('esil', ctypes.c_int32),
+    ('jmpmid', ctypes.c_int32),
     ('fileformat_type', ctypes.c_int32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
     ('init', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None))),
     ('fini', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None))),
     ('archinfo', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.c_int32)),
     ('anal_mask', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_ubyte), ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64)),
     ('preludes', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_list_t), ctypes.POINTER(struct_r_anal_t))),
     ('op', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_op_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, c__EA_RAnalOpMask)),
+    ('opasm', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
     ('cmd_ext', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char))),
     ('set_reg_profile', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_anal_t))),
     ('get_reg_profile', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_anal_t))),
@@ -2076,6 +2104,7 @@ struct_r_anal_plugin_t._fields_ = [
     ('esil_post_loop', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_esil_t), ctypes.POINTER(struct_r_anal_op_t))),
     ('esil_trap', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_esil_t), ctypes.c_int32, ctypes.c_int32)),
     ('esil_fini', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_esil_t))),
+    ('mnemonics', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.c_bool)),
 ]
 
 class struct_r_anal_value_t(Structure):
@@ -2084,6 +2113,140 @@ class struct_r_anal_value_t(Structure):
 class struct_r_anal_switch_obj_t(Structure):
     pass
 
+
+# values for enumeration 'c__EA_RAnalOpDirection'
+c__EA_RAnalOpDirection__enumvalues = {
+    1: 'R_ANAL_OP_DIR_READ',
+    2: 'R_ANAL_OP_DIR_WRITE',
+    4: 'R_ANAL_OP_DIR_EXEC',
+    8: 'R_ANAL_OP_DIR_REF',
+}
+R_ANAL_OP_DIR_READ = 1
+R_ANAL_OP_DIR_WRITE = 2
+R_ANAL_OP_DIR_EXEC = 4
+R_ANAL_OP_DIR_REF = 8
+c__EA_RAnalOpDirection = ctypes.c_uint32 # enum
+
+# values for enumeration 'r_anal_data_type_t'
+r_anal_data_type_t__enumvalues = {
+    0: 'R_ANAL_DATATYPE_NULL',
+    1: 'R_ANAL_DATATYPE_ARRAY',
+    2: 'R_ANAL_DATATYPE_OBJECT',
+    3: 'R_ANAL_DATATYPE_STRING',
+    4: 'R_ANAL_DATATYPE_CLASS',
+    5: 'R_ANAL_DATATYPE_BOOLEAN',
+    6: 'R_ANAL_DATATYPE_INT16',
+    7: 'R_ANAL_DATATYPE_INT32',
+    8: 'R_ANAL_DATATYPE_INT64',
+    9: 'R_ANAL_DATATYPE_FLOAT',
+}
+R_ANAL_DATATYPE_NULL = 0
+R_ANAL_DATATYPE_ARRAY = 1
+R_ANAL_DATATYPE_OBJECT = 2
+R_ANAL_DATATYPE_STRING = 3
+R_ANAL_DATATYPE_CLASS = 4
+R_ANAL_DATATYPE_BOOLEAN = 5
+R_ANAL_DATATYPE_INT16 = 6
+R_ANAL_DATATYPE_INT32 = 7
+R_ANAL_DATATYPE_INT64 = 8
+R_ANAL_DATATYPE_FLOAT = 9
+r_anal_data_type_t = ctypes.c_uint32 # enum
+
+# values for enumeration 'c__EA__RAnalCond'
+c__EA__RAnalCond__enumvalues = {
+    0: 'R_ANAL_COND_AL',
+    1: 'R_ANAL_COND_EQ',
+    2: 'R_ANAL_COND_NE',
+    3: 'R_ANAL_COND_GE',
+    4: 'R_ANAL_COND_GT',
+    5: 'R_ANAL_COND_LE',
+    6: 'R_ANAL_COND_LT',
+    7: 'R_ANAL_COND_NV',
+    8: 'R_ANAL_COND_HS',
+    9: 'R_ANAL_COND_LO',
+    10: 'R_ANAL_COND_MI',
+    11: 'R_ANAL_COND_PL',
+    12: 'R_ANAL_COND_VS',
+    13: 'R_ANAL_COND_VC',
+    14: 'R_ANAL_COND_HI',
+    15: 'R_ANAL_COND_LS',
+}
+R_ANAL_COND_AL = 0
+R_ANAL_COND_EQ = 1
+R_ANAL_COND_NE = 2
+R_ANAL_COND_GE = 3
+R_ANAL_COND_GT = 4
+R_ANAL_COND_LE = 5
+R_ANAL_COND_LT = 6
+R_ANAL_COND_NV = 7
+R_ANAL_COND_HS = 8
+R_ANAL_COND_LO = 9
+R_ANAL_COND_MI = 10
+R_ANAL_COND_PL = 11
+R_ANAL_COND_VS = 12
+R_ANAL_COND_VC = 13
+R_ANAL_COND_HI = 14
+R_ANAL_COND_LS = 15
+c__EA__RAnalCond = ctypes.c_uint32 # enum
+
+# values for enumeration 'c__EA_RAnalOpFamily'
+c__EA_RAnalOpFamily__enumvalues = {
+    -1: 'R_ANAL_OP_FAMILY_UNKNOWN',
+    0: 'R_ANAL_OP_FAMILY_CPU',
+    1: 'R_ANAL_OP_FAMILY_FPU',
+    2: 'R_ANAL_OP_FAMILY_MMX',
+    3: 'R_ANAL_OP_FAMILY_SSE',
+    4: 'R_ANAL_OP_FAMILY_PRIV',
+    5: 'R_ANAL_OP_FAMILY_CRYPTO',
+    6: 'R_ANAL_OP_FAMILY_THREAD',
+    7: 'R_ANAL_OP_FAMILY_VIRT',
+    8: 'R_ANAL_OP_FAMILY_SECURITY',
+    9: 'R_ANAL_OP_FAMILY_IO',
+    10: 'R_ANAL_OP_FAMILY_LAST',
+}
+R_ANAL_OP_FAMILY_UNKNOWN = -1
+R_ANAL_OP_FAMILY_CPU = 0
+R_ANAL_OP_FAMILY_FPU = 1
+R_ANAL_OP_FAMILY_MMX = 2
+R_ANAL_OP_FAMILY_SSE = 3
+R_ANAL_OP_FAMILY_PRIV = 4
+R_ANAL_OP_FAMILY_CRYPTO = 5
+R_ANAL_OP_FAMILY_THREAD = 6
+R_ANAL_OP_FAMILY_VIRT = 7
+R_ANAL_OP_FAMILY_SECURITY = 8
+R_ANAL_OP_FAMILY_IO = 9
+R_ANAL_OP_FAMILY_LAST = 10
+c__EA_RAnalOpFamily = ctypes.c_int32 # enum
+class struct_c__SA_RStrBuf(Structure):
+    pass
+
+struct_c__SA_RStrBuf._pack_ = 1 # source:False
+struct_c__SA_RStrBuf._fields_ = [
+    ('buf', ctypes.c_char * 32),
+    ('len', ctypes.c_uint64),
+    ('ptr', ctypes.POINTER(ctypes.c_char)),
+    ('ptrlen', ctypes.c_uint64),
+    ('weakref', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 7),
+]
+
+
+# values for enumeration 'c__EA_RAnalOpPrefix'
+c__EA_RAnalOpPrefix__enumvalues = {
+    1: 'R_ANAL_OP_PREFIX_COND',
+    2: 'R_ANAL_OP_PREFIX_REP',
+    4: 'R_ANAL_OP_PREFIX_REPNE',
+    8: 'R_ANAL_OP_PREFIX_LOCK',
+    16: 'R_ANAL_OP_PREFIX_LIKELY',
+    32: 'R_ANAL_OP_PREFIX_UNLIKELY',
+}
+R_ANAL_OP_PREFIX_COND = 1
+R_ANAL_OP_PREFIX_REP = 2
+R_ANAL_OP_PREFIX_REPNE = 4
+R_ANAL_OP_PREFIX_LOCK = 8
+R_ANAL_OP_PREFIX_LIKELY = 16
+R_ANAL_OP_PREFIX_UNLIKELY = 32
+c__EA_RAnalOpPrefix = ctypes.c_uint32 # enum
 
 # values for enumeration 'c__EA_RAnalStackOp'
 c__EA_RAnalStackOp__enumvalues = {
@@ -2130,140 +2293,6 @@ struct_r_anal_hint_t._fields_ = [
     ('nword', ctypes.c_int32),
     ('PADDING_2', ctypes.c_ubyte * 4),
     ('stackframe', ctypes.c_uint64),
-]
-
-
-# values for enumeration 'c__EA_RAnalOpDirection'
-c__EA_RAnalOpDirection__enumvalues = {
-    1: 'R_ANAL_OP_DIR_READ',
-    2: 'R_ANAL_OP_DIR_WRITE',
-    4: 'R_ANAL_OP_DIR_EXEC',
-    8: 'R_ANAL_OP_DIR_REF',
-}
-R_ANAL_OP_DIR_READ = 1
-R_ANAL_OP_DIR_WRITE = 2
-R_ANAL_OP_DIR_EXEC = 4
-R_ANAL_OP_DIR_REF = 8
-c__EA_RAnalOpDirection = ctypes.c_uint32 # enum
-
-# values for enumeration 'c__EA__RAnalCond'
-c__EA__RAnalCond__enumvalues = {
-    0: 'R_ANAL_COND_AL',
-    1: 'R_ANAL_COND_EQ',
-    2: 'R_ANAL_COND_NE',
-    3: 'R_ANAL_COND_GE',
-    4: 'R_ANAL_COND_GT',
-    5: 'R_ANAL_COND_LE',
-    6: 'R_ANAL_COND_LT',
-    7: 'R_ANAL_COND_NV',
-    8: 'R_ANAL_COND_HS',
-    9: 'R_ANAL_COND_LO',
-    10: 'R_ANAL_COND_MI',
-    11: 'R_ANAL_COND_PL',
-    12: 'R_ANAL_COND_VS',
-    13: 'R_ANAL_COND_VC',
-    14: 'R_ANAL_COND_HI',
-    15: 'R_ANAL_COND_LS',
-}
-R_ANAL_COND_AL = 0
-R_ANAL_COND_EQ = 1
-R_ANAL_COND_NE = 2
-R_ANAL_COND_GE = 3
-R_ANAL_COND_GT = 4
-R_ANAL_COND_LE = 5
-R_ANAL_COND_LT = 6
-R_ANAL_COND_NV = 7
-R_ANAL_COND_HS = 8
-R_ANAL_COND_LO = 9
-R_ANAL_COND_MI = 10
-R_ANAL_COND_PL = 11
-R_ANAL_COND_VS = 12
-R_ANAL_COND_VC = 13
-R_ANAL_COND_HI = 14
-R_ANAL_COND_LS = 15
-c__EA__RAnalCond = ctypes.c_uint32 # enum
-
-# values for enumeration 'r_anal_data_type_t'
-r_anal_data_type_t__enumvalues = {
-    0: 'R_ANAL_DATATYPE_NULL',
-    1: 'R_ANAL_DATATYPE_ARRAY',
-    2: 'R_ANAL_DATATYPE_OBJECT',
-    3: 'R_ANAL_DATATYPE_STRING',
-    4: 'R_ANAL_DATATYPE_CLASS',
-    5: 'R_ANAL_DATATYPE_BOOLEAN',
-    6: 'R_ANAL_DATATYPE_INT16',
-    7: 'R_ANAL_DATATYPE_INT32',
-    8: 'R_ANAL_DATATYPE_INT64',
-    9: 'R_ANAL_DATATYPE_FLOAT',
-}
-R_ANAL_DATATYPE_NULL = 0
-R_ANAL_DATATYPE_ARRAY = 1
-R_ANAL_DATATYPE_OBJECT = 2
-R_ANAL_DATATYPE_STRING = 3
-R_ANAL_DATATYPE_CLASS = 4
-R_ANAL_DATATYPE_BOOLEAN = 5
-R_ANAL_DATATYPE_INT16 = 6
-R_ANAL_DATATYPE_INT32 = 7
-R_ANAL_DATATYPE_INT64 = 8
-R_ANAL_DATATYPE_FLOAT = 9
-r_anal_data_type_t = ctypes.c_uint32 # enum
-
-# values for enumeration 'c__EA_RAnalOpPrefix'
-c__EA_RAnalOpPrefix__enumvalues = {
-    1: 'R_ANAL_OP_PREFIX_COND',
-    2: 'R_ANAL_OP_PREFIX_REP',
-    4: 'R_ANAL_OP_PREFIX_REPNE',
-    8: 'R_ANAL_OP_PREFIX_LOCK',
-    16: 'R_ANAL_OP_PREFIX_LIKELY',
-    32: 'R_ANAL_OP_PREFIX_UNLIKELY',
-}
-R_ANAL_OP_PREFIX_COND = 1
-R_ANAL_OP_PREFIX_REP = 2
-R_ANAL_OP_PREFIX_REPNE = 4
-R_ANAL_OP_PREFIX_LOCK = 8
-R_ANAL_OP_PREFIX_LIKELY = 16
-R_ANAL_OP_PREFIX_UNLIKELY = 32
-c__EA_RAnalOpPrefix = ctypes.c_uint32 # enum
-
-# values for enumeration 'c__EA_RAnalOpFamily'
-c__EA_RAnalOpFamily__enumvalues = {
-    -1: 'R_ANAL_OP_FAMILY_UNKNOWN',
-    0: 'R_ANAL_OP_FAMILY_CPU',
-    1: 'R_ANAL_OP_FAMILY_FPU',
-    2: 'R_ANAL_OP_FAMILY_MMX',
-    3: 'R_ANAL_OP_FAMILY_SSE',
-    4: 'R_ANAL_OP_FAMILY_PRIV',
-    5: 'R_ANAL_OP_FAMILY_CRYPTO',
-    6: 'R_ANAL_OP_FAMILY_THREAD',
-    7: 'R_ANAL_OP_FAMILY_VIRT',
-    8: 'R_ANAL_OP_FAMILY_SECURITY',
-    9: 'R_ANAL_OP_FAMILY_IO',
-    10: 'R_ANAL_OP_FAMILY_LAST',
-}
-R_ANAL_OP_FAMILY_UNKNOWN = -1
-R_ANAL_OP_FAMILY_CPU = 0
-R_ANAL_OP_FAMILY_FPU = 1
-R_ANAL_OP_FAMILY_MMX = 2
-R_ANAL_OP_FAMILY_SSE = 3
-R_ANAL_OP_FAMILY_PRIV = 4
-R_ANAL_OP_FAMILY_CRYPTO = 5
-R_ANAL_OP_FAMILY_THREAD = 6
-R_ANAL_OP_FAMILY_VIRT = 7
-R_ANAL_OP_FAMILY_SECURITY = 8
-R_ANAL_OP_FAMILY_IO = 9
-R_ANAL_OP_FAMILY_LAST = 10
-c__EA_RAnalOpFamily = ctypes.c_int32 # enum
-class struct_c__SA_RStrBuf(Structure):
-    pass
-
-struct_c__SA_RStrBuf._pack_ = 1 # source:False
-struct_c__SA_RStrBuf._fields_ = [
-    ('buf', ctypes.c_char * 32),
-    ('len', ctypes.c_uint64),
-    ('ptr', ctypes.POINTER(ctypes.c_char)),
-    ('ptrlen', ctypes.c_uint64),
-    ('weakref', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 7),
 ]
 
 struct_r_anal_op_t._pack_ = 1 # source:False
@@ -2378,10 +2407,10 @@ struct_r_anal_switch_obj_t._fields_ = [
     ('cases', ctypes.POINTER(struct_r_list_t)),
 ]
 
-class struct_r_anal_cond_t(Structure):
+class struct_r_anal_diff_t(Structure):
     pass
 
-class struct_r_anal_diff_t(Structure):
+class struct_r_anal_cond_t(Structure):
     pass
 
 class struct_rcolor_t(Structure):
@@ -2518,13 +2547,13 @@ struct_r_anal_range_t._fields_ = [
     ('rb', struct_r_rb_node_t),
 ]
 
+class struct_r_cons_t(Structure):
+    pass
+
 class struct_r_charset_t(Structure):
     pass
 
 class struct_r_print_zoom_t(Structure):
-    pass
-
-class struct_r_cons_t(Structure):
     pass
 
 struct_r_print_t._pack_ = 1 # source:False
@@ -2546,10 +2575,9 @@ struct_r_print_t._fields_ = [
     ('PADDING_2', ctypes.c_ubyte * 7),
     ('disasm', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.c_uint64)),
     ('oprintf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
-    ('big_endian', ctypes.c_int32),
+    ('config', ctypes.POINTER(struct_r_arch_config_t)),
     ('width', ctypes.c_int32),
     ('limit', ctypes.c_int32),
-    ('bits', ctypes.c_int32),
     ('histblock', ctypes.c_bool),
     ('cur_enabled', ctypes.c_bool),
     ('PADDING_3', ctypes.c_ubyte * 2),
@@ -2569,7 +2597,7 @@ struct_r_print_t._fields_ = [
     ('zoom', ctypes.POINTER(struct_r_print_zoom_t)),
     ('offname', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
     ('offsize', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.c_uint64)),
-    ('colorfor', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_bool)),
+    ('colorfor', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_ubyte, ctypes.c_bool)),
     ('hasrefs', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_int32)),
     ('get_comments', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
     ('get_section_name', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
@@ -2602,8 +2630,6 @@ struct_r_print_t._fields_ = [
     ('enable_progressbar', ctypes.c_bool),
     ('PADDING_9', ctypes.c_ubyte * 7),
     ('charset', ctypes.POINTER(struct_r_charset_t)),
-    ('seggrn', ctypes.c_int32),
-    ('segbas', ctypes.c_int32),
     ('nbcolor', ctypes.c_int32),
     ('PADDING_10', ctypes.c_ubyte * 4),
 ]
@@ -2707,17 +2733,19 @@ struct_r_cons_t._fields_ = [
     ('PADDING_7', ctypes.c_ubyte),
     ('linesleep', ctypes.c_int32),
     ('pagesize', ctypes.c_int32),
+    ('maxpage', ctypes.c_int32),
+    ('PADDING_8', ctypes.c_ubyte * 4),
     ('break_word', ctypes.POINTER(ctypes.c_char)),
     ('break_word_len', ctypes.c_int32),
-    ('PADDING_8', ctypes.c_ubyte * 4),
+    ('PADDING_9', ctypes.c_ubyte * 4),
     ('timeout', ctypes.c_uint64),
     ('rgbstr', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_uint64)),
     ('click_set', ctypes.c_bool),
-    ('PADDING_9', ctypes.c_ubyte * 3),
+    ('PADDING_10', ctypes.c_ubyte * 3),
     ('click_x', ctypes.c_int32),
     ('click_y', ctypes.c_int32),
     ('show_vals', ctypes.c_bool),
-    ('PADDING_10', ctypes.c_ubyte * 3),
+    ('PADDING_11', ctypes.c_ubyte * 3),
     ('cpos', struct_c__SA_RConsCursorPos),
 ]
 
@@ -2760,6 +2788,7 @@ struct_r_cons_printable_palette_t._fields_ = [
     ('other', ctypes.POINTER(ctypes.c_char)),
     ('pop', ctypes.POINTER(ctypes.c_char)),
     ('prompt', ctypes.POINTER(ctypes.c_char)),
+    ('bgprompt', ctypes.POINTER(ctypes.c_char)),
     ('push', ctypes.POINTER(ctypes.c_char)),
     ('crypto', ctypes.POINTER(ctypes.c_char)),
     ('reg', ctypes.POINTER(ctypes.c_char)),
@@ -2837,35 +2866,15 @@ struct_r_cons_grep_t._fields_ = [
     ('amp', ctypes.c_int32),
     ('zoom', ctypes.c_int32),
     ('zoomy', ctypes.c_int32),
-    ('neg', ctypes.c_int32),
-    ('begin', ctypes.c_int32),
-    ('end', ctypes.c_int32),
+    ('neg', ctypes.c_int32 * 10),
+    ('begin', ctypes.c_int32 * 10),
+    ('end', ctypes.c_int32 * 10),
     ('icase', ctypes.c_bool),
     ('ascart', ctypes.c_bool),
-    ('PADDING_5', ctypes.c_ubyte * 6),
+    ('code', ctypes.c_bool),
+    ('PADDING_5', ctypes.c_ubyte),
 ]
 
-
-# values for enumeration 'r_log_level'
-r_log_level__enumvalues = {
-    0: 'R_LOGLVL_SILLY',
-    1: 'R_LOGLVL_DEBUG',
-    2: 'R_LOGLVL_VERBOSE',
-    3: 'R_LOGLVL_INFO',
-    4: 'R_LOGLVL_WARN',
-    5: 'R_LOGLVL_ERROR',
-    6: 'R_LOGLVL_FATAL',
-    255: 'R_LOGLVL_NONE',
-}
-R_LOGLVL_SILLY = 0
-R_LOGLVL_DEBUG = 1
-R_LOGLVL_VERBOSE = 2
-R_LOGLVL_INFO = 3
-R_LOGLVL_WARN = 4
-R_LOGLVL_ERROR = 5
-R_LOGLVL_FATAL = 6
-R_LOGLVL_NONE = 255
-r_log_level = ctypes.c_uint32 # enum
 class struct_r_cons_palette_t(Structure):
     _pack_ = 1 # source:False
     _fields_ = [
@@ -2900,6 +2909,7 @@ class struct_r_cons_palette_t(Structure):
     ('other', struct_rcolor_t),
     ('pop', struct_rcolor_t),
     ('prompt', struct_rcolor_t),
+    ('bgprompt', struct_rcolor_t),
     ('push', struct_rcolor_t),
     ('crypto', struct_rcolor_t),
     ('reg', struct_rcolor_t),
@@ -2952,7 +2962,8 @@ struct_r_cons_context_t._fields_ = [
     ('errmode', ctypes.c_int32),
     ('breaked', ctypes.c_bool),
     ('was_breaked', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 2),
+    ('unbreakable', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte),
     ('break_stack', ctypes.POINTER(struct_r_stack_t)),
     ('event_interrupt', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
     ('event_interrupt_data', ctypes.POINTER(None)),
@@ -2960,7 +2971,7 @@ struct_r_cons_context_t._fields_ = [
     ('cmd_str_depth', ctypes.c_int32),
     ('noflush', ctypes.c_bool),
     ('PADDING_1', ctypes.c_ubyte * 7),
-    ('log_callback', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_uint32, r_log_level, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char))),
+    ('log_callback', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None), ctypes.c_int32, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char))),
     ('lastOutput', ctypes.POINTER(ctypes.c_char)),
     ('lastLength', ctypes.c_int32),
     ('lastMode', ctypes.c_bool),
@@ -2969,7 +2980,7 @@ struct_r_cons_context_t._fields_ = [
     ('pageable', ctypes.c_bool),
     ('color_mode', ctypes.c_int32),
     ('cpal', struct_r_cons_palette_t),
-    ('PADDING_2', ctypes.c_ubyte * 6),
+    ('PADDING_2', ctypes.c_ubyte * 5),
     ('pal', struct_r_cons_printable_palette_t),
     ('sorted_lines', ctypes.POINTER(struct_r_list_t)),
     ('unsorted_lines', ctypes.POINTER(struct_r_list_t)),
@@ -2999,31 +3010,6 @@ class struct_r_hud_t(Structure):
 class struct_r_selection_widget_t(Structure):
     pass
 
-class struct_r_line_hist_t(Structure):
-    pass
-
-struct_r_line_hist_t._pack_ = 1 # source:False
-struct_r_line_hist_t._fields_ = [
-    ('data', ctypes.POINTER(ctypes.POINTER(ctypes.c_char))),
-    ('match', ctypes.POINTER(ctypes.c_char)),
-    ('size', ctypes.c_int32),
-    ('index', ctypes.c_int32),
-    ('top', ctypes.c_int32),
-    ('autosave', ctypes.c_int32),
-    ('do_setup_match', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 7),
-]
-
-class struct_r_line_buffer_t(Structure):
-    pass
-
-struct_r_line_buffer_t._pack_ = 1 # source:False
-struct_r_line_buffer_t._fields_ = [
-    ('data', ctypes.c_char * 4096),
-    ('index', ctypes.c_int32),
-    ('length', ctypes.c_int32),
-]
-
 
 # values for enumeration 'c__EA_RLinePromptType'
 c__EA_RLinePromptType__enumvalues = {
@@ -3035,6 +3021,16 @@ R_LINE_PROMPT_DEFAULT = 0
 R_LINE_PROMPT_OFFSET = 1
 R_LINE_PROMPT_FILE = 2
 c__EA_RLinePromptType = ctypes.c_uint32 # enum
+class struct_r_line_buffer_t(Structure):
+    pass
+
+struct_r_line_buffer_t._pack_ = 1 # source:False
+struct_r_line_buffer_t._fields_ = [
+    ('data', ctypes.c_char * 4096),
+    ('index', ctypes.c_int32),
+    ('length', ctypes.c_int32),
+]
+
 class struct_r_line_comp_t(Structure):
     pass
 
@@ -3048,6 +3044,21 @@ struct_r_line_comp_t._fields_ = [
     ('args', struct_r_pvector_t),
     ('run', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_line_comp_t), ctypes.POINTER(struct_r_line_buffer_t), c__EA_RLinePromptType, ctypes.POINTER(None))),
     ('run_user', ctypes.POINTER(None)),
+]
+
+class struct_r_line_hist_t(Structure):
+    pass
+
+struct_r_line_hist_t._pack_ = 1 # source:False
+struct_r_line_hist_t._fields_ = [
+    ('data', ctypes.POINTER(ctypes.POINTER(ctypes.c_char))),
+    ('match', ctypes.POINTER(ctypes.c_char)),
+    ('size', ctypes.c_int32),
+    ('index', ctypes.c_int32),
+    ('top', ctypes.c_int32),
+    ('autosave', ctypes.c_int32),
+    ('do_setup_match', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 7),
 ]
 
 struct_r_line_t._pack_ = 1 # source:False
@@ -3175,11 +3186,13 @@ struct_pj_t._fields_ = [
     ('sb', struct_c__SA_RStrBuf),
     ('is_first', ctypes.c_bool),
     ('is_key', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 6),
+    ('comma', ctypes.POINTER(ctypes.c_char)),
     ('braces', ctypes.c_char * 128),
-    ('PADDING_0', ctypes.c_ubyte * 2),
     ('level', ctypes.c_int32),
     ('str_encoding', PJEncodingStr),
     ('num_encoding', PJEncodingNum),
+    ('PADDING_1', ctypes.c_ubyte * 4),
 ]
 
 RAnalMetaUserItem = struct_c__SA_RAnalMetaUserItem
@@ -3570,13 +3583,13 @@ c__EA__RAnalOpType__enumvalues = {
     1: 'R_ANAL_OP_TYPE_JMP',
     2: 'R_ANAL_OP_TYPE_UJMP',
     268435458: 'R_ANAL_OP_TYPE_RJMP',
+    2147483650: 'R_ANAL_OP_TYPE_UCJMP',
     134217730: 'R_ANAL_OP_TYPE_IJMP',
     402653186: 'R_ANAL_OP_TYPE_IRJMP',
     2147483649: 'R_ANAL_OP_TYPE_CJMP',
-    2415919105: 'R_ANAL_OP_TYPE_RCJMP',
     536870913: 'R_ANAL_OP_TYPE_MJMP',
+    2415919105: 'R_ANAL_OP_TYPE_RCJMP',
     2684354561: 'R_ANAL_OP_TYPE_MCJMP',
-    2147483650: 'R_ANAL_OP_TYPE_UCJMP',
     3: 'R_ANAL_OP_TYPE_CALL',
     4: 'R_ANAL_OP_TYPE_UCALL',
     268435460: 'R_ANAL_OP_TYPE_RCALL',
@@ -3641,13 +3654,13 @@ R_ANAL_OP_TYPE_NULL = 0
 R_ANAL_OP_TYPE_JMP = 1
 R_ANAL_OP_TYPE_UJMP = 2
 R_ANAL_OP_TYPE_RJMP = 268435458
+R_ANAL_OP_TYPE_UCJMP = 2147483650
 R_ANAL_OP_TYPE_IJMP = 134217730
 R_ANAL_OP_TYPE_IRJMP = 402653186
 R_ANAL_OP_TYPE_CJMP = 2147483649
-R_ANAL_OP_TYPE_RCJMP = 2415919105
 R_ANAL_OP_TYPE_MJMP = 536870913
+R_ANAL_OP_TYPE_RCJMP = 2415919105
 R_ANAL_OP_TYPE_MCJMP = 2684354561
-R_ANAL_OP_TYPE_UCJMP = 2147483650
 R_ANAL_OP_TYPE_CALL = 3
 R_ANAL_OP_TYPE_UCALL = 4
 R_ANAL_OP_TYPE_RCALL = 268435460
@@ -3931,6 +3944,22 @@ struct_r_anal_var_field_t._fields_ = [
 ]
 
 RAnalVarField = struct_r_anal_var_field_t
+uint64_t = ctypes.c_uint64
+r_anal_get_fcn_in = _libr_anal.r_anal_get_fcn_in
+r_anal_get_fcn_in.restype = ctypes.POINTER(struct_r_anal_function_t)
+r_anal_get_fcn_in.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.c_int32]
+r_anal_get_fcn_in_bounds = _libr_anal.r_anal_get_fcn_in_bounds
+r_anal_get_fcn_in_bounds.restype = ctypes.POINTER(struct_r_anal_function_t)
+r_anal_get_fcn_in_bounds.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.c_int32]
+r_anal_var_all_list = _libr_anal.r_anal_var_all_list
+r_anal_var_all_list.restype = ctypes.POINTER(struct_r_list_t)
+r_anal_var_all_list.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t)]
+r_anal_function_get_var_fields = _libr_anal.r_anal_function_get_var_fields
+r_anal_function_get_var_fields.restype = ctypes.POINTER(struct_r_list_t)
+r_anal_function_get_var_fields.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.c_int32]
+r_anal_get_used_function_var = _libr_anal.r_anal_get_used_function_var
+r_anal_get_used_function_var.restype = ctypes.POINTER(struct_r_anal_var_t)
+r_anal_get_used_function_var.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 RAnalValueAccess = c__EA_RAnalValueAccess
 RAnalValueAccess__enumvalues = c__EA_RAnalValueAccess__enumvalues
 RAnalValueType = c__EA_RAnalValueType
@@ -3943,9 +3972,12 @@ RAnalDataType__enumvalues = r_anal_data_type_t__enumvalues
 RAnalOp = struct_r_anal_op_t
 RAnalGetFcnIn = ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32)
 RAnalGetHint = ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_anal_hint_t), ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64)
+RAnalMnemonics = ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.c_bool)
+RAnalEncode = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)
 RAnalDecode = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_op_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, c__EA_RAnalOpMask)
 RAnalOpInit = ctypes.CFUNCTYPE(None, ctypes.POINTER(struct_r_anal_op_t))
 RAnalOpFini = ctypes.CFUNCTYPE(None, ctypes.POINTER(struct_r_anal_op_t))
+RAnalUse = ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char))
 class struct_r_anal_bind_t(Structure):
     pass
 
@@ -3954,9 +3986,12 @@ struct_r_anal_bind_t._fields_ = [
     ('anal', ctypes.POINTER(struct_r_anal_t)),
     ('get_fcn_in', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32)),
     ('get_hint', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_anal_hint_t), ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64)),
+    ('mnemonics', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.c_bool)),
+    ('encode', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
     ('decode', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_op_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, c__EA_RAnalOpMask)),
     ('opinit', ctypes.CFUNCTYPE(None, ctypes.POINTER(struct_r_anal_op_t))),
     ('opfini', ctypes.CFUNCTYPE(None, ctypes.POINTER(struct_r_anal_op_t))),
+    ('use', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char))),
 ]
 
 RAnalBind = struct_r_anal_bind_t
@@ -3968,14 +4003,26 @@ c__EA_RAnalRefType__enumvalues = {
     0: 'R_ANAL_REF_TYPE_NULL',
     99: 'R_ANAL_REF_TYPE_CODE',
     67: 'R_ANAL_REF_TYPE_CALL',
+    106: 'R_ANAL_REF_TYPE_JUMP',
     100: 'R_ANAL_REF_TYPE_DATA',
     115: 'R_ANAL_REF_TYPE_STRING',
+    1024: 'R_ANAL_REF_TYPE_READ',
+    512: 'R_ANAL_REF_TYPE_WRITE',
+    256: 'R_ANAL_REF_TYPE_EXEC',
+    255: 'R_ANAL_REF_TYPE_MASK',
+    65280: 'R_ANAL_REF_TYPE_DIRECTION_MASK',
 }
 R_ANAL_REF_TYPE_NULL = 0
 R_ANAL_REF_TYPE_CODE = 99
 R_ANAL_REF_TYPE_CALL = 67
+R_ANAL_REF_TYPE_JUMP = 106
 R_ANAL_REF_TYPE_DATA = 100
 R_ANAL_REF_TYPE_STRING = 115
+R_ANAL_REF_TYPE_READ = 1024
+R_ANAL_REF_TYPE_WRITE = 512
+R_ANAL_REF_TYPE_EXEC = 256
+R_ANAL_REF_TYPE_MASK = 255
+R_ANAL_REF_TYPE_DIRECTION_MASK = 65280
 c__EA_RAnalRefType = ctypes.c_uint32 # enum
 RAnalRefType = c__EA_RAnalRefType
 RAnalRefType__enumvalues = c__EA_RAnalRefType__enumvalues
@@ -3991,9 +4038,6 @@ struct_r_anal_ref_t._fields_ = [
 ]
 
 RAnalRef = struct_r_anal_ref_t
-r_anal_ref_type_tostring = _libr_anal.r_anal_ref_type_tostring
-r_anal_ref_type_tostring.restype = ctypes.POINTER(ctypes.c_char)
-r_anal_ref_type_tostring.argtypes = [RAnalRefType]
 class struct_r_anal_refline_t(Structure):
     pass
 
@@ -4301,10 +4345,10 @@ RAnalEsilBB = struct_r_anal_esil_basic_block_t
 class struct_r_anal_esil_cfg_t(Structure):
     pass
 
-class struct_r_graph_t(Structure):
+class struct_r_graph_node_t(Structure):
     pass
 
-class struct_r_graph_node_t(Structure):
+class struct_r_graph_t(Structure):
     pass
 
 struct_r_anal_esil_cfg_t._pack_ = 1 # source:False
@@ -4384,6 +4428,7 @@ struct_r_anal_esil_dfg_node_t._fields_ = [
 RAnalEsilDFGNode = struct_r_anal_esil_dfg_node_t
 RAnalCmdExt = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char))
 RAnalOpCallback = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_op_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, c__EA_RAnalOpMask)
+RAnalOpAsmCallback = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)
 RAnalRegProfCallback = ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_anal_t))
 RAnalRegProfGetCallback = ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_anal_t))
 RAnalFPBBCallback = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_bb_t))
@@ -4435,10 +4480,10 @@ r_listrange_resize.restype = None
 r_listrange_resize.argtypes = [ctypes.POINTER(struct_r_list_range_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.c_int32]
 r_listrange_find_in_range = _libraries['FIXME_STUB'].r_listrange_find_in_range
 r_listrange_find_in_range.restype = ctypes.POINTER(struct_r_anal_function_t)
-r_listrange_find_in_range.argtypes = [ctypes.POINTER(struct_r_list_range_t), ctypes.c_uint64]
+r_listrange_find_in_range.argtypes = [ctypes.POINTER(struct_r_list_range_t), uint64_t]
 r_listrange_find_root = _libraries['FIXME_STUB'].r_listrange_find_root
 r_listrange_find_root.restype = ctypes.POINTER(struct_r_anal_function_t)
-r_listrange_find_root.argtypes = [ctypes.POINTER(struct_r_list_range_t), ctypes.c_uint64]
+r_listrange_find_root.argtypes = [ctypes.POINTER(struct_r_list_range_t), uint64_t]
 r_anal_type_new = _libraries['FIXME_STUB'].r_anal_type_new
 r_anal_type_new.restype = ctypes.POINTER(struct_r_anal_type_t)
 r_anal_type_new.argtypes = []
@@ -4460,6 +4505,9 @@ r_anal_str_to_type.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(c
 r_anal_op_nonlinear = _libr_anal.r_anal_op_nonlinear
 r_anal_op_nonlinear.restype = ctypes.c_bool
 r_anal_op_nonlinear.argtypes = [ctypes.c_int32]
+r_anal_op_direction_tostring = _libr_anal.r_anal_op_direction_tostring
+r_anal_op_direction_tostring.restype = ctypes.POINTER(ctypes.c_char)
+r_anal_op_direction_tostring.argtypes = [ctypes.POINTER(struct_r_anal_op_t)]
 r_anal_op_ismemref = _libr_anal.r_anal_op_ismemref
 r_anal_op_ismemref.restype = ctypes.c_bool
 r_anal_op_ismemref.argtypes = [ctypes.c_int32]
@@ -4492,15 +4540,18 @@ r_anal_block_ref.argtypes = [ctypes.POINTER(struct_r_anal_bb_t)]
 r_anal_block_unref = _libr_anal.r_anal_block_unref
 r_anal_block_unref.restype = None
 r_anal_block_unref.argtypes = [ctypes.POINTER(struct_r_anal_bb_t)]
+r_anal_block_reset = _libr_anal.r_anal_block_reset
+r_anal_block_reset.restype = None
+r_anal_block_reset.argtypes = [ctypes.POINTER(struct_r_anal_t)]
 r_anal_create_block = _libr_anal.r_anal_create_block
 r_anal_create_block.restype = ctypes.POINTER(struct_r_anal_bb_t)
-r_anal_create_block.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_create_block.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_anal_block_contains = _libraries['FIXME_STUB'].r_anal_block_contains
 r_anal_block_contains.restype = ctypes.c_bool
-r_anal_block_contains.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_uint64]
+r_anal_block_contains.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), uint64_t]
 r_anal_block_split = _libr_anal.r_anal_block_split
 r_anal_block_split.restype = ctypes.POINTER(struct_r_anal_bb_t)
-r_anal_block_split.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_uint64]
+r_anal_block_split.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), uint64_t]
 r_anal_block_is_contiguous = _libraries['FIXME_STUB'].r_anal_block_is_contiguous
 r_anal_block_is_contiguous.restype = ctypes.c_bool
 r_anal_block_is_contiguous.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.POINTER(struct_r_anal_bb_t)]
@@ -4510,27 +4561,30 @@ r_anal_block_merge.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.POINTE
 r_anal_delete_block = _libr_anal.r_anal_delete_block
 r_anal_delete_block.restype = None
 r_anal_delete_block.argtypes = [ctypes.POINTER(struct_r_anal_bb_t)]
+r_anal_delete_block_at = _libr_anal.r_anal_delete_block_at
+r_anal_delete_block_at.restype = None
+r_anal_delete_block_at.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_block_set_size = _libr_anal.r_anal_block_set_size
 r_anal_block_set_size.restype = None
-r_anal_block_set_size.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_uint64]
+r_anal_block_set_size.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), uint64_t]
 r_anal_block_relocate = _libr_anal.r_anal_block_relocate
 r_anal_block_relocate.restype = ctypes.c_bool
-r_anal_block_relocate.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_block_relocate.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), uint64_t, uint64_t]
 r_anal_get_block_at = _libr_anal.r_anal_get_block_at
 r_anal_get_block_at.restype = ctypes.POINTER(struct_r_anal_bb_t)
-r_anal_get_block_at.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_get_block_at.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_blocks_foreach_in = _libr_anal.r_anal_blocks_foreach_in
 r_anal_blocks_foreach_in.restype = ctypes.c_bool
-r_anal_blocks_foreach_in.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, RAnalBlockCb, ctypes.POINTER(None)]
+r_anal_blocks_foreach_in.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, RAnalBlockCb, ctypes.POINTER(None)]
 r_anal_get_blocks_in = _libr_anal.r_anal_get_blocks_in
 r_anal_get_blocks_in.restype = ctypes.POINTER(struct_r_list_t)
-r_anal_get_blocks_in.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_get_blocks_in.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_blocks_foreach_intersect = _libr_anal.r_anal_blocks_foreach_intersect
 r_anal_blocks_foreach_intersect.restype = None
-r_anal_blocks_foreach_intersect.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64, RAnalBlockCb, ctypes.POINTER(None)]
+r_anal_blocks_foreach_intersect.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t, RAnalBlockCb, ctypes.POINTER(None)]
 r_anal_get_blocks_intersect = _libr_anal.r_anal_get_blocks_intersect
 r_anal_get_blocks_intersect.restype = ctypes.POINTER(struct_r_list_t)
-r_anal_get_blocks_intersect.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_get_blocks_intersect.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_anal_block_successor_addrs_foreach = _libr_anal.r_anal_block_successor_addrs_foreach
 r_anal_block_successor_addrs_foreach.restype = ctypes.c_bool
 r_anal_block_successor_addrs_foreach.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), RAnalAddrCb, ctypes.POINTER(None)]
@@ -4548,19 +4602,19 @@ r_anal_block_recurse_list.restype = ctypes.POINTER(struct_r_list_t)
 r_anal_block_recurse_list.argtypes = [ctypes.POINTER(struct_r_anal_bb_t)]
 r_anal_block_shortest_path = _libr_anal.r_anal_block_shortest_path
 r_anal_block_shortest_path.restype = ctypes.POINTER(struct_r_list_t)
-r_anal_block_shortest_path.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_uint64]
+r_anal_block_shortest_path.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), uint64_t]
 r_anal_block_add_switch_case = _libr_anal.r_anal_block_add_switch_case
 r_anal_block_add_switch_case.restype = None
-r_anal_block_add_switch_case.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64]
+r_anal_block_add_switch_case.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), uint64_t, uint64_t, uint64_t]
 r_anal_block_chop_noreturn = _libr_anal.r_anal_block_chop_noreturn
 r_anal_block_chop_noreturn.restype = ctypes.POINTER(struct_r_anal_bb_t)
-r_anal_block_chop_noreturn.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_uint64]
+r_anal_block_chop_noreturn.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), uint64_t]
 r_anal_block_automerge = _libr_anal.r_anal_block_automerge
 r_anal_block_automerge.restype = None
 r_anal_block_automerge.argtypes = [ctypes.POINTER(struct_r_list_t)]
 r_anal_block_op_starts_at = _libr_anal.r_anal_block_op_starts_at
 r_anal_block_op_starts_at.restype = ctypes.c_bool
-r_anal_block_op_starts_at.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_uint64]
+r_anal_block_op_starts_at.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), uint64_t]
 r_anal_block_update_hash = _libr_anal.r_anal_block_update_hash
 r_anal_block_update_hash.restype = None
 r_anal_block_update_hash.argtypes = [ctypes.POINTER(struct_r_anal_bb_t)]
@@ -4578,19 +4632,19 @@ r_anal_add_function.restype = ctypes.c_bool
 r_anal_add_function.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t)]
 r_anal_create_function = _libr_anal.r_anal_create_function
 r_anal_create_function.restype = ctypes.POINTER(struct_r_anal_function_t)
-r_anal_create_function.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_int32, ctypes.POINTER(struct_r_anal_diff_t)]
+r_anal_create_function.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char), uint64_t, ctypes.c_int32, ctypes.POINTER(struct_r_anal_diff_t)]
 r_anal_get_functions_in = _libr_anal.r_anal_get_functions_in
 r_anal_get_functions_in.restype = ctypes.POINTER(struct_r_list_t)
-r_anal_get_functions_in.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_get_functions_in.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_get_function_at = _libr_anal.r_anal_get_function_at
 r_anal_get_function_at.restype = ctypes.POINTER(struct_r_anal_function_t)
-r_anal_get_function_at.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_get_function_at.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_function_delete = _libr_anal.r_anal_function_delete
 r_anal_function_delete.restype = ctypes.c_bool
 r_anal_function_delete.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
 r_anal_function_relocate = _libr_anal.r_anal_function_relocate
 r_anal_function_relocate.restype = ctypes.c_bool
-r_anal_function_relocate.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.c_uint64]
+r_anal_function_relocate.argtypes = [ctypes.POINTER(struct_r_anal_function_t), uint64_t]
 r_anal_function_rename = _libr_anal.r_anal_function_rename
 r_anal_function_rename.restype = ctypes.c_bool
 r_anal_function_rename.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(ctypes.c_char)]
@@ -4601,23 +4655,23 @@ r_anal_function_remove_block = _libr_anal.r_anal_function_remove_block
 r_anal_function_remove_block.restype = None
 r_anal_function_remove_block.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t)]
 r_anal_function_linear_size = _libr_anal.r_anal_function_linear_size
-r_anal_function_linear_size.restype = ctypes.c_uint64
+r_anal_function_linear_size.restype = uint64_t
 r_anal_function_linear_size.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
 r_anal_function_min_addr = _libr_anal.r_anal_function_min_addr
-r_anal_function_min_addr.restype = ctypes.c_uint64
+r_anal_function_min_addr.restype = uint64_t
 r_anal_function_min_addr.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
 r_anal_function_max_addr = _libr_anal.r_anal_function_max_addr
-r_anal_function_max_addr.restype = ctypes.c_uint64
+r_anal_function_max_addr.restype = uint64_t
 r_anal_function_max_addr.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
 r_anal_function_size_from_entry = _libr_anal.r_anal_function_size_from_entry
-r_anal_function_size_from_entry.restype = ctypes.c_uint64
+r_anal_function_size_from_entry.restype = uint64_t
 r_anal_function_size_from_entry.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
 r_anal_function_realsize = _libr_anal.r_anal_function_realsize
-r_anal_function_realsize.restype = ctypes.c_uint64
+r_anal_function_realsize.restype = uint64_t
 r_anal_function_realsize.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
 r_anal_function_contains = _libr_anal.r_anal_function_contains
 r_anal_function_contains.restype = ctypes.c_bool
-r_anal_function_contains.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.c_uint64]
+r_anal_function_contains.argtypes = [ctypes.POINTER(struct_r_anal_function_t), uint64_t]
 r_anal_function_was_modified = _libr_anal.r_anal_function_was_modified
 r_anal_function_was_modified.restype = ctypes.c_bool
 r_anal_function_was_modified.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
@@ -4628,7 +4682,7 @@ r_anal_purge = _libr_anal.r_anal_purge
 r_anal_purge.restype = None
 r_anal_purge.argtypes = [ctypes.POINTER(struct_r_anal_t)]
 r_anal_free = _libr_anal.r_anal_free
-r_anal_free.restype = ctypes.POINTER(struct_r_anal_t)
+r_anal_free.restype = None
 r_anal_free.argtypes = [ctypes.POINTER(struct_r_anal_t)]
 r_anal_set_user_ptr = _libr_anal.r_anal_set_user_ptr
 r_anal_set_user_ptr.restype = None
@@ -4642,12 +4696,18 @@ r_anal_add.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_
 r_anal_archinfo = _libr_anal.r_anal_archinfo
 r_anal_archinfo.restype = ctypes.c_int32
 r_anal_archinfo.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_int32]
+r_anal_is_aligned = _libr_anal.r_anal_is_aligned
+r_anal_is_aligned.restype = ctypes.c_bool
+r_anal_is_aligned.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_use = _libr_anal.r_anal_use
 r_anal_use.restype = ctypes.c_bool
 r_anal_use.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char)]
 r_anal_esil_use = _libr_anal.r_anal_esil_use
 r_anal_esil_use.restype = ctypes.c_bool
 r_anal_esil_use.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char)]
+r_anal_esil_trapstr = _libr_anal.r_anal_esil_trapstr
+r_anal_esil_trapstr.restype = ctypes.POINTER(ctypes.c_char)
+r_anal_esil_trapstr.argtypes = [ctypes.c_int32]
 r_anal_set_reg_profile = _libr_anal.r_anal_set_reg_profile
 r_anal_set_reg_profile.restype = ctypes.c_bool
 r_anal_set_reg_profile.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char)]
@@ -4655,32 +4715,26 @@ r_anal_get_reg_profile = _libr_anal.r_anal_get_reg_profile
 r_anal_get_reg_profile.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_get_reg_profile.argtypes = [ctypes.POINTER(struct_r_anal_t)]
 r_anal_get_bbaddr = _libr_anal.r_anal_get_bbaddr
-r_anal_get_bbaddr.restype = ctypes.c_uint64
-r_anal_get_bbaddr.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_get_bbaddr.restype = uint64_t
+r_anal_get_bbaddr.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_set_bits = _libr_anal.r_anal_set_bits
 r_anal_set_bits.restype = ctypes.c_bool
 r_anal_set_bits.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_int32]
 r_anal_set_os = _libr_anal.r_anal_set_os
 r_anal_set_os.restype = ctypes.c_bool
 r_anal_set_os.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char)]
-r_anal_set_cpu = _libr_anal.r_anal_set_cpu
-r_anal_set_cpu.restype = None
-r_anal_set_cpu.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char)]
-r_anal_set_big_endian = _libr_anal.r_anal_set_big_endian
-r_anal_set_big_endian.restype = None
-r_anal_set_big_endian.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_int32]
 r_anal_mask = _libr_anal.r_anal_mask
 r_anal_mask.restype = ctypes.POINTER(ctypes.c_ubyte)
-r_anal_mask.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64]
+r_anal_mask.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.POINTER(ctypes.c_ubyte), uint64_t]
 r_anal_trace_bb = _libr_anal.r_anal_trace_bb
 r_anal_trace_bb.restype = None
-r_anal_trace_bb.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_trace_bb.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_functiontype_tostring = _libr_anal.r_anal_functiontype_tostring
 r_anal_functiontype_tostring.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_functiontype_tostring.argtypes = [ctypes.c_int32]
 r_anal_function_bb = _libr_anal.r_anal_function_bb
 r_anal_function_bb.restype = ctypes.c_int32
-r_anal_function_bb.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.c_uint64, ctypes.c_int32]
+r_anal_function_bb.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), uint64_t, ctypes.c_int32]
 r_anal_bind = _libr_anal.r_anal_bind
 r_anal_bind.restype = None
 r_anal_bind.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_bind_t)]
@@ -4698,21 +4752,22 @@ r_anal_purge_imports.restype = None
 r_anal_purge_imports.argtypes = [ctypes.POINTER(struct_r_anal_t)]
 r_anal_bb_from_offset = _libr_anal.r_anal_bb_from_offset
 r_anal_bb_from_offset.restype = ctypes.POINTER(struct_r_anal_bb_t)
-r_anal_bb_from_offset.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_bb_from_offset.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
+uint16_t = ctypes.c_uint16
 r_anal_bb_set_offset = _libr_anal.r_anal_bb_set_offset
 r_anal_bb_set_offset.restype = ctypes.c_bool
-r_anal_bb_set_offset.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_int32, ctypes.c_uint16]
+r_anal_bb_set_offset.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_int32, uint16_t]
 r_anal_bb_offset_inst = _libr_anal.r_anal_bb_offset_inst
-r_anal_bb_offset_inst.restype = ctypes.c_uint16
+r_anal_bb_offset_inst.restype = uint16_t
 r_anal_bb_offset_inst.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_int32]
 r_anal_bb_opaddr_i = _libr_anal.r_anal_bb_opaddr_i
-r_anal_bb_opaddr_i.restype = ctypes.c_uint64
+r_anal_bb_opaddr_i.restype = uint64_t
 r_anal_bb_opaddr_i.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_int32]
 r_anal_bb_opaddr_at = _libr_anal.r_anal_bb_opaddr_at
-r_anal_bb_opaddr_at.restype = ctypes.c_uint64
-r_anal_bb_opaddr_at.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_uint64]
+r_anal_bb_opaddr_at.restype = uint64_t
+r_anal_bb_opaddr_at.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), uint64_t]
 r_anal_bb_size_i = _libr_anal.r_anal_bb_size_i
-r_anal_bb_size_i.restype = ctypes.c_uint64
+r_anal_bb_size_i.restype = uint64_t
 r_anal_bb_size_i.argtypes = [ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_int32]
 r_anal_stackop_tostring = _libr_anal.r_anal_stackop_tostring
 r_anal_stackop_tostring.restype = ctypes.POINTER(ctypes.c_char)
@@ -4729,9 +4784,12 @@ r_anal_op_init.argtypes = [ctypes.POINTER(struct_r_anal_op_t)]
 r_anal_op_fini = _libr_anal.r_anal_op_fini
 r_anal_op_fini.restype = None
 r_anal_op_fini.argtypes = [ctypes.POINTER(struct_r_anal_op_t)]
+r_anal_mnemonics = _libr_anal.r_anal_mnemonics
+r_anal_mnemonics.restype = ctypes.POINTER(ctypes.c_char)
+r_anal_mnemonics.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.c_bool]
 r_anal_op_reg_delta = _libr_anal.r_anal_op_reg_delta
 r_anal_op_reg_delta.restype = ctypes.c_int32
-r_anal_op_reg_delta.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_anal_op_reg_delta.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_anal_op_is_eob = _libr_anal.r_anal_op_is_eob
 r_anal_op_is_eob.restype = ctypes.c_bool
 r_anal_op_is_eob.argtypes = [ctypes.POINTER(struct_r_anal_op_t)]
@@ -4740,10 +4798,13 @@ r_anal_op_list_new.restype = ctypes.POINTER(struct_r_list_t)
 r_anal_op_list_new.argtypes = []
 r_anal_op = _libr_anal.r_anal_op
 r_anal_op.restype = ctypes.c_int32
-r_anal_op.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_op_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, RAnalOpMask]
+r_anal_op.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_op_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, RAnalOpMask]
+r_anal_opasm = _libr_anal.r_anal_opasm
+r_anal_opasm.restype = ctypes.c_int32
+r_anal_opasm.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_anal_op_hexstr = _libr_anal.r_anal_op_hexstr
 r_anal_op_hexstr.restype = ctypes.POINTER(struct_r_anal_op_t)
-r_anal_op_hexstr.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_anal_op_hexstr.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_anal_op_to_string = _libr_anal.r_anal_op_to_string
 r_anal_op_to_string.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_op_to_string.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_op_t)]
@@ -4752,7 +4813,7 @@ r_anal_esil_new.restype = ctypes.POINTER(struct_r_anal_esil_t)
 r_anal_esil_new.argtypes = [ctypes.c_int32, ctypes.c_int32, ctypes.c_uint32]
 r_anal_esil_set_pc = _libr_anal.r_anal_esil_set_pc
 r_anal_esil_set_pc.restype = ctypes.c_bool
-r_anal_esil_set_pc.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.c_uint64]
+r_anal_esil_set_pc.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), uint64_t]
 r_anal_esil_setup = _libr_anal.r_anal_esil_setup
 r_anal_esil_setup.restype = ctypes.c_bool
 r_anal_esil_setup.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_int32]
@@ -4776,28 +4837,29 @@ r_anal_esil_dumpstack.restype = ctypes.c_bool
 r_anal_esil_dumpstack.argtypes = [ctypes.POINTER(struct_r_anal_esil_t)]
 r_anal_esil_mem_read = _libr_anal.r_anal_esil_mem_read
 r_anal_esil_mem_read.restype = ctypes.c_bool
-r_anal_esil_mem_read.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_anal_esil_mem_read.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_anal_esil_mem_write = _libr_anal.r_anal_esil_mem_write
 r_anal_esil_mem_write.restype = ctypes.c_bool
-r_anal_esil_mem_write.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_anal_esil_mem_write.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_anal_esil_reg_read = _libr_anal.r_anal_esil_reg_read
 r_anal_esil_reg_read.restype = ctypes.c_bool
 r_anal_esil_reg_read.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_int32)]
 r_anal_esil_reg_write = _libr_anal.r_anal_esil_reg_write
 r_anal_esil_reg_write.restype = ctypes.c_bool
-r_anal_esil_reg_write.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_anal_esil_reg_write.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.POINTER(ctypes.c_char), uint64_t]
 r_anal_esil_pushnum = _libr_anal.r_anal_esil_pushnum
 r_anal_esil_pushnum.restype = ctypes.c_bool
-r_anal_esil_pushnum.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.c_uint64]
+r_anal_esil_pushnum.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), uint64_t]
 r_anal_esil_push = _libr_anal.r_anal_esil_push
 r_anal_esil_push.restype = ctypes.c_bool
 r_anal_esil_push.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.POINTER(ctypes.c_char)]
 r_anal_esil_pop = _libr_anal.r_anal_esil_pop
 r_anal_esil_pop.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_esil_pop.argtypes = [ctypes.POINTER(struct_r_anal_esil_t)]
+uint32_t = ctypes.c_uint32
 r_anal_esil_set_op = _libr_anal.r_anal_esil_set_op
 r_anal_esil_set_op.restype = ctypes.c_bool
-r_anal_esil_set_op.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.POINTER(ctypes.c_char), RAnalEsilOpCb, ctypes.c_uint32, ctypes.c_uint32, ctypes.c_uint32]
+r_anal_esil_set_op.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.POINTER(ctypes.c_char), RAnalEsilOpCb, uint32_t, uint32_t, uint32_t]
 r_anal_esil_get_op = _libr_anal.r_anal_esil_get_op
 r_anal_esil_get_op.restype = ctypes.POINTER(struct_r_anal_esil_operation_t)
 r_anal_esil_get_op.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.POINTER(ctypes.c_char)]
@@ -4821,28 +4883,28 @@ r_anal_esil_handlers_init.restype = None
 r_anal_esil_handlers_init.argtypes = [ctypes.POINTER(struct_r_anal_esil_t)]
 r_anal_esil_set_interrupt = _libr_anal.r_anal_esil_set_interrupt
 r_anal_esil_set_interrupt.restype = ctypes.c_bool
-r_anal_esil_set_interrupt.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.c_uint32, RAnalEsilHandlerCB, ctypes.POINTER(None)]
+r_anal_esil_set_interrupt.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), uint32_t, RAnalEsilHandlerCB, ctypes.POINTER(None)]
 r_anal_esil_get_interrupt = _libr_anal.r_anal_esil_get_interrupt
 r_anal_esil_get_interrupt.restype = RAnalEsilHandlerCB
-r_anal_esil_get_interrupt.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.c_uint32]
+r_anal_esil_get_interrupt.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), uint32_t]
 r_anal_esil_del_interrupt = _libr_anal.r_anal_esil_del_interrupt
 r_anal_esil_del_interrupt.restype = None
-r_anal_esil_del_interrupt.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.c_uint32]
+r_anal_esil_del_interrupt.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), uint32_t]
 r_anal_esil_set_syscall = _libr_anal.r_anal_esil_set_syscall
 r_anal_esil_set_syscall.restype = ctypes.c_bool
-r_anal_esil_set_syscall.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.c_uint32, RAnalEsilHandlerCB, ctypes.POINTER(None)]
+r_anal_esil_set_syscall.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), uint32_t, RAnalEsilHandlerCB, ctypes.POINTER(None)]
 r_anal_esil_get_syscall = _libr_anal.r_anal_esil_get_syscall
 r_anal_esil_get_syscall.restype = RAnalEsilHandlerCB
-r_anal_esil_get_syscall.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.c_uint32]
+r_anal_esil_get_syscall.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), uint32_t]
 r_anal_esil_del_syscall = _libr_anal.r_anal_esil_del_syscall
 r_anal_esil_del_syscall.restype = None
-r_anal_esil_del_syscall.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.c_uint32]
+r_anal_esil_del_syscall.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), uint32_t]
 r_anal_esil_fire_interrupt = _libr_anal.r_anal_esil_fire_interrupt
 r_anal_esil_fire_interrupt.restype = ctypes.c_int32
-r_anal_esil_fire_interrupt.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.c_uint32]
+r_anal_esil_fire_interrupt.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), uint32_t]
 r_anal_esil_do_syscall = _libr_anal.r_anal_esil_do_syscall
 r_anal_esil_do_syscall.restype = ctypes.c_int32
-r_anal_esil_do_syscall.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), ctypes.c_uint32]
+r_anal_esil_do_syscall.argtypes = [ctypes.POINTER(struct_r_anal_esil_t), uint32_t]
 r_anal_esil_handlers_fini = _libr_anal.r_anal_esil_handlers_fini
 r_anal_esil_handlers_fini.restype = None
 r_anal_esil_handlers_fini.argtypes = [ctypes.POINTER(struct_r_anal_esil_t)]
@@ -4893,46 +4955,40 @@ r_anal_pin_fini.restype = None
 r_anal_pin_fini.argtypes = [ctypes.POINTER(struct_r_anal_t)]
 r_anal_pin = _libr_anal.r_anal_pin
 r_anal_pin.restype = None
-r_anal_pin.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
-r_anal_pin_unset = _libr_anal.r_anal_pin_unset
-r_anal_pin_unset.restype = None
-r_anal_pin_unset.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_pin.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_anal_pin_call = _libr_anal.r_anal_pin_call
 r_anal_pin_call.restype = ctypes.POINTER(ctypes.c_char)
-r_anal_pin_call.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_pin_call.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_pin_list = _libr_anal.r_anal_pin_list
 r_anal_pin_list.restype = None
 r_anal_pin_list.argtypes = [ctypes.POINTER(struct_r_anal_t)]
+r_anal_pin_unset = _libr_anal.r_anal_pin_unset
+r_anal_pin_unset.restype = None
+r_anal_pin_unset.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_function_cost = _libr_anal.r_anal_function_cost
-r_anal_function_cost.restype = ctypes.c_uint32
+r_anal_function_cost.restype = uint32_t
 r_anal_function_cost.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
 r_anal_function_count_edges = _libr_anal.r_anal_function_count_edges
 r_anal_function_count_edges.restype = ctypes.c_int32
 r_anal_function_count_edges.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(ctypes.c_int32)]
-r_anal_get_fcn_in = _libr_anal.r_anal_get_fcn_in
-r_anal_get_fcn_in.restype = ctypes.POINTER(struct_r_anal_function_t)
-r_anal_get_fcn_in.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32]
-r_anal_get_fcn_in_bounds = _libr_anal.r_anal_get_fcn_in_bounds
-r_anal_get_fcn_in_bounds.restype = ctypes.POINTER(struct_r_anal_function_t)
-r_anal_get_fcn_in_bounds.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32]
 r_anal_get_function_byname = _libr_anal.r_anal_get_function_byname
 r_anal_get_function_byname.restype = ctypes.POINTER(struct_r_anal_function_t)
 r_anal_get_function_byname.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char)]
 r_anal_function = _libr_anal.r_anal_function
 r_anal_function.restype = ctypes.c_int32
-r_anal_function.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_int32]
+r_anal_function.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), uint64_t, uint64_t, ctypes.c_int32]
 r_anal_function_del = _libr_anal.r_anal_function_del
 r_anal_function_del.restype = ctypes.c_int32
-r_anal_function_del.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_function_del.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_function_del_locs = _libr_anal.r_anal_function_del_locs
 r_anal_function_del_locs.restype = ctypes.c_int32
-r_anal_function_del_locs.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_function_del_locs.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_function_add_bb = _libr_anal.r_anal_function_add_bb
 r_anal_function_add_bb.restype = ctypes.c_bool
-r_anal_function_add_bb.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.POINTER(struct_r_anal_diff_t)]
+r_anal_function_add_bb.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), uint64_t, uint64_t, uint64_t, uint64_t, ctypes.POINTER(struct_r_anal_diff_t)]
 r_anal_check_fcn = _libr_anal.r_anal_check_fcn
 r_anal_check_fcn.restype = ctypes.c_bool
-r_anal_check_fcn.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint16, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64]
+r_anal_check_fcn.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_ubyte), uint16_t, uint64_t, uint64_t, uint64_t]
 r_anal_function_invalidate_read_ahead_cache = _libr_anal.r_anal_function_invalidate_read_ahead_cache
 r_anal_function_invalidate_read_ahead_cache.restype = None
 r_anal_function_invalidate_read_ahead_cache.argtypes = []
@@ -4941,16 +4997,25 @@ r_anal_function_check_bp_use.restype = None
 r_anal_function_check_bp_use.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
 r_anal_update_analysis_range = _libr_anal.r_anal_update_analysis_range
 r_anal_update_analysis_range.restype = None
-r_anal_update_analysis_range.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32]
+r_anal_update_analysis_range.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.c_int32]
 r_anal_function_update_analysis = _libr_anal.r_anal_function_update_analysis
 r_anal_function_update_analysis.restype = None
 r_anal_function_update_analysis.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
 r_anal_function_var_del_byindex = _libraries['FIXME_STUB'].r_anal_function_var_del_byindex
 r_anal_function_var_del_byindex.restype = ctypes.c_int32
-r_anal_function_var_del_byindex.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_char, ctypes.c_int32, ctypes.c_uint32]
+r_anal_function_var_del_byindex.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.c_char, ctypes.c_int32, uint32_t]
 r_anal_var_count = _libr_anal.r_anal_var_count
 r_anal_var_count.restype = ctypes.c_int32
 r_anal_var_count.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.c_int32, ctypes.c_int32]
+r_anal_var_count_all = _libr_anal.r_anal_var_count_all
+r_anal_var_count_all.restype = ctypes.c_int32
+r_anal_var_count_all.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
+r_anal_var_count_args = _libr_anal.r_anal_var_count_args
+r_anal_var_count_args.restype = ctypes.c_int32
+r_anal_var_count_args.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
+r_anal_var_count_locals = _libr_anal.r_anal_var_count_locals
+r_anal_var_count_locals.restype = ctypes.c_int32
+r_anal_var_count_locals.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
 r_anal_var_display = _libr_anal.r_anal_var_display
 r_anal_var_display.restype = ctypes.c_bool
 r_anal_var_display.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_var_t)]
@@ -4971,7 +5036,7 @@ r_anal_function_get_json.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_function_get_json.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
 r_anal_function_next = _libr_anal.r_anal_function_next
 r_anal_function_next.restype = ctypes.POINTER(struct_r_anal_function_t)
-r_anal_function_next.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_function_next.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_function_get_signature = _libr_anal.r_anal_function_get_signature
 r_anal_function_get_signature.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_function_get_signature.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
@@ -4980,13 +5045,13 @@ r_anal_str_to_fcn.restype = ctypes.c_int32
 r_anal_str_to_fcn.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(ctypes.c_char)]
 r_anal_function_count = _libr_anal.r_anal_function_count
 r_anal_function_count.restype = ctypes.c_int32
-r_anal_function_count.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_function_count.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_anal_function_bbget_in = _libr_anal.r_anal_function_bbget_in
 r_anal_function_bbget_in.restype = ctypes.POINTER(struct_r_anal_bb_t)
-r_anal_function_bbget_in.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.c_uint64]
+r_anal_function_bbget_in.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), uint64_t]
 r_anal_function_bbget_at = _libr_anal.r_anal_function_bbget_at
 r_anal_function_bbget_at.restype = ctypes.POINTER(struct_r_anal_bb_t)
-r_anal_function_bbget_at.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.c_uint64]
+r_anal_function_bbget_at.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), uint64_t]
 r_anal_function_bbadd = _libraries['FIXME_STUB'].r_anal_function_bbadd
 r_anal_function_bbadd.restype = ctypes.c_bool
 r_anal_function_bbadd.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t)]
@@ -4996,31 +5061,58 @@ r_anal_function_resize.argtypes = [ctypes.POINTER(struct_r_anal_function_t), cty
 r_anal_function_purity = _libr_anal.r_anal_function_purity
 r_anal_function_purity.restype = ctypes.c_bool
 r_anal_function_purity.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
+r_anal_function_instrcount = _libr_anal.r_anal_function_instrcount
+r_anal_function_instrcount.restype = ctypes.c_int32
+r_anal_function_instrcount.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
+r_anal_function_islineal = _libr_anal.r_anal_function_islineal
+r_anal_function_islineal.restype = ctypes.c_bool
+r_anal_function_islineal.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
+r_anal_pin_get = _libr_anal.r_anal_pin_get
+r_anal_pin_get.restype = ctypes.POINTER(ctypes.c_char)
+r_anal_pin_get.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char)]
+r_anal_pin_at = _libr_anal.r_anal_pin_at
+r_anal_pin_at.restype = ctypes.POINTER(ctypes.c_char)
+r_anal_pin_at.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
+r_anal_pin_set = _libr_anal.r_anal_pin_set
+r_anal_pin_set.restype = ctypes.c_bool
+r_anal_pin_set.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
 RAnalRefCmp = ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_anal_ref_t), ctypes.POINTER(None))
 r_anal_ref_list_new = _libr_anal.r_anal_ref_list_new
 r_anal_ref_list_new.restype = ctypes.POINTER(struct_r_list_t)
 r_anal_ref_list_new.argtypes = []
+r_anal_ref_type_tostring = _libr_anal.r_anal_ref_type_tostring
+r_anal_ref_type_tostring.restype = ctypes.POINTER(ctypes.c_char)
+r_anal_ref_type_tostring.argtypes = [RAnalRefType]
 r_anal_xrefs_count = _libr_anal.r_anal_xrefs_count
-r_anal_xrefs_count.restype = ctypes.c_uint64
+r_anal_xrefs_count.restype = uint64_t
 r_anal_xrefs_count.argtypes = [ctypes.POINTER(struct_r_anal_t)]
-r_anal_xrefs_type_tostring = _libr_anal.r_anal_xrefs_type_tostring
-r_anal_xrefs_type_tostring.restype = ctypes.POINTER(ctypes.c_char)
-r_anal_xrefs_type_tostring.argtypes = [RAnalRefType]
 r_anal_xrefs_type = _libr_anal.r_anal_xrefs_type
 r_anal_xrefs_type.restype = RAnalRefType
 r_anal_xrefs_type.argtypes = [ctypes.c_char]
+r_anal_ref_perm_tostring = _libr_anal.r_anal_ref_perm_tostring
+r_anal_ref_perm_tostring.restype = ctypes.POINTER(ctypes.c_char)
+r_anal_ref_perm_tostring.argtypes = [ctypes.POINTER(struct_r_anal_ref_t)]
+r_anal_ref_perm_tochar = _libr_anal.r_anal_ref_perm_tochar
+r_anal_ref_perm_tochar.restype = ctypes.c_char
+r_anal_ref_perm_tochar.argtypes = [ctypes.POINTER(struct_r_anal_ref_t)]
+r_anal_ref_permchar_tostring = _libraries['FIXME_STUB'].r_anal_ref_permchar_tostring
+r_anal_ref_permchar_tostring.restype = ctypes.c_char
+r_anal_ref_permchar_tostring.argtypes = [ctypes.POINTER(struct_r_anal_ref_t)]
+r_anal_xrefs_type_from_string = _libr_anal.r_anal_xrefs_type_from_string
+r_anal_xrefs_type_from_string.restype = RAnalRefType
+r_anal_xrefs_type_from_string.argtypes = [ctypes.POINTER(ctypes.c_char)]
 r_anal_xrefs_get = _libr_anal.r_anal_xrefs_get
 r_anal_xrefs_get.restype = ctypes.POINTER(struct_r_list_t)
-r_anal_xrefs_get.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_xrefs_get.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_refs_get = _libr_anal.r_anal_refs_get
 r_anal_refs_get.restype = ctypes.POINTER(struct_r_list_t)
-r_anal_refs_get.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_refs_get.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_xrefs_get_from = _libr_anal.r_anal_xrefs_get_from
 r_anal_xrefs_get_from.restype = ctypes.POINTER(struct_r_list_t)
-r_anal_xrefs_get_from.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_xrefs_get_from.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_xrefs_list = _libr_anal.r_anal_xrefs_list
 r_anal_xrefs_list.restype = None
-r_anal_xrefs_list.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_int32]
+r_anal_xrefs_list.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.POINTER(ctypes.c_char)]
 r_anal_function_get_refs = _libr_anal.r_anal_function_get_refs
 r_anal_function_get_refs.restype = ctypes.POINTER(struct_r_list_t)
 r_anal_function_get_refs.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
@@ -5029,16 +5121,16 @@ r_anal_function_get_xrefs.restype = ctypes.POINTER(struct_r_list_t)
 r_anal_function_get_xrefs.argtypes = [ctypes.POINTER(struct_r_anal_function_t)]
 r_anal_xrefs_from = _libr_anal.r_anal_xrefs_from
 r_anal_xrefs_from.restype = ctypes.c_bool
-r_anal_xrefs_from.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_list_t), ctypes.POINTER(ctypes.c_char), RAnalRefType, ctypes.c_uint64]
+r_anal_xrefs_from.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_list_t), ctypes.POINTER(ctypes.c_char), RAnalRefType, uint64_t]
 r_anal_xrefs_set = _libr_anal.r_anal_xrefs_set
 r_anal_xrefs_set.restype = ctypes.c_bool
-r_anal_xrefs_set.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64, RAnalRefType]
+r_anal_xrefs_set.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t, RAnalRefType]
 r_anal_xrefs_deln = _libr_anal.r_anal_xrefs_deln
 r_anal_xrefs_deln.restype = ctypes.c_bool
-r_anal_xrefs_deln.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64, RAnalRefType]
+r_anal_xrefs_deln.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t, RAnalRefType]
 r_anal_xref_del = _libr_anal.r_anal_xref_del
 r_anal_xref_del.restype = ctypes.c_bool
-r_anal_xref_del.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_xref_del.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_anal_get_fcns = _libr_anal.r_anal_get_fcns
 r_anal_get_fcns.restype = ctypes.POINTER(struct_r_list_t)
 r_anal_get_fcns.argtypes = [ctypes.POINTER(struct_r_anal_t)]
@@ -5087,18 +5179,16 @@ r_anal_function_delete_var.argtypes = [ctypes.POINTER(struct_r_anal_function_t),
 r_anal_function_rebase_vars = _libr_anal.r_anal_function_rebase_vars
 r_anal_function_rebase_vars.restype = ctypes.c_bool
 r_anal_function_rebase_vars.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t)]
+int64_t = ctypes.c_int64
 r_anal_function_get_var_stackptr_at = _libr_anal.r_anal_function_get_var_stackptr_at
-r_anal_function_get_var_stackptr_at.restype = ctypes.c_int64
-r_anal_function_get_var_stackptr_at.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.c_int64, ctypes.c_uint64]
+r_anal_function_get_var_stackptr_at.restype = int64_t
+r_anal_function_get_var_stackptr_at.argtypes = [ctypes.POINTER(struct_r_anal_function_t), int64_t, uint64_t]
 r_anal_function_get_var_reg_at = _libr_anal.r_anal_function_get_var_reg_at
 r_anal_function_get_var_reg_at.restype = ctypes.POINTER(ctypes.c_char)
-r_anal_function_get_var_reg_at.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.c_int64, ctypes.c_uint64]
+r_anal_function_get_var_reg_at.argtypes = [ctypes.POINTER(struct_r_anal_function_t), int64_t, uint64_t]
 r_anal_function_get_vars_used_at = _libr_anal.r_anal_function_get_vars_used_at
 r_anal_function_get_vars_used_at.restype = ctypes.POINTER(struct_r_pvector_t)
-r_anal_function_get_vars_used_at.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.c_uint64]
-r_anal_get_used_function_var = _libr_anal.r_anal_get_used_function_var
-r_anal_get_used_function_var.restype = ctypes.POINTER(struct_r_anal_var_t)
-r_anal_get_used_function_var.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_function_get_vars_used_at.argtypes = [ctypes.POINTER(struct_r_anal_function_t), uint64_t]
 r_anal_var_rename = _libr_anal.r_anal_var_rename
 r_anal_var_rename.restype = ctypes.c_bool
 r_anal_var_rename.argtypes = [ctypes.POINTER(struct_r_anal_var_t), ctypes.POINTER(ctypes.c_char), ctypes.c_bool]
@@ -5109,14 +5199,14 @@ r_anal_var_delete = _libr_anal.r_anal_var_delete
 r_anal_var_delete.restype = None
 r_anal_var_delete.argtypes = [ctypes.POINTER(struct_r_anal_var_t)]
 r_anal_var_addr = _libr_anal.r_anal_var_addr
-r_anal_var_addr.restype = ctypes.c_uint64
+r_anal_var_addr.restype = uint64_t
 r_anal_var_addr.argtypes = [ctypes.POINTER(struct_r_anal_var_t)]
 r_anal_var_set_access = _libr_anal.r_anal_var_set_access
 r_anal_var_set_access.restype = None
-r_anal_var_set_access.argtypes = [ctypes.POINTER(struct_r_anal_var_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_int32, ctypes.c_int64]
+r_anal_var_set_access.argtypes = [ctypes.POINTER(struct_r_anal_var_t), ctypes.POINTER(ctypes.c_char), uint64_t, ctypes.c_int32, int64_t]
 r_anal_var_remove_access_at = _libr_anal.r_anal_var_remove_access_at
 r_anal_var_remove_access_at.restype = None
-r_anal_var_remove_access_at.argtypes = [ctypes.POINTER(struct_r_anal_var_t), ctypes.c_uint64]
+r_anal_var_remove_access_at.argtypes = [ctypes.POINTER(struct_r_anal_var_t), uint64_t]
 r_anal_var_clear_accesses = _libr_anal.r_anal_var_clear_accesses
 r_anal_var_clear_accesses.restype = None
 r_anal_var_clear_accesses.argtypes = [ctypes.POINTER(struct_r_anal_var_t)]
@@ -5128,7 +5218,7 @@ r_anal_var_get_constraints_readable.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_var_get_constraints_readable.argtypes = [ctypes.POINTER(struct_r_anal_var_t)]
 r_anal_var_get_access_at = _libr_anal.r_anal_var_get_access_at
 r_anal_var_get_access_at.restype = ctypes.POINTER(struct_r_anal_var_access_t)
-r_anal_var_get_access_at.argtypes = [ctypes.POINTER(struct_r_anal_var_t), ctypes.c_uint64]
+r_anal_var_get_access_at.argtypes = [ctypes.POINTER(struct_r_anal_var_t), uint64_t]
 r_anal_var_get_argnum = _libr_anal.r_anal_var_get_argnum
 r_anal_var_get_argnum.restype = ctypes.c_int32
 r_anal_var_get_argnum.argtypes = [ctypes.POINTER(struct_r_anal_var_t)]
@@ -5202,17 +5292,17 @@ r_anal_value_new_from_string = _libr_anal.r_anal_value_new_from_string
 r_anal_value_new_from_string.restype = ctypes.POINTER(struct_r_anal_value_t)
 r_anal_value_new_from_string.argtypes = [ctypes.POINTER(ctypes.c_char)]
 r_anal_value_eval = _libraries['FIXME_STUB'].r_anal_value_eval
-r_anal_value_eval.restype = ctypes.c_int64
+r_anal_value_eval.restype = int64_t
 r_anal_value_eval.argtypes = [ctypes.POINTER(struct_r_anal_value_t)]
 r_anal_value_to_string = _libr_anal.r_anal_value_to_string
 r_anal_value_to_string.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_value_to_string.argtypes = [ctypes.POINTER(struct_r_anal_value_t)]
 r_anal_value_to_ut64 = _libr_anal.r_anal_value_to_ut64
-r_anal_value_to_ut64.restype = ctypes.c_uint64
+r_anal_value_to_ut64.restype = uint64_t
 r_anal_value_to_ut64.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_value_t)]
 r_anal_value_set_ut64 = _libr_anal.r_anal_value_set_ut64
 r_anal_value_set_ut64.restype = ctypes.c_int32
-r_anal_value_set_ut64.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_value_t), ctypes.c_uint64]
+r_anal_value_set_ut64.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_value_t), uint64_t]
 r_anal_value_free = _libr_anal.r_anal_value_free
 r_anal_value_free.restype = None
 r_anal_value_free.argtypes = [ctypes.POINTER(struct_r_anal_value_t)]
@@ -5242,31 +5332,31 @@ r_anal_cond_tostring.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_cond_tostring.argtypes = [ctypes.c_int32]
 r_anal_jmptbl = _libr_anal.r_anal_jmptbl
 r_anal_jmptbl.restype = ctypes.c_bool
-r_anal_jmptbl.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64]
+r_anal_jmptbl.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t), uint64_t, uint64_t, uint64_t, uint64_t]
 try_get_delta_jmptbl_info = _libr_anal.try_get_delta_jmptbl_info
 try_get_delta_jmptbl_info.restype = ctypes.c_bool
-try_get_delta_jmptbl_info.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_int64)]
+try_get_delta_jmptbl_info.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), uint64_t, uint64_t, ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_int64)]
 try_walkthrough_jmptbl = _libr_anal.try_walkthrough_jmptbl
 try_walkthrough_jmptbl.restype = ctypes.c_bool
-try_walkthrough_jmptbl.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_int32, ctypes.c_uint64, ctypes.c_int64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_bool]
+try_walkthrough_jmptbl.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_int32, uint64_t, int64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, ctypes.c_bool]
 try_walkthrough_casetbl = _libr_anal.try_walkthrough_casetbl
 try_walkthrough_casetbl.restype = ctypes.c_bool
-try_walkthrough_casetbl.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_int32, ctypes.c_uint64, ctypes.c_int64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_bool]
+try_walkthrough_casetbl.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_int32, uint64_t, int64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, ctypes.c_bool]
 try_get_jmptbl_info = _libr_anal.try_get_jmptbl_info
 try_get_jmptbl_info.restype = ctypes.c_bool
-try_get_jmptbl_info.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.c_uint64, ctypes.POINTER(struct_r_anal_bb_t), ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_int64)]
+try_get_jmptbl_info.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), uint64_t, ctypes.POINTER(struct_r_anal_bb_t), ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_int64)]
 walkthrough_arm_jmptbl_style = _libr_anal.walkthrough_arm_jmptbl_style
 walkthrough_arm_jmptbl_style.restype = ctypes.c_int32
-walkthrough_arm_jmptbl_style.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_int32]
+walkthrough_arm_jmptbl_style.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t), ctypes.c_int32, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, ctypes.c_int32]
 r_anal_reflines_get = _libr_anal.r_anal_reflines_get
 r_anal_reflines_get.restype = ctypes.POINTER(struct_r_list_t)
-r_anal_reflines_get.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64, ctypes.c_int32, ctypes.c_int32, ctypes.c_int32]
+r_anal_reflines_get.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), uint64_t, ctypes.c_int32, ctypes.c_int32, ctypes.c_int32]
 r_anal_reflines_middle = _libr_anal.r_anal_reflines_middle
 r_anal_reflines_middle.restype = ctypes.c_int32
-r_anal_reflines_middle.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_list_t), ctypes.c_uint64, ctypes.c_int32]
+r_anal_reflines_middle.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_list_t), uint64_t, ctypes.c_int32]
 r_anal_reflines_str = _libr_anal.r_anal_reflines_str
 r_anal_reflines_str.restype = ctypes.POINTER(struct_r_anal_ref_char)
-r_anal_reflines_str.argtypes = [ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_int32]
+r_anal_reflines_str.argtypes = [ctypes.POINTER(None), uint64_t, ctypes.c_int32]
 r_anal_reflines_str_free = _libr_anal.r_anal_reflines_str_free
 r_anal_reflines_str_free.restype = None
 r_anal_reflines_str_free.argtypes = [ctypes.POINTER(struct_r_anal_ref_char)]
@@ -5276,12 +5366,6 @@ r_anal_var_list_show.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER
 r_anal_var_list = _libr_anal.r_anal_var_list
 r_anal_var_list.restype = ctypes.POINTER(struct_r_list_t)
 r_anal_var_list.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t), ctypes.c_int32]
-r_anal_var_all_list = _libr_anal.r_anal_var_all_list
-r_anal_var_all_list.restype = ctypes.POINTER(struct_r_list_t)
-r_anal_var_all_list.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_function_t)]
-r_anal_function_get_var_fields = _libr_anal.r_anal_function_get_var_fields
-r_anal_function_get_var_fields.restype = ctypes.POINTER(struct_r_list_t)
-r_anal_function_get_var_fields.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.c_int32]
 r_anal_cc_exist = _libr_anal.r_anal_cc_exist
 r_anal_cc_exist.restype = ctypes.c_bool
 r_anal_cc_exist.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char)]
@@ -5338,7 +5422,7 @@ r_anal_cc_func.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_cc_func.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char)]
 r_anal_noreturn_at = _libr_anal.r_anal_noreturn_at
 r_anal_noreturn_at.restype = ctypes.c_bool
-r_anal_noreturn_at.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_noreturn_at.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 class struct_r_anal_data_t(Structure):
     pass
 
@@ -5358,16 +5442,16 @@ struct_r_anal_data_t._fields_ = [
 RAnalData = struct_r_anal_data_t
 r_anal_data = _libr_anal.r_anal_data
 r_anal_data.restype = ctypes.POINTER(struct_r_anal_data_t)
-r_anal_data.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32]
+r_anal_data.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32]
 r_anal_data_kind = _libr_anal.r_anal_data_kind
 r_anal_data_kind.restype = ctypes.POINTER(ctypes.c_char)
-r_anal_data_kind.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_anal_data_kind.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_anal_data_new_string = _libr_anal.r_anal_data_new_string
 r_anal_data_new_string.restype = ctypes.POINTER(struct_r_anal_data_t)
-r_anal_data_new_string.argtypes = [ctypes.c_uint64, ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.c_int32]
+r_anal_data_new_string.argtypes = [uint64_t, ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.c_int32]
 r_anal_data_new = _libr_anal.r_anal_data_new
 r_anal_data_new.restype = ctypes.POINTER(struct_r_anal_data_t)
-r_anal_data_new.argtypes = [ctypes.c_uint64, ctypes.c_int32, ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_anal_data_new.argtypes = [uint64_t, ctypes.c_int32, uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_anal_data_free = _libr_anal.r_anal_data_free
 r_anal_data_free.restype = None
 r_anal_data_free.argtypes = [ctypes.POINTER(struct_r_anal_data_t)]
@@ -5375,44 +5459,44 @@ r_anal_data_to_string = _libr_anal.r_anal_data_to_string
 r_anal_data_to_string.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_data_to_string.argtypes = [ctypes.POINTER(struct_r_anal_data_t), ctypes.POINTER(struct_r_cons_printable_palette_t)]
 r_meta_item_size = _libraries['FIXME_STUB'].r_meta_item_size
-r_meta_item_size.restype = ctypes.c_uint64
-r_meta_item_size.argtypes = [ctypes.c_uint64, ctypes.c_uint64]
+r_meta_item_size.restype = uint64_t
+r_meta_item_size.argtypes = [uint64_t, uint64_t]
 r_meta_node_size = _libraries['FIXME_STUB'].r_meta_node_size
-r_meta_node_size.restype = ctypes.c_uint64
+r_meta_node_size.restype = uint64_t
 r_meta_node_size.argtypes = [ctypes.POINTER(struct_r_interval_node_t)]
 r_meta_set = _libr_anal.r_meta_set
 r_meta_set.restype = ctypes.c_bool
-r_meta_set.argtypes = [ctypes.POINTER(struct_r_anal_t), RAnalMetaType, ctypes.c_uint64, ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_meta_set.argtypes = [ctypes.POINTER(struct_r_anal_t), RAnalMetaType, uint64_t, uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_meta_set_with_subtype = _libr_anal.r_meta_set_with_subtype
 r_meta_set_with_subtype.restype = ctypes.c_bool
-r_meta_set_with_subtype.argtypes = [ctypes.POINTER(struct_r_anal_t), RAnalMetaType, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_meta_set_with_subtype.argtypes = [ctypes.POINTER(struct_r_anal_t), RAnalMetaType, ctypes.c_int32, uint64_t, uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_meta_del = _libr_anal.r_meta_del
 r_meta_del.restype = None
-r_meta_del.argtypes = [ctypes.POINTER(struct_r_anal_t), RAnalMetaType, ctypes.c_uint64, ctypes.c_uint64]
+r_meta_del.argtypes = [ctypes.POINTER(struct_r_anal_t), RAnalMetaType, uint64_t, uint64_t]
 r_meta_set_string = _libr_anal.r_meta_set_string
 r_meta_set_string.restype = ctypes.c_bool
-r_meta_set_string.argtypes = [ctypes.POINTER(struct_r_anal_t), RAnalMetaType, ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_meta_set_string.argtypes = [ctypes.POINTER(struct_r_anal_t), RAnalMetaType, uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_meta_get_string = _libr_anal.r_meta_get_string
 r_meta_get_string.restype = ctypes.POINTER(ctypes.c_char)
-r_meta_get_string.argtypes = [ctypes.POINTER(struct_r_anal_t), RAnalMetaType, ctypes.c_uint64]
+r_meta_get_string.argtypes = [ctypes.POINTER(struct_r_anal_t), RAnalMetaType, uint64_t]
 r_meta_set_data_at = _libr_anal.r_meta_set_data_at
 r_meta_set_data_at.restype = None
-r_meta_set_data_at.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_meta_set_data_at.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_meta_get_at = _libr_anal.r_meta_get_at
 r_meta_get_at.restype = ctypes.POINTER(struct_r_anal_meta_item_t)
-r_meta_get_at.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, RAnalMetaType, ctypes.POINTER(ctypes.c_uint64)]
+r_meta_get_at.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, RAnalMetaType, ctypes.POINTER(ctypes.c_uint64)]
 r_meta_get_in = _libr_anal.r_meta_get_in
 r_meta_get_in.restype = ctypes.POINTER(struct_r_interval_node_t)
-r_meta_get_in.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, RAnalMetaType]
+r_meta_get_in.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, RAnalMetaType]
 r_meta_get_all_at = _libr_anal.r_meta_get_all_at
 r_meta_get_all_at.restype = ctypes.POINTER(struct_r_pvector_t)
-r_meta_get_all_at.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_meta_get_all_at.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_meta_get_all_in = _libr_anal.r_meta_get_all_in
 r_meta_get_all_in.restype = ctypes.POINTER(struct_r_pvector_t)
-r_meta_get_all_in.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, RAnalMetaType]
+r_meta_get_all_in.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, RAnalMetaType]
 r_meta_get_all_intersect = _libr_anal.r_meta_get_all_intersect
 r_meta_get_all_intersect.restype = ctypes.POINTER(struct_r_pvector_t)
-r_meta_get_all_intersect.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64, RAnalMetaType]
+r_meta_get_all_intersect.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t, RAnalMetaType]
 r_meta_space_unset_for = _libr_anal.r_meta_space_unset_for
 r_meta_space_unset_for.restype = None
 r_meta_space_unset_for.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_space_t)]
@@ -5421,28 +5505,28 @@ r_meta_space_count_for.restype = ctypes.c_int32
 r_meta_space_count_for.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_space_t)]
 r_meta_rebase = _libr_anal.r_meta_rebase
 r_meta_rebase.restype = None
-r_meta_rebase.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_meta_rebase.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_meta_get_size = _libr_anal.r_meta_get_size
-r_meta_get_size.restype = ctypes.c_uint64
+r_meta_get_size.restype = uint64_t
 r_meta_get_size.argtypes = [ctypes.POINTER(struct_r_anal_t), RAnalMetaType]
 r_meta_type_to_string = _libr_anal.r_meta_type_to_string
 r_meta_type_to_string.restype = ctypes.POINTER(ctypes.c_char)
 r_meta_type_to_string.argtypes = [ctypes.c_int32]
 r_meta_print = _libr_anal.r_meta_print
 r_meta_print.restype = None
-r_meta_print.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_meta_item_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_int32, ctypes.POINTER(struct_pj_t), ctypes.c_bool]
+r_meta_print.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_meta_item_t), uint64_t, uint64_t, ctypes.c_int32, ctypes.POINTER(struct_pj_t), ctypes.c_bool]
 r_meta_print_list_all = _libr_anal.r_meta_print_list_all
 r_meta_print_list_all.restype = None
 r_meta_print_list_all.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_char)]
 r_meta_print_list_at = _libr_anal.r_meta_print_list_at
 r_meta_print_list_at.restype = None
-r_meta_print_list_at.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32, ctypes.POINTER(ctypes.c_char)]
+r_meta_print_list_at.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.c_int32, ctypes.POINTER(ctypes.c_char)]
 r_meta_print_list_in_function = _libr_anal.r_meta_print_list_in_function
 r_meta_print_list_in_function.restype = None
-r_meta_print_list_in_function.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_meta_print_list_in_function.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.c_int32, uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_anal_hint_del = _libr_anal.r_anal_hint_del
 r_anal_hint_del.restype = None
-r_anal_hint_del.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_hint_del.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_anal_hint_clear = _libr_anal.r_anal_hint_clear
 r_anal_hint_clear.restype = None
 r_anal_hint_clear.argtypes = [ctypes.POINTER(struct_r_anal_t)]
@@ -5451,115 +5535,115 @@ r_anal_hint_free.restype = None
 r_anal_hint_free.argtypes = [ctypes.POINTER(struct_r_anal_hint_t)]
 r_anal_hint_set_syntax = _libr_anal.r_anal_hint_set_syntax
 r_anal_hint_set_syntax.restype = None
-r_anal_hint_set_syntax.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_anal_hint_set_syntax.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_anal_hint_set_type = _libr_anal.r_anal_hint_set_type
 r_anal_hint_set_type.restype = None
-r_anal_hint_set_type.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32]
+r_anal_hint_set_type.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.c_int32]
 r_anal_hint_set_jump = _libr_anal.r_anal_hint_set_jump
 r_anal_hint_set_jump.restype = None
-r_anal_hint_set_jump.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_hint_set_jump.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_anal_hint_set_fail = _libr_anal.r_anal_hint_set_fail
 r_anal_hint_set_fail.restype = None
-r_anal_hint_set_fail.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_hint_set_fail.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_anal_hint_set_newbits = _libr_anal.r_anal_hint_set_newbits
 r_anal_hint_set_newbits.restype = None
-r_anal_hint_set_newbits.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32]
+r_anal_hint_set_newbits.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.c_int32]
 r_anal_hint_set_nword = _libr_anal.r_anal_hint_set_nword
 r_anal_hint_set_nword.restype = None
-r_anal_hint_set_nword.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32]
+r_anal_hint_set_nword.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.c_int32]
 r_anal_hint_set_offset = _libr_anal.r_anal_hint_set_offset
 r_anal_hint_set_offset.restype = None
-r_anal_hint_set_offset.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_anal_hint_set_offset.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_anal_hint_set_immbase = _libr_anal.r_anal_hint_set_immbase
 r_anal_hint_set_immbase.restype = None
-r_anal_hint_set_immbase.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32]
+r_anal_hint_set_immbase.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.c_int32]
 r_anal_hint_set_size = _libr_anal.r_anal_hint_set_size
 r_anal_hint_set_size.restype = None
-r_anal_hint_set_size.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_hint_set_size.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_anal_hint_set_opcode = _libr_anal.r_anal_hint_set_opcode
 r_anal_hint_set_opcode.restype = None
-r_anal_hint_set_opcode.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_anal_hint_set_opcode.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_anal_hint_set_esil = _libr_anal.r_anal_hint_set_esil
 r_anal_hint_set_esil.restype = None
-r_anal_hint_set_esil.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_anal_hint_set_esil.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_anal_hint_set_pointer = _libr_anal.r_anal_hint_set_pointer
 r_anal_hint_set_pointer.restype = None
-r_anal_hint_set_pointer.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_hint_set_pointer.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_anal_hint_set_ret = _libr_anal.r_anal_hint_set_ret
 r_anal_hint_set_ret.restype = None
-r_anal_hint_set_ret.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_hint_set_ret.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_anal_hint_set_high = _libr_anal.r_anal_hint_set_high
 r_anal_hint_set_high.restype = None
-r_anal_hint_set_high.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_set_high.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_set_stackframe = _libr_anal.r_anal_hint_set_stackframe
 r_anal_hint_set_stackframe.restype = None
-r_anal_hint_set_stackframe.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_hint_set_stackframe.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_anal_hint_set_val = _libr_anal.r_anal_hint_set_val
 r_anal_hint_set_val.restype = None
-r_anal_hint_set_val.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_hint_set_val.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_anal_hint_set_arch = _libr_anal.r_anal_hint_set_arch
 r_anal_hint_set_arch.restype = None
-r_anal_hint_set_arch.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_anal_hint_set_arch.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_anal_hint_set_bits = _libr_anal.r_anal_hint_set_bits
 r_anal_hint_set_bits.restype = None
-r_anal_hint_set_bits.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32]
+r_anal_hint_set_bits.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.c_int32]
 r_anal_hint_unset_val = _libr_anal.r_anal_hint_unset_val
 r_anal_hint_unset_val.restype = None
-r_anal_hint_unset_val.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_val.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_high = _libr_anal.r_anal_hint_unset_high
 r_anal_hint_unset_high.restype = None
-r_anal_hint_unset_high.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_high.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_immbase = _libr_anal.r_anal_hint_unset_immbase
 r_anal_hint_unset_immbase.restype = None
-r_anal_hint_unset_immbase.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_immbase.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_nword = _libr_anal.r_anal_hint_unset_nword
 r_anal_hint_unset_nword.restype = None
-r_anal_hint_unset_nword.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_nword.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_size = _libr_anal.r_anal_hint_unset_size
 r_anal_hint_unset_size.restype = None
-r_anal_hint_unset_size.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_size.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_type = _libr_anal.r_anal_hint_unset_type
 r_anal_hint_unset_type.restype = None
-r_anal_hint_unset_type.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_type.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_esil = _libr_anal.r_anal_hint_unset_esil
 r_anal_hint_unset_esil.restype = None
-r_anal_hint_unset_esil.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_esil.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_opcode = _libr_anal.r_anal_hint_unset_opcode
 r_anal_hint_unset_opcode.restype = None
-r_anal_hint_unset_opcode.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_opcode.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_syntax = _libr_anal.r_anal_hint_unset_syntax
 r_anal_hint_unset_syntax.restype = None
-r_anal_hint_unset_syntax.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_syntax.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_pointer = _libr_anal.r_anal_hint_unset_pointer
 r_anal_hint_unset_pointer.restype = None
-r_anal_hint_unset_pointer.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_pointer.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_ret = _libr_anal.r_anal_hint_unset_ret
 r_anal_hint_unset_ret.restype = None
-r_anal_hint_unset_ret.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_ret.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_offset = _libr_anal.r_anal_hint_unset_offset
 r_anal_hint_unset_offset.restype = None
-r_anal_hint_unset_offset.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_offset.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_jump = _libr_anal.r_anal_hint_unset_jump
 r_anal_hint_unset_jump.restype = None
-r_anal_hint_unset_jump.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_jump.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_fail = _libr_anal.r_anal_hint_unset_fail
 r_anal_hint_unset_fail.restype = None
-r_anal_hint_unset_fail.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_fail.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_newbits = _libr_anal.r_anal_hint_unset_newbits
 r_anal_hint_unset_newbits.restype = None
-r_anal_hint_unset_newbits.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_newbits.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_stackframe = _libr_anal.r_anal_hint_unset_stackframe
 r_anal_hint_unset_stackframe.restype = None
-r_anal_hint_unset_stackframe.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_stackframe.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_arch = _libr_anal.r_anal_hint_unset_arch
 r_anal_hint_unset_arch.restype = None
-r_anal_hint_unset_arch.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_arch.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_hint_unset_bits = _libr_anal.r_anal_hint_unset_bits
 r_anal_hint_unset_bits.restype = None
-r_anal_hint_unset_bits.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_unset_bits.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_addr_hints_at = _libr_anal.r_anal_addr_hints_at
 r_anal_addr_hints_at.restype = ctypes.POINTER(struct_r_vector_t)
-r_anal_addr_hints_at.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_addr_hints_at.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 RAnalAddrHintRecordsCb = ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.c_uint64, ctypes.POINTER(struct_r_vector_t), ctypes.POINTER(None))
 r_anal_addr_hints_foreach = _libr_anal.r_anal_addr_hints_foreach
 r_anal_addr_hints_foreach.restype = None
@@ -5574,22 +5658,22 @@ r_anal_bits_hints_foreach.restype = None
 r_anal_bits_hints_foreach.argtypes = [ctypes.POINTER(struct_r_anal_t), RAnalBitsHintCb, ctypes.POINTER(None)]
 r_anal_hint_arch_at = _libr_anal.r_anal_hint_arch_at
 r_anal_hint_arch_at.restype = ctypes.POINTER(ctypes.c_char)
-r_anal_hint_arch_at.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64)]
+r_anal_hint_arch_at.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_uint64)]
 r_anal_hint_bits_at = _libr_anal.r_anal_hint_bits_at
 r_anal_hint_bits_at.restype = ctypes.c_int32
-r_anal_hint_bits_at.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64)]
+r_anal_hint_bits_at.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_uint64)]
 r_anal_hint_get = _libr_anal.r_anal_hint_get
 r_anal_hint_get.restype = ctypes.POINTER(struct_r_anal_hint_t)
-r_anal_hint_get.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_hint_get.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_switch_op_new = _libr_anal.r_anal_switch_op_new
 r_anal_switch_op_new.restype = ctypes.POINTER(struct_r_anal_switch_obj_t)
-r_anal_switch_op_new.argtypes = [ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64]
+r_anal_switch_op_new.argtypes = [uint64_t, uint64_t, uint64_t, uint64_t]
 r_anal_switch_op_free = _libr_anal.r_anal_switch_op_free
 r_anal_switch_op_free.restype = None
 r_anal_switch_op_free.argtypes = [ctypes.POINTER(struct_r_anal_switch_obj_t)]
 r_anal_switch_op_add_case = _libr_anal.r_anal_switch_op_add_case
 r_anal_switch_op_add_case.restype = ctypes.POINTER(struct_r_anal_case_obj_t)
-r_anal_switch_op_add_case.argtypes = [ctypes.POINTER(struct_r_anal_switch_obj_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64]
+r_anal_switch_op_add_case.argtypes = [ctypes.POINTER(struct_r_anal_switch_obj_t), uint64_t, uint64_t, uint64_t]
 r_anal_cycle_frame_new = _libr_anal.r_anal_cycle_frame_new
 r_anal_cycle_frame_new.restype = ctypes.POINTER(struct_r_anal_cycle_frame_t)
 r_anal_cycle_frame_new.argtypes = []
@@ -5597,23 +5681,23 @@ r_anal_cycle_frame_free = _libr_anal.r_anal_cycle_frame_free
 r_anal_cycle_frame_free.restype = None
 r_anal_cycle_frame_free.argtypes = [ctypes.POINTER(struct_r_anal_cycle_frame_t)]
 r_anal_function_get_label = _libr_anal.r_anal_function_get_label
-r_anal_function_get_label.restype = ctypes.c_uint64
+r_anal_function_get_label.restype = uint64_t
 r_anal_function_get_label.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(ctypes.c_char)]
 r_anal_function_get_label_at = _libr_anal.r_anal_function_get_label_at
 r_anal_function_get_label_at.restype = ctypes.POINTER(ctypes.c_char)
-r_anal_function_get_label_at.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.c_uint64]
+r_anal_function_get_label_at.argtypes = [ctypes.POINTER(struct_r_anal_function_t), uint64_t]
 r_anal_function_set_label = _libr_anal.r_anal_function_set_label
 r_anal_function_set_label.restype = ctypes.c_bool
-r_anal_function_set_label.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_anal_function_set_label.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(ctypes.c_char), uint64_t]
 r_anal_function_delete_label = _libr_anal.r_anal_function_delete_label
 r_anal_function_delete_label.restype = ctypes.c_bool
 r_anal_function_delete_label.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(ctypes.c_char)]
 r_anal_function_delete_label_at = _libr_anal.r_anal_function_delete_label_at
 r_anal_function_delete_label_at.restype = ctypes.c_bool
-r_anal_function_delete_label_at.argtypes = [ctypes.POINTER(struct_r_anal_function_t), ctypes.c_uint64]
+r_anal_function_delete_label_at.argtypes = [ctypes.POINTER(struct_r_anal_function_t), uint64_t]
 r_anal_set_limits = _libr_anal.r_anal_set_limits
 r_anal_set_limits.restype = None
-r_anal_set_limits.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_uint64]
+r_anal_set_limits.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, uint64_t]
 r_anal_unset_limits = _libr_anal.r_anal_unset_limits
 r_anal_unset_limits.restype = None
 r_anal_unset_limits.argtypes = [ctypes.POINTER(struct_r_anal_t)]
@@ -5625,13 +5709,13 @@ r_anal_noreturn_list.restype = None
 r_anal_noreturn_list.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_int32]
 r_anal_noreturn_add = _libr_anal.r_anal_noreturn_add
 r_anal_noreturn_add.restype = ctypes.c_bool
-r_anal_noreturn_add.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_anal_noreturn_add.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char), uint64_t]
 r_anal_noreturn_drop = _libr_anal.r_anal_noreturn_drop
 r_anal_noreturn_drop.restype = ctypes.c_bool
 r_anal_noreturn_drop.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char)]
 r_anal_noreturn_at_addr = _libr_anal.r_anal_noreturn_at_addr
 r_anal_noreturn_at_addr.restype = ctypes.c_bool
-r_anal_noreturn_at_addr.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_noreturn_at_addr.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_sign_space_count_for = _libr_anal.r_sign_space_count_for
 r_sign_space_count_for.restype = ctypes.c_int32
 r_sign_space_count_for.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_space_t)]
@@ -5678,14 +5762,14 @@ r_anal_vtable_info_free = _libr_anal.r_anal_vtable_info_free
 r_anal_vtable_info_free.restype = None
 r_anal_vtable_info_free.argtypes = [ctypes.POINTER(struct_vtable_info_t)]
 r_anal_vtable_info_get_size = _libr_anal.r_anal_vtable_info_get_size
-r_anal_vtable_info_get_size.restype = ctypes.c_uint64
+r_anal_vtable_info_get_size.restype = uint64_t
 r_anal_vtable_info_get_size.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.POINTER(struct_vtable_info_t)]
 r_anal_vtable_begin = _libr_anal.r_anal_vtable_begin
 r_anal_vtable_begin.restype = ctypes.c_bool
 r_anal_vtable_begin.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_c__SA_RVTableContext)]
 r_anal_vtable_parse_at = _libr_anal.r_anal_vtable_parse_at
 r_anal_vtable_parse_at.restype = ctypes.POINTER(struct_vtable_info_t)
-r_anal_vtable_parse_at.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.c_uint64]
+r_anal_vtable_parse_at.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), uint64_t]
 r_anal_vtable_search = _libr_anal.r_anal_vtable_search
 r_anal_vtable_search.restype = ctypes.POINTER(struct_r_list_t)
 r_anal_vtable_search.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext)]
@@ -5697,19 +5781,19 @@ r_anal_rtti_msvc_demangle_class_name.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_rtti_msvc_demangle_class_name.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.POINTER(ctypes.c_char)]
 r_anal_rtti_msvc_print_complete_object_locator = _libr_anal.r_anal_rtti_msvc_print_complete_object_locator
 r_anal_rtti_msvc_print_complete_object_locator.restype = None
-r_anal_rtti_msvc_print_complete_object_locator.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.c_uint64, ctypes.c_int32]
+r_anal_rtti_msvc_print_complete_object_locator.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), uint64_t, ctypes.c_int32]
 r_anal_rtti_msvc_print_type_descriptor = _libr_anal.r_anal_rtti_msvc_print_type_descriptor
 r_anal_rtti_msvc_print_type_descriptor.restype = None
-r_anal_rtti_msvc_print_type_descriptor.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.c_uint64, ctypes.c_int32]
+r_anal_rtti_msvc_print_type_descriptor.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), uint64_t, ctypes.c_int32]
 r_anal_rtti_msvc_print_class_hierarchy_descriptor = _libr_anal.r_anal_rtti_msvc_print_class_hierarchy_descriptor
 r_anal_rtti_msvc_print_class_hierarchy_descriptor.restype = None
-r_anal_rtti_msvc_print_class_hierarchy_descriptor.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.c_uint64, ctypes.c_int32]
+r_anal_rtti_msvc_print_class_hierarchy_descriptor.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), uint64_t, ctypes.c_int32]
 r_anal_rtti_msvc_print_base_class_descriptor = _libr_anal.r_anal_rtti_msvc_print_base_class_descriptor
 r_anal_rtti_msvc_print_base_class_descriptor.restype = None
-r_anal_rtti_msvc_print_base_class_descriptor.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.c_uint64, ctypes.c_int32]
+r_anal_rtti_msvc_print_base_class_descriptor.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), uint64_t, ctypes.c_int32]
 r_anal_rtti_msvc_print_at_vtable = _libr_anal.r_anal_rtti_msvc_print_at_vtable
 r_anal_rtti_msvc_print_at_vtable.restype = ctypes.c_bool
-r_anal_rtti_msvc_print_at_vtable.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.c_uint64, ctypes.c_int32, ctypes.c_bool]
+r_anal_rtti_msvc_print_at_vtable.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), uint64_t, ctypes.c_int32, ctypes.c_bool]
 r_anal_rtti_msvc_recover_all = _libr_anal.r_anal_rtti_msvc_recover_all
 r_anal_rtti_msvc_recover_all.restype = None
 r_anal_rtti_msvc_recover_all.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.POINTER(struct_r_list_t)]
@@ -5718,16 +5802,16 @@ r_anal_rtti_itanium_demangle_class_name.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_rtti_itanium_demangle_class_name.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.POINTER(ctypes.c_char)]
 r_anal_rtti_itanium_print_class_type_info = _libraries['FIXME_STUB'].r_anal_rtti_itanium_print_class_type_info
 r_anal_rtti_itanium_print_class_type_info.restype = None
-r_anal_rtti_itanium_print_class_type_info.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.c_uint64, ctypes.c_int32]
+r_anal_rtti_itanium_print_class_type_info.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), uint64_t, ctypes.c_int32]
 r_anal_rtti_itanium_print_si_class_type_info = _libraries['FIXME_STUB'].r_anal_rtti_itanium_print_si_class_type_info
 r_anal_rtti_itanium_print_si_class_type_info.restype = None
-r_anal_rtti_itanium_print_si_class_type_info.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.c_uint64, ctypes.c_int32]
+r_anal_rtti_itanium_print_si_class_type_info.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), uint64_t, ctypes.c_int32]
 r_anal_rtti_itanium_print_vmi_class_type_info = _libraries['FIXME_STUB'].r_anal_rtti_itanium_print_vmi_class_type_info
 r_anal_rtti_itanium_print_vmi_class_type_info.restype = None
-r_anal_rtti_itanium_print_vmi_class_type_info.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.c_uint64, ctypes.c_int32]
+r_anal_rtti_itanium_print_vmi_class_type_info.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), uint64_t, ctypes.c_int32]
 r_anal_rtti_itanium_print_at_vtable = _libr_anal.r_anal_rtti_itanium_print_at_vtable
 r_anal_rtti_itanium_print_at_vtable.restype = ctypes.c_bool
-r_anal_rtti_itanium_print_at_vtable.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.c_uint64, ctypes.c_int32]
+r_anal_rtti_itanium_print_at_vtable.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), uint64_t, ctypes.c_int32]
 r_anal_rtti_itanium_recover_all = _libr_anal.r_anal_rtti_itanium_recover_all
 r_anal_rtti_itanium_recover_all.restype = None
 r_anal_rtti_itanium_recover_all.argtypes = [ctypes.POINTER(struct_c__SA_RVTableContext), ctypes.POINTER(struct_r_list_t)]
@@ -5736,7 +5820,7 @@ r_anal_rtti_demangle_class_name.restype = ctypes.POINTER(ctypes.c_char)
 r_anal_rtti_demangle_class_name.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char)]
 r_anal_rtti_print_at_vtable = _libr_anal.r_anal_rtti_print_at_vtable
 r_anal_rtti_print_at_vtable.restype = None
-r_anal_rtti_print_at_vtable.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32]
+r_anal_rtti_print_at_vtable.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.c_int32]
 r_anal_rtti_print_all = _libr_anal.r_anal_rtti_print_all
 r_anal_rtti_print_all.restype = None
 r_anal_rtti_print_all.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_int32]
@@ -5884,13 +5968,13 @@ r_anal_class_list_vtables.restype = None
 r_anal_class_list_vtables.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char)]
 r_anal_class_list_vtable_offset_functions = _libr_anal.r_anal_class_list_vtable_offset_functions
 r_anal_class_list_vtable_offset_functions.restype = None
-r_anal_class_list_vtable_offset_functions.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_anal_class_list_vtable_offset_functions.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(ctypes.c_char), uint64_t]
 r_anal_class_get_inheritance_graph = _libr_anal.r_anal_class_get_inheritance_graph
 r_anal_class_get_inheritance_graph.restype = ctypes.POINTER(struct_r_graph_t)
 r_anal_class_get_inheritance_graph.argtypes = [ctypes.POINTER(struct_r_anal_t)]
 r_anal_esil_cfg_expr = _libr_anal.r_anal_esil_cfg_expr
 r_anal_esil_cfg_expr.restype = ctypes.POINTER(struct_r_anal_esil_cfg_t)
-r_anal_esil_cfg_expr.argtypes = [ctypes.POINTER(struct_r_anal_esil_cfg_t), ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_anal_esil_cfg_expr.argtypes = [ctypes.POINTER(struct_r_anal_esil_cfg_t), ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_anal_esil_cfg_op = _libr_anal.r_anal_esil_cfg_op
 r_anal_esil_cfg_op.restype = ctypes.POINTER(struct_r_anal_esil_cfg_t)
 r_anal_esil_cfg_op.argtypes = [ctypes.POINTER(struct_r_anal_esil_cfg_t), ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_anal_op_t)]
@@ -5973,22 +6057,25 @@ r_anal_dwarf_integrate_functions.restype = None
 r_anal_dwarf_integrate_functions.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(struct_sdb_t)]
 r_anal_global_get = _libr_anal.r_anal_global_get
 r_anal_global_get.restype = ctypes.POINTER(struct_r_flag_item_t)
-r_anal_global_get.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_global_get.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_global_add = _libr_anal.r_anal_global_add
 r_anal_global_add.restype = ctypes.c_bool
-r_anal_global_add.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
+r_anal_global_add.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
 r_anal_global_del = _libr_anal.r_anal_global_del
 r_anal_global_del.restype = ctypes.c_bool
-r_anal_global_del.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_global_del.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
 r_anal_global_retype = _libr_anal.r_anal_global_retype
 r_anal_global_retype.restype = ctypes.c_bool
-r_anal_global_retype.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_anal_global_retype.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_anal_global_rename = _libr_anal.r_anal_global_rename
 r_anal_global_rename.restype = ctypes.c_bool
-r_anal_global_rename.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_anal_global_rename.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_anal_global_get_type = _libr_anal.r_anal_global_get_type
 r_anal_global_get_type.restype = ctypes.POINTER(ctypes.c_char)
-r_anal_global_get_type.argtypes = [ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64]
+r_anal_global_get_type.argtypes = [ctypes.POINTER(struct_r_anal_t), uint64_t]
+r_anal_is_dirty = _libraries['FIXME_STUB'].r_anal_is_dirty
+r_anal_is_dirty.restype = ctypes.c_bool
+r_anal_is_dirty.argtypes = [ctypes.POINTER(struct_r_anal_t)]
 r_anal_plugin_null = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_6502 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_6502_cs = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
@@ -5999,6 +6086,7 @@ r_anal_plugin_arm_cs = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_arm_gnu = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_avr = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_bf = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
+r_anal_plugin_bpf_cs = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_chip8 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_cr16 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_cris = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
@@ -6006,16 +6094,18 @@ r_anal_plugin_dalvik = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_ebc = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_gb = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_h8300 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
-r_anal_plugin_hexagon = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_i4004 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_i8080 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_java = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
+r_anal_plugin_kvx = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_m68k_cs = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_m680x_cs = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_malbolge = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_mcore = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_mips_cs = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_mips_gnu = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
+r_anal_plugin_loongarch_gnu = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
+r_anal_plugin_jdh8 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_msp430 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_nios2 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_or1k = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
@@ -6031,11 +6121,12 @@ r_anal_plugin_snes = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_sparc_cs = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_sparc_gnu = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_s390_cs = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
+r_anal_plugin_s390_gnu = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_tms320 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
-r_anal_plugin_tms320c64x = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_tricore = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_v810 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_v850 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
+r_anal_plugin_v850_np = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_vax = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_wasm = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_ws = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
@@ -6050,6 +6141,8 @@ r_anal_plugin_xtensa = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_arm_v35 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_z80 = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_anal_plugin_pyc = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
+r_anal_plugin_evm_cs = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
+r_anal_plugin_bpf = struct_r_anal_plugin_t # Variable struct_r_anal_plugin_t
 r_esil_plugin_dummy = struct_r_anal_esil_plugin_t # Variable struct_r_anal_esil_plugin_t
 __all__ = \
     ['ARG_CONST', 'ARG_ESIL_INTERNAL', 'ARG_NONE', 'ARG_REG',
@@ -6074,21 +6167,22 @@ __all__ = \
     'RAnalCond', 'RAnalCycleFrame', 'RAnalCycleHook', 'RAnalData',
     'RAnalDataType', 'RAnalDataType__enumvalues', 'RAnalDecode',
     'RAnalDiff', 'RAnalDiffBBCallback', 'RAnalDiffEvalCallback',
-    'RAnalDiffFcnCallback', 'RAnalDwarfContext', 'RAnalEnumCase',
-    'RAnalEsil', 'RAnalEsilActivePlugin', 'RAnalEsilBB',
-    'RAnalEsilBlockEnterType', 'RAnalEsilBlockEnterType__enumvalues',
-    'RAnalEsilCB', 'RAnalEsilCFG', 'RAnalEsilCallbacks',
-    'RAnalEsilDFG', 'RAnalEsilDFGNode', 'RAnalEsilEOffset',
-    'RAnalEsilHandler', 'RAnalEsilHandlerCB',
-    'RAnalEsilHookRegWriteCB', 'RAnalEsilLoopCB',
-    'RAnalEsilMemChange', 'RAnalEsilOp', 'RAnalEsilOpCb',
-    'RAnalEsilPlugin', 'RAnalEsilRegChange', 'RAnalEsilTrace',
-    'RAnalEsilTrapCB', 'RAnalEsilWord', 'RAnalFPBBCallback',
-    'RAnalFPFcnCallback', 'RAnalFcnMeta', 'RAnalFcnVarsCache',
-    'RAnalFuncArg', 'RAnalFunction', 'RAnalGetFcnIn', 'RAnalGetHint',
-    'RAnalHint', 'RAnalLabelAt', 'RAnalMetaItem', 'RAnalMetaType',
-    'RAnalMetaType__enumvalues', 'RAnalMetaUserItem', 'RAnalMethod',
-    'RAnalOp', 'RAnalOpCallback', 'RAnalOpDirection',
+    'RAnalDiffFcnCallback', 'RAnalDwarfContext', 'RAnalEncode',
+    'RAnalEnumCase', 'RAnalEsil', 'RAnalEsilActivePlugin',
+    'RAnalEsilBB', 'RAnalEsilBlockEnterType',
+    'RAnalEsilBlockEnterType__enumvalues', 'RAnalEsilCB',
+    'RAnalEsilCFG', 'RAnalEsilCallbacks', 'RAnalEsilDFG',
+    'RAnalEsilDFGNode', 'RAnalEsilEOffset', 'RAnalEsilHandler',
+    'RAnalEsilHandlerCB', 'RAnalEsilHookRegWriteCB',
+    'RAnalEsilLoopCB', 'RAnalEsilMemChange', 'RAnalEsilOp',
+    'RAnalEsilOpCb', 'RAnalEsilPlugin', 'RAnalEsilRegChange',
+    'RAnalEsilTrace', 'RAnalEsilTrapCB', 'RAnalEsilWord',
+    'RAnalFPBBCallback', 'RAnalFPFcnCallback', 'RAnalFcnMeta',
+    'RAnalFcnVarsCache', 'RAnalFuncArg', 'RAnalFunction',
+    'RAnalGetFcnIn', 'RAnalGetHint', 'RAnalHint', 'RAnalLabelAt',
+    'RAnalMetaItem', 'RAnalMetaType', 'RAnalMetaType__enumvalues',
+    'RAnalMetaUserItem', 'RAnalMethod', 'RAnalMnemonics', 'RAnalOp',
+    'RAnalOpAsmCallback', 'RAnalOpCallback', 'RAnalOpDirection',
     'RAnalOpDirection__enumvalues', 'RAnalOpFamily',
     'RAnalOpFamily__enumvalues', 'RAnalOpFini', 'RAnalOpInit',
     'RAnalOpMask', 'RAnalOpMask__enumvalues', 'RAnalOpPrefix',
@@ -6102,7 +6196,7 @@ __all__ = \
     'RAnalStackOp__enumvalues', 'RAnalStructMember', 'RAnalSwitchOp',
     'RAnalType', 'RAnalTypeAlloca', 'RAnalTypeArray', 'RAnalTypePtr',
     'RAnalTypeStruct', 'RAnalTypeUnion', 'RAnalTypeVar',
-    'RAnalUnionMember', 'RAnalVTable', 'RAnalValue',
+    'RAnalUnionMember', 'RAnalUse', 'RAnalVTable', 'RAnalValue',
     'RAnalValueAccess', 'RAnalValueAccess__enumvalues',
     'RAnalValueType', 'RAnalValueType__enumvalues', 'RAnalVar',
     'RAnalVarAccess', 'RAnalVarAccessType',
@@ -6219,7 +6313,10 @@ __all__ = \
     'R_ANAL_REFLINE_TYPE_MIDDLE_BEFORE', 'R_ANAL_REFLINE_TYPE_UTF8',
     'R_ANAL_REFLINE_TYPE_WIDE', 'R_ANAL_REF_TYPE_CALL',
     'R_ANAL_REF_TYPE_CODE', 'R_ANAL_REF_TYPE_DATA',
-    'R_ANAL_REF_TYPE_NULL', 'R_ANAL_REF_TYPE_STRING',
+    'R_ANAL_REF_TYPE_DIRECTION_MASK', 'R_ANAL_REF_TYPE_EXEC',
+    'R_ANAL_REF_TYPE_JUMP', 'R_ANAL_REF_TYPE_MASK',
+    'R_ANAL_REF_TYPE_NULL', 'R_ANAL_REF_TYPE_READ',
+    'R_ANAL_REF_TYPE_STRING', 'R_ANAL_REF_TYPE_WRITE',
     'R_ANAL_RET_DUP', 'R_ANAL_RET_END', 'R_ANAL_RET_ERROR',
     'R_ANAL_RET_NEW', 'R_ANAL_RET_NOP', 'R_ANAL_STACK_ALIGN',
     'R_ANAL_STACK_GET', 'R_ANAL_STACK_INC', 'R_ANAL_STACK_NOP',
@@ -6233,33 +6330,31 @@ __all__ = \
     'R_ANAL_VAR_ACCESS_TYPE_READ', 'R_ANAL_VAR_ACCESS_TYPE_WRITE',
     'R_ANAL_VAR_KIND_BPV', 'R_ANAL_VAR_KIND_REG',
     'R_ANAL_VAR_KIND_SPV', 'R_LINE_PROMPT_DEFAULT',
-    'R_LINE_PROMPT_FILE', 'R_LINE_PROMPT_OFFSET', 'R_LOGLVL_DEBUG',
-    'R_LOGLVL_ERROR', 'R_LOGLVL_FATAL', 'R_LOGLVL_INFO',
-    'R_LOGLVL_NONE', 'R_LOGLVL_SILLY', 'R_LOGLVL_VERBOSE',
-    'R_LOGLVL_WARN', 'R_META_TYPE_ANY', 'R_META_TYPE_CODE',
-    'R_META_TYPE_COMMENT', 'R_META_TYPE_DATA', 'R_META_TYPE_FORMAT',
-    'R_META_TYPE_HIDE', 'R_META_TYPE_HIGHLIGHT', 'R_META_TYPE_MAGIC',
-    'R_META_TYPE_RUN', 'R_META_TYPE_STRING', 'R_META_TYPE_VARTYPE',
-    'SdbForeachCallback', '_RAnalCond', '_RAnalCond__enumvalues',
-    '_RAnalOpType', '_RAnalOpType__enumvalues',
-    'c__EA_RAnalBaseTypeKind', 'c__EA_RAnalCPPABI',
-    'c__EA_RAnalClassErr', 'c__EA_RAnalEsilBlockEnterType',
-    'c__EA_RAnalMetaType', 'c__EA_RAnalOpDirection',
-    'c__EA_RAnalOpFamily', 'c__EA_RAnalOpMask', 'c__EA_RAnalOpPrefix',
-    'c__EA_RAnalRefType', 'c__EA_RAnalReilArgType',
-    'c__EA_RAnalReilOpcode', 'c__EA_RAnalStackOp',
-    'c__EA_RAnalValueAccess', 'c__EA_RAnalValueType',
-    'c__EA_RAnalVarAccessType', 'c__EA_RAnalVarKind',
-    'c__EA_RBinDwarfAttrKind', 'c__EA_RLinePromptType',
-    'c__EA_RNumCalcToken', 'c__EA__RAnalCond', 'c__EA__RAnalOpType',
+    'R_LINE_PROMPT_FILE', 'R_LINE_PROMPT_OFFSET', 'R_META_TYPE_ANY',
+    'R_META_TYPE_CODE', 'R_META_TYPE_COMMENT', 'R_META_TYPE_DATA',
+    'R_META_TYPE_FORMAT', 'R_META_TYPE_HIDE', 'R_META_TYPE_HIGHLIGHT',
+    'R_META_TYPE_MAGIC', 'R_META_TYPE_RUN', 'R_META_TYPE_STRING',
+    'R_META_TYPE_VARTYPE', 'SdbForeachCallback', '_RAnalCond',
+    '_RAnalCond__enumvalues', '_RAnalOpType',
+    '_RAnalOpType__enumvalues', 'c__EA_RAnalBaseTypeKind',
+    'c__EA_RAnalCPPABI', 'c__EA_RAnalClassErr',
+    'c__EA_RAnalEsilBlockEnterType', 'c__EA_RAnalMetaType',
+    'c__EA_RAnalOpDirection', 'c__EA_RAnalOpFamily',
+    'c__EA_RAnalOpMask', 'c__EA_RAnalOpPrefix', 'c__EA_RAnalRefType',
+    'c__EA_RAnalReilArgType', 'c__EA_RAnalReilOpcode',
+    'c__EA_RAnalStackOp', 'c__EA_RAnalValueAccess',
+    'c__EA_RAnalValueType', 'c__EA_RAnalVarAccessType',
+    'c__EA_RAnalVarKind', 'c__EA_RBinDwarfAttrKind',
+    'c__EA_RLinePromptType', 'c__EA_RNumCalcToken',
+    'c__EA__RAnalCond', 'c__EA__RAnalOpType',
     'c__Ea_R_ANAL_DATA_TYPE_NULL', 'c__Ea_R_ANAL_DIFF_TYPE_NULL',
     'c__Ea_R_ANAL_ESIL_DFG_BLOCK_CONST',
     'c__Ea_R_ANAL_ESIL_FLAG_ZERO',
     'c__Ea_R_ANAL_ESIL_OP_TYPE_UNKNOWN',
     'c__Ea_R_ANAL_ESIL_PARM_INVALID', 'c__Ea_R_ANAL_FCN_TYPE_NULL',
     'c__Ea_R_ANAL_FQUALIFIER_NONE', 'c__Ea_R_ANAL_REFLINE_TYPE_UTF8',
-    'c__Ea_R_ANAL_RET_NOP', 'c__Ea_R_ANAL_TRAP_NONE', 'r_anal_add',
-    'r_anal_add_function', 'r_anal_add_import',
+    'c__Ea_R_ANAL_RET_NOP', 'c__Ea_R_ANAL_TRAP_NONE', 'int64_t',
+    'r_anal_add', 'r_anal_add_function', 'r_anal_add_import',
     'r_anal_addr_hint_type_t', 'r_anal_addr_hints_at',
     'r_anal_addr_hints_foreach', 'r_anal_arch_hints_foreach',
     'r_anal_archinfo', 'r_anal_base_type_free',
@@ -6273,7 +6368,7 @@ __all__ = \
     'r_anal_block_op_starts_at', 'r_anal_block_recurse',
     'r_anal_block_recurse_depth_first',
     'r_anal_block_recurse_followthrough', 'r_anal_block_recurse_list',
-    'r_anal_block_ref', 'r_anal_block_relocate',
+    'r_anal_block_ref', 'r_anal_block_relocate', 'r_anal_block_reset',
     'r_anal_block_set_size', 'r_anal_block_shortest_path',
     'r_anal_block_split', 'r_anal_block_successor_addrs_foreach',
     'r_anal_block_unref', 'r_anal_block_update_hash',
@@ -6308,39 +6403,40 @@ __all__ = \
     'r_anal_data_kind', 'r_anal_data_new', 'r_anal_data_new_string',
     'r_anal_data_to_string', 'r_anal_data_type_t',
     'r_anal_datatype_to_string', 'r_anal_del_jmprefs',
-    'r_anal_delete_block', 'r_anal_diff_bb', 'r_anal_diff_eval',
-    'r_anal_diff_fcn', 'r_anal_diff_fingerprint_bb',
-    'r_anal_diff_fingerprint_fcn', 'r_anal_diff_free',
-    'r_anal_diff_new', 'r_anal_diff_setup', 'r_anal_diff_setup_i',
-    'r_anal_dwarf_integrate_functions', 'r_anal_dwarf_process_info',
-    'r_anal_esil_cfg_expr', 'r_anal_esil_cfg_free',
-    'r_anal_esil_cfg_merge_blocks', 'r_anal_esil_cfg_op',
-    'r_anal_esil_condition', 'r_anal_esil_del_interrupt',
-    'r_anal_esil_del_op', 'r_anal_esil_del_syscall',
-    'r_anal_esil_dfg_expr', 'r_anal_esil_dfg_filter',
-    'r_anal_esil_dfg_filter_expr', 'r_anal_esil_dfg_fold_const',
-    'r_anal_esil_dfg_free', 'r_anal_esil_dfg_new',
-    'r_anal_esil_dfg_node_new', 'r_anal_esil_do_syscall',
-    'r_anal_esil_dumpstack', 'r_anal_esil_fire_interrupt',
-    'r_anal_esil_free', 'r_anal_esil_get_interrupt',
-    'r_anal_esil_get_op', 'r_anal_esil_get_parm',
-    'r_anal_esil_get_parm_type', 'r_anal_esil_get_syscall',
-    'r_anal_esil_handlers_fini', 'r_anal_esil_handlers_init',
-    'r_anal_esil_mem_read', 'r_anal_esil_mem_ro',
-    'r_anal_esil_mem_write', 'r_anal_esil_new', 'r_anal_esil_parse',
-    'r_anal_esil_plugin_activate', 'r_anal_esil_plugin_add',
-    'r_anal_esil_plugin_deactivate', 'r_anal_esil_plugins_fini',
-    'r_anal_esil_plugins_init', 'r_anal_esil_pop', 'r_anal_esil_push',
-    'r_anal_esil_pushnum', 'r_anal_esil_reg_read',
-    'r_anal_esil_reg_write', 'r_anal_esil_runword',
-    'r_anal_esil_set_interrupt', 'r_anal_esil_set_op',
-    'r_anal_esil_set_pc', 'r_anal_esil_set_syscall',
-    'r_anal_esil_setup', 'r_anal_esil_setup_macros',
-    'r_anal_esil_setup_ops', 'r_anal_esil_stack_free',
-    'r_anal_esil_stats', 'r_anal_esil_to_reil_setup',
-    'r_anal_esil_trace_free', 'r_anal_esil_trace_list',
-    'r_anal_esil_trace_new', 'r_anal_esil_trace_op',
-    'r_anal_esil_trace_restore', 'r_anal_esil_trace_show',
+    'r_anal_delete_block', 'r_anal_delete_block_at', 'r_anal_diff_bb',
+    'r_anal_diff_eval', 'r_anal_diff_fcn',
+    'r_anal_diff_fingerprint_bb', 'r_anal_diff_fingerprint_fcn',
+    'r_anal_diff_free', 'r_anal_diff_new', 'r_anal_diff_setup',
+    'r_anal_diff_setup_i', 'r_anal_dwarf_integrate_functions',
+    'r_anal_dwarf_process_info', 'r_anal_esil_cfg_expr',
+    'r_anal_esil_cfg_free', 'r_anal_esil_cfg_merge_blocks',
+    'r_anal_esil_cfg_op', 'r_anal_esil_condition',
+    'r_anal_esil_del_interrupt', 'r_anal_esil_del_op',
+    'r_anal_esil_del_syscall', 'r_anal_esil_dfg_expr',
+    'r_anal_esil_dfg_filter', 'r_anal_esil_dfg_filter_expr',
+    'r_anal_esil_dfg_fold_const', 'r_anal_esil_dfg_free',
+    'r_anal_esil_dfg_new', 'r_anal_esil_dfg_node_new',
+    'r_anal_esil_do_syscall', 'r_anal_esil_dumpstack',
+    'r_anal_esil_fire_interrupt', 'r_anal_esil_free',
+    'r_anal_esil_get_interrupt', 'r_anal_esil_get_op',
+    'r_anal_esil_get_parm', 'r_anal_esil_get_parm_type',
+    'r_anal_esil_get_syscall', 'r_anal_esil_handlers_fini',
+    'r_anal_esil_handlers_init', 'r_anal_esil_mem_read',
+    'r_anal_esil_mem_ro', 'r_anal_esil_mem_write', 'r_anal_esil_new',
+    'r_anal_esil_parse', 'r_anal_esil_plugin_activate',
+    'r_anal_esil_plugin_add', 'r_anal_esil_plugin_deactivate',
+    'r_anal_esil_plugins_fini', 'r_anal_esil_plugins_init',
+    'r_anal_esil_pop', 'r_anal_esil_push', 'r_anal_esil_pushnum',
+    'r_anal_esil_reg_read', 'r_anal_esil_reg_write',
+    'r_anal_esil_runword', 'r_anal_esil_set_interrupt',
+    'r_anal_esil_set_op', 'r_anal_esil_set_pc',
+    'r_anal_esil_set_syscall', 'r_anal_esil_setup',
+    'r_anal_esil_setup_macros', 'r_anal_esil_setup_ops',
+    'r_anal_esil_stack_free', 'r_anal_esil_stats',
+    'r_anal_esil_to_reil_setup', 'r_anal_esil_trace_free',
+    'r_anal_esil_trace_list', 'r_anal_esil_trace_new',
+    'r_anal_esil_trace_op', 'r_anal_esil_trace_restore',
+    'r_anal_esil_trace_show', 'r_anal_esil_trapstr',
     'r_anal_esil_use', 'r_anal_extract_rarg', 'r_anal_extract_vars',
     'r_anal_free', 'r_anal_function', 'r_anal_function_add_bb',
     'r_anal_function_add_block', 'r_anal_function_autoname_var',
@@ -6364,16 +6460,17 @@ __all__ = \
     'r_anal_function_get_var_reg_at',
     'r_anal_function_get_var_stackptr_at',
     'r_anal_function_get_vars_used_at', 'r_anal_function_get_xrefs',
+    'r_anal_function_instrcount',
     'r_anal_function_invalidate_read_ahead_cache',
-    'r_anal_function_linear_size', 'r_anal_function_loops',
-    'r_anal_function_max_addr', 'r_anal_function_min_addr',
-    'r_anal_function_new', 'r_anal_function_next',
-    'r_anal_function_purity', 'r_anal_function_realsize',
-    'r_anal_function_rebase_vars', 'r_anal_function_relocate',
-    'r_anal_function_remove_block', 'r_anal_function_rename',
-    'r_anal_function_resize', 'r_anal_function_set_label',
-    'r_anal_function_set_var', 'r_anal_function_set_var_prot',
-    'r_anal_function_size_from_entry',
+    'r_anal_function_islineal', 'r_anal_function_linear_size',
+    'r_anal_function_loops', 'r_anal_function_max_addr',
+    'r_anal_function_min_addr', 'r_anal_function_new',
+    'r_anal_function_next', 'r_anal_function_purity',
+    'r_anal_function_realsize', 'r_anal_function_rebase_vars',
+    'r_anal_function_relocate', 'r_anal_function_remove_block',
+    'r_anal_function_rename', 'r_anal_function_resize',
+    'r_anal_function_set_label', 'r_anal_function_set_var',
+    'r_anal_function_set_var_prot', 'r_anal_function_size_from_entry',
     'r_anal_function_update_analysis',
     'r_anal_function_var_del_byindex',
     'r_anal_function_vars_cache_fini',
@@ -6408,28 +6505,33 @@ __all__ = \
     'r_anal_hint_unset_pointer', 'r_anal_hint_unset_ret',
     'r_anal_hint_unset_size', 'r_anal_hint_unset_stackframe',
     'r_anal_hint_unset_syntax', 'r_anal_hint_unset_type',
-    'r_anal_hint_unset_val', 'r_anal_is_prelude', 'r_anal_jmptbl',
-    'r_anal_list_vtables', 'r_anal_mask', 'r_anal_new',
+    'r_anal_hint_unset_val', 'r_anal_is_aligned', 'r_anal_is_dirty',
+    'r_anal_is_prelude', 'r_anal_jmptbl', 'r_anal_list_vtables',
+    'r_anal_mask', 'r_anal_mnemonics', 'r_anal_new',
     'r_anal_noreturn_add', 'r_anal_noreturn_at',
     'r_anal_noreturn_at_addr', 'r_anal_noreturn_drop',
     'r_anal_noreturn_list', 'r_anal_op',
-    'r_anal_op_family_from_string', 'r_anal_op_family_to_string',
-    'r_anal_op_fini', 'r_anal_op_free', 'r_anal_op_hexstr',
-    'r_anal_op_hint', 'r_anal_op_init', 'r_anal_op_is_eob',
-    'r_anal_op_ismemref', 'r_anal_op_list_new', 'r_anal_op_new',
-    'r_anal_op_nonlinear', 'r_anal_op_reg_delta',
-    'r_anal_op_to_string', 'r_anal_optype_from_string',
-    'r_anal_optype_to_string', 'r_anal_pin', 'r_anal_pin_call',
-    'r_anal_pin_fini', 'r_anal_pin_init', 'r_anal_pin_list',
-    'r_anal_pin_unset', 'r_anal_plugin_6502', 'r_anal_plugin_6502_cs',
+    'r_anal_op_direction_tostring', 'r_anal_op_family_from_string',
+    'r_anal_op_family_to_string', 'r_anal_op_fini', 'r_anal_op_free',
+    'r_anal_op_hexstr', 'r_anal_op_hint', 'r_anal_op_init',
+    'r_anal_op_is_eob', 'r_anal_op_ismemref', 'r_anal_op_list_new',
+    'r_anal_op_new', 'r_anal_op_nonlinear', 'r_anal_op_reg_delta',
+    'r_anal_op_to_string', 'r_anal_opasm',
+    'r_anal_optype_from_string', 'r_anal_optype_to_string',
+    'r_anal_pin', 'r_anal_pin_at', 'r_anal_pin_call',
+    'r_anal_pin_fini', 'r_anal_pin_get', 'r_anal_pin_init',
+    'r_anal_pin_list', 'r_anal_pin_set', 'r_anal_pin_unset',
+    'r_anal_plugin_6502', 'r_anal_plugin_6502_cs',
     'r_anal_plugin_8051', 'r_anal_plugin_amd29k', 'r_anal_plugin_arc',
     'r_anal_plugin_arm_cs', 'r_anal_plugin_arm_gnu',
     'r_anal_plugin_arm_v35', 'r_anal_plugin_avr', 'r_anal_plugin_bf',
+    'r_anal_plugin_bpf', 'r_anal_plugin_bpf_cs',
     'r_anal_plugin_chip8', 'r_anal_plugin_cr16', 'r_anal_plugin_cris',
-    'r_anal_plugin_dalvik', 'r_anal_plugin_ebc', 'r_anal_plugin_free',
-    'r_anal_plugin_gb', 'r_anal_plugin_h8300',
-    'r_anal_plugin_hexagon', 'r_anal_plugin_i4004',
-    'r_anal_plugin_i8080', 'r_anal_plugin_java',
+    'r_anal_plugin_dalvik', 'r_anal_plugin_ebc',
+    'r_anal_plugin_evm_cs', 'r_anal_plugin_free', 'r_anal_plugin_gb',
+    'r_anal_plugin_h8300', 'r_anal_plugin_i4004',
+    'r_anal_plugin_i8080', 'r_anal_plugin_java', 'r_anal_plugin_jdh8',
+    'r_anal_plugin_kvx', 'r_anal_plugin_loongarch_gnu',
     'r_anal_plugin_m680x_cs', 'r_anal_plugin_m68k_cs',
     'r_anal_plugin_malbolge', 'r_anal_plugin_mcore',
     'r_anal_plugin_mips_cs', 'r_anal_plugin_mips_gnu',
@@ -6438,22 +6540,25 @@ __all__ = \
     'r_anal_plugin_ppc_cs', 'r_anal_plugin_ppc_gnu',
     'r_anal_plugin_propeller', 'r_anal_plugin_pyc',
     'r_anal_plugin_riscv', 'r_anal_plugin_riscv_cs',
-    'r_anal_plugin_rsp', 'r_anal_plugin_s390_cs', 'r_anal_plugin_sh',
+    'r_anal_plugin_rsp', 'r_anal_plugin_s390_cs',
+    'r_anal_plugin_s390_gnu', 'r_anal_plugin_sh',
     'r_anal_plugin_snes', 'r_anal_plugin_sparc_cs',
     'r_anal_plugin_sparc_gnu', 'r_anal_plugin_tms320',
-    'r_anal_plugin_tms320c64x', 'r_anal_plugin_tricore',
-    'r_anal_plugin_v810', 'r_anal_plugin_v850', 'r_anal_plugin_vax',
-    'r_anal_plugin_wasm', 'r_anal_plugin_ws', 'r_anal_plugin_x86',
-    'r_anal_plugin_x86_cs', 'r_anal_plugin_x86_im',
-    'r_anal_plugin_x86_simple', 'r_anal_plugin_x86_udis',
-    'r_anal_plugin_xap', 'r_anal_plugin_xcore_cs',
-    'r_anal_plugin_xtensa', 'r_anal_plugin_z80', 'r_anal_preludes',
-    'r_anal_purge', 'r_anal_purge_imports', 'r_anal_ref_list_new',
-    'r_anal_ref_type_tostring', 'r_anal_reflines_get',
-    'r_anal_reflines_middle', 'r_anal_reflines_str',
-    'r_anal_reflines_str_free', 'r_anal_refs_get',
-    'r_anal_remove_import', 'r_anal_remove_parsed_type',
-    'r_anal_rtti_demangle_class_name',
+    'r_anal_plugin_tricore', 'r_anal_plugin_v810',
+    'r_anal_plugin_v850', 'r_anal_plugin_v850_np',
+    'r_anal_plugin_vax', 'r_anal_plugin_wasm', 'r_anal_plugin_ws',
+    'r_anal_plugin_x86', 'r_anal_plugin_x86_cs',
+    'r_anal_plugin_x86_im', 'r_anal_plugin_x86_simple',
+    'r_anal_plugin_x86_udis', 'r_anal_plugin_xap',
+    'r_anal_plugin_xcore_cs', 'r_anal_plugin_xtensa',
+    'r_anal_plugin_z80', 'r_anal_preludes', 'r_anal_purge',
+    'r_anal_purge_imports', 'r_anal_ref_list_new',
+    'r_anal_ref_perm_tochar', 'r_anal_ref_perm_tostring',
+    'r_anal_ref_permchar_tostring', 'r_anal_ref_type_tostring',
+    'r_anal_reflines_get', 'r_anal_reflines_middle',
+    'r_anal_reflines_str', 'r_anal_reflines_str_free',
+    'r_anal_refs_get', 'r_anal_remove_import',
+    'r_anal_remove_parsed_type', 'r_anal_rtti_demangle_class_name',
     'r_anal_rtti_itanium_demangle_class_name',
     'r_anal_rtti_itanium_print_at_vtable',
     'r_anal_rtti_itanium_print_class_type_info',
@@ -6469,8 +6574,7 @@ __all__ = \
     'r_anal_rtti_msvc_recover_all', 'r_anal_rtti_print_all',
     'r_anal_rtti_print_at_vtable', 'r_anal_rtti_recover_all',
     'r_anal_save_base_type', 'r_anal_save_parsed_type',
-    'r_anal_set_big_endian', 'r_anal_set_bits',
-    'r_anal_set_cc_default', 'r_anal_set_cpu', 'r_anal_set_limits',
+    'r_anal_set_bits', 'r_anal_set_cc_default', 'r_anal_set_limits',
     'r_anal_set_os', 'r_anal_set_reg_profile',
     'r_anal_set_syscc_default', 'r_anal_set_triplet',
     'r_anal_set_user_ptr', 'r_anal_stackop_tostring',
@@ -6486,7 +6590,9 @@ __all__ = \
     'r_anal_value_to_string', 'r_anal_value_to_ut64',
     'r_anal_var_add_constraint', 'r_anal_var_addr',
     'r_anal_var_all_list', 'r_anal_var_clear_accesses',
-    'r_anal_var_count', 'r_anal_var_delete', 'r_anal_var_deserialize',
+    'r_anal_var_count', 'r_anal_var_count_all',
+    'r_anal_var_count_args', 'r_anal_var_count_locals',
+    'r_anal_var_delete', 'r_anal_var_deserialize',
     'r_anal_var_display', 'r_anal_var_get_access_at',
     'r_anal_var_get_argnum', 'r_anal_var_get_constraints_readable',
     'r_anal_var_get_dst_var', 'r_anal_var_get_prots',
@@ -6499,25 +6605,25 @@ __all__ = \
     'r_anal_xref_del', 'r_anal_xrefs_count', 'r_anal_xrefs_deln',
     'r_anal_xrefs_from', 'r_anal_xrefs_get', 'r_anal_xrefs_get_from',
     'r_anal_xrefs_init', 'r_anal_xrefs_list', 'r_anal_xrefs_set',
-    'r_anal_xrefs_type', 'r_anal_xrefs_type_tostring',
+    'r_anal_xrefs_type', 'r_anal_xrefs_type_from_string',
     'r_esil_plugin_dummy', 'r_listrange_add', 'r_listrange_del',
     'r_listrange_find_in_range', 'r_listrange_find_root',
     'r_listrange_free', 'r_listrange_new', 'r_listrange_resize',
-    'r_log_level', 'r_meta_del', 'r_meta_get_all_at',
-    'r_meta_get_all_in', 'r_meta_get_all_intersect', 'r_meta_get_at',
-    'r_meta_get_in', 'r_meta_get_size', 'r_meta_get_string',
-    'r_meta_item_size', 'r_meta_node_size', 'r_meta_print',
-    'r_meta_print_list_all', 'r_meta_print_list_at',
-    'r_meta_print_list_in_function', 'r_meta_rebase', 'r_meta_set',
-    'r_meta_set_data_at', 'r_meta_set_string',
-    'r_meta_set_with_subtype', 'r_meta_space_count_for',
-    'r_meta_space_unset_for', 'r_meta_type_to_string',
-    'r_parse_pdb_types', 'r_sign_space_count_for',
-    'r_sign_space_rename_for', 'r_sign_space_unset_for', 'size_t',
-    'struct_R_PDB7_ROOT_STREAM', 'struct__IO_FILE',
-    'struct__IO_codecvt', 'struct__IO_marker', 'struct__IO_wide_data',
-    'struct_buffer', 'struct_c__SA_RAnalMetaUserItem',
-    'struct_c__SA_RBinDwarfBlock', 'struct_c__SA_RBinDwarfCompUnit',
+    'r_meta_del', 'r_meta_get_all_at', 'r_meta_get_all_in',
+    'r_meta_get_all_intersect', 'r_meta_get_at', 'r_meta_get_in',
+    'r_meta_get_size', 'r_meta_get_string', 'r_meta_item_size',
+    'r_meta_node_size', 'r_meta_print', 'r_meta_print_list_all',
+    'r_meta_print_list_at', 'r_meta_print_list_in_function',
+    'r_meta_rebase', 'r_meta_set', 'r_meta_set_data_at',
+    'r_meta_set_string', 'r_meta_set_with_subtype',
+    'r_meta_space_count_for', 'r_meta_space_unset_for',
+    'r_meta_type_to_string', 'r_parse_pdb_types',
+    'r_sign_space_count_for', 'r_sign_space_rename_for',
+    'r_sign_space_unset_for', 'size_t', 'struct_R_PDB7_ROOT_STREAM',
+    'struct__IO_FILE', 'struct__IO_codecvt', 'struct__IO_marker',
+    'struct__IO_wide_data', 'struct_buffer',
+    'struct_c__SA_RAnalMetaUserItem', 'struct_c__SA_RBinDwarfBlock',
+    'struct_c__SA_RBinDwarfCompUnit',
     'struct_c__SA_RBinDwarfCompUnitHdr',
     'struct_c__SA_RBinDwarfDebugInfo', 'struct_c__SA_RBinDwarfDie',
     'struct_c__SA_RConsCursorPos', 'struct_c__SA_RNumCalcValue',
@@ -6566,15 +6672,15 @@ __all__ = \
     'struct_r_anal_var_access_t', 'struct_r_anal_var_constraint_t',
     'struct_r_anal_var_field_t', 'struct_r_anal_var_proto_t',
     'struct_r_anal_var_t', 'struct_r_anal_vtable_t',
-    'struct_r_bin_addr_t', 'struct_r_bin_arch_options_t',
-    'struct_r_bin_bind_t', 'struct_r_bin_dbginfo_t',
-    'struct_r_bin_file_t', 'struct_r_bin_hash_t',
-    'struct_r_bin_info_t', 'struct_r_bin_object_t',
-    'struct_r_bin_plugin_t', 'struct_r_bin_section_t',
-    'struct_r_bin_t', 'struct_r_bin_write_t',
-    'struct_r_bin_xtr_extract_t', 'struct_r_bin_xtr_metadata_t',
-    'struct_r_bin_xtr_plugin_t', 'struct_r_buf_t',
-    'struct_r_buffer_methods_t', 'struct_r_cache_t',
+    'struct_r_arch_config_t', 'struct_r_bin_addr_t',
+    'struct_r_bin_arch_options_t', 'struct_r_bin_bind_t',
+    'struct_r_bin_dbginfo_t', 'struct_r_bin_file_t',
+    'struct_r_bin_hash_t', 'struct_r_bin_info_t',
+    'struct_r_bin_object_t', 'struct_r_bin_plugin_t',
+    'struct_r_bin_section_t', 'struct_r_bin_t',
+    'struct_r_bin_write_t', 'struct_r_bin_xtr_data_t',
+    'struct_r_bin_xtr_metadata_t', 'struct_r_bin_xtr_plugin_t',
+    'struct_r_buf_t', 'struct_r_buffer_methods_t', 'struct_r_cache_t',
     'struct_r_charset_rune_t', 'struct_r_charset_t',
     'struct_r_cons_bind_t', 'struct_r_cons_context_t',
     'struct_r_cons_grep_t', 'struct_r_cons_palette_t',
@@ -6605,8 +6711,8 @@ __all__ = \
     'struct_sdb_kv', 'struct_sdb_t', 'struct_termios',
     'struct_vtable_info_t', 'struct_vtable_method_info_t',
     'try_get_delta_jmptbl_info', 'try_get_jmptbl_info',
-    'try_walkthrough_casetbl', 'try_walkthrough_jmptbl',
-    'union_dwarf_attr_kind_0', 'union_r_anal_addr_hint_record_t_0',
-    'union_r_anal_base_type_t_0', 'union_r_anal_type_array_t_0',
-    'union_r_anal_type_ptr_t_0', 'union_r_anal_type_var_t_0',
-    'walkthrough_arm_jmptbl_style']
+    'try_walkthrough_casetbl', 'try_walkthrough_jmptbl', 'uint16_t',
+    'uint32_t', 'uint64_t', 'union_dwarf_attr_kind_0',
+    'union_r_anal_addr_hint_record_t_0', 'union_r_anal_base_type_t_0',
+    'union_r_anal_type_array_t_0', 'union_r_anal_type_ptr_t_0',
+    'union_r_anal_type_var_t_0', 'walkthrough_arm_jmptbl_style']

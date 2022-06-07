@@ -287,10 +287,10 @@ class struct_r_io_bind_t(Structure):
 class struct_r_io_t(Structure):
     pass
 
-class struct_r_io_map_t(Structure):
+class struct_r_io_desc_t(Structure):
     pass
 
-class struct_r_io_desc_t(Structure):
+class struct_r_io_map_t(Structure):
     pass
 
 class struct_r_io_bank_t(Structure):
@@ -337,16 +337,16 @@ struct_r_io_bind_t._fields_ = [
     ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
 ]
 
-class struct_ls_t(Structure):
+class struct_r_cache_t(Structure):
     pass
 
 class struct_r_id_storage_t(Structure):
     pass
 
-class struct_r_event_t(Structure):
+class struct_ls_t(Structure):
     pass
 
-class struct_r_cache_t(Structure):
+class struct_r_event_t(Structure):
     pass
 
 class struct_r_skyline_t(Structure):
@@ -439,15 +439,15 @@ struct_r_io_t._fields_ = [
     ('args', ctypes.POINTER(ctypes.c_char)),
     ('event', ctypes.POINTER(struct_r_event_t)),
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
-    ('corebind', struct_r_core_bind_t),
+    ('coreb', struct_r_core_bind_t),
     ('want_ptrace_wrap', ctypes.c_bool),
     ('PADDING_5', ctypes.c_ubyte * 7),
 ]
 
-class struct_r_io_plugin_t(Structure):
+class struct_ht_up_t(Structure):
     pass
 
-class struct_ht_up_t(Structure):
+class struct_r_io_plugin_t(Structure):
     pass
 
 struct_r_io_desc_t._pack_ = 1 # source:False
@@ -498,7 +498,7 @@ struct_ht_up_bucket_t._pack_ = 1 # source:False
 struct_ht_up_bucket_t._fields_ = [
     ('arr', ctypes.POINTER(struct_ht_up_kv)),
     ('count', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('size', ctypes.c_uint32),
 ]
 
 struct_ht_up_kv._pack_ = 1 # source:False
@@ -633,10 +633,10 @@ struct_r_event_t._fields_ = [
     ('PADDING_1', ctypes.c_ubyte * 4),
 ]
 
-class struct_r_crbtree_node(Structure):
+class struct_r_crbtree_t(Structure):
     pass
 
-class struct_r_crbtree_t(Structure):
+class struct_r_crbtree_node(Structure):
     pass
 
 struct_r_io_bank_t._pack_ = 1 # source:False
@@ -647,7 +647,8 @@ struct_r_io_bank_t._fields_ = [
     ('todo', ctypes.POINTER(struct_r_queue_t)),
     ('last_used', ctypes.POINTER(struct_r_crbtree_node)),
     ('id', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('drain_me', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 3),
 ]
 
 struct_r_crbtree_t._pack_ = 1 # source:False
@@ -695,7 +696,7 @@ struct_r_bp_t._fields_ = [
     ('bits', ctypes.c_int32),
     ('bpinmaps', ctypes.c_bool),
     ('PADDING_0', ctypes.c_ubyte * 3),
-    ('corebind', struct_r_core_bind_t),
+    ('coreb', struct_r_core_bind_t),
     ('iob', struct_r_io_bind_t),
     ('cur', ctypes.POINTER(struct_r_bp_plugin_t)),
     ('traces', ctypes.POINTER(struct_r_list_t)),
@@ -747,9 +748,10 @@ r_bp_new.argtypes = []
 r_bp_free = _libr_bp.r_bp_free
 r_bp_free.restype = ctypes.POINTER(struct_r_bp_t)
 r_bp_free.argtypes = [ctypes.POINTER(struct_r_bp_t)]
+uint64_t = ctypes.c_uint64
 r_bp_del = _libr_bp.r_bp_del
 r_bp_del.restype = ctypes.c_int32
-r_bp_del.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64]
+r_bp_del.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t]
 r_bp_del_all = _libr_bp.r_bp_del_all
 r_bp_del_all.restype = ctypes.c_int32
 r_bp_del_all.argtypes = [ctypes.POINTER(struct_r_bp_t)]
@@ -767,7 +769,7 @@ r_bp_plugin_list.restype = None
 r_bp_plugin_list.argtypes = [ctypes.POINTER(struct_r_bp_t)]
 r_bp_in = _libraries['FIXME_STUB'].r_bp_in
 r_bp_in.restype = ctypes.c_int32
-r_bp_in.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64, ctypes.c_int32]
+r_bp_in.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t, ctypes.c_int32]
 r_bp_list = _libr_bp.r_bp_list
 r_bp_list.restype = ctypes.c_int32
 r_bp_list.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_int32]
@@ -779,13 +781,13 @@ r_bp_get_bytes.restype = ctypes.c_int32
 r_bp_get_bytes.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32, ctypes.c_int32]
 r_bp_set_trace = _libr_bp.r_bp_set_trace
 r_bp_set_trace.restype = ctypes.c_int32
-r_bp_set_trace.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64, ctypes.c_int32]
+r_bp_set_trace.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t, ctypes.c_int32]
 r_bp_set_trace_all = _libr_bp.r_bp_set_trace_all
 r_bp_set_trace_all.restype = ctypes.c_int32
 r_bp_set_trace_all.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_int32]
 r_bp_enable = _libr_bp.r_bp_enable
 r_bp_enable.restype = ctypes.POINTER(struct_r_bp_item_t)
-r_bp_enable.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_int32]
+r_bp_enable.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t, ctypes.c_int32, ctypes.c_int32]
 r_bp_enable_all = _libr_bp.r_bp_enable_all
 r_bp_enable_all.restype = ctypes.c_int32
 r_bp_enable_all.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_int32]
@@ -797,16 +799,16 @@ r_bp_get_index.restype = ctypes.POINTER(struct_r_bp_item_t)
 r_bp_get_index.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_int32]
 r_bp_get_index_at = _libr_bp.r_bp_get_index_at
 r_bp_get_index_at.restype = ctypes.c_int32
-r_bp_get_index_at.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64]
+r_bp_get_index_at.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t]
 r_bp_item_new = _libr_bp.r_bp_item_new
 r_bp_item_new.restype = ctypes.POINTER(struct_r_bp_item_t)
 r_bp_item_new.argtypes = [ctypes.POINTER(struct_r_bp_t)]
 r_bp_get_at = _libr_bp.r_bp_get_at
 r_bp_get_at.restype = ctypes.POINTER(struct_r_bp_item_t)
-r_bp_get_at.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64]
+r_bp_get_at.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t]
 r_bp_get_in = _libr_bp.r_bp_get_in
 r_bp_get_in.restype = ctypes.POINTER(struct_r_bp_item_t)
-r_bp_get_in.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64, ctypes.c_int32]
+r_bp_get_in.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t, ctypes.c_int32]
 r_bp_is_valid = _libr_bp.r_bp_is_valid
 r_bp_is_valid.restype = ctypes.c_bool
 r_bp_is_valid.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.POINTER(struct_r_bp_item_t)]
@@ -818,13 +820,13 @@ r_bp_del_cond.restype = ctypes.c_int32
 r_bp_del_cond.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_int32]
 r_bp_add_fault = _libr_bp.r_bp_add_fault
 r_bp_add_fault.restype = ctypes.c_int32
-r_bp_add_fault.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_int32]
+r_bp_add_fault.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t, ctypes.c_int32, ctypes.c_int32]
 r_bp_add_sw = _libr_bp.r_bp_add_sw
 r_bp_add_sw.restype = ctypes.POINTER(struct_r_bp_item_t)
-r_bp_add_sw.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_int32]
+r_bp_add_sw.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t, ctypes.c_int32, ctypes.c_int32]
 r_bp_add_hw = _libr_bp.r_bp_add_hw
 r_bp_add_hw.restype = ctypes.POINTER(struct_r_bp_item_t)
-r_bp_add_hw.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_int32]
+r_bp_add_hw.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t, ctypes.c_int32, ctypes.c_int32]
 r_bp_restore_one = _libr_bp.r_bp_restore_one
 r_bp_restore_one.restype = None
 r_bp_restore_one.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.POINTER(struct_r_bp_item_t), ctypes.c_bool]
@@ -833,7 +835,7 @@ r_bp_restore.restype = ctypes.c_int32
 r_bp_restore.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_bool]
 r_bp_restore_except = _libr_bp.r_bp_restore_except
 r_bp_restore_except.restype = ctypes.c_bool
-r_bp_restore_except.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_bool, ctypes.c_uint64]
+r_bp_restore_except.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_bool, uint64_t]
 r_bp_traptrace_free = _libr_bp.r_bp_traptrace_free
 r_bp_traptrace_free.restype = None
 r_bp_traptrace_free.argtypes = [ctypes.POINTER(None)]
@@ -844,26 +846,26 @@ r_bp_traptrace_reset = _libr_bp.r_bp_traptrace_reset
 r_bp_traptrace_reset.restype = None
 r_bp_traptrace_reset.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_int32]
 r_bp_traptrace_next = _libr_bp.r_bp_traptrace_next
-r_bp_traptrace_next.restype = ctypes.c_uint64
-r_bp_traptrace_next.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64]
+r_bp_traptrace_next.restype = uint64_t
+r_bp_traptrace_next.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t]
 r_bp_traptrace_add = _libr_bp.r_bp_traptrace_add
 r_bp_traptrace_add.restype = ctypes.c_int32
-r_bp_traptrace_add.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64, ctypes.c_uint64]
+r_bp_traptrace_add.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t, uint64_t]
 r_bp_traptrace_free_at = _libr_bp.r_bp_traptrace_free_at
 r_bp_traptrace_free_at.restype = ctypes.c_int32
-r_bp_traptrace_free_at.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64]
+r_bp_traptrace_free_at.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t]
 r_bp_traptrace_list = _libr_bp.r_bp_traptrace_list
 r_bp_traptrace_list.restype = None
 r_bp_traptrace_list.argtypes = [ctypes.POINTER(struct_r_bp_t)]
 r_bp_traptrace_at = _libr_bp.r_bp_traptrace_at
 r_bp_traptrace_at.restype = ctypes.c_int32
-r_bp_traptrace_at.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64, ctypes.c_int32]
+r_bp_traptrace_at.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t, ctypes.c_int32]
 r_bp_traptrace_new = _libr_bp.r_bp_traptrace_new
 r_bp_traptrace_new.restype = ctypes.POINTER(struct_r_list_t)
 r_bp_traptrace_new.argtypes = []
 r_bp_watch_add = _libr_bp.r_bp_watch_add
 r_bp_watch_add.restype = ctypes.POINTER(struct_r_bp_item_t)
-r_bp_watch_add.argtypes = [ctypes.POINTER(struct_r_bp_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_int32, ctypes.c_int32]
+r_bp_watch_add.argtypes = [ctypes.POINTER(struct_r_bp_t), uint64_t, ctypes.c_int32, ctypes.c_int32, ctypes.c_int32]
 r_bp_plugin_x86 = struct_r_bp_plugin_t # Variable struct_r_bp_plugin_t
 r_bp_plugin_arm = struct_r_bp_plugin_t # Variable struct_r_bp_plugin_t
 r_bp_plugin_mips = struct_r_bp_plugin_t # Variable struct_r_bp_plugin_t
@@ -903,4 +905,5 @@ __all__ = \
     'struct_r_io_desc_t', 'struct_r_io_map_t', 'struct_r_io_plugin_t',
     'struct_r_io_t', 'struct_r_io_undo_t', 'struct_r_io_undos_t',
     'struct_r_list_iter_t', 'struct_r_list_t', 'struct_r_pvector_t',
-    'struct_r_queue_t', 'struct_r_skyline_t', 'struct_r_vector_t']
+    'struct_r_queue_t', 'struct_r_skyline_t', 'struct_r_vector_t',
+    'uint64_t']

@@ -255,16 +255,16 @@ RFlagItem = struct_r_flag_item_t
 class struct_r_flag_t(Structure):
     pass
 
-class struct_ht_pp_t(Structure):
+class struct_sdb_t(Structure):
     pass
 
 class struct_r_num_t(Structure):
     pass
 
-class struct_sdb_t(Structure):
+class struct_r_skiplist_t(Structure):
     pass
 
-class struct_r_skiplist_t(Structure):
+class struct_ht_pp_t(Structure):
     pass
 
 class struct_r_spaces_t(Structure):
@@ -298,6 +298,8 @@ struct_r_flag_t._fields_ = [
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
     ('zones', ctypes.POINTER(struct_r_list_t)),
     ('mask', ctypes.c_uint64),
+    ('is_dirty', ctypes.c_bool),
+    ('PADDING_1', ctypes.c_ubyte * 7),
 ]
 
 class struct_r_crbtree_node(Structure):
@@ -381,7 +383,7 @@ struct_ht_up_bucket_t._pack_ = 1 # source:False
 struct_ht_up_bucket_t._fields_ = [
     ('arr', ctypes.POINTER(struct_ht_up_kv)),
     ('count', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('size', ctypes.c_uint32),
 ]
 
 struct_ht_up_kv._pack_ = 1 # source:False
@@ -397,17 +399,6 @@ class struct_ls_t(Structure):
 
 class struct_sdb_gperf_t(Structure):
     pass
-
-class struct_c__SA_dict(Structure):
-    pass
-
-struct_c__SA_dict._pack_ = 1 # source:False
-struct_c__SA_dict._fields_ = [
-    ('table', ctypes.POINTER(ctypes.POINTER(None))),
-    ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
-    ('size', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-]
 
 class struct_cdb(Structure):
     pass
@@ -425,28 +416,6 @@ struct_cdb._fields_ = [
     ('dpos', ctypes.c_uint32),
     ('dlen', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
-]
-
-class struct_sdb_kv(Structure):
-    pass
-
-class struct_ht_pp_kv(Structure):
-    pass
-
-struct_ht_pp_kv._pack_ = 1 # source:False
-struct_ht_pp_kv._fields_ = [
-    ('key', ctypes.POINTER(None)),
-    ('value', ctypes.POINTER(None)),
-    ('key_len', ctypes.c_uint32),
-    ('value_len', ctypes.c_uint32),
-]
-
-struct_sdb_kv._pack_ = 1 # source:False
-struct_sdb_kv._fields_ = [
-    ('base', struct_ht_pp_kv),
-    ('cas', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-    ('expire', ctypes.c_uint64),
 ]
 
 class struct_cdb_make(Structure):
@@ -485,6 +454,39 @@ struct_cdb_make._fields_ = [
     ('b', struct_buffer),
     ('pos', ctypes.c_uint32),
     ('fd', ctypes.c_int32),
+]
+
+class struct_c__SA_dict(Structure):
+    pass
+
+struct_c__SA_dict._pack_ = 1 # source:False
+struct_c__SA_dict._fields_ = [
+    ('table', ctypes.POINTER(ctypes.POINTER(None))),
+    ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+    ('size', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
+class struct_sdb_kv(Structure):
+    pass
+
+class struct_ht_pp_kv(Structure):
+    pass
+
+struct_ht_pp_kv._pack_ = 1 # source:False
+struct_ht_pp_kv._fields_ = [
+    ('key', ctypes.POINTER(None)),
+    ('value', ctypes.POINTER(None)),
+    ('key_len', ctypes.c_uint32),
+    ('value_len', ctypes.c_uint32),
+]
+
+struct_sdb_kv._pack_ = 1 # source:False
+struct_sdb_kv._fields_ = [
+    ('base', struct_ht_pp_kv),
+    ('cas', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('expire', ctypes.c_uint64),
 ]
 
 struct_sdb_t._pack_ = 1 # source:False
@@ -564,7 +566,7 @@ struct_ht_pp_bucket_t._pack_ = 1 # source:False
 struct_ht_pp_bucket_t._fields_ = [
     ('arr', ctypes.POINTER(struct_ht_pp_kv)),
     ('count', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('size', ctypes.c_uint32),
 ]
 
 struct_sdb_gperf_t._pack_ = 1 # source:False
@@ -757,30 +759,32 @@ r_flag_free.argtypes = [ctypes.POINTER(struct_r_flag_t)]
 r_flag_list = _libr_flag.r_flag_list
 r_flag_list.restype = None
 r_flag_list.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_int32, ctypes.POINTER(ctypes.c_char)]
+uint16_t = ctypes.c_uint16
+uint64_t = ctypes.c_uint64
 r_flag_exist_at = _libr_flag.r_flag_exist_at
 r_flag_exist_at.restype = ctypes.c_bool
-r_flag_exist_at.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint16, ctypes.c_uint64]
+r_flag_exist_at.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), uint16_t, uint64_t]
 r_flag_get = _libr_flag.r_flag_get
 r_flag_get.restype = ctypes.POINTER(struct_r_flag_item_t)
 r_flag_get.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char)]
 r_flag_get_i = _libr_flag.r_flag_get_i
 r_flag_get_i.restype = ctypes.POINTER(struct_r_flag_item_t)
-r_flag_get_i.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64]
+r_flag_get_i.argtypes = [ctypes.POINTER(struct_r_flag_t), uint64_t]
 r_flag_get_by_spaces = _libr_flag.r_flag_get_by_spaces
 r_flag_get_by_spaces.restype = ctypes.POINTER(struct_r_flag_item_t)
-r_flag_get_by_spaces.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64]
+r_flag_get_by_spaces.argtypes = [ctypes.POINTER(struct_r_flag_t), uint64_t]
 r_flag_get_at = _libr_flag.r_flag_get_at
 r_flag_get_at.restype = ctypes.POINTER(struct_r_flag_item_t)
-r_flag_get_at.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64, ctypes.c_bool]
+r_flag_get_at.argtypes = [ctypes.POINTER(struct_r_flag_t), uint64_t, ctypes.c_bool]
 r_flag_all_list = _libr_flag.r_flag_all_list
 r_flag_all_list.restype = ctypes.POINTER(struct_r_list_t)
 r_flag_all_list.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_bool]
 r_flag_get_list = _libr_flag.r_flag_get_list
 r_flag_get_list.restype = ctypes.POINTER(struct_r_list_t)
-r_flag_get_list.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64]
+r_flag_get_list.argtypes = [ctypes.POINTER(struct_r_flag_t), uint64_t]
 r_flag_get_liststr = _libr_flag.r_flag_get_liststr
 r_flag_get_liststr.restype = ctypes.POINTER(ctypes.c_char)
-r_flag_get_liststr.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64]
+r_flag_get_liststr.argtypes = [ctypes.POINTER(struct_r_flag_t), uint64_t]
 r_flag_unset = _libr_flag.r_flag_unset
 r_flag_unset.restype = ctypes.c_bool
 r_flag_unset.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(struct_r_flag_item_t)]
@@ -792,19 +796,20 @@ r_flag_item_set_type.restype = None
 r_flag_item_set_type.argtypes = [ctypes.POINTER(struct_r_flag_item_t), ctypes.POINTER(ctypes.c_char)]
 r_flag_unset_off = _libr_flag.r_flag_unset_off
 r_flag_unset_off.restype = ctypes.c_bool
-r_flag_unset_off.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64]
+r_flag_unset_off.argtypes = [ctypes.POINTER(struct_r_flag_t), uint64_t]
 r_flag_unset_all = _libr_flag.r_flag_unset_all
 r_flag_unset_all.restype = None
 r_flag_unset_all.argtypes = [ctypes.POINTER(struct_r_flag_t)]
+uint32_t = ctypes.c_uint32
 r_flag_set = _libr_flag.r_flag_set
 r_flag_set.restype = ctypes.POINTER(struct_r_flag_item_t)
-r_flag_set.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_uint32]
+r_flag_set.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), uint64_t, uint32_t]
 r_flag_set_inspace = _libr_flag.r_flag_set_inspace
 r_flag_set_inspace.restype = ctypes.POINTER(struct_r_flag_item_t)
-r_flag_set_inspace.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_uint32]
+r_flag_set_inspace.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), uint64_t, uint32_t]
 r_flag_set_next = _libr_flag.r_flag_set_next
 r_flag_set_next.restype = ctypes.POINTER(struct_r_flag_item_t)
-r_flag_set_next.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_uint32]
+r_flag_set_next.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), uint64_t, uint32_t]
 r_flag_item_set_alias = _libr_flag.r_flag_item_set_alias
 r_flag_item_set_alias.restype = None
 r_flag_item_set_alias.argtypes = [ctypes.POINTER(struct_r_flag_item_t), ctypes.POINTER(ctypes.c_char)]
@@ -831,10 +836,10 @@ r_flag_rename.restype = ctypes.c_int32
 r_flag_rename.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(struct_r_flag_item_t), ctypes.POINTER(ctypes.c_char)]
 r_flag_relocate = _libr_flag.r_flag_relocate
 r_flag_relocate.restype = ctypes.c_int32
-r_flag_relocate.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64]
+r_flag_relocate.argtypes = [ctypes.POINTER(struct_r_flag_t), uint64_t, uint64_t, uint64_t]
 r_flag_move = _libr_flag.r_flag_move
 r_flag_move.restype = ctypes.c_bool
-r_flag_move.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64, ctypes.c_uint64]
+r_flag_move.argtypes = [ctypes.POINTER(struct_r_flag_t), uint64_t, uint64_t]
 r_flag_count = _libr_flag.r_flag_count
 r_flag_count.restype = ctypes.c_int32
 r_flag_count.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char)]
@@ -846,7 +851,7 @@ r_flag_foreach_prefix.restype = None
 r_flag_foreach_prefix.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32, RFlagItemCb, ctypes.POINTER(None)]
 r_flag_foreach_range = _libr_flag.r_flag_foreach_range
 r_flag_foreach_range.restype = None
-r_flag_foreach_range.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64, ctypes.c_uint64, RFlagItemCb, ctypes.POINTER(None)]
+r_flag_foreach_range.argtypes = [ctypes.POINTER(struct_r_flag_t), uint64_t, uint64_t, RFlagItemCb, ctypes.POINTER(None)]
 r_flag_foreach_glob = _libr_flag.r_flag_foreach_glob
 r_flag_foreach_glob.restype = None
 r_flag_foreach_glob.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), RFlagItemCb, ctypes.POINTER(None)]
@@ -903,13 +908,13 @@ r_flag_zone_item_free.restype = None
 r_flag_zone_item_free.argtypes = [ctypes.POINTER(None)]
 r_flag_zone_add = _libr_flag.r_flag_zone_add
 r_flag_zone_add.restype = ctypes.c_bool
-r_flag_zone_add.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_flag_zone_add.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char), uint64_t]
 r_flag_zone_del = _libr_flag.r_flag_zone_del
 r_flag_zone_del.restype = ctypes.c_bool
 r_flag_zone_del.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.POINTER(ctypes.c_char)]
 r_flag_zone_around = _libr_flag.r_flag_zone_around
 r_flag_zone_around.restype = ctypes.c_bool
-r_flag_zone_around.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64, ctypes.POINTER(ctypes.POINTER(ctypes.c_char)), ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
+r_flag_zone_around.argtypes = [ctypes.POINTER(struct_r_flag_t), uint64_t, ctypes.POINTER(ctypes.POINTER(ctypes.c_char)), ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
 r_flag_zone_list = _libr_flag.r_flag_zone_list
 r_flag_zone_list.restype = ctypes.c_bool
 r_flag_zone_list.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_int32]
@@ -918,7 +923,7 @@ r_flag_zone_reset.restype = ctypes.c_bool
 r_flag_zone_reset.argtypes = [ctypes.POINTER(struct_r_flag_t)]
 r_flag_zone_barlist = _libr_flag.r_flag_zone_barlist
 r_flag_zone_barlist.restype = ctypes.POINTER(struct_r_list_t)
-r_flag_zone_barlist.argtypes = [ctypes.POINTER(struct_r_flag_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_int32]
+r_flag_zone_barlist.argtypes = [ctypes.POINTER(struct_r_flag_t), uint64_t, uint64_t, ctypes.c_int32]
 __all__ = \
     ['RFlag', 'RFlagBind', 'RFlagExistAt', 'RFlagGet', 'RFlagGetAt',
     'RFlagGetAtAddr', 'RFlagGetList', 'RFlagItem', 'RFlagItemCb',
@@ -963,4 +968,4 @@ __all__ = \
     'struct_r_num_t', 'struct_r_skiplist_node_t',
     'struct_r_skiplist_t', 'struct_r_space_t', 'struct_r_spaces_t',
     'struct_r_vector_t', 'struct_sdb_gperf_t', 'struct_sdb_kv',
-    'struct_sdb_t']
+    'struct_sdb_t', 'uint16_t', 'uint32_t', 'uint64_t']

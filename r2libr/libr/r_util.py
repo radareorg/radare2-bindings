@@ -219,6 +219,8 @@ c__EA_RSysArch__enumvalues = {
     31: 'R_SYS_ARCH_V810',
     32: 'R_SYS_ARCH_LM32',
     33: 'R_SYS_ARCH_RISCV',
+    34: 'R_SYS_ARCH_ESIL',
+    35: 'R_SYS_ARCH_BPF',
 }
 R_SYS_ARCH_NONE = 0
 R_SYS_ARCH_X86 = 1
@@ -254,6 +256,8 @@ R_SYS_ARCH_HPPA = 30
 R_SYS_ARCH_V810 = 31
 R_SYS_ARCH_LM32 = 32
 R_SYS_ARCH_RISCV = 33
+R_SYS_ARCH_ESIL = 34
+R_SYS_ARCH_BPF = 35
 c__EA_RSysArch = ctypes.c_uint32 # enum
 RSysArch = c__EA_RSysArch
 RSysArch__enumvalues = c__EA_RSysArch__enumvalues
@@ -485,6 +489,10 @@ R_TH_REPEAT = 1
 c__EA_RThreadFunctionRet = ctypes.c_int32 # enum
 RThreadFunctionRet = c__EA_RThreadFunctionRet
 RThreadFunctionRet__enumvalues = c__EA_RThreadFunctionRet__enumvalues
+class struct_r_th_t(Structure):
+    pass
+
+RThreadFunction = ctypes.CFUNCTYPE(c__EA_RThreadFunctionRet, ctypes.POINTER(struct_r_th_t))
 class struct_r_th_sem_t(Structure):
     pass
 
@@ -504,6 +512,17 @@ union_c__UA_sem_t._fields_ = [
 ]
 
 RThreadSemaphore = struct_r_th_sem_t
+
+# values for enumeration 'r_th_lock_type_t'
+r_th_lock_type_t__enumvalues = {
+    0: 'R_TH_LOCK_TYPE_STATIC',
+    1: 'R_TH_LOCK_TYPE_HEAP',
+}
+R_TH_LOCK_TYPE_STATIC = 0
+R_TH_LOCK_TYPE_HEAP = 1
+r_th_lock_type_t = ctypes.c_uint32 # enum
+c_bool = r_th_lock_type_t
+c_bool__enumvalues = r_th_lock_type_t__enumvalues
 class struct_r_th_lock_t(Structure):
     pass
 
@@ -542,8 +561,21 @@ union_c__UA_pthread_mutex_t._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 32),
 ]
 
+class struct_r_th_lock_t_0(Structure):
+    pass
+
+struct_r_th_lock_t_0._pack_ = 1 # source:False
+struct_r_th_lock_t_0._fields_ = [
+    ('active', ctypes.c_bool, 1),
+    ('type', c_bool, 7),
+    ('PADDING_0', ctypes.c_uint32, 24),
+]
+
 struct_r_th_lock_t._pack_ = 1 # source:False
+struct_r_th_lock_t._anonymous_ = ('_0',)
 struct_r_th_lock_t._fields_ = [
+    ('activating', ctypes.c_int32),
+    ('_0', struct_r_th_lock_t_0),
     ('lock', union_c__UA_pthread_mutex_t),
 ]
 
@@ -621,16 +653,14 @@ struct_r_th_cond_t._fields_ = [
 ]
 
 RThreadCond = struct_r_th_cond_t
-class struct_r_th_t(Structure):
-    pass
-
 struct_r_th_t._pack_ = 1 # source:False
 struct_r_th_t._fields_ = [
     ('tid', ctypes.c_uint64),
     ('lock', ctypes.POINTER(struct_r_th_lock_t)),
     ('fun', ctypes.CFUNCTYPE(c__EA_RThreadFunctionRet, ctypes.POINTER(struct_r_th_t))),
     ('user', ctypes.POINTER(None)),
-    ('running', ctypes.c_int32),
+    ('running', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 3),
     ('breaked', ctypes.c_int32),
     ('delay', ctypes.c_int32),
     ('ready', ctypes.c_int32),
@@ -648,9 +678,87 @@ struct_r_th_pool_t._fields_ = [
 ]
 
 RThreadPool = struct_r_th_pool_t
+class struct_c__SA_RThreadChannel(Structure):
+    pass
+
+struct_c__SA_RThreadChannel._pack_ = 1 # source:False
+struct_c__SA_RThreadChannel._fields_ = [
+    ('nextid', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('lock', ctypes.POINTER(struct_r_th_lock_t)),
+    ('sem', ctypes.POINTER(struct_r_th_sem_t)),
+    ('stack', ctypes.POINTER(struct_r_list_t)),
+    ('responses', ctypes.POINTER(struct_r_list_t)),
+    ('consumer', ctypes.POINTER(struct_r_th_t)),
+]
+
+RThreadChannel = struct_c__SA_RThreadChannel
+class struct_c__SA_RThreadChannelMessage(Structure):
+    pass
+
+struct_c__SA_RThreadChannelMessage._pack_ = 1 # source:False
+struct_c__SA_RThreadChannelMessage._fields_ = [
+    ('id', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('msg', ctypes.POINTER(ctypes.c_ubyte)),
+    ('len', ctypes.c_int32),
+    ('PADDING_1', ctypes.c_ubyte * 4),
+    ('lock', ctypes.POINTER(struct_r_th_lock_t)),
+    ('sem', ctypes.POINTER(struct_r_th_sem_t)),
+]
+
+RThreadChannelMessage = struct_c__SA_RThreadChannelMessage
+class struct_c__SA_RThreadChannelPromise(Structure):
+    pass
+
+struct_c__SA_RThreadChannelPromise._pack_ = 1 # source:False
+struct_c__SA_RThreadChannelPromise._fields_ = [
+    ('id', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('message', ctypes.POINTER(struct_c__SA_RThreadChannelMessage)),
+    ('tc', ctypes.POINTER(struct_c__SA_RThreadChannel)),
+]
+
+RThreadChannelPromise = struct_c__SA_RThreadChannelPromise
+r_th_channel_read = _libr_util.r_th_channel_read
+r_th_channel_read.restype = ctypes.POINTER(struct_c__SA_RThreadChannelMessage)
+r_th_channel_read.argtypes = [ctypes.POINTER(struct_c__SA_RThreadChannel)]
+r_th_channel_message_free = _libr_util.r_th_channel_message_free
+r_th_channel_message_free.restype = None
+r_th_channel_message_free.argtypes = [ctypes.POINTER(struct_c__SA_RThreadChannelMessage)]
+r_th_channel_write = _libr_util.r_th_channel_write
+r_th_channel_write.restype = ctypes.POINTER(struct_c__SA_RThreadChannelMessage)
+r_th_channel_write.argtypes = [ctypes.POINTER(struct_c__SA_RThreadChannel), ctypes.POINTER(struct_c__SA_RThreadChannelMessage)]
+r_th_channel_message_read = _libr_util.r_th_channel_message_read
+r_th_channel_message_read.restype = ctypes.POINTER(struct_c__SA_RThreadChannelMessage)
+r_th_channel_message_read.argtypes = [ctypes.POINTER(struct_c__SA_RThreadChannel), ctypes.POINTER(struct_c__SA_RThreadChannelMessage)]
+r_th_channel_message_new = _libr_util.r_th_channel_message_new
+r_th_channel_message_new.restype = ctypes.POINTER(struct_c__SA_RThreadChannelMessage)
+r_th_channel_message_new.argtypes = [ctypes.POINTER(struct_c__SA_RThreadChannel), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_th_channel_new = _libr_util.r_th_channel_new
+r_th_channel_new.restype = ctypes.POINTER(struct_c__SA_RThreadChannel)
+r_th_channel_new.argtypes = [RThreadFunction, ctypes.POINTER(None)]
+r_th_channel_free = _libr_util.r_th_channel_free
+r_th_channel_free.restype = None
+r_th_channel_free.argtypes = [ctypes.POINTER(struct_c__SA_RThreadChannel)]
+r_th_channel_query = _libr_util.r_th_channel_query
+r_th_channel_query.restype = ctypes.POINTER(struct_c__SA_RThreadChannelPromise)
+r_th_channel_query.argtypes = [ctypes.POINTER(struct_c__SA_RThreadChannel), ctypes.POINTER(struct_c__SA_RThreadChannelMessage)]
+r_th_channel_post = _libr_util.r_th_channel_post
+r_th_channel_post.restype = None
+r_th_channel_post.argtypes = [ctypes.POINTER(struct_c__SA_RThreadChannel), ctypes.POINTER(struct_c__SA_RThreadChannelMessage)]
+r_th_channel_promise_new = _libr_util.r_th_channel_promise_new
+r_th_channel_promise_new.restype = ctypes.POINTER(struct_c__SA_RThreadChannelPromise)
+r_th_channel_promise_new.argtypes = [ctypes.POINTER(struct_c__SA_RThreadChannel)]
+r_th_channel_promise_wait = _libr_util.r_th_channel_promise_wait
+r_th_channel_promise_wait.restype = ctypes.POINTER(struct_c__SA_RThreadChannelMessage)
+r_th_channel_promise_wait.argtypes = [ctypes.POINTER(struct_c__SA_RThreadChannelPromise)]
+r_th_channel_promise_free = _libr_util.r_th_channel_promise_free
+r_th_channel_promise_free.restype = None
+r_th_channel_promise_free.argtypes = [ctypes.POINTER(struct_c__SA_RThreadChannelPromise)]
 r_th_new = _libr_util.r_th_new
 r_th_new.restype = ctypes.POINTER(struct_r_th_t)
-r_th_new.argtypes = [ctypes.CFUNCTYPE(c__EA_RThreadFunctionRet, ctypes.POINTER(struct_r_th_t)), ctypes.POINTER(None), ctypes.c_int32]
+r_th_new.argtypes = [RThreadFunction, ctypes.POINTER(None), ctypes.c_int32]
 r_th_start = _libr_util.r_th_start
 r_th_start.restype = ctypes.c_bool
 r_th_start.argtypes = [ctypes.POINTER(struct_r_th_t), ctypes.c_int32]
@@ -666,6 +774,12 @@ r_th_break.argtypes = [ctypes.POINTER(struct_r_th_t)]
 r_th_free = _libr_util.r_th_free
 r_th_free.restype = ctypes.POINTER(None)
 r_th_free.argtypes = [ctypes.POINTER(struct_r_th_t)]
+r_th_set_running = _libr_util.r_th_set_running
+r_th_set_running.restype = None
+r_th_set_running.argtypes = [ctypes.POINTER(struct_r_th_t), ctypes.c_bool]
+r_th_is_running = _libr_util.r_th_is_running
+r_th_is_running.restype = ctypes.c_bool
+r_th_is_running.argtypes = [ctypes.POINTER(struct_r_th_t)]
 r_th_kill_free = _libr_util.r_th_kill_free
 r_th_kill_free.restype = ctypes.POINTER(None)
 r_th_kill_free.argtypes = [ctypes.POINTER(struct_r_th_t)]
@@ -701,16 +815,16 @@ r_th_lock_new = _libr_util.r_th_lock_new
 r_th_lock_new.restype = ctypes.POINTER(struct_r_th_lock_t)
 r_th_lock_new.argtypes = [ctypes.c_bool]
 r_th_lock_wait = _libr_util.r_th_lock_wait
-r_th_lock_wait.restype = ctypes.c_int32
+r_th_lock_wait.restype = ctypes.c_bool
 r_th_lock_wait.argtypes = [ctypes.POINTER(struct_r_th_lock_t)]
 r_th_lock_tryenter = _libr_util.r_th_lock_tryenter
-r_th_lock_tryenter.restype = ctypes.c_int32
+r_th_lock_tryenter.restype = ctypes.c_bool
 r_th_lock_tryenter.argtypes = [ctypes.POINTER(struct_r_th_lock_t)]
 r_th_lock_enter = _libr_util.r_th_lock_enter
-r_th_lock_enter.restype = ctypes.c_int32
+r_th_lock_enter.restype = ctypes.c_bool
 r_th_lock_enter.argtypes = [ctypes.POINTER(struct_r_th_lock_t)]
 r_th_lock_leave = _libr_util.r_th_lock_leave
-r_th_lock_leave.restype = ctypes.c_int32
+r_th_lock_leave.restype = ctypes.c_bool
 r_th_lock_leave.argtypes = [ctypes.POINTER(struct_r_th_lock_t)]
 r_th_lock_free = _libr_util.r_th_lock_free
 r_th_lock_free.restype = ctypes.POINTER(None)
@@ -730,6 +844,12 @@ r_th_cond_wait.argtypes = [ctypes.POINTER(struct_r_th_cond_t), ctypes.POINTER(st
 r_th_cond_free = _libr_util.r_th_cond_free
 r_th_cond_free.restype = None
 r_th_cond_free.argtypes = [ctypes.POINTER(struct_r_th_cond_t)]
+r_atomic_store = _libr_util.r_atomic_store
+r_atomic_store.restype = None
+r_atomic_store.argtypes = [ctypes.POINTER(ctypes.c_int32), ctypes.c_bool]
+r_atomic_exchange = _libr_util.r_atomic_exchange
+r_atomic_exchange.restype = ctypes.c_bool
+r_atomic_exchange.argtypes = [ctypes.POINTER(ctypes.c_int32), ctypes.c_bool]
 class struct_r_event_t(Structure):
     pass
 
@@ -795,7 +915,7 @@ struct_ht_up_bucket_t._pack_ = 1 # source:False
 struct_ht_up_bucket_t._fields_ = [
     ('arr', ctypes.POINTER(struct_ht_up_kv)),
     ('count', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('size', ctypes.c_uint32),
 ]
 
 struct_ht_up_kv._pack_ = 1 # source:False
@@ -961,27 +1081,28 @@ struct_r_interval_t._fields_ = [
 
 RInterval = struct_r_interval_t
 r_itv_t = struct_r_interval_t
+uint64_t = ctypes.c_uint64
 r_itv_new = _libraries['FIXME_STUB'].r_itv_new
 r_itv_new.restype = ctypes.POINTER(struct_r_interval_t)
-r_itv_new.argtypes = [ctypes.c_uint64, ctypes.c_uint64]
+r_itv_new.argtypes = [uint64_t, uint64_t]
 r_itv_free = _libraries['FIXME_STUB'].r_itv_free
 r_itv_free.restype = None
 r_itv_free.argtypes = [ctypes.POINTER(struct_r_interval_t)]
 r_itv_begin = _libraries['FIXME_STUB'].r_itv_begin
-r_itv_begin.restype = ctypes.c_uint64
+r_itv_begin.restype = uint64_t
 r_itv_begin.argtypes = [RInterval]
 r_itv_size = _libraries['FIXME_STUB'].r_itv_size
-r_itv_size.restype = ctypes.c_uint64
+r_itv_size.restype = uint64_t
 r_itv_size.argtypes = [RInterval]
 r_itv_end = _libraries['FIXME_STUB'].r_itv_end
-r_itv_end.restype = ctypes.c_uint64
+r_itv_end.restype = uint64_t
 r_itv_end.argtypes = [RInterval]
 r_itv_eq = _libraries['FIXME_STUB'].r_itv_eq
 r_itv_eq.restype = ctypes.c_bool
 r_itv_eq.argtypes = [RInterval, RInterval]
 r_itv_contain = _libraries['FIXME_STUB'].r_itv_contain
 r_itv_contain.restype = ctypes.c_bool
-r_itv_contain.argtypes = [RInterval, ctypes.c_uint64]
+r_itv_contain.argtypes = [RInterval, uint64_t]
 r_itv_include = _libraries['FIXME_STUB'].r_itv_include
 r_itv_include.restype = ctypes.c_bool
 r_itv_include.argtypes = [RInterval, RInterval]
@@ -990,7 +1111,7 @@ r_itv_overlap.restype = ctypes.c_bool
 r_itv_overlap.argtypes = [RInterval, RInterval]
 r_itv_overlap2 = _libraries['FIXME_STUB'].r_itv_overlap2
 r_itv_overlap2.restype = ctypes.c_bool
-r_itv_overlap2.argtypes = [RInterval, ctypes.c_uint64, ctypes.c_uint64]
+r_itv_overlap2.argtypes = [RInterval, uint64_t, uint64_t]
 r_itv_intersect = _libraries['FIXME_STUB'].r_itv_intersect
 r_itv_intersect.restype = RInterval
 r_itv_intersect.argtypes = [RInterval, RInterval]
@@ -1169,35 +1290,35 @@ r_interval_tree_fini.restype = None
 r_interval_tree_fini.argtypes = [ctypes.POINTER(struct_r_interval_tree_t)]
 r_interval_tree_insert = _libr_util.r_interval_tree_insert
 r_interval_tree_insert.restype = ctypes.c_bool
-r_interval_tree_insert.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.POINTER(None)]
+r_interval_tree_insert.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), uint64_t, uint64_t, ctypes.POINTER(None)]
 r_interval_tree_delete = _libr_util.r_interval_tree_delete
 r_interval_tree_delete.restype = ctypes.c_bool
 r_interval_tree_delete.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), ctypes.POINTER(struct_r_interval_node_t), ctypes.c_bool]
 r_interval_tree_resize = _libr_util.r_interval_tree_resize
 r_interval_tree_resize.restype = ctypes.c_bool
-r_interval_tree_resize.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), ctypes.POINTER(struct_r_interval_node_t), ctypes.c_uint64, ctypes.c_uint64]
+r_interval_tree_resize.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), ctypes.POINTER(struct_r_interval_node_t), uint64_t, uint64_t]
 r_interval_tree_first_at = _libr_util.r_interval_tree_first_at
 r_interval_tree_first_at.restype = RBIter
-r_interval_tree_first_at.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), ctypes.c_uint64]
+r_interval_tree_first_at.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), uint64_t]
 r_interval_tree_node_at = _libr_util.r_interval_tree_node_at
 r_interval_tree_node_at.restype = ctypes.POINTER(struct_r_interval_node_t)
-r_interval_tree_node_at.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), ctypes.c_uint64]
+r_interval_tree_node_at.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), uint64_t]
 r_interval_tree_node_at_data = _libr_util.r_interval_tree_node_at_data
 r_interval_tree_node_at_data.restype = ctypes.POINTER(struct_r_interval_node_t)
-r_interval_tree_node_at_data.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), ctypes.c_uint64, ctypes.POINTER(None)]
+r_interval_tree_node_at_data.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), uint64_t, ctypes.POINTER(None)]
 r_interval_tree_at = _libraries['FIXME_STUB'].r_interval_tree_at
 r_interval_tree_at.restype = ctypes.POINTER(None)
-r_interval_tree_at.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), ctypes.c_uint64]
+r_interval_tree_at.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), uint64_t]
 RIntervalIterCb = ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_interval_node_t), ctypes.POINTER(None))
 r_interval_tree_all_at = _libr_util.r_interval_tree_all_at
 r_interval_tree_all_at.restype = ctypes.c_bool
-r_interval_tree_all_at.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), ctypes.c_uint64, RIntervalIterCb, ctypes.POINTER(None)]
+r_interval_tree_all_at.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), uint64_t, RIntervalIterCb, ctypes.POINTER(None)]
 r_interval_tree_all_in = _libr_util.r_interval_tree_all_in
 r_interval_tree_all_in.restype = ctypes.c_bool
-r_interval_tree_all_in.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), ctypes.c_uint64, ctypes.c_bool, RIntervalIterCb, ctypes.POINTER(None)]
+r_interval_tree_all_in.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), uint64_t, ctypes.c_bool, RIntervalIterCb, ctypes.POINTER(None)]
 r_interval_tree_all_intersect = _libr_util.r_interval_tree_all_intersect
 r_interval_tree_all_intersect.restype = ctypes.c_bool
-r_interval_tree_all_intersect.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_bool, RIntervalIterCb, ctypes.POINTER(None)]
+r_interval_tree_all_intersect.argtypes = [ctypes.POINTER(struct_r_interval_tree_t), uint64_t, uint64_t, ctypes.c_bool, RIntervalIterCb, ctypes.POINTER(None)]
 RIntervalTreeIter = struct_r_rb_iter_t
 r_interval_tree_iter_get = _libraries['FIXME_STUB'].r_interval_tree_iter_get
 r_interval_tree_iter_get.restype = ctypes.POINTER(struct_r_interval_node_t)
@@ -1224,11 +1345,12 @@ r_big_init.argtypes = [ctypes.POINTER(struct_r_num_big_t)]
 r_big_fini = _libr_util.r_big_fini
 r_big_fini.restype = None
 r_big_fini.argtypes = [ctypes.POINTER(struct_r_num_big_t)]
+int64_t = ctypes.c_int64
 r_big_from_int = _libr_util.r_big_from_int
 r_big_from_int.restype = None
-r_big_from_int.argtypes = [ctypes.POINTER(struct_r_num_big_t), ctypes.c_int64]
+r_big_from_int.argtypes = [ctypes.POINTER(struct_r_num_big_t), int64_t]
 r_big_to_int = _libr_util.r_big_to_int
-r_big_to_int.restype = ctypes.c_int64
+r_big_to_int.restype = int64_t
 r_big_to_int.argtypes = [ctypes.POINTER(struct_r_num_big_t)]
 r_big_from_hexstr = _libr_util.r_big_from_hexstr
 r_big_from_hexstr.restype = None
@@ -1374,13 +1496,13 @@ r_buf_new_with_io.restype = ctypes.POINTER(struct_r_buf_t)
 r_buf_new_with_io.argtypes = [ctypes.POINTER(None), ctypes.c_int32]
 r_buf_new_with_bytes = _libr_util.r_buf_new_with_bytes
 r_buf_new_with_bytes.restype = ctypes.POINTER(struct_r_buf_t)
-r_buf_new_with_bytes.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64]
+r_buf_new_with_bytes.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint64_t]
 r_buf_new_with_string = _libr_util.r_buf_new_with_string
 r_buf_new_with_string.restype = ctypes.POINTER(struct_r_buf_t)
 r_buf_new_with_string.argtypes = [ctypes.POINTER(ctypes.c_char)]
 r_buf_new_with_pointers = _libr_util.r_buf_new_with_pointers
 r_buf_new_with_pointers.restype = ctypes.POINTER(struct_r_buf_t)
-r_buf_new_with_pointers.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64, ctypes.c_bool]
+r_buf_new_with_pointers.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint64_t, ctypes.c_bool]
 r_buf_new_file = _libr_util.r_buf_new_file
 r_buf_new_file.restype = ctypes.POINTER(struct_r_buf_t)
 r_buf_new_file.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.c_int32]
@@ -1392,109 +1514,112 @@ r_buf_new_slurp.restype = ctypes.POINTER(struct_r_buf_t)
 r_buf_new_slurp.argtypes = [ctypes.POINTER(ctypes.c_char)]
 r_buf_new_slice = _libr_util.r_buf_new_slice
 r_buf_new_slice.restype = ctypes.POINTER(struct_r_buf_t)
-r_buf_new_slice.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64, ctypes.c_uint64]
+r_buf_new_slice.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t, uint64_t]
 r_buf_new_empty = _libr_util.r_buf_new_empty
 r_buf_new_empty.restype = ctypes.POINTER(struct_r_buf_t)
-r_buf_new_empty.argtypes = [ctypes.c_uint64]
+r_buf_new_empty.argtypes = [uint64_t]
 r_buf_new_mmap = _libr_util.r_buf_new_mmap
 r_buf_new_mmap.restype = ctypes.POINTER(struct_r_buf_t)
 r_buf_new_mmap.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
+uint8_t = ctypes.c_uint8
 r_buf_new_sparse = _libr_util.r_buf_new_sparse
 r_buf_new_sparse.restype = ctypes.POINTER(struct_r_buf_t)
-r_buf_new_sparse.argtypes = [ctypes.c_ubyte]
+r_buf_new_sparse.argtypes = [uint8_t]
 r_buf_dump = _libr_util.r_buf_dump
 r_buf_dump.restype = ctypes.c_bool
 r_buf_dump.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_char)]
 r_buf_set_bytes = _libr_util.r_buf_set_bytes
 r_buf_set_bytes.restype = ctypes.c_bool
-r_buf_set_bytes.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64]
+r_buf_set_bytes.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_ubyte), uint64_t]
 r_buf_append_string = _libr_util.r_buf_append_string
-r_buf_append_string.restype = ctypes.c_int64
+r_buf_append_string.restype = int64_t
 r_buf_append_string.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_char)]
 r_buf_append_buf = _libr_util.r_buf_append_buf
 r_buf_append_buf.restype = ctypes.c_bool
 r_buf_append_buf.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(struct_r_buf_t)]
 r_buf_append_bytes = _libr_util.r_buf_append_bytes
 r_buf_append_bytes.restype = ctypes.c_bool
-r_buf_append_bytes.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64]
+r_buf_append_bytes.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_ubyte), uint64_t]
 r_buf_append_nbytes = _libr_util.r_buf_append_nbytes
 r_buf_append_nbytes.restype = ctypes.c_bool
-r_buf_append_nbytes.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64]
+r_buf_append_nbytes.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t]
 r_buf_append_ut8 = _libr_util.r_buf_append_ut8
 r_buf_append_ut8.restype = ctypes.c_bool
-r_buf_append_ut8.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_ubyte]
+r_buf_append_ut8.argtypes = [ctypes.POINTER(struct_r_buf_t), uint8_t]
+uint16_t = ctypes.c_uint16
 r_buf_append_ut16 = _libr_util.r_buf_append_ut16
 r_buf_append_ut16.restype = ctypes.c_bool
-r_buf_append_ut16.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint16]
+r_buf_append_ut16.argtypes = [ctypes.POINTER(struct_r_buf_t), uint16_t]
 r_buf_append_buf_slice = _libr_util.r_buf_append_buf_slice
 r_buf_append_buf_slice.restype = ctypes.c_bool
-r_buf_append_buf_slice.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64, ctypes.c_uint64]
+r_buf_append_buf_slice.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(struct_r_buf_t), uint64_t, uint64_t]
+uint32_t = ctypes.c_uint32
 r_buf_append_ut32 = _libr_util.r_buf_append_ut32
 r_buf_append_ut32.restype = ctypes.c_bool
-r_buf_append_ut32.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint32]
+r_buf_append_ut32.argtypes = [ctypes.POINTER(struct_r_buf_t), uint32_t]
 r_buf_append_ut64 = _libr_util.r_buf_append_ut64
 r_buf_append_ut64.restype = ctypes.c_bool
-r_buf_append_ut64.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64]
+r_buf_append_ut64.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t]
 r_buf_prepend_bytes = _libr_util.r_buf_prepend_bytes
 r_buf_prepend_bytes.restype = ctypes.c_bool
-r_buf_prepend_bytes.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64]
+r_buf_prepend_bytes.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_ubyte), uint64_t]
 r_buf_insert_bytes = _libr_util.r_buf_insert_bytes
-r_buf_insert_bytes.restype = ctypes.c_int64
-r_buf_insert_bytes.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64]
+r_buf_insert_bytes.restype = int64_t
+r_buf_insert_bytes.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), uint64_t]
 r_buf_to_string = _libr_util.r_buf_to_string
 r_buf_to_string.restype = ctypes.POINTER(ctypes.c_char)
 r_buf_to_string.argtypes = [ctypes.POINTER(struct_r_buf_t)]
 r_buf_get_string = _libr_util.r_buf_get_string
 r_buf_get_string.restype = ctypes.POINTER(ctypes.c_char)
-r_buf_get_string.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64]
+r_buf_get_string.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t]
 r_buf_read = _libr_util.r_buf_read
-r_buf_read.restype = ctypes.c_int64
-r_buf_read.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64]
+r_buf_read.restype = int64_t
+r_buf_read.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_ubyte), uint64_t]
 r_buf_read_all = _libr_util.r_buf_read_all
 r_buf_read_all.restype = ctypes.POINTER(ctypes.c_ubyte)
 r_buf_read_all.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_int32)]
 r_buf_read8 = _libr_util.r_buf_read8
-r_buf_read8.restype = ctypes.c_ubyte
+r_buf_read8.restype = uint8_t
 r_buf_read8.argtypes = [ctypes.POINTER(struct_r_buf_t)]
 r_buf_fread = _libr_util.r_buf_fread
-r_buf_fread.restype = ctypes.c_int64
+r_buf_fread.restype = int64_t
 r_buf_fread.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
 r_buf_read_at = _libr_util.r_buf_read_at
-r_buf_read_at.restype = ctypes.c_int64
-r_buf_read_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64]
+r_buf_read_at.restype = int64_t
+r_buf_read_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), uint64_t]
 r_buf_read8_at = _libr_util.r_buf_read8_at
-r_buf_read8_at.restype = ctypes.c_ubyte
-r_buf_read8_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64]
+r_buf_read8_at.restype = uint8_t
+r_buf_read8_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t]
 r_buf_tell = _libr_util.r_buf_tell
-r_buf_tell.restype = ctypes.c_uint64
+r_buf_tell.restype = uint64_t
 r_buf_tell.argtypes = [ctypes.POINTER(struct_r_buf_t)]
 r_buf_seek = _libr_util.r_buf_seek
-r_buf_seek.restype = ctypes.c_int64
-r_buf_seek.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_int64, ctypes.c_int32]
+r_buf_seek.restype = int64_t
+r_buf_seek.argtypes = [ctypes.POINTER(struct_r_buf_t), int64_t, ctypes.c_int32]
 r_buf_fread_at = _libr_util.r_buf_fread_at
-r_buf_fread_at.restype = ctypes.c_int64
-r_buf_fread_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
+r_buf_fread_at.restype = int64_t
+r_buf_fread_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
 r_buf_write = _libr_util.r_buf_write
-r_buf_write.restype = ctypes.c_int64
-r_buf_write.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64]
+r_buf_write.restype = int64_t
+r_buf_write.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_ubyte), uint64_t]
 r_buf_fwrite = _libr_util.r_buf_fwrite
-r_buf_fwrite.restype = ctypes.c_int64
+r_buf_fwrite.restype = int64_t
 r_buf_fwrite.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
 r_buf_write_at = _libr_util.r_buf_write_at
-r_buf_write_at.restype = ctypes.c_int64
-r_buf_write_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64]
+r_buf_write_at.restype = int64_t
+r_buf_write_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), uint64_t]
 r_buf_fwrite_at = _libr_util.r_buf_fwrite_at
-r_buf_fwrite_at.restype = ctypes.c_int64
-r_buf_fwrite_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
+r_buf_fwrite_at.restype = int64_t
+r_buf_fwrite_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
 r_buf_data = _libr_util.r_buf_data
 r_buf_data.restype = ctypes.POINTER(ctypes.c_ubyte)
 r_buf_data.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_uint64)]
 r_buf_size = _libr_util.r_buf_size
-r_buf_size.restype = ctypes.c_uint64
+r_buf_size.restype = uint64_t
 r_buf_size.argtypes = [ctypes.POINTER(struct_r_buf_t)]
 r_buf_resize = _libr_util.r_buf_resize
 r_buf_resize.restype = ctypes.c_bool
-r_buf_resize.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64]
+r_buf_resize.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t]
 r_buf_ref = _libr_util.r_buf_ref
 r_buf_ref.restype = ctypes.POINTER(struct_r_buf_t)
 r_buf_ref.argtypes = [ctypes.POINTER(struct_r_buf_t)]
@@ -1508,62 +1633,62 @@ r_buf_nonempty_list = _libr_util.r_buf_nonempty_list
 r_buf_nonempty_list.restype = ctypes.POINTER(struct_r_list_t)
 r_buf_nonempty_list.argtypes = [ctypes.POINTER(struct_r_buf_t)]
 r_buf_read_be16 = _libraries['FIXME_STUB'].r_buf_read_be16
-r_buf_read_be16.restype = ctypes.c_uint16
+r_buf_read_be16.restype = uint16_t
 r_buf_read_be16.argtypes = [ctypes.POINTER(struct_r_buf_t)]
 r_buf_read_be16_at = _libraries['FIXME_STUB'].r_buf_read_be16_at
-r_buf_read_be16_at.restype = ctypes.c_uint16
-r_buf_read_be16_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64]
+r_buf_read_be16_at.restype = uint16_t
+r_buf_read_be16_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t]
 r_buf_read_be32 = _libraries['FIXME_STUB'].r_buf_read_be32
-r_buf_read_be32.restype = ctypes.c_uint32
+r_buf_read_be32.restype = uint32_t
 r_buf_read_be32.argtypes = [ctypes.POINTER(struct_r_buf_t)]
 r_buf_read_be32_at = _libraries['FIXME_STUB'].r_buf_read_be32_at
-r_buf_read_be32_at.restype = ctypes.c_uint32
-r_buf_read_be32_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64]
+r_buf_read_be32_at.restype = uint32_t
+r_buf_read_be32_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t]
 r_buf_read_be64 = _libraries['FIXME_STUB'].r_buf_read_be64
-r_buf_read_be64.restype = ctypes.c_uint64
+r_buf_read_be64.restype = uint64_t
 r_buf_read_be64.argtypes = [ctypes.POINTER(struct_r_buf_t)]
 r_buf_read_be64_at = _libraries['FIXME_STUB'].r_buf_read_be64_at
-r_buf_read_be64_at.restype = ctypes.c_uint64
-r_buf_read_be64_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64]
+r_buf_read_be64_at.restype = uint64_t
+r_buf_read_be64_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t]
 r_buf_read_le16 = _libraries['FIXME_STUB'].r_buf_read_le16
-r_buf_read_le16.restype = ctypes.c_uint16
+r_buf_read_le16.restype = uint16_t
 r_buf_read_le16.argtypes = [ctypes.POINTER(struct_r_buf_t)]
 r_buf_read_le16_at = _libraries['FIXME_STUB'].r_buf_read_le16_at
-r_buf_read_le16_at.restype = ctypes.c_uint16
-r_buf_read_le16_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64]
+r_buf_read_le16_at.restype = uint16_t
+r_buf_read_le16_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t]
 r_buf_read_le32 = _libraries['FIXME_STUB'].r_buf_read_le32
-r_buf_read_le32.restype = ctypes.c_uint32
+r_buf_read_le32.restype = uint32_t
 r_buf_read_le32.argtypes = [ctypes.POINTER(struct_r_buf_t)]
 r_buf_read_le32_at = _libraries['FIXME_STUB'].r_buf_read_le32_at
-r_buf_read_le32_at.restype = ctypes.c_uint32
-r_buf_read_le32_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64]
+r_buf_read_le32_at.restype = uint32_t
+r_buf_read_le32_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t]
 r_buf_read_le64 = _libraries['FIXME_STUB'].r_buf_read_le64
-r_buf_read_le64.restype = ctypes.c_uint64
+r_buf_read_le64.restype = uint64_t
 r_buf_read_le64.argtypes = [ctypes.POINTER(struct_r_buf_t)]
 r_buf_read_le64_at = _libraries['FIXME_STUB'].r_buf_read_le64_at
-r_buf_read_le64_at.restype = ctypes.c_uint64
-r_buf_read_le64_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64]
+r_buf_read_le64_at.restype = uint64_t
+r_buf_read_le64_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t]
 r_buf_read_ble16_at = _libraries['FIXME_STUB'].r_buf_read_ble16_at
-r_buf_read_ble16_at.restype = ctypes.c_uint16
-r_buf_read_ble16_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64, ctypes.c_bool]
+r_buf_read_ble16_at.restype = uint16_t
+r_buf_read_ble16_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t, ctypes.c_bool]
 r_buf_read_ble32_at = _libraries['FIXME_STUB'].r_buf_read_ble32_at
-r_buf_read_ble32_at.restype = ctypes.c_uint32
-r_buf_read_ble32_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64, ctypes.c_bool]
+r_buf_read_ble32_at.restype = uint32_t
+r_buf_read_ble32_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t, ctypes.c_bool]
 r_buf_read_ble64_at = _libraries['FIXME_STUB'].r_buf_read_ble64_at
-r_buf_read_ble64_at.restype = ctypes.c_uint64
-r_buf_read_ble64_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64, ctypes.c_bool]
+r_buf_read_ble64_at.restype = uint64_t
+r_buf_read_ble64_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t, ctypes.c_bool]
 r_buf_uleb128 = _libr_util.r_buf_uleb128
-r_buf_uleb128.restype = ctypes.c_int64
+r_buf_uleb128.restype = int64_t
 r_buf_uleb128.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_uint64)]
 r_buf_sleb128 = _libr_util.r_buf_sleb128
-r_buf_sleb128.restype = ctypes.c_int64
+r_buf_sleb128.restype = int64_t
 r_buf_sleb128.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.POINTER(ctypes.c_int64)]
 r_buf_uleb128_at = _libraries['FIXME_STUB'].r_buf_uleb128_at
-r_buf_uleb128_at.restype = ctypes.c_int64
-r_buf_uleb128_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_uint64)]
+r_buf_uleb128_at.restype = int64_t
+r_buf_uleb128_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t, ctypes.POINTER(ctypes.c_uint64)]
 r_buf_sleb128_at = _libraries['FIXME_STUB'].r_buf_sleb128_at
-r_buf_sleb128_at.restype = ctypes.c_int64
-r_buf_sleb128_at.argtypes = [ctypes.POINTER(struct_r_buf_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_int64)]
+r_buf_sleb128_at.restype = int64_t
+r_buf_sleb128_at.argtypes = [ctypes.POINTER(struct_r_buf_t), uint64_t, ctypes.POINTER(ctypes.c_int64)]
 class struct_r_bitmap_t(Structure):
     pass
 
@@ -1594,23 +1719,24 @@ r_bitmap_test = _libr_util.r_bitmap_test
 r_bitmap_test.restype = ctypes.c_int32
 r_bitmap_test.argtypes = [ctypes.POINTER(struct_r_bitmap_t), size_t]
 r_time_now = _libr_util.r_time_now
-r_time_now.restype = ctypes.c_uint64
+r_time_now.restype = uint64_t
 r_time_now.argtypes = []
 r_time_now_mono = _libr_util.r_time_now_mono
-r_time_now_mono.restype = ctypes.c_uint64
+r_time_now_mono.restype = uint64_t
 r_time_now_mono.argtypes = []
+time_t = ctypes.c_int64
 r_time_stamp_to_str = _libr_util.r_time_stamp_to_str
 r_time_stamp_to_str.restype = ctypes.POINTER(ctypes.c_char)
-r_time_stamp_to_str.argtypes = [ctypes.c_uint32]
+r_time_stamp_to_str.argtypes = [time_t]
 r_time_dos_time_stamp_to_posix = _libr_util.r_time_dos_time_stamp_to_posix
-r_time_dos_time_stamp_to_posix.restype = ctypes.c_uint32
-r_time_dos_time_stamp_to_posix.argtypes = [ctypes.c_uint32]
+r_time_dos_time_stamp_to_posix.restype = uint32_t
+r_time_dos_time_stamp_to_posix.argtypes = [uint32_t]
 r_time_stamp_is_dos_format = _libr_util.r_time_stamp_is_dos_format
 r_time_stamp_is_dos_format.restype = ctypes.c_bool
-r_time_stamp_is_dos_format.argtypes = [ctypes.c_uint32, ctypes.c_uint32]
+r_time_stamp_is_dos_format.argtypes = [uint32_t, uint32_t]
 r_time_to_string = _libr_util.r_time_to_string
 r_time_to_string.restype = ctypes.POINTER(ctypes.c_char)
-r_time_to_string.argtypes = [ctypes.c_uint64]
+r_time_to_string.argtypes = [uint64_t]
 class struct_tm(Structure):
     pass
 
@@ -1641,7 +1767,7 @@ r_debruijn_pattern.restype = ctypes.POINTER(ctypes.c_char)
 r_debruijn_pattern.argtypes = [ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_char)]
 r_debruijn_offset = _libr_util.r_debruijn_offset
 r_debruijn_offset.restype = ctypes.c_int32
-r_debruijn_offset.argtypes = [ctypes.c_uint64, ctypes.c_bool]
+r_debruijn_offset.argtypes = [uint64_t, ctypes.c_bool]
 class struct_r_cache_t(Structure):
     pass
 
@@ -1680,10 +1806,10 @@ r_cache_free.restype = None
 r_cache_free.argtypes = [ctypes.POINTER(struct_r_cache_t)]
 r_cache_get = _libr_util.r_cache_get
 r_cache_get.restype = ctypes.POINTER(ctypes.c_ubyte)
-r_cache_get.argtypes = [ctypes.POINTER(struct_r_cache_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_int32)]
+r_cache_get.argtypes = [ctypes.POINTER(struct_r_cache_t), uint64_t, ctypes.POINTER(ctypes.c_int32)]
 r_cache_set = _libr_util.r_cache_set
 r_cache_set.restype = ctypes.c_int32
-r_cache_set.argtypes = [ctypes.POINTER(struct_r_cache_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_cache_set.argtypes = [ctypes.POINTER(struct_r_cache_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_cache_flush = _libr_util.r_cache_flush
 r_cache_flush.restype = None
 r_cache_flush.argtypes = [ctypes.POINTER(struct_r_cache_t)]
@@ -1721,14 +1847,47 @@ RTypeKind = ctypes.c_uint32 # enum
 class struct_sdb_t(Structure):
     pass
 
-class struct_ls_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
-class struct_sdb_gperf_t(Structure):
+class struct_ls_t(Structure):
     pass
 
 class struct_ht_pp_t(Structure):
     pass
+
+class struct_c__SA_dict(Structure):
+    pass
+
+struct_c__SA_dict._pack_ = 1 # source:False
+struct_c__SA_dict._fields_ = [
+    ('table', ctypes.POINTER(ctypes.POINTER(None))),
+    ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+    ('size', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
+class struct_sdb_kv(Structure):
+    pass
+
+class struct_ht_pp_kv(Structure):
+    pass
+
+struct_ht_pp_kv._pack_ = 1 # source:False
+struct_ht_pp_kv._fields_ = [
+    ('key', ctypes.POINTER(None)),
+    ('value', ctypes.POINTER(None)),
+    ('key_len', ctypes.c_uint32),
+    ('value_len', ctypes.c_uint32),
+]
+
+struct_sdb_kv._pack_ = 1 # source:False
+struct_sdb_kv._fields_ = [
+    ('base', struct_ht_pp_kv),
+    ('cas', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('expire', ctypes.c_uint64),
+]
 
 class struct_cdb(Structure):
     pass
@@ -1745,17 +1904,6 @@ struct_cdb._fields_ = [
     ('hslots', ctypes.c_uint32),
     ('dpos', ctypes.c_uint32),
     ('dlen', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-]
-
-class struct_c__SA_dict(Structure):
-    pass
-
-struct_c__SA_dict._pack_ = 1 # source:False
-struct_c__SA_dict._fields_ = [
-    ('table', ctypes.POINTER(ctypes.POINTER(None))),
-    ('f', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
-    ('size', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
@@ -1795,28 +1943,6 @@ struct_cdb_make._fields_ = [
     ('b', struct_buffer),
     ('pos', ctypes.c_uint32),
     ('fd', ctypes.c_int32),
-]
-
-class struct_sdb_kv(Structure):
-    pass
-
-class struct_ht_pp_kv(Structure):
-    pass
-
-struct_ht_pp_kv._pack_ = 1 # source:False
-struct_ht_pp_kv._fields_ = [
-    ('key', ctypes.POINTER(None)),
-    ('value', ctypes.POINTER(None)),
-    ('key_len', ctypes.c_uint32),
-    ('value_len', ctypes.c_uint32),
-]
-
-struct_sdb_kv._pack_ = 1 # source:False
-struct_sdb_kv._fields_ = [
-    ('base', struct_ht_pp_kv),
-    ('cas', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-    ('expire', ctypes.c_uint64),
 ]
 
 struct_sdb_t._pack_ = 1 # source:False
@@ -1896,7 +2022,7 @@ struct_ht_pp_bucket_t._pack_ = 1 # source:False
 struct_ht_pp_bucket_t._fields_ = [
     ('arr', ctypes.POINTER(struct_ht_pp_kv)),
     ('count', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('size', ctypes.c_uint32),
 ]
 
 struct_sdb_gperf_t._pack_ = 1 # source:False
@@ -1930,7 +2056,7 @@ struct_ls_iter_t._fields_ = [
 
 r_type_set = _libr_util.r_type_set
 r_type_set.restype = ctypes.c_int32
-r_type_set.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_type_set.argtypes = [ctypes.POINTER(struct_sdb_t), uint64_t, ctypes.POINTER(ctypes.c_char), uint64_t]
 r_type_del = _libr_util.r_type_del
 r_type_del.restype = None
 r_type_del.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char)]
@@ -1939,34 +2065,34 @@ r_type_kind.restype = ctypes.c_int32
 r_type_kind.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char)]
 r_type_enum_member = _libr_util.r_type_enum_member
 r_type_enum_member.restype = ctypes.POINTER(ctypes.c_char)
-r_type_enum_member.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_type_enum_member.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), uint64_t]
 r_type_enum_getbitfield = _libr_util.r_type_enum_getbitfield
 r_type_enum_getbitfield.restype = ctypes.POINTER(ctypes.c_char)
-r_type_enum_getbitfield.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_type_enum_getbitfield.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char), uint64_t]
 r_type_get_enum = _libr_util.r_type_get_enum
 r_type_get_enum.restype = ctypes.POINTER(struct_r_list_t)
 r_type_get_enum.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char)]
 r_type_get_bitsize = _libr_util.r_type_get_bitsize
-r_type_get_bitsize.restype = ctypes.c_uint64
+r_type_get_bitsize.restype = uint64_t
 r_type_get_bitsize.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char)]
 r_type_get_by_offset = _libr_util.r_type_get_by_offset
 r_type_get_by_offset.restype = ctypes.POINTER(struct_r_list_t)
-r_type_get_by_offset.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.c_uint64]
+r_type_get_by_offset.argtypes = [ctypes.POINTER(struct_sdb_t), uint64_t]
 r_type_get_struct_memb = _libr_util.r_type_get_struct_memb
 r_type_get_struct_memb.restype = ctypes.POINTER(ctypes.c_char)
 r_type_get_struct_memb.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
 r_type_link_at = _libr_util.r_type_link_at
 r_type_link_at.restype = ctypes.POINTER(ctypes.c_char)
-r_type_link_at.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.c_uint64]
+r_type_link_at.argtypes = [ctypes.POINTER(struct_sdb_t), uint64_t]
 r_type_set_link = _libr_util.r_type_set_link
 r_type_set_link.restype = ctypes.c_int32
-r_type_set_link.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_type_set_link.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char), uint64_t]
 r_type_unlink = _libr_util.r_type_unlink
 r_type_unlink.restype = ctypes.c_int32
-r_type_unlink.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.c_uint64]
+r_type_unlink.argtypes = [ctypes.POINTER(struct_sdb_t), uint64_t]
 r_type_link_offset = _libr_util.r_type_link_offset
 r_type_link_offset.restype = ctypes.c_int32
-r_type_link_offset.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_type_link_offset.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char), uint64_t]
 r_type_format = _libr_util.r_type_format
 r_type_format.restype = ctypes.POINTER(ctypes.c_char)
 r_type_format.argtypes = [ctypes.POINTER(struct_sdb_t), ctypes.POINTER(ctypes.c_char)]
@@ -2005,12 +2131,12 @@ r_file_is_regular.restype = ctypes.c_bool
 r_file_is_regular.argtypes = [ctypes.POINTER(ctypes.c_char)]
 r_file_truncate = _libr_util.r_file_truncate
 r_file_truncate.restype = ctypes.c_bool
-r_file_truncate.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_file_truncate.argtypes = [ctypes.POINTER(ctypes.c_char), uint64_t]
 r_file_new = _libr_util.r_file_new
 r_file_new.restype = ctypes.POINTER(ctypes.c_char)
 r_file_new.argtypes = [ctypes.POINTER(ctypes.c_char)]
 r_file_size = _libr_util.r_file_size
-r_file_size.restype = ctypes.c_uint64
+r_file_size.restype = uint64_t
 r_file_size.argtypes = [ctypes.POINTER(ctypes.c_char)]
 r_file_root = _libr_util.r_file_root
 r_file_root.restype = ctypes.POINTER(ctypes.c_char)
@@ -2031,13 +2157,13 @@ struct_r_mmap_t._fields_ = [
 
 r_file_mmap = _libr_util.r_file_mmap
 r_file_mmap.restype = ctypes.POINTER(struct_r_mmap_t)
-r_file_mmap.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_bool, ctypes.c_uint64]
+r_file_mmap.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_bool, uint64_t]
 r_file_mmap_read = _libr_util.r_file_mmap_read
 r_file_mmap_read.restype = ctypes.c_int32
-r_file_mmap_read.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_file_mmap_read.argtypes = [ctypes.POINTER(ctypes.c_char), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_file_mmap_write = _libr_util.r_file_mmap_write
 r_file_mmap_write.restype = ctypes.c_int32
-r_file_mmap_write.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_file_mmap_write.argtypes = [ctypes.POINTER(ctypes.c_char), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_file_mmap_free = _libr_util.r_file_mmap_free
 r_file_mmap_free.restype = None
 r_file_mmap_free.argtypes = [ctypes.POINTER(struct_r_mmap_t)]
@@ -2071,6 +2197,9 @@ r_inflate.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.POI
 r_inflate_raw = _libr_util.r_inflate_raw
 r_inflate_raw.restype = ctypes.POINTER(ctypes.c_ubyte)
 r_inflate_raw.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.POINTER(ctypes.c_int32), ctypes.POINTER(ctypes.c_int32)]
+r_inflate_lz4 = _libr_util.r_inflate_lz4
+r_inflate_lz4.restype = ctypes.POINTER(ctypes.c_ubyte)
+r_inflate_lz4.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.POINTER(ctypes.c_int32), ctypes.POINTER(ctypes.c_int32)]
 r_file_gzslurp = _libr_util.r_file_gzslurp
 r_file_gzslurp.restype = ctypes.POINTER(ctypes.c_ubyte)
 r_file_gzslurp.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_int32), ctypes.c_int32]
@@ -2082,7 +2211,7 @@ r_file_slurp.restype = ctypes.POINTER(ctypes.c_char)
 r_file_slurp.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_uint64)]
 r_file_slurp_range = _libr_util.r_file_slurp_range
 r_file_slurp_range.restype = ctypes.POINTER(ctypes.c_char)
-r_file_slurp_range.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_int32, ctypes.POINTER(ctypes.c_int32)]
+r_file_slurp_range.argtypes = [ctypes.POINTER(ctypes.c_char), uint64_t, ctypes.c_int32, ctypes.POINTER(ctypes.c_int32)]
 r_file_slurp_random_line = _libr_util.r_file_slurp_random_line
 r_file_slurp_random_line.restype = ctypes.POINTER(ctypes.c_char)
 r_file_slurp_random_line.argtypes = [ctypes.POINTER(ctypes.c_char)]
@@ -2119,6 +2248,9 @@ r_file_slurp_lines.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ct
 r_file_slurp_lines_from_bottom = _libr_util.r_file_slurp_lines_from_bottom
 r_file_slurp_lines_from_bottom.restype = ctypes.POINTER(ctypes.c_char)
 r_file_slurp_lines_from_bottom.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
+r_file_temp_ex = _libr_util.r_file_temp_ex
+r_file_temp_ex.restype = ctypes.POINTER(ctypes.c_char)
+r_file_temp_ex.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
 r_file_mkstemp = _libr_util.r_file_mkstemp
 r_file_mkstemp.restype = ctypes.c_int32
 r_file_mkstemp.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
@@ -2166,13 +2298,13 @@ r_hex_bin2strdup.restype = ctypes.POINTER(ctypes.c_char)
 r_hex_bin2strdup.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_hex_to_byte = _libr_util.r_hex_to_byte
 r_hex_to_byte.restype = ctypes.c_bool
-r_hex_to_byte.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_ubyte]
+r_hex_to_byte.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint8_t]
 r_hex_str_is_valid = _libr_util.r_hex_str_is_valid
 r_hex_str_is_valid.restype = ctypes.c_int32
 r_hex_str_is_valid.argtypes = [ctypes.POINTER(ctypes.c_char)]
 r_hex_bin_truncate = _libr_util.r_hex_bin_truncate
-r_hex_bin_truncate.restype = ctypes.c_int64
-r_hex_bin_truncate.argtypes = [ctypes.c_uint64, ctypes.c_int32]
+r_hex_bin_truncate.restype = int64_t
+r_hex_bin_truncate.argtypes = [uint64_t, ctypes.c_int32]
 r_hex_from_c = _libr_util.r_hex_from_c
 r_hex_from_c.restype = ctypes.POINTER(ctypes.c_char)
 r_hex_from_c.argtypes = [ctypes.POINTER(ctypes.c_char)]
@@ -2200,6 +2332,9 @@ r_hex_from_c_array.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(cty
 r_name_validate_print = _libr_util.r_name_validate_print
 r_name_validate_print.restype = ctypes.c_bool
 r_name_validate_print.argtypes = [ctypes.c_char]
+r_name_validate_char = _libr_util.r_name_validate_char
+r_name_validate_char.restype = ctypes.c_bool
+r_name_validate_char.argtypes = [ctypes.c_char]
 r_name_validate_first = _libr_util.r_name_validate_first
 r_name_validate_first.restype = ctypes.c_bool
 r_name_validate_first.argtypes = [ctypes.c_char]
@@ -2218,12 +2353,9 @@ r_name_filter_print.argtypes = [ctypes.POINTER(ctypes.c_char)]
 r_name_filter = _libr_util.r_name_filter
 r_name_filter.restype = ctypes.c_bool
 r_name_filter.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
-r_name_filter2 = _libr_util.r_name_filter2
-r_name_filter2.restype = ctypes.POINTER(ctypes.c_char)
-r_name_filter2.argtypes = [ctypes.POINTER(ctypes.c_char)]
-r_name_validate_char = _libraries['FIXME_STUB'].r_name_validate_char
-r_name_validate_char.restype = ctypes.c_bool
-r_name_validate_char.argtypes = [ctypes.c_char]
+r_name_filter_dup = _libr_util.r_name_filter_dup
+r_name_filter_dup.restype = ctypes.POINTER(ctypes.c_char)
+r_name_filter_dup.argtypes = [ctypes.POINTER(ctypes.c_char)]
 class struct_c__SA_RNumCalcValue(Structure):
     pass
 
@@ -2353,40 +2485,40 @@ r_num_free.restype = None
 r_num_free.argtypes = [ctypes.POINTER(struct_r_num_t)]
 r_num_units = _libr_util.r_num_units
 r_num_units.restype = ctypes.POINTER(ctypes.c_char)
-r_num_units.argtypes = [ctypes.POINTER(ctypes.c_char), size_t, ctypes.c_uint64]
+r_num_units.argtypes = [ctypes.POINTER(ctypes.c_char), size_t, uint64_t]
 r_num_conditional = _libr_util.r_num_conditional
 r_num_conditional.restype = ctypes.c_int32
 r_num_conditional.argtypes = [ctypes.POINTER(struct_r_num_t), ctypes.POINTER(ctypes.c_char)]
 r_num_calc = _libr_util.r_num_calc
-r_num_calc.restype = ctypes.c_uint64
+r_num_calc.restype = uint64_t
 r_num_calc.argtypes = [ctypes.POINTER(struct_r_num_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
 r_num_calc_index = _libr_util.r_num_calc_index
 r_num_calc_index.restype = ctypes.POINTER(ctypes.c_char)
 r_num_calc_index.argtypes = [ctypes.POINTER(struct_r_num_t), ctypes.POINTER(ctypes.c_char)]
 r_num_chs = _libr_util.r_num_chs
-r_num_chs.restype = ctypes.c_uint64
+r_num_chs.restype = uint64_t
 r_num_chs.argtypes = [ctypes.c_int32, ctypes.c_int32, ctypes.c_int32, ctypes.c_int32]
 r_num_is_valid_input = _libr_util.r_num_is_valid_input
 r_num_is_valid_input.restype = ctypes.c_int32
 r_num_is_valid_input.argtypes = [ctypes.POINTER(struct_r_num_t), ctypes.POINTER(ctypes.c_char)]
 r_num_get_input_value = _libr_util.r_num_get_input_value
-r_num_get_input_value.restype = ctypes.c_uint64
+r_num_get_input_value.restype = uint64_t
 r_num_get_input_value.argtypes = [ctypes.POINTER(struct_r_num_t), ctypes.POINTER(ctypes.c_char)]
 r_num_get_name = _libr_util.r_num_get_name
 r_num_get_name.restype = ctypes.POINTER(ctypes.c_char)
-r_num_get_name.argtypes = [ctypes.POINTER(struct_r_num_t), ctypes.c_uint64]
+r_num_get_name.argtypes = [ctypes.POINTER(struct_r_num_t), uint64_t]
 r_num_as_string = _libr_util.r_num_as_string
 r_num_as_string.restype = ctypes.POINTER(ctypes.c_char)
-r_num_as_string.argtypes = [ctypes.POINTER(struct_r_num_t), ctypes.c_uint64, ctypes.c_bool]
+r_num_as_string.argtypes = [ctypes.POINTER(struct_r_num_t), uint64_t, ctypes.c_bool]
 r_num_tail = _libr_util.r_num_tail
-r_num_tail.restype = ctypes.c_uint64
-r_num_tail.argtypes = [ctypes.POINTER(struct_r_num_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_char)]
+r_num_tail.restype = uint64_t
+r_num_tail.argtypes = [ctypes.POINTER(struct_r_num_t), uint64_t, ctypes.POINTER(ctypes.c_char)]
 r_num_tail_base = _libr_util.r_num_tail_base
-r_num_tail_base.restype = ctypes.c_uint64
-r_num_tail_base.argtypes = [ctypes.POINTER(struct_r_num_t), ctypes.c_uint64, ctypes.c_uint64]
+r_num_tail_base.restype = uint64_t
+r_num_tail_base.argtypes = [ctypes.POINTER(struct_r_num_t), uint64_t, uint64_t]
 r_num_segaddr = _libr_util.r_num_segaddr
 r_num_segaddr.restype = ctypes.c_bool
-r_num_segaddr.argtypes = [ctypes.c_uint64, ctypes.c_uint64, ctypes.c_int32, ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_uint32)]
+r_num_segaddr.argtypes = [uint64_t, uint64_t, ctypes.c_int32, ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_uint32)]
 r_num_minmax_swap = _libr_util.r_num_minmax_swap
 r_num_minmax_swap.restype = None
 r_num_minmax_swap.argtypes = [ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_uint64)]
@@ -2394,17 +2526,17 @@ r_num_minmax_swap_i = _libr_util.r_num_minmax_swap_i
 r_num_minmax_swap_i.restype = None
 r_num_minmax_swap_i.argtypes = [ctypes.POINTER(ctypes.c_int32), ctypes.POINTER(ctypes.c_int32)]
 r_num_math = _libr_util.r_num_math
-r_num_math.restype = ctypes.c_uint64
+r_num_math.restype = uint64_t
 r_num_math.argtypes = [ctypes.POINTER(struct_r_num_t), ctypes.POINTER(ctypes.c_char)]
 r_num_get = _libr_util.r_num_get
-r_num_get.restype = ctypes.c_uint64
+r_num_get.restype = uint64_t
 r_num_get.argtypes = [ctypes.POINTER(struct_r_num_t), ctypes.POINTER(ctypes.c_char)]
 r_num_to_bits = _libr_util.r_num_to_bits
 r_num_to_bits.restype = ctypes.c_int32
-r_num_to_bits.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_num_to_bits.argtypes = [ctypes.POINTER(ctypes.c_char), uint64_t]
 r_num_to_ternary = _libr_util.r_num_to_ternary
 r_num_to_ternary.restype = ctypes.c_int32
-r_num_to_ternary.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
+r_num_to_ternary.argtypes = [ctypes.POINTER(ctypes.c_char), uint64_t]
 r_num_rand = _libr_util.r_num_rand
 r_num_rand.restype = ctypes.c_int32
 r_num_rand.argtypes = [ctypes.c_int32]
@@ -2412,7 +2544,7 @@ r_num_irand = _libr_util.r_num_irand
 r_num_irand.restype = None
 r_num_irand.argtypes = []
 r_get_input_num_value = _libr_util.r_get_input_num_value
-r_get_input_num_value.restype = ctypes.c_uint64
+r_get_input_num_value.restype = uint64_t
 r_get_input_num_value.argtypes = [ctypes.POINTER(struct_r_num_t), ctypes.POINTER(ctypes.c_char)]
 r_is_valid_input_num_value = _libr_util.r_is_valid_input_num_value
 r_is_valid_input_num_value.restype = ctypes.c_bool
@@ -2434,7 +2566,7 @@ r_num_str_split_list.restype = ctypes.POINTER(struct_r_list_t)
 r_num_str_split_list.argtypes = [ctypes.POINTER(ctypes.c_char)]
 r_num_dup = _libr_util.r_num_dup
 r_num_dup.restype = ctypes.POINTER(None)
-r_num_dup.argtypes = [ctypes.c_uint64]
+r_num_dup.argtypes = [uint64_t]
 r_num_cos = _libr_util.r_num_cos
 r_num_cos.restype = ctypes.c_double
 r_num_cos.argtypes = [ctypes.c_double]
@@ -2443,13 +2575,13 @@ r_num_sin.restype = ctypes.c_double
 r_num_sin.argtypes = [ctypes.c_double]
 r_num_bit_count = _libr_util.r_num_bit_count
 r_num_bit_count.restype = size_t
-r_num_bit_count.argtypes = [ctypes.c_uint32]
+r_num_bit_count.argtypes = [uint32_t]
 r_num_get_float = _libr_util.r_num_get_float
 r_num_get_float.restype = ctypes.c_double
 r_num_get_float.argtypes = [ctypes.POINTER(struct_r_num_t), ctypes.POINTER(ctypes.c_char)]
 r_num_abs = _libraries['FIXME_STUB'].r_num_abs
-r_num_abs.restype = ctypes.c_int64
-r_num_abs.argtypes = [ctypes.c_int64]
+r_num_abs.restype = int64_t
+r_num_abs.argtypes = [int64_t]
 class struct_c__SA_RTableColumnType(Structure):
     pass
 
@@ -2623,7 +2755,7 @@ r_table_align.restype = ctypes.c_bool
 r_table_align.argtypes = [ctypes.POINTER(struct_c__SA_RTable), ctypes.c_int32, ctypes.c_int32]
 r_table_visual_list = _libr_util.r_table_visual_list
 r_table_visual_list.restype = None
-r_table_visual_list.argtypes = [ctypes.POINTER(struct_c__SA_RTable), ctypes.POINTER(struct_r_list_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_int32, ctypes.c_bool]
+r_table_visual_list.argtypes = [ctypes.POINTER(struct_c__SA_RTable), ctypes.POINTER(struct_r_list_t), uint64_t, uint64_t, ctypes.c_int32, ctypes.c_bool]
 r_table_push = _libraries['FIXME_STUB'].r_table_push
 r_table_push.restype = ctypes.POINTER(struct_c__SA_RTable)
 r_table_push.argtypes = [ctypes.POINTER(struct_c__SA_RTable)]
@@ -2646,7 +2778,7 @@ r_table_format = _libraries['FIXME_STUB'].r_table_format
 r_table_format.restype = None
 r_table_format.argtypes = [ctypes.POINTER(struct_c__SA_RTable), ctypes.c_int32, ctypes.POINTER(struct_c__SA_RTableColumnType)]
 r_table_reduce = _libraries['FIXME_STUB'].r_table_reduce
-r_table_reduce.restype = ctypes.c_uint64
+r_table_reduce.restype = uint64_t
 r_table_reduce.argtypes = [ctypes.POINTER(struct_c__SA_RTable), ctypes.c_int32]
 r_table_columns = _libr_util.r_table_columns
 r_table_columns.restype = None
@@ -3002,13 +3134,13 @@ r_diff_new.restype = ctypes.POINTER(struct_r_diff_t)
 r_diff_new.argtypes = []
 r_diff_new_from = _libr_util.r_diff_new_from
 r_diff_new_from.restype = ctypes.POINTER(struct_r_diff_t)
-r_diff_new_from.argtypes = [ctypes.c_uint64, ctypes.c_uint64]
+r_diff_new_from.argtypes = [uint64_t, uint64_t]
 r_diff_free = _libr_util.r_diff_free
 r_diff_free.restype = None
 r_diff_free.argtypes = [ctypes.POINTER(struct_r_diff_t)]
 r_diff_buffers = _libr_util.r_diff_buffers
 r_diff_buffers.restype = ctypes.c_int32
-r_diff_buffers.argtypes = [ctypes.POINTER(struct_r_diff_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32]
+r_diff_buffers.argtypes = [ctypes.POINTER(struct_r_diff_t), ctypes.POINTER(ctypes.c_ubyte), uint32_t, ctypes.POINTER(ctypes.c_ubyte), uint32_t]
 r_diff_buffers_static = _libr_util.r_diff_buffers_static
 r_diff_buffers_static.restype = ctypes.c_int32
 r_diff_buffers_static.argtypes = [ctypes.POINTER(struct_r_diff_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
@@ -3026,13 +3158,13 @@ r_diff_set_callback.restype = ctypes.c_int32
 r_diff_set_callback.argtypes = [ctypes.POINTER(struct_r_diff_t), RDiffCallback, ctypes.POINTER(None)]
 r_diff_buffers_distance = _libr_util.r_diff_buffers_distance
 r_diff_buffers_distance.restype = ctypes.c_bool
-r_diff_buffers_distance.argtypes = [ctypes.POINTER(struct_r_diff_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_double)]
+r_diff_buffers_distance.argtypes = [ctypes.POINTER(struct_r_diff_t), ctypes.POINTER(ctypes.c_ubyte), uint32_t, ctypes.POINTER(ctypes.c_ubyte), uint32_t, ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_double)]
 r_diff_buffers_distance_myers = _libr_util.r_diff_buffers_distance_myers
 r_diff_buffers_distance_myers.restype = ctypes.c_bool
-r_diff_buffers_distance_myers.argtypes = [ctypes.POINTER(struct_r_diff_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_double)]
+r_diff_buffers_distance_myers.argtypes = [ctypes.POINTER(struct_r_diff_t), ctypes.POINTER(ctypes.c_ubyte), uint32_t, ctypes.POINTER(ctypes.c_ubyte), uint32_t, ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_double)]
 r_diff_buffers_distance_levenshtein = _libr_util.r_diff_buffers_distance_levenshtein
 r_diff_buffers_distance_levenshtein.restype = ctypes.c_bool
-r_diff_buffers_distance_levenshtein.argtypes = [ctypes.POINTER(struct_r_diff_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_double)]
+r_diff_buffers_distance_levenshtein.argtypes = [ctypes.POINTER(struct_r_diff_t), ctypes.POINTER(ctypes.c_ubyte), uint32_t, ctypes.POINTER(ctypes.c_ubyte), uint32_t, ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_double)]
 r_diff_buffers_unified = _libr_util.r_diff_buffers_unified
 r_diff_buffers_unified.restype = ctypes.POINTER(ctypes.c_char)
 r_diff_buffers_unified.argtypes = [ctypes.POINTER(struct_r_diff_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
@@ -3054,9 +3186,10 @@ r_diffchar_print.argtypes = [ctypes.POINTER(struct_r_diffchar_t)]
 r_diffchar_free = _libr_util.r_diffchar_free
 r_diffchar_free.restype = None
 r_diffchar_free.argtypes = [ctypes.POINTER(struct_r_diffchar_t)]
+int32_t = ctypes.c_int32
 r_diff_levenshtein_path = _libr_util.r_diff_levenshtein_path
-r_diff_levenshtein_path.restype = ctypes.c_int32
-r_diff_levenshtein_path.argtypes = [ctypes.POINTER(struct_r_lev_buf), ctypes.POINTER(struct_r_lev_buf), ctypes.c_uint32, RLevMatches, ctypes.POINTER(ctypes.POINTER(c__EA_RLevOp))]
+r_diff_levenshtein_path.restype = int32_t
+r_diff_levenshtein_path.argtypes = [ctypes.POINTER(struct_r_lev_buf), ctypes.POINTER(struct_r_lev_buf), uint32_t, RLevMatches, ctypes.POINTER(ctypes.POINTER(c__EA_RLevOp))]
 r_punycode_encode = _libr_util.r_punycode_encode
 r_punycode_encode.restype = ctypes.POINTER(ctypes.c_char)
 r_punycode_encode.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.POINTER(ctypes.c_int32)]
@@ -3126,25 +3259,25 @@ r_range_free.restype = ctypes.POINTER(struct_r_range_t)
 r_range_free.argtypes = [ctypes.POINTER(struct_r_range_t)]
 r_range_item_get = _libr_util.r_range_item_get
 r_range_item_get.restype = ctypes.POINTER(struct_r_range_item_t)
-r_range_item_get.argtypes = [ctypes.POINTER(struct_r_range_t), ctypes.c_uint64]
+r_range_item_get.argtypes = [ctypes.POINTER(struct_r_range_t), uint64_t]
 r_range_size = _libr_util.r_range_size
-r_range_size.restype = ctypes.c_uint64
+r_range_size.restype = uint64_t
 r_range_size.argtypes = [ctypes.POINTER(struct_r_range_t)]
 r_range_add_from_string = _libr_util.r_range_add_from_string
 r_range_add_from_string.restype = ctypes.c_int32
 r_range_add_from_string.argtypes = [ctypes.POINTER(struct_r_range_t), ctypes.POINTER(ctypes.c_char)]
 r_range_add = _libr_util.r_range_add
 r_range_add.restype = ctypes.POINTER(struct_r_range_item_t)
-r_range_add.argtypes = [ctypes.POINTER(struct_r_range_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_int32]
+r_range_add.argtypes = [ctypes.POINTER(struct_r_range_t), uint64_t, uint64_t, ctypes.c_int32]
 r_range_sub = _libr_util.r_range_sub
 r_range_sub.restype = ctypes.c_int32
-r_range_sub.argtypes = [ctypes.POINTER(struct_r_range_t), ctypes.c_uint64, ctypes.c_uint64]
+r_range_sub.argtypes = [ctypes.POINTER(struct_r_range_t), uint64_t, uint64_t]
 r_range_merge = _libraries['FIXME_STUB'].r_range_merge
 r_range_merge.restype = None
 r_range_merge.argtypes = [ctypes.POINTER(struct_r_range_t), ctypes.POINTER(struct_r_range_t)]
 r_range_contains = _libr_util.r_range_contains
 r_range_contains.restype = ctypes.c_int32
-r_range_contains.argtypes = [ctypes.POINTER(struct_r_range_t), ctypes.c_uint64]
+r_range_contains.argtypes = [ctypes.POINTER(struct_r_range_t), uint64_t]
 r_range_sort = _libr_util.r_range_sort
 r_range_sort.restype = ctypes.c_int32
 r_range_sort.argtypes = [ctypes.POINTER(struct_r_range_t)]
@@ -3159,10 +3292,10 @@ r_range_get_n.restype = ctypes.c_int32
 r_range_get_n.argtypes = [ctypes.POINTER(struct_r_range_t), ctypes.c_int32, ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_uint64)]
 r_range_inverse = _libr_util.r_range_inverse
 r_range_inverse.restype = ctypes.POINTER(struct_r_range_t)
-r_range_inverse.argtypes = [ctypes.POINTER(struct_r_range_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_int32]
+r_range_inverse.argtypes = [ctypes.POINTER(struct_r_range_t), uint64_t, uint64_t, ctypes.c_int32]
 r_range_overlap = _libr_util.r_range_overlap
 r_range_overlap.restype = ctypes.c_int32
-r_range_overlap.argtypes = [ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.POINTER(ctypes.c_int32)]
+r_range_overlap.argtypes = [uint64_t, uint64_t, uint64_t, uint64_t, ctypes.POINTER(ctypes.c_int32)]
 class struct_r_space_t(Structure):
     pass
 
@@ -3415,12 +3548,12 @@ r_uleb128_len.restype = ctypes.c_int32
 r_uleb128_len.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_uleb128_encode = _libr_util.r_uleb128_encode
 r_uleb128_encode.restype = ctypes.POINTER(ctypes.c_ubyte)
-r_uleb128_encode.argtypes = [ctypes.c_uint64, ctypes.POINTER(ctypes.c_int32)]
+r_uleb128_encode.argtypes = [uint64_t, ctypes.POINTER(ctypes.c_int32)]
 r_leb128 = _libr_util.r_leb128
 r_leb128.restype = ctypes.POINTER(ctypes.c_ubyte)
 r_leb128.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.POINTER(ctypes.c_int64)]
 r_sleb128 = _libr_util.r_sleb128
-r_sleb128.restype = ctypes.c_int64
+r_sleb128.restype = int64_t
 r_sleb128.argtypes = [ctypes.POINTER(ctypes.POINTER(ctypes.c_ubyte)), ctypes.POINTER(ctypes.c_ubyte)]
 read_u32_leb128 = _libr_util.read_u32_leb128
 read_u32_leb128.restype = size_t
@@ -3536,13 +3669,13 @@ struct_r_id_pool_t._fields_ = [
 RIDPool = struct_r_id_pool_t
 r_id_pool_new = _libr_util.r_id_pool_new
 r_id_pool_new.restype = ctypes.POINTER(struct_r_id_pool_t)
-r_id_pool_new.argtypes = [ctypes.c_uint32, ctypes.c_uint32]
+r_id_pool_new.argtypes = [uint32_t, uint32_t]
 r_id_pool_grab_id = _libr_util.r_id_pool_grab_id
 r_id_pool_grab_id.restype = ctypes.c_bool
 r_id_pool_grab_id.argtypes = [ctypes.POINTER(struct_r_id_pool_t), ctypes.POINTER(ctypes.c_uint32)]
 r_id_pool_kick_id = _libr_util.r_id_pool_kick_id
 r_id_pool_kick_id.restype = ctypes.c_bool
-r_id_pool_kick_id.argtypes = [ctypes.POINTER(struct_r_id_pool_t), ctypes.c_uint32]
+r_id_pool_kick_id.argtypes = [ctypes.POINTER(struct_r_id_pool_t), uint32_t]
 r_id_pool_free = _libr_util.r_id_pool_free
 r_id_pool_free.restype = None
 r_id_pool_free.argtypes = [ctypes.POINTER(struct_r_id_pool_t)]
@@ -3562,16 +3695,16 @@ RIDStorageForeachCb = ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None), ctyp
 ROIDStorageCompareCb = ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None), ctypes.POINTER(None), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_int32))
 r_id_storage_new = _libr_util.r_id_storage_new
 r_id_storage_new.restype = ctypes.POINTER(struct_r_id_storage_t)
-r_id_storage_new.argtypes = [ctypes.c_uint32, ctypes.c_uint32]
+r_id_storage_new.argtypes = [uint32_t, uint32_t]
 r_id_storage_set = _libr_util.r_id_storage_set
 r_id_storage_set.restype = ctypes.c_bool
-r_id_storage_set.argtypes = [ctypes.POINTER(struct_r_id_storage_t), ctypes.POINTER(None), ctypes.c_uint32]
+r_id_storage_set.argtypes = [ctypes.POINTER(struct_r_id_storage_t), ctypes.POINTER(None), uint32_t]
 r_id_storage_add = _libr_util.r_id_storage_add
 r_id_storage_add.restype = ctypes.c_bool
 r_id_storage_add.argtypes = [ctypes.POINTER(struct_r_id_storage_t), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_uint32)]
 r_id_storage_get = _libr_util.r_id_storage_get
 r_id_storage_get.restype = ctypes.POINTER(None)
-r_id_storage_get.argtypes = [ctypes.POINTER(struct_r_id_storage_t), ctypes.c_uint32]
+r_id_storage_get.argtypes = [ctypes.POINTER(struct_r_id_storage_t), uint32_t]
 r_id_storage_get_next = _libr_util.r_id_storage_get_next
 r_id_storage_get_next.restype = ctypes.c_bool
 r_id_storage_get_next.argtypes = [ctypes.POINTER(struct_r_id_storage_t), ctypes.POINTER(ctypes.c_uint32)]
@@ -3580,10 +3713,10 @@ r_id_storage_get_prev.restype = ctypes.c_bool
 r_id_storage_get_prev.argtypes = [ctypes.POINTER(struct_r_id_storage_t), ctypes.POINTER(ctypes.c_uint32)]
 r_id_storage_delete = _libr_util.r_id_storage_delete
 r_id_storage_delete.restype = None
-r_id_storage_delete.argtypes = [ctypes.POINTER(struct_r_id_storage_t), ctypes.c_uint32]
+r_id_storage_delete.argtypes = [ctypes.POINTER(struct_r_id_storage_t), uint32_t]
 r_id_storage_take = _libr_util.r_id_storage_take
 r_id_storage_take.restype = ctypes.POINTER(None)
-r_id_storage_take.argtypes = [ctypes.POINTER(struct_r_id_storage_t), ctypes.c_uint32]
+r_id_storage_take.argtypes = [ctypes.POINTER(struct_r_id_storage_t), uint32_t]
 r_id_storage_foreach = _libr_util.r_id_storage_foreach
 r_id_storage_foreach.restype = ctypes.c_bool
 r_id_storage_foreach.argtypes = [ctypes.POINTER(struct_r_id_storage_t), RIDStorageForeachCb, ctypes.POINTER(None)]
@@ -3614,31 +3747,31 @@ struct_r_ordered_id_storage_t._fields_ = [
 ROIDStorage = struct_r_ordered_id_storage_t
 r_oids_new = _libr_util.r_oids_new
 r_oids_new.restype = ctypes.POINTER(struct_r_ordered_id_storage_t)
-r_oids_new.argtypes = [ctypes.c_uint32, ctypes.c_uint32]
+r_oids_new.argtypes = [uint32_t, uint32_t]
 r_oids_get = _libr_util.r_oids_get
 r_oids_get.restype = ctypes.POINTER(None)
-r_oids_get.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), ctypes.c_uint32]
+r_oids_get.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), uint32_t]
 r_oids_oget = _libr_util.r_oids_oget
 r_oids_oget.restype = ctypes.POINTER(None)
-r_oids_oget.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), ctypes.c_uint32]
+r_oids_oget.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), uint32_t]
 r_oids_get_id = _libr_util.r_oids_get_id
 r_oids_get_id.restype = ctypes.c_bool
-r_oids_get_id.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32)]
+r_oids_get_id.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), uint32_t, ctypes.POINTER(ctypes.c_uint32)]
 r_oids_get_od = _libr_util.r_oids_get_od
 r_oids_get_od.restype = ctypes.c_bool
-r_oids_get_od.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32)]
+r_oids_get_od.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), uint32_t, ctypes.POINTER(ctypes.c_uint32)]
 r_oids_to_front = _libr_util.r_oids_to_front
 r_oids_to_front.restype = ctypes.c_bool
-r_oids_to_front.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), ctypes.c_uint32]
+r_oids_to_front.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), uint32_t]
 r_oids_to_rear = _libr_util.r_oids_to_rear
 r_oids_to_rear.restype = ctypes.c_bool
-r_oids_to_rear.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), ctypes.c_uint32]
+r_oids_to_rear.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), uint32_t]
 r_oids_delete = _libr_util.r_oids_delete
 r_oids_delete.restype = None
-r_oids_delete.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), ctypes.c_uint32]
+r_oids_delete.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), uint32_t]
 r_oids_odelete = _libr_util.r_oids_odelete
 r_oids_odelete.restype = None
-r_oids_odelete.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), ctypes.c_uint32]
+r_oids_odelete.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), uint32_t]
 r_oids_free = _libr_util.r_oids_free
 r_oids_free.restype = None
 r_oids_free.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t)]
@@ -3647,10 +3780,10 @@ r_oids_add.restype = ctypes.c_bool
 r_oids_add.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_uint32)]
 r_oids_take = _libr_util.r_oids_take
 r_oids_take.restype = ctypes.POINTER(None)
-r_oids_take.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), ctypes.c_uint32]
+r_oids_take.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), uint32_t]
 r_oids_otake = _libr_util.r_oids_otake
 r_oids_otake.restype = ctypes.POINTER(None)
-r_oids_otake.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), ctypes.c_uint32]
+r_oids_otake.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), uint32_t]
 r_oids_foreach = _libr_util.r_oids_foreach
 r_oids_foreach.restype = ctypes.c_bool
 r_oids_foreach.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), RIDStorageForeachCb, ctypes.POINTER(None)]
@@ -3664,7 +3797,7 @@ r_oids_sort = _libr_util.r_oids_sort
 r_oids_sort.restype = ctypes.c_bool
 r_oids_sort.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), ctypes.POINTER(None)]
 r_oids_find = _libr_util.r_oids_find
-r_oids_find.restype = ctypes.c_uint32
+r_oids_find.restype = uint32_t
 r_oids_find.argtypes = [ctypes.POINTER(struct_r_ordered_id_storage_t), ctypes.POINTER(None), ctypes.POINTER(None)]
 r_oids_last = _libr_util.r_oids_last
 r_oids_last.restype = ctypes.POINTER(None)
@@ -3726,37 +3859,37 @@ RASN1Binary = struct_r_asn1_bin_t
 RASN1Object = struct_r_asn1_object_t
 r_asn1_create_object = _libr_util.r_asn1_create_object
 r_asn1_create_object.restype = ctypes.POINTER(struct_r_asn1_object_t)
-r_asn1_create_object.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32, ctypes.POINTER(ctypes.c_ubyte)]
+r_asn1_create_object.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint32_t, ctypes.POINTER(ctypes.c_ubyte)]
 r_asn1_create_binary = _libr_util.r_asn1_create_binary
 r_asn1_create_binary.restype = ctypes.POINTER(struct_r_asn1_bin_t)
-r_asn1_create_binary.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32]
+r_asn1_create_binary.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint32_t]
 r_asn1_create_string = _libr_util.r_asn1_create_string
 r_asn1_create_string.restype = ctypes.POINTER(struct_r_asn1_string_t)
-r_asn1_create_string.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_bool, ctypes.c_uint32]
+r_asn1_create_string.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_bool, uint32_t]
 r_asn1_stringify_bits = _libr_util.r_asn1_stringify_bits
 r_asn1_stringify_bits.restype = ctypes.POINTER(struct_r_asn1_string_t)
-r_asn1_stringify_bits.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32]
+r_asn1_stringify_bits.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint32_t]
 r_asn1_stringify_utctime = _libr_util.r_asn1_stringify_utctime
 r_asn1_stringify_utctime.restype = ctypes.POINTER(struct_r_asn1_string_t)
-r_asn1_stringify_utctime.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32]
+r_asn1_stringify_utctime.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint32_t]
 r_asn1_stringify_time = _libr_util.r_asn1_stringify_time
 r_asn1_stringify_time.restype = ctypes.POINTER(struct_r_asn1_string_t)
-r_asn1_stringify_time.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32]
+r_asn1_stringify_time.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint32_t]
 r_asn1_stringify_integer = _libr_util.r_asn1_stringify_integer
 r_asn1_stringify_integer.restype = ctypes.POINTER(struct_r_asn1_string_t)
-r_asn1_stringify_integer.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32]
+r_asn1_stringify_integer.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint32_t]
 r_asn1_stringify_string = _libr_util.r_asn1_stringify_string
 r_asn1_stringify_string.restype = ctypes.POINTER(struct_r_asn1_string_t)
-r_asn1_stringify_string.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32]
+r_asn1_stringify_string.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint32_t]
 r_asn1_stringify_bytes = _libr_util.r_asn1_stringify_bytes
 r_asn1_stringify_bytes.restype = ctypes.POINTER(struct_r_asn1_string_t)
-r_asn1_stringify_bytes.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32]
+r_asn1_stringify_bytes.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint32_t]
 r_asn1_stringify_boolean = _libr_util.r_asn1_stringify_boolean
 r_asn1_stringify_boolean.restype = ctypes.POINTER(struct_r_asn1_string_t)
-r_asn1_stringify_boolean.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32]
+r_asn1_stringify_boolean.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint32_t]
 r_asn1_stringify_oid = _libr_util.r_asn1_stringify_oid
 r_asn1_stringify_oid.restype = ctypes.POINTER(struct_r_asn1_string_t)
-r_asn1_stringify_oid.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32]
+r_asn1_stringify_oid.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint32_t]
 r_asn1_free_object = _libr_util.r_asn1_free_object
 r_asn1_free_object.restype = None
 r_asn1_free_object.argtypes = [ctypes.POINTER(struct_r_asn1_object_t)]
@@ -3775,7 +3908,7 @@ struct_c__SA_RStrBuf._fields_ = [
 
 r_asn1_to_string = _libr_util.r_asn1_to_string
 r_asn1_to_string.restype = ctypes.POINTER(ctypes.c_char)
-r_asn1_to_string.argtypes = [ctypes.POINTER(struct_r_asn1_object_t), ctypes.c_uint32, ctypes.POINTER(struct_c__SA_RStrBuf)]
+r_asn1_to_string.argtypes = [ctypes.POINTER(struct_r_asn1_object_t), uint32_t, ctypes.POINTER(struct_c__SA_RStrBuf)]
 r_asn1_free_string = _libr_util.r_asn1_free_string
 r_asn1_free_string.restype = None
 r_asn1_free_string.argtypes = [ctypes.POINTER(struct_r_asn1_string_t)]
@@ -3958,11 +4091,13 @@ struct_pj_t._fields_ = [
     ('sb', struct_c__SA_RStrBuf),
     ('is_first', ctypes.c_bool),
     ('is_key', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 6),
+    ('comma', ctypes.POINTER(ctypes.c_char)),
     ('braces', ctypes.c_char * 128),
-    ('PADDING_0', ctypes.c_ubyte * 2),
     ('level', ctypes.c_int32),
     ('str_encoding', PJEncodingStr),
     ('num_encoding', PJEncodingNum),
+    ('PADDING_1', ctypes.c_ubyte * 4),
 ]
 
 r_x509_crl_json = _libr_util.r_x509_crl_json
@@ -3973,7 +4108,7 @@ r_x509_parse_certificate.restype = ctypes.POINTER(struct_r_x509_certificate_t)
 r_x509_parse_certificate.argtypes = [ctypes.POINTER(struct_r_asn1_object_t)]
 r_x509_parse_certificate2 = _libr_util.r_x509_parse_certificate2
 r_x509_parse_certificate2.restype = ctypes.POINTER(struct_r_x509_certificate_t)
-r_x509_parse_certificate2.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32]
+r_x509_parse_certificate2.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint32_t]
 r_x509_free_certificate = _libr_util.r_x509_free_certificate
 r_x509_free_certificate.restype = None
 r_x509_free_certificate.argtypes = [ctypes.POINTER(struct_r_x509_certificate_t)]
@@ -4142,7 +4277,7 @@ class struct_c__SA_SpcIndirectDataContent(Structure):
 SpcIndirectDataContent = struct_c__SA_SpcIndirectDataContent
 r_pkcs7_parse_cms = _libr_util.r_pkcs7_parse_cms
 r_pkcs7_parse_cms.restype = ctypes.POINTER(struct_r_pkcs7_container_t)
-r_pkcs7_parse_cms.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32]
+r_pkcs7_parse_cms.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint32_t]
 r_pkcs7_free_cms = _libr_util.r_pkcs7_free_cms
 r_pkcs7_free_cms.restype = None
 r_pkcs7_free_cms.argtypes = [ctypes.POINTER(struct_r_pkcs7_container_t)]
@@ -4160,36 +4295,71 @@ r_pkcs7_free_spcinfo.restype = None
 r_pkcs7_free_spcinfo.argtypes = [ctypes.POINTER(struct_c__SA_SpcIndirectDataContent)]
 r_protobuf_decode = _libr_util.r_protobuf_decode
 r_protobuf_decode.restype = ctypes.POINTER(ctypes.c_char)
-r_protobuf_decode.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64, ctypes.c_bool]
-r_axml_decode = _libr_util.r_axml_decode
-r_axml_decode.restype = ctypes.POINTER(ctypes.c_char)
-r_axml_decode.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64]
-class struct_r_anal_graph_node_info_t(Structure):
+r_protobuf_decode.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint64_t, ctypes.c_bool]
+
+# values for enumeration 'c__EA_RTokenType'
+c__EA_RTokenType__enumvalues = {
+    0: 'R_TOKEN_NONE',
+    1: 'R_TOKEN_INT',
+    2: 'R_TOKEN_FLOAT',
+    3: 'R_TOKEN_WORD',
+    4: 'R_TOKEN_HASH',
+    5: 'R_TOKEN_STRING',
+    6: 'R_TOKEN_COMMENT',
+    7: 'R_TOKEN_MATH',
+    8: 'R_TOKEN_GROUP',
+    9: 'R_TOKEN_BEGIN',
+    10: 'R_TOKEN_END',
+}
+R_TOKEN_NONE = 0
+R_TOKEN_INT = 1
+R_TOKEN_FLOAT = 2
+R_TOKEN_WORD = 3
+R_TOKEN_HASH = 4
+R_TOKEN_STRING = 5
+R_TOKEN_COMMENT = 6
+R_TOKEN_MATH = 7
+R_TOKEN_GROUP = 8
+R_TOKEN_BEGIN = 9
+R_TOKEN_END = 10
+c__EA_RTokenType = ctypes.c_uint32 # enum
+RTokenType = c__EA_RTokenType
+RTokenType__enumvalues = c__EA_RTokenType__enumvalues
+RTokenizerCallback = ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None))
+class struct_r_tokenizer_t(Structure):
     pass
 
-struct_r_anal_graph_node_info_t._pack_ = 1 # source:False
-struct_r_anal_graph_node_info_t._fields_ = [
-    ('title', ctypes.POINTER(ctypes.c_char)),
-    ('body', ctypes.POINTER(ctypes.c_char)),
-    ('offset', ctypes.c_uint64),
+struct_r_tokenizer_t._pack_ = 1 # source:False
+struct_r_tokenizer_t._fields_ = [
+    ('hex', ctypes.c_bool),
+    ('escape', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 6),
+    ('buf', ctypes.POINTER(ctypes.c_char)),
+    ('ch', ctypes.c_char),
+    ('PADDING_1', ctypes.c_ubyte * 7),
+    ('begin', ctypes.c_uint64),
+    ('indent', ctypes.c_int32),
+    ('PADDING_2', ctypes.c_ubyte * 4),
+    ('end', ctypes.c_uint64),
+    ('type', RTokenType),
+    ('PADDING_3', ctypes.c_ubyte * 4),
+    ('cb', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None))),
+    ('user', ctypes.POINTER(None)),
 ]
 
-RGraphNodeInfo = struct_r_anal_graph_node_info_t
-r_graph_free_node_info = _libr_util.r_graph_free_node_info
-r_graph_free_node_info.restype = None
-r_graph_free_node_info.argtypes = [ctypes.POINTER(None)]
-r_graph_create_node_info = _libr_util.r_graph_create_node_info
-r_graph_create_node_info.restype = ctypes.POINTER(struct_r_anal_graph_node_info_t)
-r_graph_create_node_info.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
-r_graph_add_node_info = _libr_util.r_graph_add_node_info
-r_graph_add_node_info.restype = ctypes.POINTER(struct_r_graph_node_t)
-r_graph_add_node_info.argtypes = [ctypes.POINTER(struct_r_graph_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64]
-r_graph_drawable_to_dot = _libr_util.r_graph_drawable_to_dot
-r_graph_drawable_to_dot.restype = ctypes.POINTER(ctypes.c_char)
-r_graph_drawable_to_dot.argtypes = [ctypes.POINTER(struct_r_graph_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
-r_graph_drawable_to_json = _libr_util.r_graph_drawable_to_json
-r_graph_drawable_to_json.restype = None
-r_graph_drawable_to_json.argtypes = [ctypes.POINTER(struct_r_graph_t), ctypes.POINTER(struct_pj_t), ctypes.c_bool]
+RTokenizer = struct_r_tokenizer_t
+r_str_tokenize_json = _libr_util.r_str_tokenize_json
+r_str_tokenize_json.restype = ctypes.POINTER(ctypes.c_char)
+r_str_tokenize_json.argtypes = [ctypes.POINTER(ctypes.c_char)]
+r_tokenizer_new = _libr_util.r_tokenizer_new
+r_tokenizer_new.restype = ctypes.POINTER(struct_r_tokenizer_t)
+r_tokenizer_new.argtypes = []
+r_str_tokenize = _libr_util.r_str_tokenize
+r_str_tokenize.restype = None
+r_str_tokenize.argtypes = [ctypes.POINTER(ctypes.c_char), RTokenizerCallback, ctypes.POINTER(None)]
+r_axml_decode = _libr_util.r_axml_decode
+r_axml_decode.restype = ctypes.POINTER(ctypes.c_char)
+r_axml_decode.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint64_t]
 
 # values for enumeration 'r_json_type_t'
 r_json_type_t__enumvalues = {
@@ -4294,7 +4464,7 @@ RPrintNameCallback = ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POIN
 RPrintSizeCallback = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.c_uint64)
 RPrintCommentCallback = ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)
 RPrintSectionGet = ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)
-RPrintColorFor = ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_bool)
+RPrintColorFor = ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_ubyte, ctypes.c_bool)
 RPrintHasRefs = ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_int32)
 class struct_r_print_zoom_t(Structure):
     pass
@@ -4312,30 +4482,20 @@ RPrintZoom = struct_r_print_zoom_t
 class struct_r_print_t(Structure):
     pass
 
-class struct_r_reg_t(Structure):
+class struct_r_cons_t(Structure):
     pass
 
 class struct_r_charset_t(Structure):
     pass
 
-class struct_r_cons_t(Structure):
+class struct_r_reg_t(Structure):
+    pass
+
+class struct_r_arch_config_t(Structure):
     pass
 
 class struct_r_reg_item_t(Structure):
     pass
-
-class struct_r_cons_bind_t(Structure):
-    pass
-
-struct_r_cons_bind_t._pack_ = 1 # source:False
-struct_r_cons_bind_t._fields_ = [
-    ('get_size', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
-    ('get_cursor', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
-    ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
-    ('is_breaked', ctypes.CFUNCTYPE(ctypes.c_bool)),
-    ('cb_flush', ctypes.CFUNCTYPE(None)),
-    ('cb_grep', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
-]
 
 class struct_r_io_bind_t(Structure):
     pass
@@ -4390,6 +4550,19 @@ struct_r_io_bind_t._fields_ = [
     ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
 ]
 
+class struct_r_cons_bind_t(Structure):
+    pass
+
+struct_r_cons_bind_t._pack_ = 1 # source:False
+struct_r_cons_bind_t._fields_ = [
+    ('get_size', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
+    ('get_cursor', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
+    ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
+    ('is_breaked', ctypes.CFUNCTYPE(ctypes.c_bool)),
+    ('cb_flush', ctypes.CFUNCTYPE(None)),
+    ('cb_grep', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
+]
+
 class struct_r_core_bind_t(Structure):
     pass
 
@@ -4434,10 +4607,9 @@ struct_r_print_t._fields_ = [
     ('PADDING_2', ctypes.c_ubyte * 7),
     ('disasm', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.c_uint64)),
     ('oprintf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
-    ('big_endian', ctypes.c_int32),
+    ('config', ctypes.POINTER(struct_r_arch_config_t)),
     ('width', ctypes.c_int32),
     ('limit', ctypes.c_int32),
-    ('bits', ctypes.c_int32),
     ('histblock', ctypes.c_bool),
     ('cur_enabled', ctypes.c_bool),
     ('PADDING_3', ctypes.c_ubyte * 2),
@@ -4457,7 +4629,7 @@ struct_r_print_t._fields_ = [
     ('zoom', ctypes.POINTER(struct_r_print_zoom_t)),
     ('offname', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
     ('offsize', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.c_uint64)),
-    ('colorfor', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_bool)),
+    ('colorfor', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_ubyte, ctypes.c_bool)),
     ('hasrefs', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_int32)),
     ('get_comments', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
     ('get_section_name', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
@@ -4490,17 +4662,9 @@ struct_r_print_t._fields_ = [
     ('enable_progressbar', ctypes.c_bool),
     ('PADDING_9', ctypes.c_ubyte * 7),
     ('charset', ctypes.POINTER(struct_r_charset_t)),
-    ('seggrn', ctypes.c_int32),
-    ('segbas', ctypes.c_int32),
     ('nbcolor', ctypes.c_int32),
     ('PADDING_10', ctypes.c_ubyte * 4),
 ]
-
-class struct_r_pvector_t(Structure):
-    _pack_ = 1 # source:False
-    _fields_ = [
-    ('v', struct_r_vector_t),
-     ]
 
 class struct_r_skyline_t(Structure):
     _pack_ = 1 # source:False
@@ -4532,6 +4696,12 @@ struct_r_io_undo_t._fields_ = [
     ('redos', ctypes.c_int32),
     ('seek', struct_r_io_undos_t * 64),
 ]
+
+class struct_r_pvector_t(Structure):
+    _pack_ = 1 # source:False
+    _fields_ = [
+    ('v', struct_r_vector_t),
+     ]
 
 struct_r_io_t._pack_ = 1 # source:False
 struct_r_io_t._fields_ = [
@@ -4571,7 +4741,7 @@ struct_r_io_t._fields_ = [
     ('args', ctypes.POINTER(ctypes.c_char)),
     ('event', ctypes.POINTER(struct_r_event_t)),
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
-    ('corebind', struct_r_core_bind_t),
+    ('coreb', struct_r_core_bind_t),
     ('want_ptrace_wrap', ctypes.c_bool),
     ('PADDING_5', ctypes.c_ubyte * 7),
 ]
@@ -4633,7 +4803,8 @@ struct_r_io_bank_t._fields_ = [
     ('todo', ctypes.POINTER(struct_r_queue_t)),
     ('last_used', ctypes.POINTER(struct_r_crbtree_node)),
     ('id', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('drain_me', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 3),
 ]
 
 struct_r_io_map_t._pack_ = 1 # source:False
@@ -4648,14 +4819,44 @@ struct_r_io_map_t._fields_ = [
     ('name', ctypes.POINTER(ctypes.c_char)),
 ]
 
+struct_r_arch_config_t._pack_ = 1 # source:False
+struct_r_arch_config_t._fields_ = [
+    ('arch', ctypes.POINTER(ctypes.c_char)),
+    ('cpu', ctypes.POINTER(ctypes.c_char)),
+    ('os', ctypes.POINTER(ctypes.c_char)),
+    ('bits', ctypes.c_int32),
+    ('big_endian', ctypes.c_int32),
+    ('syntax', ctypes.c_int32),
+    ('pcalign', ctypes.c_int32),
+    ('dataalign', ctypes.c_int32),
+    ('segbas', ctypes.c_int32),
+    ('seggrn', ctypes.c_int32),
+    ('invhex', ctypes.c_int32),
+    ('bitshift', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('features', ctypes.POINTER(ctypes.c_char)),
+    ('refcount', ctypes.c_int32),
+    ('PADDING_1', ctypes.c_ubyte * 4),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+]
+
+class struct_r_line_t(Structure):
+    pass
+
 class struct__IO_FILE(Structure):
     pass
 
 class struct_r_cons_context_t(Structure):
     pass
 
-class struct_r_line_t(Structure):
+class struct_c__SA_RConsCursorPos(Structure):
     pass
+
+struct_c__SA_RConsCursorPos._pack_ = 1 # source:False
+struct_c__SA_RConsCursorPos._fields_ = [
+    ('x', ctypes.c_int32),
+    ('y', ctypes.c_int32),
+]
 
 class struct_termios(Structure):
     pass
@@ -4671,15 +4872,6 @@ struct_termios._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 3),
     ('c_ispeed', ctypes.c_uint32),
     ('c_ospeed', ctypes.c_uint32),
-]
-
-class struct_c__SA_RConsCursorPos(Structure):
-    pass
-
-struct_c__SA_RConsCursorPos._pack_ = 1 # source:False
-struct_c__SA_RConsCursorPos._fields_ = [
-    ('x', ctypes.c_int32),
-    ('y', ctypes.c_int32),
 ]
 
 struct_r_cons_t._pack_ = 1 # source:False
@@ -4741,165 +4933,25 @@ struct_r_cons_t._fields_ = [
     ('PADDING_7', ctypes.c_ubyte),
     ('linesleep', ctypes.c_int32),
     ('pagesize', ctypes.c_int32),
+    ('maxpage', ctypes.c_int32),
+    ('PADDING_8', ctypes.c_ubyte * 4),
     ('break_word', ctypes.POINTER(ctypes.c_char)),
     ('break_word_len', ctypes.c_int32),
-    ('PADDING_8', ctypes.c_ubyte * 4),
+    ('PADDING_9', ctypes.c_ubyte * 4),
     ('timeout', ctypes.c_uint64),
     ('rgbstr', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_uint64)),
     ('click_set', ctypes.c_bool),
-    ('PADDING_9', ctypes.c_ubyte * 3),
+    ('PADDING_10', ctypes.c_ubyte * 3),
     ('click_x', ctypes.c_int32),
     ('click_y', ctypes.c_int32),
     ('show_vals', ctypes.c_bool),
-    ('PADDING_10', ctypes.c_ubyte * 3),
+    ('PADDING_11', ctypes.c_ubyte * 3),
     ('cpos', struct_c__SA_RConsCursorPos),
 ]
 
 class struct_r_stack_t(Structure):
     pass
 
-class struct_r_cons_printable_palette_t(Structure):
-    pass
-
-struct_r_cons_printable_palette_t._pack_ = 1 # source:False
-struct_r_cons_printable_palette_t._fields_ = [
-    ('b0x00', ctypes.POINTER(ctypes.c_char)),
-    ('b0x7f', ctypes.POINTER(ctypes.c_char)),
-    ('b0xff', ctypes.POINTER(ctypes.c_char)),
-    ('args', ctypes.POINTER(ctypes.c_char)),
-    ('bin', ctypes.POINTER(ctypes.c_char)),
-    ('btext', ctypes.POINTER(ctypes.c_char)),
-    ('call', ctypes.POINTER(ctypes.c_char)),
-    ('cjmp', ctypes.POINTER(ctypes.c_char)),
-    ('cmp', ctypes.POINTER(ctypes.c_char)),
-    ('comment', ctypes.POINTER(ctypes.c_char)),
-    ('usercomment', ctypes.POINTER(ctypes.c_char)),
-    ('creg', ctypes.POINTER(ctypes.c_char)),
-    ('flag', ctypes.POINTER(ctypes.c_char)),
-    ('fline', ctypes.POINTER(ctypes.c_char)),
-    ('floc', ctypes.POINTER(ctypes.c_char)),
-    ('flow', ctypes.POINTER(ctypes.c_char)),
-    ('flow2', ctypes.POINTER(ctypes.c_char)),
-    ('fname', ctypes.POINTER(ctypes.c_char)),
-    ('help', ctypes.POINTER(ctypes.c_char)),
-    ('input', ctypes.POINTER(ctypes.c_char)),
-    ('invalid', ctypes.POINTER(ctypes.c_char)),
-    ('jmp', ctypes.POINTER(ctypes.c_char)),
-    ('label', ctypes.POINTER(ctypes.c_char)),
-    ('math', ctypes.POINTER(ctypes.c_char)),
-    ('mov', ctypes.POINTER(ctypes.c_char)),
-    ('nop', ctypes.POINTER(ctypes.c_char)),
-    ('num', ctypes.POINTER(ctypes.c_char)),
-    ('offset', ctypes.POINTER(ctypes.c_char)),
-    ('other', ctypes.POINTER(ctypes.c_char)),
-    ('pop', ctypes.POINTER(ctypes.c_char)),
-    ('prompt', ctypes.POINTER(ctypes.c_char)),
-    ('push', ctypes.POINTER(ctypes.c_char)),
-    ('crypto', ctypes.POINTER(ctypes.c_char)),
-    ('reg', ctypes.POINTER(ctypes.c_char)),
-    ('reset', ctypes.POINTER(ctypes.c_char)),
-    ('ret', ctypes.POINTER(ctypes.c_char)),
-    ('swi', ctypes.POINTER(ctypes.c_char)),
-    ('trap', ctypes.POINTER(ctypes.c_char)),
-    ('ucall', ctypes.POINTER(ctypes.c_char)),
-    ('ujmp', ctypes.POINTER(ctypes.c_char)),
-    ('ai_read', ctypes.POINTER(ctypes.c_char)),
-    ('ai_write', ctypes.POINTER(ctypes.c_char)),
-    ('ai_exec', ctypes.POINTER(ctypes.c_char)),
-    ('ai_seq', ctypes.POINTER(ctypes.c_char)),
-    ('ai_ascii', ctypes.POINTER(ctypes.c_char)),
-    ('ai_unmap', ctypes.POINTER(ctypes.c_char)),
-    ('gui_cflow', ctypes.POINTER(ctypes.c_char)),
-    ('gui_dataoffset', ctypes.POINTER(ctypes.c_char)),
-    ('gui_background', ctypes.POINTER(ctypes.c_char)),
-    ('gui_alt_background', ctypes.POINTER(ctypes.c_char)),
-    ('gui_border', ctypes.POINTER(ctypes.c_char)),
-    ('wordhl', ctypes.POINTER(ctypes.c_char)),
-    ('linehl', ctypes.POINTER(ctypes.c_char)),
-    ('func_var', ctypes.POINTER(ctypes.c_char)),
-    ('func_var_type', ctypes.POINTER(ctypes.c_char)),
-    ('func_var_addr', ctypes.POINTER(ctypes.c_char)),
-    ('widget_bg', ctypes.POINTER(ctypes.c_char)),
-    ('widget_sel', ctypes.POINTER(ctypes.c_char)),
-    ('graph_box', ctypes.POINTER(ctypes.c_char)),
-    ('graph_box2', ctypes.POINTER(ctypes.c_char)),
-    ('graph_box3', ctypes.POINTER(ctypes.c_char)),
-    ('graph_box4', ctypes.POINTER(ctypes.c_char)),
-    ('graph_diff_match', ctypes.POINTER(ctypes.c_char)),
-    ('graph_diff_unmatch', ctypes.POINTER(ctypes.c_char)),
-    ('graph_diff_unknown', ctypes.POINTER(ctypes.c_char)),
-    ('graph_diff_new', ctypes.POINTER(ctypes.c_char)),
-    ('graph_true', ctypes.POINTER(ctypes.c_char)),
-    ('graph_false', ctypes.POINTER(ctypes.c_char)),
-    ('graph_trufae', ctypes.POINTER(ctypes.c_char)),
-    ('graph_traced', ctypes.POINTER(ctypes.c_char)),
-    ('graph_current', ctypes.POINTER(ctypes.c_char)),
-    ('rainbow', ctypes.POINTER(ctypes.POINTER(ctypes.c_char))),
-    ('rainbow_sz', ctypes.c_int32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-]
-
-class struct_r_cons_grep_t(Structure):
-    pass
-
-struct_r_cons_grep_t._pack_ = 1 # source:False
-struct_r_cons_grep_t._fields_ = [
-    ('strings', ctypes.c_char * 64 * 10),
-    ('nstrings', ctypes.c_int32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-    ('str', ctypes.POINTER(ctypes.c_char)),
-    ('counter', ctypes.c_int32),
-    ('charCounter', ctypes.c_bool),
-    ('PADDING_1', ctypes.c_ubyte * 3),
-    ('less', ctypes.c_int32),
-    ('hud', ctypes.c_bool),
-    ('human', ctypes.c_bool),
-    ('PADDING_2', ctypes.c_ubyte * 2),
-    ('json', ctypes.c_int32),
-    ('PADDING_3', ctypes.c_ubyte * 4),
-    ('json_path', ctypes.POINTER(ctypes.c_char)),
-    ('range_line', ctypes.c_int32),
-    ('line', ctypes.c_int32),
-    ('sort', ctypes.c_int32),
-    ('sort_row', ctypes.c_int32),
-    ('sort_invert', ctypes.c_bool),
-    ('PADDING_4', ctypes.c_ubyte * 3),
-    ('f_line', ctypes.c_int32),
-    ('l_line', ctypes.c_int32),
-    ('tokens', ctypes.c_int32 * 64),
-    ('tokens_used', ctypes.c_int32),
-    ('amp', ctypes.c_int32),
-    ('zoom', ctypes.c_int32),
-    ('zoomy', ctypes.c_int32),
-    ('neg', ctypes.c_int32),
-    ('begin', ctypes.c_int32),
-    ('end', ctypes.c_int32),
-    ('icase', ctypes.c_bool),
-    ('ascart', ctypes.c_bool),
-    ('PADDING_5', ctypes.c_ubyte * 6),
-]
-
-
-# values for enumeration 'r_log_level'
-r_log_level__enumvalues = {
-    0: 'R_LOGLVL_SILLY',
-    1: 'R_LOGLVL_DEBUG',
-    2: 'R_LOGLVL_VERBOSE',
-    3: 'R_LOGLVL_INFO',
-    4: 'R_LOGLVL_WARN',
-    5: 'R_LOGLVL_ERROR',
-    6: 'R_LOGLVL_FATAL',
-    255: 'R_LOGLVL_NONE',
-}
-R_LOGLVL_SILLY = 0
-R_LOGLVL_DEBUG = 1
-R_LOGLVL_VERBOSE = 2
-R_LOGLVL_INFO = 3
-R_LOGLVL_WARN = 4
-R_LOGLVL_ERROR = 5
-R_LOGLVL_FATAL = 6
-R_LOGLVL_NONE = 255
-r_log_level = ctypes.c_uint32 # enum
 class struct_r_cons_palette_t(Structure):
     pass
 
@@ -4952,6 +5004,7 @@ struct_r_cons_palette_t._fields_ = [
     ('other', struct_rcolor_t),
     ('pop', struct_rcolor_t),
     ('prompt', struct_rcolor_t),
+    ('bgprompt', struct_rcolor_t),
     ('push', struct_rcolor_t),
     ('crypto', struct_rcolor_t),
     ('reg', struct_rcolor_t),
@@ -4993,6 +5046,129 @@ struct_r_cons_palette_t._fields_ = [
     ('graph_diff_new', struct_rcolor_t),
 ]
 
+class struct_r_cons_grep_t(Structure):
+    pass
+
+struct_r_cons_grep_t._pack_ = 1 # source:False
+struct_r_cons_grep_t._fields_ = [
+    ('strings', ctypes.c_char * 64 * 10),
+    ('nstrings', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('str', ctypes.POINTER(ctypes.c_char)),
+    ('counter', ctypes.c_int32),
+    ('charCounter', ctypes.c_bool),
+    ('PADDING_1', ctypes.c_ubyte * 3),
+    ('less', ctypes.c_int32),
+    ('hud', ctypes.c_bool),
+    ('human', ctypes.c_bool),
+    ('PADDING_2', ctypes.c_ubyte * 2),
+    ('json', ctypes.c_int32),
+    ('PADDING_3', ctypes.c_ubyte * 4),
+    ('json_path', ctypes.POINTER(ctypes.c_char)),
+    ('range_line', ctypes.c_int32),
+    ('line', ctypes.c_int32),
+    ('sort', ctypes.c_int32),
+    ('sort_row', ctypes.c_int32),
+    ('sort_invert', ctypes.c_bool),
+    ('PADDING_4', ctypes.c_ubyte * 3),
+    ('f_line', ctypes.c_int32),
+    ('l_line', ctypes.c_int32),
+    ('tokens', ctypes.c_int32 * 64),
+    ('tokens_used', ctypes.c_int32),
+    ('amp', ctypes.c_int32),
+    ('zoom', ctypes.c_int32),
+    ('zoomy', ctypes.c_int32),
+    ('neg', ctypes.c_int32 * 10),
+    ('begin', ctypes.c_int32 * 10),
+    ('end', ctypes.c_int32 * 10),
+    ('icase', ctypes.c_bool),
+    ('ascart', ctypes.c_bool),
+    ('code', ctypes.c_bool),
+    ('PADDING_5', ctypes.c_ubyte),
+]
+
+class struct_r_cons_printable_palette_t(Structure):
+    pass
+
+struct_r_cons_printable_palette_t._pack_ = 1 # source:False
+struct_r_cons_printable_palette_t._fields_ = [
+    ('b0x00', ctypes.POINTER(ctypes.c_char)),
+    ('b0x7f', ctypes.POINTER(ctypes.c_char)),
+    ('b0xff', ctypes.POINTER(ctypes.c_char)),
+    ('args', ctypes.POINTER(ctypes.c_char)),
+    ('bin', ctypes.POINTER(ctypes.c_char)),
+    ('btext', ctypes.POINTER(ctypes.c_char)),
+    ('call', ctypes.POINTER(ctypes.c_char)),
+    ('cjmp', ctypes.POINTER(ctypes.c_char)),
+    ('cmp', ctypes.POINTER(ctypes.c_char)),
+    ('comment', ctypes.POINTER(ctypes.c_char)),
+    ('usercomment', ctypes.POINTER(ctypes.c_char)),
+    ('creg', ctypes.POINTER(ctypes.c_char)),
+    ('flag', ctypes.POINTER(ctypes.c_char)),
+    ('fline', ctypes.POINTER(ctypes.c_char)),
+    ('floc', ctypes.POINTER(ctypes.c_char)),
+    ('flow', ctypes.POINTER(ctypes.c_char)),
+    ('flow2', ctypes.POINTER(ctypes.c_char)),
+    ('fname', ctypes.POINTER(ctypes.c_char)),
+    ('help', ctypes.POINTER(ctypes.c_char)),
+    ('input', ctypes.POINTER(ctypes.c_char)),
+    ('invalid', ctypes.POINTER(ctypes.c_char)),
+    ('jmp', ctypes.POINTER(ctypes.c_char)),
+    ('label', ctypes.POINTER(ctypes.c_char)),
+    ('math', ctypes.POINTER(ctypes.c_char)),
+    ('mov', ctypes.POINTER(ctypes.c_char)),
+    ('nop', ctypes.POINTER(ctypes.c_char)),
+    ('num', ctypes.POINTER(ctypes.c_char)),
+    ('offset', ctypes.POINTER(ctypes.c_char)),
+    ('other', ctypes.POINTER(ctypes.c_char)),
+    ('pop', ctypes.POINTER(ctypes.c_char)),
+    ('prompt', ctypes.POINTER(ctypes.c_char)),
+    ('bgprompt', ctypes.POINTER(ctypes.c_char)),
+    ('push', ctypes.POINTER(ctypes.c_char)),
+    ('crypto', ctypes.POINTER(ctypes.c_char)),
+    ('reg', ctypes.POINTER(ctypes.c_char)),
+    ('reset', ctypes.POINTER(ctypes.c_char)),
+    ('ret', ctypes.POINTER(ctypes.c_char)),
+    ('swi', ctypes.POINTER(ctypes.c_char)),
+    ('trap', ctypes.POINTER(ctypes.c_char)),
+    ('ucall', ctypes.POINTER(ctypes.c_char)),
+    ('ujmp', ctypes.POINTER(ctypes.c_char)),
+    ('ai_read', ctypes.POINTER(ctypes.c_char)),
+    ('ai_write', ctypes.POINTER(ctypes.c_char)),
+    ('ai_exec', ctypes.POINTER(ctypes.c_char)),
+    ('ai_seq', ctypes.POINTER(ctypes.c_char)),
+    ('ai_ascii', ctypes.POINTER(ctypes.c_char)),
+    ('ai_unmap', ctypes.POINTER(ctypes.c_char)),
+    ('gui_cflow', ctypes.POINTER(ctypes.c_char)),
+    ('gui_dataoffset', ctypes.POINTER(ctypes.c_char)),
+    ('gui_background', ctypes.POINTER(ctypes.c_char)),
+    ('gui_alt_background', ctypes.POINTER(ctypes.c_char)),
+    ('gui_border', ctypes.POINTER(ctypes.c_char)),
+    ('wordhl', ctypes.POINTER(ctypes.c_char)),
+    ('linehl', ctypes.POINTER(ctypes.c_char)),
+    ('func_var', ctypes.POINTER(ctypes.c_char)),
+    ('func_var_type', ctypes.POINTER(ctypes.c_char)),
+    ('func_var_addr', ctypes.POINTER(ctypes.c_char)),
+    ('widget_bg', ctypes.POINTER(ctypes.c_char)),
+    ('widget_sel', ctypes.POINTER(ctypes.c_char)),
+    ('graph_box', ctypes.POINTER(ctypes.c_char)),
+    ('graph_box2', ctypes.POINTER(ctypes.c_char)),
+    ('graph_box3', ctypes.POINTER(ctypes.c_char)),
+    ('graph_box4', ctypes.POINTER(ctypes.c_char)),
+    ('graph_diff_match', ctypes.POINTER(ctypes.c_char)),
+    ('graph_diff_unmatch', ctypes.POINTER(ctypes.c_char)),
+    ('graph_diff_unknown', ctypes.POINTER(ctypes.c_char)),
+    ('graph_diff_new', ctypes.POINTER(ctypes.c_char)),
+    ('graph_true', ctypes.POINTER(ctypes.c_char)),
+    ('graph_false', ctypes.POINTER(ctypes.c_char)),
+    ('graph_trufae', ctypes.POINTER(ctypes.c_char)),
+    ('graph_traced', ctypes.POINTER(ctypes.c_char)),
+    ('graph_current', ctypes.POINTER(ctypes.c_char)),
+    ('rainbow', ctypes.POINTER(ctypes.POINTER(ctypes.c_char))),
+    ('rainbow_sz', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
 struct_r_cons_context_t._pack_ = 1 # source:False
 struct_r_cons_context_t._fields_ = [
     ('grep', struct_r_cons_grep_t),
@@ -5004,7 +5180,8 @@ struct_r_cons_context_t._fields_ = [
     ('errmode', ctypes.c_int32),
     ('breaked', ctypes.c_bool),
     ('was_breaked', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 2),
+    ('unbreakable', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte),
     ('break_stack', ctypes.POINTER(struct_r_stack_t)),
     ('event_interrupt', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
     ('event_interrupt_data', ctypes.POINTER(None)),
@@ -5012,7 +5189,7 @@ struct_r_cons_context_t._fields_ = [
     ('cmd_str_depth', ctypes.c_int32),
     ('noflush', ctypes.c_bool),
     ('PADDING_1', ctypes.c_ubyte * 7),
-    ('log_callback', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_uint32, r_log_level, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char))),
+    ('log_callback', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None), ctypes.c_int32, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char))),
     ('lastOutput', ctypes.POINTER(ctypes.c_char)),
     ('lastLength', ctypes.c_int32),
     ('lastMode', ctypes.c_bool),
@@ -5021,7 +5198,7 @@ struct_r_cons_context_t._fields_ = [
     ('pageable', ctypes.c_bool),
     ('color_mode', ctypes.c_int32),
     ('cpal', struct_r_cons_palette_t),
-    ('PADDING_2', ctypes.c_ubyte * 6),
+    ('PADDING_2', ctypes.c_ubyte * 5),
     ('pal', struct_r_cons_printable_palette_t),
     ('sorted_lines', ctypes.POINTER(struct_r_list_t)),
     ('unsorted_lines', ctypes.POINTER(struct_r_list_t)),
@@ -5106,6 +5283,21 @@ R_LINE_PROMPT_DEFAULT = 0
 R_LINE_PROMPT_OFFSET = 1
 R_LINE_PROMPT_FILE = 2
 c__EA_RLinePromptType = ctypes.c_uint32 # enum
+class struct_r_line_hist_t(Structure):
+    pass
+
+struct_r_line_hist_t._pack_ = 1 # source:False
+struct_r_line_hist_t._fields_ = [
+    ('data', ctypes.POINTER(ctypes.POINTER(ctypes.c_char))),
+    ('match', ctypes.POINTER(ctypes.c_char)),
+    ('size', ctypes.c_int32),
+    ('index', ctypes.c_int32),
+    ('top', ctypes.c_int32),
+    ('autosave', ctypes.c_int32),
+    ('do_setup_match', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 7),
+]
+
 class struct_r_line_comp_t(Structure):
     pass
 
@@ -5129,21 +5321,6 @@ struct_r_line_buffer_t._fields_ = [
     ('data', ctypes.c_char * 4096),
     ('index', ctypes.c_int32),
     ('length', ctypes.c_int32),
-]
-
-class struct_r_line_hist_t(Structure):
-    pass
-
-struct_r_line_hist_t._pack_ = 1 # source:False
-struct_r_line_hist_t._fields_ = [
-    ('data', ctypes.POINTER(ctypes.POINTER(ctypes.c_char))),
-    ('match', ctypes.POINTER(ctypes.c_char)),
-    ('size', ctypes.c_int32),
-    ('index', ctypes.c_int32),
-    ('top', ctypes.c_int32),
-    ('autosave', ctypes.c_int32),
-    ('do_setup_match', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 7),
 ]
 
 struct_r_line_t._pack_ = 1 # source:False
@@ -5231,18 +5408,16 @@ struct_r_reg_t._fields_ = [
     ('profile', ctypes.POINTER(ctypes.c_char)),
     ('reg_profile_cmt', ctypes.POINTER(ctypes.c_char)),
     ('reg_profile_str', ctypes.POINTER(ctypes.c_char)),
-    ('name', ctypes.POINTER(ctypes.c_char) * 25),
+    ('name', ctypes.POINTER(ctypes.c_char) * 29),
     ('regset', struct_r_reg_set_t * 8),
     ('allregs', ctypes.POINTER(struct_r_list_t)),
     ('roregs', ctypes.POINTER(struct_r_list_t)),
     ('iters', ctypes.c_int32),
-    ('arch', ctypes.c_int32),
-    ('bits', ctypes.c_int32),
     ('size', ctypes.c_int32),
     ('bits_default', ctypes.c_int32),
-    ('is_thumb', ctypes.c_bool),
-    ('big_endian', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 2),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('hasbits', ctypes.c_uint64),
+    ('config', ctypes.POINTER(struct_r_arch_config_t)),
 ]
 
 struct_r_reg_arena_t._pack_ = 1 # source:False
@@ -5320,19 +5495,19 @@ r_print_unset_flags.restype = None
 r_print_unset_flags.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_int32]
 r_print_addr = _libr_util.r_print_addr
 r_print_addr.restype = None
-r_print_addr.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64]
+r_print_addr.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t]
 r_print_section = _libr_util.r_print_section
 r_print_section.restype = None
-r_print_section.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64]
+r_print_section.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t]
 r_print_columns = _libr_util.r_print_columns
 r_print_columns.restype = None
 r_print_columns.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32]
 r_print_hexii = _libr_util.r_print_hexii
 r_print_hexii.restype = None
-r_print_hexii.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32]
+r_print_hexii.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32]
 r_print_hexdump = _libr_util.r_print_hexdump
 r_print_hexdump.restype = None
-r_print_hexdump.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32, ctypes.c_int32, size_t]
+r_print_hexdump.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32, ctypes.c_int32, size_t]
 r_print_hexdump_simple = _libr_util.r_print_hexdump_simple
 r_print_hexdump_simple.restype = None
 r_print_hexdump_simple.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
@@ -5341,28 +5516,28 @@ r_print_jsondump.restype = ctypes.c_int32
 r_print_jsondump.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32]
 r_print_hexpairs = _libr_util.r_print_hexpairs
 r_print_hexpairs.restype = None
-r_print_hexpairs.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_print_hexpairs.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_print_hexdiff = _libr_util.r_print_hexdiff
 r_print_hexdiff.restype = None
-r_print_hexdiff.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32]
+r_print_hexdiff.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32]
 r_print_bytes = _libr_util.r_print_bytes
 r_print_bytes.restype = None
 r_print_bytes.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.POINTER(ctypes.c_char)]
 r_print_fill = _libr_util.r_print_fill
 r_print_fill.restype = None
-r_print_fill.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_uint64, ctypes.c_int32]
+r_print_fill.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, uint64_t, ctypes.c_int32]
 r_print_byte = _libr_util.r_print_byte
 r_print_byte.restype = None
-r_print_byte.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.c_ubyte]
+r_print_byte.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t, ctypes.POINTER(ctypes.c_char), ctypes.c_int32, uint8_t]
 r_print_byte_color = _libr_util.r_print_byte_color
 r_print_byte_color.restype = ctypes.POINTER(ctypes.c_char)
-r_print_byte_color.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_int32]
+r_print_byte_color.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t, ctypes.c_int32]
 r_print_c = _libr_util.r_print_c
 r_print_c.restype = None
 r_print_c.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 r_print_raw = _libr_util.r_print_raw
 r_print_raw.restype = None
-r_print_raw.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32]
+r_print_raw.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32]
 r_print_have_cursor = _libr_util.r_print_have_cursor
 r_print_have_cursor.restype = ctypes.c_bool
 r_print_have_cursor.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_int32, ctypes.c_int32]
@@ -5383,25 +5558,25 @@ r_print_set_cursor.restype = None
 r_print_set_cursor.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_int32]
 r_print_code = _libr_util.r_print_code
 r_print_code.restype = None
-r_print_code.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_char]
+r_print_code.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_char]
 r_print_format_struct_size = _libr_util.r_print_format_struct_size
 r_print_format_struct_size.restype = ctypes.c_int32
 r_print_format_struct_size.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.c_int32]
 r_print_format = _libr_util.r_print_format
 r_print_format.restype = ctypes.c_int32
-r_print_format.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
+r_print_format.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.POINTER(ctypes.c_char), ctypes.c_int32, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
 r_print_format_byname = _libr_util.r_print_format_byname
 r_print_format_byname.restype = ctypes.POINTER(ctypes.c_char)
 r_print_format_byname.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_char)]
 r_print_offset = _libr_core.r_print_offset
 r_print_offset.restype = None
-r_print_offset.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_char)]
+r_print_offset.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t, ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_char)]
 r_print_offset_sg = _libraries['FIXME_STUB'].r_print_offset_sg
 r_print_offset_sg.restype = None
-r_print_offset_sg.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_int32, ctypes.c_int32, ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_char)]
+r_print_offset_sg.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t, ctypes.c_int32, ctypes.c_int32, ctypes.c_int32, ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(ctypes.c_char)]
 r_print_string = _libr_util.r_print_string
 r_print_string.restype = ctypes.c_int32
-r_print_string.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32]
+r_print_string.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32, ctypes.c_int32]
 r_print_date_dos = _libr_util.r_print_date_dos
 r_print_date_dos.restype = ctypes.c_int32
 r_print_date_dos.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
@@ -5419,10 +5594,10 @@ r_print_date_get_now.restype = ctypes.c_int32
 r_print_date_get_now.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_char)]
 r_print_zoom = _libr_util.r_print_zoom
 r_print_zoom.restype = None
-r_print_zoom.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(None), RPrintZoomCallback, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_int32, ctypes.c_int32]
+r_print_zoom.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(None), RPrintZoomCallback, uint64_t, uint64_t, ctypes.c_int32, ctypes.c_int32]
 r_print_zoom_buf = _libr_util.r_print_zoom_buf
 r_print_zoom_buf.restype = None
-r_print_zoom_buf.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(None), RPrintZoomCallback, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_int32, ctypes.c_int32]
+r_print_zoom_buf.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(None), RPrintZoomCallback, uint64_t, uint64_t, ctypes.c_int32, ctypes.c_int32]
 r_print_progressbar = _libr_util.r_print_progressbar
 r_print_progressbar.restype = None
 r_print_progressbar.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_int32, ctypes.c_int32]
@@ -5434,22 +5609,22 @@ r_print_portionbar.restype = None
 r_print_portionbar.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_uint64), ctypes.c_int32]
 r_print_rangebar = _libr_util.r_print_rangebar
 r_print_rangebar.restype = None
-r_print_rangebar.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_int32]
+r_print_rangebar.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t, uint64_t, uint64_t, uint64_t, ctypes.c_int32]
 r_print_randomart = _libr_util.r_print_randomart
 r_print_randomart.restype = ctypes.POINTER(ctypes.c_char)
-r_print_randomart.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_uint32, ctypes.c_uint64]
+r_print_randomart.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint32_t, uint64_t]
 r_print_2bpp_row = _libr_util.r_print_2bpp_row
 r_print_2bpp_row.restype = None
 r_print_2bpp_row.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
 r_print_2bpp_tiles = _libr_util.r_print_2bpp_tiles
 r_print_2bpp_tiles.restype = None
-r_print_2bpp_tiles.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_ubyte), size_t, ctypes.c_uint32, ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
+r_print_2bpp_tiles.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_ubyte), size_t, uint32_t, ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
 r_print_colorize_opcode = _libr_util.r_print_colorize_opcode
 r_print_colorize_opcode.restype = ctypes.POINTER(ctypes.c_char)
-r_print_colorize_opcode.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_bool, ctypes.c_uint64]
+r_print_colorize_opcode.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_bool, uint64_t]
 r_print_color_op_type = _libr_util.r_print_color_op_type
 r_print_color_op_type.restype = ctypes.POINTER(ctypes.c_char)
-r_print_color_op_type.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint32]
+r_print_color_op_type.argtypes = [ctypes.POINTER(struct_r_print_t), uint32_t]
 r_print_set_interrupted = _libraries['FIXME_STUB'].r_print_set_interrupted
 r_print_set_interrupted.restype = None
 r_print_set_interrupted.argtypes = [ctypes.c_int32]
@@ -5457,14 +5632,14 @@ r_print_init_rowoffsets = _libr_util.r_print_init_rowoffsets
 r_print_init_rowoffsets.restype = None
 r_print_init_rowoffsets.argtypes = [ctypes.POINTER(struct_r_print_t)]
 r_print_rowoff = _libr_util.r_print_rowoff
-r_print_rowoff.restype = ctypes.c_uint32
+r_print_rowoff.restype = uint32_t
 r_print_rowoff.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_int32]
 r_print_set_rowoff = _libr_util.r_print_set_rowoff
 r_print_set_rowoff.restype = None
-r_print_set_rowoff.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_int32, ctypes.c_uint32, ctypes.c_bool]
+r_print_set_rowoff.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_int32, uint32_t, ctypes.c_bool]
 r_print_row_at_off = _libr_util.r_print_row_at_off
 r_print_row_at_off.restype = ctypes.c_int32
-r_print_row_at_off.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint32]
+r_print_row_at_off.argtypes = [ctypes.POINTER(struct_r_print_t), uint32_t]
 r_print_pie = _libr_util.r_print_pie
 r_print_pie.restype = ctypes.c_int32
 r_print_pie.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_uint64), ctypes.c_int32, ctypes.c_int32]
@@ -5494,10 +5669,10 @@ r_print_stereogram_print.restype = None
 r_print_stereogram_print.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.POINTER(ctypes.c_char)]
 r_print_set_screenbounds = _libr_util.r_print_set_screenbounds
 r_print_set_screenbounds.restype = None
-r_print_set_screenbounds.argtypes = [ctypes.POINTER(struct_r_print_t), ctypes.c_uint64]
+r_print_set_screenbounds.argtypes = [ctypes.POINTER(struct_r_print_t), uint64_t]
 r_util_lines_getline = _libr_util.r_util_lines_getline
 r_util_lines_getline.restype = ctypes.c_int32
-r_util_lines_getline.argtypes = [ctypes.POINTER(ctypes.c_uint64), ctypes.c_int32, ctypes.c_uint64]
+r_util_lines_getline.argtypes = [ctypes.POINTER(ctypes.c_uint64), ctypes.c_int32, uint64_t]
 r_print_json_indent = _libr_util.r_print_json_indent
 r_print_json_indent.restype = ctypes.POINTER(ctypes.c_char)
 r_print_json_indent.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_bool, ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
@@ -5507,6 +5682,32 @@ r_print_json_human.argtypes = [ctypes.POINTER(ctypes.c_char)]
 r_print_json_path = _libr_util.r_print_json_path
 r_print_json_path.restype = ctypes.POINTER(ctypes.c_char)
 r_print_json_path.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
+class struct_r_anal_graph_node_info_t(Structure):
+    pass
+
+struct_r_anal_graph_node_info_t._pack_ = 1 # source:False
+struct_r_anal_graph_node_info_t._fields_ = [
+    ('title', ctypes.POINTER(ctypes.c_char)),
+    ('body', ctypes.POINTER(ctypes.c_char)),
+    ('offset', ctypes.c_uint64),
+]
+
+RGraphNodeInfo = struct_r_anal_graph_node_info_t
+r_graph_free_node_info = _libr_util.r_graph_free_node_info
+r_graph_free_node_info.restype = None
+r_graph_free_node_info.argtypes = [ctypes.POINTER(None)]
+r_graph_create_node_info = _libr_util.r_graph_create_node_info
+r_graph_create_node_info.restype = ctypes.POINTER(struct_r_anal_graph_node_info_t)
+r_graph_create_node_info.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), uint64_t]
+r_graph_add_node_info = _libr_util.r_graph_add_node_info
+r_graph_add_node_info.restype = ctypes.POINTER(struct_r_graph_node_t)
+r_graph_add_node_info.argtypes = [ctypes.POINTER(struct_r_graph_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), uint64_t]
+r_graph_drawable_to_dot = _libr_util.r_graph_drawable_to_dot
+r_graph_drawable_to_dot.restype = ctypes.POINTER(ctypes.c_char)
+r_graph_drawable_to_dot.argtypes = [ctypes.POINTER(struct_r_graph_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
+r_graph_drawable_to_json = _libr_util.r_graph_drawable_to_json
+r_graph_drawable_to_json.restype = None
+r_graph_drawable_to_json.argtypes = [ctypes.POINTER(struct_r_graph_t), ctypes.POINTER(struct_pj_t), ctypes.c_bool]
 r_util_version = _libr_util.r_util_version
 r_util_version.restype = ctypes.POINTER(ctypes.c_char)
 r_util_version.argtypes = []
@@ -5569,52 +5770,57 @@ __all__ = \
     'RStrEnc__enumvalues', 'RStrpool', 'RSysArch',
     'RSysArch__enumvalues', 'RTable', 'RTableColumn',
     'RTableColumnType', 'RTableRow', 'RTableSelector', 'RThread',
-    'RThreadCond', 'RThreadFunctionRet',
-    'RThreadFunctionRet__enumvalues', 'RThreadLock', 'RThreadPool',
-    'RThreadSemaphore', 'RTree', 'RTreeNode', 'RTreeNodeVisitCb',
-    'RTreeVisitor', 'RTypeEnum', 'RTypeKind', 'RUtfBlock',
-    'RX509AlgorithmIdentifier', 'RX509AuthorityKeyIdentifier',
-    'RX509CRLEntry', 'RX509Certificate',
-    'RX509CertificateRevocationList', 'RX509Extension',
-    'RX509Extensions', 'RX509Name', 'RX509SubjectPublicKeyInfo',
-    'RX509TBSCertificate', 'RX509Validity', 'R_EVENT_ALL',
-    'R_EVENT_CLASS_ATTR_DEL', 'R_EVENT_CLASS_ATTR_RENAME',
-    'R_EVENT_CLASS_ATTR_SET', 'R_EVENT_CLASS_DEL',
-    'R_EVENT_CLASS_NEW', 'R_EVENT_CLASS_RENAME',
+    'RThreadChannel', 'RThreadChannelMessage',
+    'RThreadChannelPromise', 'RThreadCond', 'RThreadFunction',
+    'RThreadFunctionRet', 'RThreadFunctionRet__enumvalues',
+    'RThreadLock', 'RThreadPool', 'RThreadSemaphore', 'RTokenType',
+    'RTokenType__enumvalues', 'RTokenizer', 'RTokenizerCallback',
+    'RTree', 'RTreeNode', 'RTreeNodeVisitCb', 'RTreeVisitor',
+    'RTypeEnum', 'RTypeKind', 'RUtfBlock', 'RX509AlgorithmIdentifier',
+    'RX509AuthorityKeyIdentifier', 'RX509CRLEntry',
+    'RX509Certificate', 'RX509CertificateRevocationList',
+    'RX509Extension', 'RX509Extensions', 'RX509Name',
+    'RX509SubjectPublicKeyInfo', 'RX509TBSCertificate',
+    'RX509Validity', 'R_EVENT_ALL', 'R_EVENT_CLASS_ATTR_DEL',
+    'R_EVENT_CLASS_ATTR_RENAME', 'R_EVENT_CLASS_ATTR_SET',
+    'R_EVENT_CLASS_DEL', 'R_EVENT_CLASS_NEW', 'R_EVENT_CLASS_RENAME',
     'R_EVENT_DEBUG_PROCESS_FINISHED', 'R_EVENT_IO_WRITE',
     'R_EVENT_MAX', 'R_EVENT_META_CLEAR', 'R_EVENT_META_DEL',
     'R_EVENT_META_SET', 'R_JSON_ARRAY', 'R_JSON_BOOLEAN',
     'R_JSON_DOUBLE', 'R_JSON_INTEGER', 'R_JSON_NULL', 'R_JSON_OBJECT',
     'R_JSON_STRING', 'R_LINE_PROMPT_DEFAULT', 'R_LINE_PROMPT_FILE',
-    'R_LINE_PROMPT_OFFSET', 'R_LOGLVL_DEBUG', 'R_LOGLVL_ERROR',
-    'R_LOGLVL_FATAL', 'R_LOGLVL_INFO', 'R_LOGLVL_NONE',
-    'R_LOGLVL_SILLY', 'R_LOGLVL_VERBOSE', 'R_LOGLVL_WARN',
-    'R_SPACE_EVENT_COUNT', 'R_SPACE_EVENT_RENAME',
-    'R_SPACE_EVENT_UNSET', 'R_STRING_ENC_GUESS',
-    'R_STRING_ENC_LATIN1', 'R_STRING_ENC_UTF16BE',
-    'R_STRING_ENC_UTF16LE', 'R_STRING_ENC_UTF32BE',
-    'R_STRING_ENC_UTF32LE', 'R_STRING_ENC_UTF8', 'R_SYS_ARCH_8051',
-    'R_SYS_ARCH_ARC', 'R_SYS_ARCH_ARM', 'R_SYS_ARCH_AVR',
-    'R_SYS_ARCH_BF', 'R_SYS_ARCH_CR16', 'R_SYS_ARCH_CRIS',
-    'R_SYS_ARCH_DALVIK', 'R_SYS_ARCH_EBC', 'R_SYS_ARCH_H8300',
-    'R_SYS_ARCH_HPPA', 'R_SYS_ARCH_I8080', 'R_SYS_ARCH_JAVA',
-    'R_SYS_ARCH_LM32', 'R_SYS_ARCH_M68K', 'R_SYS_ARCH_MIPS',
-    'R_SYS_ARCH_MSIL', 'R_SYS_ARCH_MSP430', 'R_SYS_ARCH_NONE',
-    'R_SYS_ARCH_OBJD', 'R_SYS_ARCH_PPC', 'R_SYS_ARCH_PROPELLER',
-    'R_SYS_ARCH_RAR', 'R_SYS_ARCH_RISCV', 'R_SYS_ARCH_S390',
-    'R_SYS_ARCH_SH', 'R_SYS_ARCH_SPARC', 'R_SYS_ARCH_TMS320',
-    'R_SYS_ARCH_V810', 'R_SYS_ARCH_V850', 'R_SYS_ARCH_X86',
-    'R_SYS_ARCH_XAP', 'R_SYS_ARCH_XCORE', 'R_SYS_ARCH_Z80',
-    'R_TABLE_ALIGN_CENTER', 'R_TABLE_ALIGN_LEFT',
-    'R_TABLE_ALIGN_RIGHT', 'R_TH_FREED', 'R_TH_REPEAT', 'R_TH_STOP',
+    'R_LINE_PROMPT_OFFSET', 'R_SPACE_EVENT_COUNT',
+    'R_SPACE_EVENT_RENAME', 'R_SPACE_EVENT_UNSET',
+    'R_STRING_ENC_GUESS', 'R_STRING_ENC_LATIN1',
+    'R_STRING_ENC_UTF16BE', 'R_STRING_ENC_UTF16LE',
+    'R_STRING_ENC_UTF32BE', 'R_STRING_ENC_UTF32LE',
+    'R_STRING_ENC_UTF8', 'R_SYS_ARCH_8051', 'R_SYS_ARCH_ARC',
+    'R_SYS_ARCH_ARM', 'R_SYS_ARCH_AVR', 'R_SYS_ARCH_BF',
+    'R_SYS_ARCH_BPF', 'R_SYS_ARCH_CR16', 'R_SYS_ARCH_CRIS',
+    'R_SYS_ARCH_DALVIK', 'R_SYS_ARCH_EBC', 'R_SYS_ARCH_ESIL',
+    'R_SYS_ARCH_H8300', 'R_SYS_ARCH_HPPA', 'R_SYS_ARCH_I8080',
+    'R_SYS_ARCH_JAVA', 'R_SYS_ARCH_LM32', 'R_SYS_ARCH_M68K',
+    'R_SYS_ARCH_MIPS', 'R_SYS_ARCH_MSIL', 'R_SYS_ARCH_MSP430',
+    'R_SYS_ARCH_NONE', 'R_SYS_ARCH_OBJD', 'R_SYS_ARCH_PPC',
+    'R_SYS_ARCH_PROPELLER', 'R_SYS_ARCH_RAR', 'R_SYS_ARCH_RISCV',
+    'R_SYS_ARCH_S390', 'R_SYS_ARCH_SH', 'R_SYS_ARCH_SPARC',
+    'R_SYS_ARCH_TMS320', 'R_SYS_ARCH_V810', 'R_SYS_ARCH_V850',
+    'R_SYS_ARCH_X86', 'R_SYS_ARCH_XAP', 'R_SYS_ARCH_XCORE',
+    'R_SYS_ARCH_Z80', 'R_TABLE_ALIGN_CENTER', 'R_TABLE_ALIGN_LEFT',
+    'R_TABLE_ALIGN_RIGHT', 'R_TH_FREED', 'R_TH_LOCK_TYPE_HEAP',
+    'R_TH_LOCK_TYPE_STATIC', 'R_TH_REPEAT', 'R_TH_STOP',
+    'R_TOKEN_BEGIN', 'R_TOKEN_COMMENT', 'R_TOKEN_END',
+    'R_TOKEN_FLOAT', 'R_TOKEN_GROUP', 'R_TOKEN_HASH', 'R_TOKEN_INT',
+    'R_TOKEN_MATH', 'R_TOKEN_NONE', 'R_TOKEN_STRING', 'R_TOKEN_WORD',
     'R_TYPE_BASIC', 'R_TYPE_ENUM', 'R_TYPE_STRUCT', 'R_TYPE_TYPEDEF',
     'R_TYPE_UNION', 'SpcAttributeTypeAndOptionalValue',
     'SpcDigestInfo', 'SpcIndirectDataContent', 'asn1_setformat',
     'c__EA_REventType', 'c__EA_RLevOp', 'c__EA_RLinePromptType',
     'c__EA_RNumCalcToken', 'c__EA_RPanelEdge', 'c__EA_RPanelLayout',
     'c__EA_RPanelType', 'c__EA_RSpaceEventType', 'c__EA_RStrEnc',
-    'c__EA_RSysArch', 'c__EA_RThreadFunctionRet',
-    'c__Ea_R_TABLE_ALIGN_LEFT', 'pthread_t', 'r_asctime_r',
+    'c__EA_RSysArch', 'c__EA_RThreadFunctionRet', 'c__EA_RTokenType',
+    'c__Ea_R_TABLE_ALIGN_LEFT', 'c_bool', 'c_bool__enumvalues',
+    'int32_t', 'int64_t', 'pthread_t', 'r_asctime_r',
     'r_asn1_create_binary', 'r_asn1_create_object',
     'r_asn1_create_string', 'r_asn1_free_binary',
     'r_asn1_free_object', 'r_asn1_free_string',
@@ -5622,18 +5828,18 @@ __all__ = \
     'r_asn1_stringify_bytes', 'r_asn1_stringify_integer',
     'r_asn1_stringify_oid', 'r_asn1_stringify_string',
     'r_asn1_stringify_time', 'r_asn1_stringify_utctime',
-    'r_asn1_to_string', 'r_axml_decode', 'r_base64_decode',
-    'r_base64_decode_dyn', 'r_base64_encode', 'r_base64_encode_dyn',
-    'r_base91_decode', 'r_base91_encode', 'r_big_add', 'r_big_and',
-    'r_big_assign', 'r_big_cmp', 'r_big_dec', 'r_big_div',
-    'r_big_divmod', 'r_big_fini', 'r_big_free', 'r_big_from_hexstr',
-    'r_big_from_int', 'r_big_inc', 'r_big_init', 'r_big_is_zero',
-    'r_big_isqrt', 'r_big_lshift', 'r_big_mod', 'r_big_mul',
-    'r_big_new', 'r_big_or', 'r_big_powm', 'r_big_rshift',
-    'r_big_sub', 'r_big_to_hexstr', 'r_big_to_int', 'r_big_xor',
-    'r_bitmap_free', 'r_bitmap_new', 'r_bitmap_set',
-    'r_bitmap_set_bytes', 'r_bitmap_test', 'r_bitmap_unset',
-    'r_buf_append_buf', 'r_buf_append_buf_slice',
+    'r_asn1_to_string', 'r_atomic_exchange', 'r_atomic_store',
+    'r_axml_decode', 'r_base64_decode', 'r_base64_decode_dyn',
+    'r_base64_encode', 'r_base64_encode_dyn', 'r_base91_decode',
+    'r_base91_encode', 'r_big_add', 'r_big_and', 'r_big_assign',
+    'r_big_cmp', 'r_big_dec', 'r_big_div', 'r_big_divmod',
+    'r_big_fini', 'r_big_free', 'r_big_from_hexstr', 'r_big_from_int',
+    'r_big_inc', 'r_big_init', 'r_big_is_zero', 'r_big_isqrt',
+    'r_big_lshift', 'r_big_mod', 'r_big_mul', 'r_big_new', 'r_big_or',
+    'r_big_powm', 'r_big_rshift', 'r_big_sub', 'r_big_to_hexstr',
+    'r_big_to_int', 'r_big_xor', 'r_bitmap_free', 'r_bitmap_new',
+    'r_bitmap_set', 'r_bitmap_set_bytes', 'r_bitmap_test',
+    'r_bitmap_unset', 'r_buf_append_buf', 'r_buf_append_buf_slice',
     'r_buf_append_bytes', 'r_buf_append_nbytes',
     'r_buf_append_string', 'r_buf_append_ut16', 'r_buf_append_ut32',
     'r_buf_append_ut64', 'r_buf_append_ut8', 'r_buf_data',
@@ -5684,46 +5890,46 @@ __all__ = \
     'r_file_slurp_line', 'r_file_slurp_lines',
     'r_file_slurp_lines_from_bottom', 'r_file_slurp_random_line',
     'r_file_slurp_random_line_count', 'r_file_slurp_range',
-    'r_file_temp', 'r_file_tmpdir', 'r_file_touch', 'r_file_truncate',
-    'r_free_aligned', 'r_get_input_num_value', 'r_getopt_init',
-    'r_getopt_next', 'r_graph_add_edge', 'r_graph_add_edge_at',
-    'r_graph_add_node', 'r_graph_add_node_info', 'r_graph_add_nodef',
-    'r_graph_adjacent', 'r_graph_all_neighbours',
-    'r_graph_create_node_info', 'r_graph_del_edge',
-    'r_graph_del_node', 'r_graph_dfs', 'r_graph_dfs_node',
-    'r_graph_dfs_node_reverse', 'r_graph_drawable_to_dot',
-    'r_graph_drawable_to_json', 'r_graph_free',
-    'r_graph_free_node_info', 'r_graph_get_neighbours',
-    'r_graph_get_node', 'r_graph_get_nodes', 'r_graph_innodes',
-    'r_graph_new', 'r_graph_node_iter', 'r_graph_node_split_forward',
-    'r_graph_nth_neighbour', 'r_graph_reset', 'r_hex_bin2str',
-    'r_hex_bin2strdup', 'r_hex_bin_truncate', 'r_hex_from_c',
-    'r_hex_from_c_array', 'r_hex_from_c_str', 'r_hex_from_code',
-    'r_hex_from_py', 'r_hex_from_py_array', 'r_hex_from_py_str',
-    'r_hex_no_code', 'r_hex_pair2bin', 'r_hex_str2bin',
-    'r_hex_str2bin_until_new', 'r_hex_str2binmask',
-    'r_hex_str_is_valid', 'r_hex_to_byte', 'r_id_pool_free',
-    'r_id_pool_grab_id', 'r_id_pool_kick_id', 'r_id_pool_new',
-    'r_id_storage_add', 'r_id_storage_delete', 'r_id_storage_foreach',
-    'r_id_storage_free', 'r_id_storage_get',
+    'r_file_temp', 'r_file_temp_ex', 'r_file_tmpdir', 'r_file_touch',
+    'r_file_truncate', 'r_free_aligned', 'r_get_input_num_value',
+    'r_getopt_init', 'r_getopt_next', 'r_graph_add_edge',
+    'r_graph_add_edge_at', 'r_graph_add_node',
+    'r_graph_add_node_info', 'r_graph_add_nodef', 'r_graph_adjacent',
+    'r_graph_all_neighbours', 'r_graph_create_node_info',
+    'r_graph_del_edge', 'r_graph_del_node', 'r_graph_dfs',
+    'r_graph_dfs_node', 'r_graph_dfs_node_reverse',
+    'r_graph_drawable_to_dot', 'r_graph_drawable_to_json',
+    'r_graph_free', 'r_graph_free_node_info',
+    'r_graph_get_neighbours', 'r_graph_get_node', 'r_graph_get_nodes',
+    'r_graph_innodes', 'r_graph_new', 'r_graph_node_iter',
+    'r_graph_node_split_forward', 'r_graph_nth_neighbour',
+    'r_graph_reset', 'r_hex_bin2str', 'r_hex_bin2strdup',
+    'r_hex_bin_truncate', 'r_hex_from_c', 'r_hex_from_c_array',
+    'r_hex_from_c_str', 'r_hex_from_code', 'r_hex_from_py',
+    'r_hex_from_py_array', 'r_hex_from_py_str', 'r_hex_no_code',
+    'r_hex_pair2bin', 'r_hex_str2bin', 'r_hex_str2bin_until_new',
+    'r_hex_str2binmask', 'r_hex_str_is_valid', 'r_hex_to_byte',
+    'r_id_pool_free', 'r_id_pool_grab_id', 'r_id_pool_kick_id',
+    'r_id_pool_new', 'r_id_storage_add', 'r_id_storage_delete',
+    'r_id_storage_foreach', 'r_id_storage_free', 'r_id_storage_get',
     'r_id_storage_get_highest', 'r_id_storage_get_lowest',
     'r_id_storage_get_next', 'r_id_storage_get_prev',
     'r_id_storage_list', 'r_id_storage_new', 'r_id_storage_set',
-    'r_id_storage_take', 'r_inflate', 'r_inflate_raw',
-    'r_interval_tree_all_at', 'r_interval_tree_all_in',
-    'r_interval_tree_all_intersect', 'r_interval_tree_at',
-    'r_interval_tree_delete', 'r_interval_tree_fini',
-    'r_interval_tree_first_at', 'r_interval_tree_init',
-    'r_interval_tree_insert', 'r_interval_tree_iter_get',
-    'r_interval_tree_node_at', 'r_interval_tree_node_at_data',
-    'r_interval_tree_resize', 'r_is_valid_input_num_value',
-    'r_isprint', 'r_itv_begin', 'r_itv_contain', 'r_itv_end',
-    'r_itv_eq', 'r_itv_free', 'r_itv_include', 'r_itv_intersect',
-    'r_itv_new', 'r_itv_overlap', 'r_itv_overlap2', 'r_itv_size',
-    'r_itv_t', 'r_json_free', 'r_json_get', 'r_json_item',
-    'r_json_parse', 'r_json_type_t', 'r_leb128', 'r_log_level',
-    'r_malloc_aligned', 'r_name_check', 'r_name_filter',
-    'r_name_filter2', 'r_name_filter_flag', 'r_name_filter_print',
+    'r_id_storage_take', 'r_inflate', 'r_inflate_lz4',
+    'r_inflate_raw', 'r_interval_tree_all_at',
+    'r_interval_tree_all_in', 'r_interval_tree_all_intersect',
+    'r_interval_tree_at', 'r_interval_tree_delete',
+    'r_interval_tree_fini', 'r_interval_tree_first_at',
+    'r_interval_tree_init', 'r_interval_tree_insert',
+    'r_interval_tree_iter_get', 'r_interval_tree_node_at',
+    'r_interval_tree_node_at_data', 'r_interval_tree_resize',
+    'r_is_valid_input_num_value', 'r_isprint', 'r_itv_begin',
+    'r_itv_contain', 'r_itv_end', 'r_itv_eq', 'r_itv_free',
+    'r_itv_include', 'r_itv_intersect', 'r_itv_new', 'r_itv_overlap',
+    'r_itv_overlap2', 'r_itv_size', 'r_itv_t', 'r_json_free',
+    'r_json_get', 'r_json_item', 'r_json_parse', 'r_json_type_t',
+    'r_leb128', 'r_malloc_aligned', 'r_name_check', 'r_name_filter',
+    'r_name_filter_dup', 'r_name_filter_flag', 'r_name_filter_print',
     'r_name_filter_ro', 'r_name_validate_char',
     'r_name_validate_first', 'r_name_validate_print', 'r_new_copy',
     'r_num_abs', 'r_num_as_string', 'r_num_between',
@@ -5806,13 +6012,14 @@ __all__ = \
     'r_spaces_is_empty', 'r_spaces_new', 'r_spaces_pop',
     'r_spaces_purge', 'r_spaces_push', 'r_spaces_rename',
     'r_spaces_set', 'r_spaces_unset', 'r_stdin_slurp',
-    'r_strpool_alloc', 'r_strpool_ansi_chop', 'r_strpool_append',
-    'r_strpool_empty', 'r_strpool_fit', 'r_strpool_free',
-    'r_strpool_get', 'r_strpool_get_i', 'r_strpool_get_index',
-    'r_strpool_memcat', 'r_strpool_new', 'r_strpool_next',
-    'r_strpool_slice', 'r_table_add_column', 'r_table_add_row',
-    'r_table_add_row_list', 'r_table_add_rowf', 'r_table_align',
-    'r_table_clone', 'r_table_column_clone', 'r_table_column_free',
+    'r_str_tokenize', 'r_str_tokenize_json', 'r_strpool_alloc',
+    'r_strpool_ansi_chop', 'r_strpool_append', 'r_strpool_empty',
+    'r_strpool_fit', 'r_strpool_free', 'r_strpool_get',
+    'r_strpool_get_i', 'r_strpool_get_index', 'r_strpool_memcat',
+    'r_strpool_new', 'r_strpool_next', 'r_strpool_slice',
+    'r_table_add_column', 'r_table_add_row', 'r_table_add_row_list',
+    'r_table_add_rowf', 'r_table_align', 'r_table_clone',
+    'r_table_column_clone', 'r_table_column_free',
     'r_table_column_nth', 'r_table_columns', 'r_table_filter',
     'r_table_format', 'r_table_free', 'r_table_fromcsv',
     'r_table_fromjson', 'r_table_group', 'r_table_help',
@@ -5823,17 +6030,24 @@ __all__ = \
     'r_table_tohtml', 'r_table_tojson', 'r_table_tor2cmds',
     'r_table_tosimplestring', 'r_table_tosql', 'r_table_tostring',
     'r_table_transpose', 'r_table_type', 'r_table_uniq',
-    'r_table_visual_list', 'r_th_break', 'r_th_cond_free',
-    'r_th_cond_new', 'r_th_cond_signal', 'r_th_cond_signal_all',
-    'r_th_cond_wait', 'r_th_free', 'r_th_getname', 'r_th_kill',
-    'r_th_kill_free', 'r_th_lock_enter', 'r_th_lock_free',
-    'r_th_lock_leave', 'r_th_lock_new', 'r_th_lock_tryenter',
+    'r_table_visual_list', 'r_th_break', 'r_th_channel_free',
+    'r_th_channel_message_free', 'r_th_channel_message_new',
+    'r_th_channel_message_read', 'r_th_channel_new',
+    'r_th_channel_post', 'r_th_channel_promise_free',
+    'r_th_channel_promise_new', 'r_th_channel_promise_wait',
+    'r_th_channel_query', 'r_th_channel_read', 'r_th_channel_write',
+    'r_th_cond_free', 'r_th_cond_new', 'r_th_cond_signal',
+    'r_th_cond_signal_all', 'r_th_cond_wait', 'r_th_free',
+    'r_th_getname', 'r_th_is_running', 'r_th_kill', 'r_th_kill_free',
+    'r_th_lock_enter', 'r_th_lock_free', 'r_th_lock_leave',
+    'r_th_lock_new', 'r_th_lock_tryenter', 'r_th_lock_type_t',
     'r_th_lock_wait', 'r_th_new', 'r_th_self', 'r_th_sem_free',
     'r_th_sem_new', 'r_th_sem_post', 'r_th_sem_wait',
-    'r_th_setaffinity', 'r_th_setname', 'r_th_start', 'r_th_wait',
-    'r_th_wait_async', 'r_time_dos_time_stamp_to_posix', 'r_time_now',
-    'r_time_now_mono', 'r_time_stamp_is_dos_format',
-    'r_time_stamp_to_str', 'r_time_to_string', 'r_tree_add_node',
+    'r_th_set_running', 'r_th_setaffinity', 'r_th_setname',
+    'r_th_start', 'r_th_wait', 'r_th_wait_async',
+    'r_time_dos_time_stamp_to_posix', 'r_time_now', 'r_time_now_mono',
+    'r_time_stamp_is_dos_format', 'r_time_stamp_to_str',
+    'r_time_to_string', 'r_tokenizer_new', 'r_tree_add_node',
     'r_tree_bfs', 'r_tree_dfs', 'r_tree_free', 'r_tree_new',
     'r_tree_reset', 'r_type_del', 'r_type_enum_getbitfield',
     'r_type_enum_member', 'r_type_format', 'r_type_func_args_count',
@@ -5866,7 +6080,9 @@ __all__ = \
     'struct_c__SA_RStrBuf', 'struct_c__SA_RStrpool',
     'struct_c__SA_RTable', 'struct_c__SA_RTableColumn',
     'struct_c__SA_RTableColumnType', 'struct_c__SA_RTableRow',
-    'struct_c__SA_RUtfBlock',
+    'struct_c__SA_RThreadChannel',
+    'struct_c__SA_RThreadChannelMessage',
+    'struct_c__SA_RThreadChannelPromise', 'struct_c__SA_RUtfBlock',
     'struct_c__SA_SpcAttributeTypeAndOptionalValue',
     'struct_c__SA_SpcDigestInfo',
     'struct_c__SA_SpcIndirectDataContent', 'struct_c__SA_dict',
@@ -5876,9 +6092,10 @@ __all__ = \
     'struct_ht_up_bucket_t', 'struct_ht_up_kv',
     'struct_ht_up_options_t', 'struct_ht_up_t', 'struct_ls_iter_t',
     'struct_ls_t', 'struct_pj_t', 'struct_r_anal_graph_node_info_t',
-    'struct_r_asn1_bin_t', 'struct_r_asn1_list_t',
-    'struct_r_asn1_object_t', 'struct_r_asn1_string_t',
-    'struct_r_bitmap_t', 'struct_r_buf_cache_t', 'struct_r_buf_t',
+    'struct_r_arch_config_t', 'struct_r_asn1_bin_t',
+    'struct_r_asn1_list_t', 'struct_r_asn1_object_t',
+    'struct_r_asn1_string_t', 'struct_r_bitmap_t',
+    'struct_r_buf_cache_t', 'struct_r_buf_t',
     'struct_r_buffer_methods_t', 'struct_r_cache_t',
     'struct_r_charset_rune_t', 'struct_r_charset_t',
     'struct_r_cons_bind_t', 'struct_r_cons_context_t',
@@ -5929,8 +6146,9 @@ __all__ = \
     'struct_r_space_event_t_0_0', 'struct_r_space_event_t_0_1',
     'struct_r_space_event_t_0_2', 'struct_r_space_t',
     'struct_r_spaces_t', 'struct_r_stack_t', 'struct_r_th_cond_t',
-    'struct_r_th_lock_t', 'struct_r_th_pool_t', 'struct_r_th_sem_t',
-    'struct_r_th_t', 'struct_r_tree_node_t', 'struct_r_tree_t',
+    'struct_r_th_lock_t', 'struct_r_th_lock_t_0',
+    'struct_r_th_pool_t', 'struct_r_th_sem_t', 'struct_r_th_t',
+    'struct_r_tokenizer_t', 'struct_r_tree_node_t', 'struct_r_tree_t',
     'struct_r_tree_visitor_t', 'struct_r_type_enum',
     'struct_r_vector_t', 'struct_r_x509_algorithmidentifier_t',
     'struct_r_x509_authoritykeyidentifier_t',
@@ -5942,7 +6160,8 @@ __all__ = \
     'struct_r_x509_tbscertificate_t', 'struct_r_x509_validity_t',
     'struct_rcolor_t', 'struct_re_guts', 'struct_sdb_gperf_t',
     'struct_sdb_kv', 'struct_sdb_t', 'struct_termios',
-    'struct_timeval', 'struct_tm', 'union___pthread_cond_s_0',
+    'struct_timeval', 'struct_tm', 'time_t', 'uint16_t', 'uint32_t',
+    'uint64_t', 'uint8_t', 'union___pthread_cond_s_0',
     'union___pthread_cond_s_1', 'union_c__UA_RNumFloat',
     'union_c__UA_pthread_cond_t', 'union_c__UA_pthread_mutex_t',
     'union_c__UA_sem_t', 'union_r_json_t_0', 'union_r_json_t_0_0_0',

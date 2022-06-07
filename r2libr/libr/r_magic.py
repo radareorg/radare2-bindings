@@ -328,6 +328,9 @@ r_magic_error.argtypes = [ctypes.POINTER(struct_r_magic_set)]
 r_magic_setflags = _libr_magic.r_magic_setflags
 r_magic_setflags.restype = None
 r_magic_setflags.argtypes = [ctypes.POINTER(struct_r_magic_set), ctypes.c_int32]
+r_magic_from_ebcdic = _libr_magic.r_magic_from_ebcdic
+r_magic_from_ebcdic.restype = None
+r_magic_from_ebcdic.argtypes = [ctypes.POINTER(ctypes.c_ubyte), size_t, ctypes.POINTER(ctypes.c_ubyte)]
 r_magic_load = _libr_magic.r_magic_load
 r_magic_load.restype = ctypes.c_bool
 r_magic_load.argtypes = [ctypes.POINTER(struct_r_magic_set), ctypes.POINTER(ctypes.c_char)]
@@ -346,9 +349,9 @@ r_magic_errno.argtypes = [ctypes.POINTER(struct_r_magic_set)]
 __all__ = \
     ['RMagic', 'r_magic_buffer', 'r_magic_check', 'r_magic_compile',
     'r_magic_descriptor', 'r_magic_errno', 'r_magic_error',
-    'r_magic_file', 'r_magic_free', 'r_magic_load',
-    'r_magic_load_buffer', 'r_magic_new', 'r_magic_setflags',
-    'r_magic_version', 'size_t', 'struct_cont', 'struct_level_info',
-    'struct_mlist', 'struct_out', 'struct_r_magic',
-    'struct_r_magic_0_0', 'struct_r_magic_set',
+    'r_magic_file', 'r_magic_free', 'r_magic_from_ebcdic',
+    'r_magic_load', 'r_magic_load_buffer', 'r_magic_new',
+    'r_magic_setflags', 'r_magic_version', 'size_t', 'struct_cont',
+    'struct_level_info', 'struct_mlist', 'struct_out',
+    'struct_r_magic', 'struct_r_magic_0_0', 'struct_r_magic_set',
     'struct_r_magic_set_2', 'union_VALUETYPE', 'union_r_magic_0']

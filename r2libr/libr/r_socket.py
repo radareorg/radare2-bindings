@@ -512,9 +512,10 @@ r_socket_rap_client_write.argtypes = [ctypes.POINTER(struct_r_socket_t), ctypes.
 r_socket_rap_client_read = _libr_socket.r_socket_rap_client_read
 r_socket_rap_client_read.restype = ctypes.c_int32
 r_socket_rap_client_read.argtypes = [ctypes.POINTER(struct_r_socket_t), ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+uint64_t = ctypes.c_uint64
 r_socket_rap_client_seek = _libr_socket.r_socket_rap_client_seek
 r_socket_rap_client_seek.restype = ctypes.c_int32
-r_socket_rap_client_seek.argtypes = [ctypes.POINTER(struct_r_socket_t), ctypes.c_uint64, ctypes.c_int32]
+r_socket_rap_client_seek.argtypes = [ctypes.POINTER(struct_r_socket_t), uint64_t, ctypes.c_int32]
 class struct_r_run_profile_t(Structure):
     pass
 
@@ -537,7 +538,10 @@ struct_r_run_profile_t._fields_ = [
     ('_libpath', ctypes.POINTER(ctypes.c_char)),
     ('_preload', ctypes.POINTER(ctypes.c_char)),
     ('_bits', ctypes.c_int32),
+    ('_time', ctypes.c_bool),
+    ('PADDING_1', ctypes.c_ubyte * 3),
     ('_pid', ctypes.c_int32),
+    ('PADDING_2', ctypes.c_ubyte * 4),
     ('_pidfile', ctypes.POINTER(ctypes.c_char)),
     ('_r2preload', ctypes.c_int32),
     ('_docore', ctypes.c_int32),
@@ -680,4 +684,4 @@ __all__ = \
     'struct_r_run_profile_t', 'struct_r_socket_http_options',
     'struct_r_socket_http_request', 'struct_r_socket_proc_t',
     'struct_r_socket_rap_server_t', 'struct_r_socket_t',
-    'struct_sockaddr_in']
+    'struct_sockaddr_in', 'uint64_t']

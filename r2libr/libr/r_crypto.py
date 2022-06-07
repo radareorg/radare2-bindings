@@ -196,10 +196,10 @@ c__Ea_R_CRYPTO_DIR_CIPHER = ctypes.c_uint32 # enum
 class struct_r_crypto_t(Structure):
     pass
 
-class struct_r_crypto_plugin_t(Structure):
+class struct_r_list_t(Structure):
     pass
 
-class struct_r_list_t(Structure):
+class struct_r_crypto_plugin_t(Structure):
     pass
 
 struct_r_crypto_t._pack_ = 1 # source:False

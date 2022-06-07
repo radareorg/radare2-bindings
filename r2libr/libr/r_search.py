@@ -194,7 +194,8 @@ c__Ea_R_SEARCH_ESIL__enumvalues = {
     7: 'R_SEARCH_PRIV_KEY',
     8: 'R_SEARCH_DELTAKEY',
     9: 'R_SEARCH_MAGIC',
-    10: 'R_SEARCH_LAST',
+    10: 'R_SEARCH_RABIN_KARP',
+    11: 'R_SEARCH_LAST',
 }
 R_SEARCH_ESIL = 0
 R_SEARCH_KEYWORD = 1
@@ -206,7 +207,8 @@ R_SEARCH_AES = 6
 R_SEARCH_PRIV_KEY = 7
 R_SEARCH_DELTAKEY = 8
 R_SEARCH_MAGIC = 9
-R_SEARCH_LAST = 10
+R_SEARCH_RABIN_KARP = 10
+R_SEARCH_LAST = 11
 c__Ea_R_SEARCH_ESIL = ctypes.c_uint32 # enum
 class struct_r_search_keyword_t(Structure):
     pass
@@ -248,12 +250,26 @@ struct_r_search_hit_t._fields_ = [
 
 RSearchHit = struct_r_search_hit_t
 RSearchCallback = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_search_keyword_t), ctypes.POINTER(None), ctypes.c_uint64)
+RSearchRCb = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_search_keyword_t), ctypes.c_int32, ctypes.POINTER(None), ctypes.c_uint64)
 RSearchDFree = ctypes.CFUNCTYPE(None, ctypes.POINTER(None))
 class struct_r_search_t(Structure):
     pass
 
 class struct_r_list_t(Structure):
     pass
+
+class struct_r_cons_bind_t(Structure):
+    pass
+
+struct_r_cons_bind_t._pack_ = 1 # source:False
+struct_r_cons_bind_t._fields_ = [
+    ('get_size', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
+    ('get_cursor', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
+    ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
+    ('is_breaked', ctypes.CFUNCTYPE(ctypes.c_bool)),
+    ('cb_flush', ctypes.CFUNCTYPE(None)),
+    ('cb_grep', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
+]
 
 class struct_r_io_bind_t(Structure):
     pass
@@ -264,10 +280,10 @@ class struct_r_io_t(Structure):
 class struct_r_io_desc_t(Structure):
     pass
 
-class struct_r_io_map_t(Structure):
+class struct_r_io_bank_t(Structure):
     pass
 
-class struct_r_io_bank_t(Structure):
+class struct_r_io_map_t(Structure):
     pass
 
 struct_r_io_bind_t._pack_ = 1 # source:False
@@ -320,6 +336,7 @@ struct_r_search_t._fields_ = [
     ('datafree', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
     ('user', ctypes.POINTER(None)),
     ('callback', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_search_keyword_t), ctypes.POINTER(None), ctypes.c_uint64)),
+    ('r_callback', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_search_keyword_t), ctypes.c_int32, ctypes.POINTER(None), ctypes.c_uint64)),
     ('nhits', ctypes.c_uint64),
     ('maxhits', ctypes.c_uint64),
     ('hits', ctypes.POINTER(struct_r_list_t)),
@@ -333,6 +350,7 @@ struct_r_search_t._fields_ = [
     ('update', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_search_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32)),
     ('kws', ctypes.POINTER(struct_r_list_t)),
     ('iob', struct_r_io_bind_t),
+    ('consb', struct_r_cons_bind_t),
     ('bckwrds', ctypes.c_char),
     ('PADDING_2', ctypes.c_ubyte * 7),
 ]
@@ -357,6 +375,9 @@ struct_r_list_iter_t._fields_ = [
     ('p', ctypes.POINTER(struct_r_list_iter_t)),
 ]
 
+class struct_r_cache_t(Structure):
+    pass
+
 class struct_r_id_storage_t(Structure):
     pass
 
@@ -366,8 +387,30 @@ class struct_r_event_t(Structure):
 class struct_ls_t(Structure):
     pass
 
-class struct_r_cache_t(Structure):
+class struct_r_core_bind_t(Structure):
     pass
+
+struct_r_core_bind_t._pack_ = 1 # source:False
+struct_r_core_bind_t._fields_ = [
+    ('core', ctypes.POINTER(None)),
+    ('cmd', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('cmdf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('cmdstr', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('cmdstrf', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('puts', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
+    ('bphit', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(None))),
+    ('syshit', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+    ('setab', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), ctypes.c_int32)),
+    ('getName', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
+    ('getNameDelta', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
+    ('archbits', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.c_uint64)),
+    ('cfggeti', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('cfgGet', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('numGet', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
+    ('isMapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_int32)),
+    ('syncDebugMaps', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None))),
+    ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
+]
 
 class struct_r_io_undo_t(Structure):
     pass
@@ -394,7 +437,7 @@ struct_r_io_undo_t._fields_ = [
     ('seek', struct_r_io_undos_t * 64),
 ]
 
-class struct_r_pvector_t(Structure):
+class struct_r_skyline_t(Structure):
     pass
 
 class struct_r_vector_t(Structure):
@@ -410,41 +453,16 @@ struct_r_vector_t._fields_ = [
     ('free_user', ctypes.POINTER(None)),
 ]
 
-struct_r_pvector_t._pack_ = 1 # source:False
-struct_r_pvector_t._fields_ = [
+struct_r_skyline_t._pack_ = 1 # source:False
+struct_r_skyline_t._fields_ = [
     ('v', struct_r_vector_t),
 ]
 
-class struct_r_skyline_t(Structure):
+class struct_r_pvector_t(Structure):
     _pack_ = 1 # source:False
     _fields_ = [
     ('v', struct_r_vector_t),
      ]
-
-class struct_r_core_bind_t(Structure):
-    pass
-
-struct_r_core_bind_t._pack_ = 1 # source:False
-struct_r_core_bind_t._fields_ = [
-    ('core', ctypes.POINTER(None)),
-    ('cmd', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('cmdf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('cmdstr', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('cmdstrf', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('puts', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
-    ('bphit', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(None))),
-    ('syshit', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
-    ('setab', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), ctypes.c_int32)),
-    ('getName', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
-    ('getNameDelta', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.c_uint64)),
-    ('archbits', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.c_uint64)),
-    ('cfggeti', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('cfgGet', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('numGet', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char))),
-    ('isMapped', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None), ctypes.c_uint64, ctypes.c_int32)),
-    ('syncDebugMaps', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None))),
-    ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
-]
 
 struct_r_io_t._pack_ = 1 # source:False
 struct_r_io_t._fields_ = [
@@ -484,7 +502,7 @@ struct_r_io_t._fields_ = [
     ('args', ctypes.POINTER(ctypes.c_char)),
     ('event', ctypes.POINTER(struct_r_event_t)),
     ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
-    ('corebind', struct_r_core_bind_t),
+    ('coreb', struct_r_core_bind_t),
     ('want_ptrace_wrap', ctypes.c_bool),
     ('PADDING_5', ctypes.c_ubyte * 7),
 ]
@@ -543,7 +561,7 @@ struct_ht_up_bucket_t._pack_ = 1 # source:False
 struct_ht_up_bucket_t._fields_ = [
     ('arr', ctypes.POINTER(struct_ht_up_kv)),
     ('count', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('size', ctypes.c_uint32),
 ]
 
 struct_ht_up_kv._pack_ = 1 # source:False
@@ -672,7 +690,8 @@ struct_r_io_bank_t._fields_ = [
     ('todo', ctypes.POINTER(struct_r_queue_t)),
     ('last_used', ctypes.POINTER(struct_r_crbtree_node)),
     ('id', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
+    ('drain_me', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 3),
 ]
 
 struct_r_crbtree_t._pack_ = 1 # source:False
@@ -722,19 +741,23 @@ r_search_set_mode.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.c_int32]
 r_search_free = _libr_search.r_search_free
 r_search_free.restype = None
 r_search_free.argtypes = [ctypes.POINTER(struct_r_search_t)]
+uint64_t = ctypes.c_uint64
 r_search_find = _libr_search.r_search_find
 r_search_find.restype = ctypes.POINTER(struct_r_list_t)
-r_search_find.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
+r_search_find.argtypes = [ctypes.POINTER(struct_r_search_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int32]
 size_t = ctypes.c_uint64
 r_search_find_uds = _libr_search.r_search_find_uds
 r_search_find_uds.restype = ctypes.POINTER(struct_r_list_t)
-r_search_find_uds.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), size_t, ctypes.c_bool]
+r_search_find_uds.argtypes = [ctypes.POINTER(struct_r_search_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), size_t, ctypes.c_bool]
 r_search_update = _libr_search.r_search_update
 r_search_update.restype = ctypes.c_int32
-r_search_update.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.c_uint64, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int64]
+r_search_update.argtypes = [ctypes.POINTER(struct_r_search_t), uint64_t, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int64]
 r_search_update_read = _libr_search.r_search_update_read
 r_search_update_read.restype = ctypes.c_int32
-r_search_update_read.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.c_uint64, ctypes.c_uint64]
+r_search_update_read.argtypes = [ctypes.POINTER(struct_r_search_t), uint64_t, uint64_t]
+r_search_maps = _libr_search.r_search_maps
+r_search_maps.restype = ctypes.c_int32
+r_search_maps.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.POINTER(struct_r_list_t)]
 r_search_keyword_free = _libr_search.r_search_keyword_free
 r_search_keyword_free.restype = None
 r_search_keyword_free.argtypes = [ctypes.POINTER(struct_r_search_keyword_t)]
@@ -770,28 +793,32 @@ r_search_string_prepare_backward.restype = None
 r_search_string_prepare_backward.argtypes = [ctypes.POINTER(struct_r_search_t)]
 r_search_range_add = _libraries['FIXME_STUB'].r_search_range_add
 r_search_range_add.restype = ctypes.c_int32
-r_search_range_add.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.c_uint64, ctypes.c_uint64]
+r_search_range_add.argtypes = [ctypes.POINTER(struct_r_search_t), uint64_t, uint64_t]
 r_search_range_set = _libraries['FIXME_STUB'].r_search_range_set
 r_search_range_set.restype = ctypes.c_int32
-r_search_range_set.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.c_uint64, ctypes.c_uint64]
+r_search_range_set.argtypes = [ctypes.POINTER(struct_r_search_t), uint64_t, uint64_t]
 r_search_range_reset = _libraries['FIXME_STUB'].r_search_range_reset
 r_search_range_reset.restype = ctypes.c_int32
 r_search_range_reset.argtypes = [ctypes.POINTER(struct_r_search_t)]
 r_search_hit_new = _libr_search.r_search_hit_new
 r_search_hit_new.restype = ctypes.c_int32
-r_search_hit_new.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.POINTER(struct_r_search_keyword_t), ctypes.c_uint64]
+r_search_hit_new.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.POINTER(struct_r_search_keyword_t), uint64_t]
 r_search_set_distance = _libr_search.r_search_set_distance
 r_search_set_distance.restype = None
 r_search_set_distance.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.c_int32]
+uint32_t = ctypes.c_uint32
 r_search_strings = _libraries['FIXME_STUB'].r_search_strings
 r_search_strings.restype = ctypes.c_int32
-r_search_strings.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.c_uint32, ctypes.c_uint32]
+r_search_strings.argtypes = [ctypes.POINTER(struct_r_search_t), uint32_t, uint32_t]
 r_search_set_string_limits = _libr_search.r_search_set_string_limits
 r_search_set_string_limits.restype = ctypes.c_int32
-r_search_set_string_limits.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.c_uint32, ctypes.c_uint32]
+r_search_set_string_limits.argtypes = [ctypes.POINTER(struct_r_search_t), uint32_t, uint32_t]
 r_search_set_callback = _libr_search.r_search_set_callback
 r_search_set_callback.restype = None
 r_search_set_callback.argtypes = [ctypes.POINTER(struct_r_search_t), RSearchCallback, ctypes.POINTER(None)]
+r_search_set_read_cb = _libr_search.r_search_set_read_cb
+r_search_set_read_cb.restype = None
+r_search_set_read_cb.argtypes = [ctypes.POINTER(struct_r_search_t), RSearchRCb, ctypes.POINTER(None)]
 r_search_begin = _libr_search.r_search_begin
 r_search_begin.restype = ctypes.c_int32
 r_search_begin.argtypes = [ctypes.POINTER(struct_r_search_t)]
@@ -800,26 +827,27 @@ r_search_pattern_size.restype = None
 r_search_pattern_size.argtypes = [ctypes.POINTER(struct_r_search_t), ctypes.c_int32]
 __all__ = \
     ['RSearch', 'RSearchCallback', 'RSearchDFree', 'RSearchHit',
-    'RSearchKeyword', 'RSearchUds', 'R_SEARCH_AES',
+    'RSearchKeyword', 'RSearchRCb', 'RSearchUds', 'R_SEARCH_AES',
     'R_SEARCH_DELTAKEY', 'R_SEARCH_ESIL', 'R_SEARCH_KEYWORD',
     'R_SEARCH_LAST', 'R_SEARCH_MAGIC', 'R_SEARCH_PATTERN',
-    'R_SEARCH_PRIV_KEY', 'R_SEARCH_REGEXP', 'R_SEARCH_STRING',
-    'R_SEARCH_XREFS', 'c__Ea_R_SEARCH_ESIL', 'r_search_begin',
-    'r_search_find', 'r_search_find_uds', 'r_search_free',
-    'r_search_hit_new', 'r_search_keyword_free',
+    'R_SEARCH_PRIV_KEY', 'R_SEARCH_RABIN_KARP', 'R_SEARCH_REGEXP',
+    'R_SEARCH_STRING', 'R_SEARCH_XREFS', 'c__Ea_R_SEARCH_ESIL',
+    'r_search_begin', 'r_search_find', 'r_search_find_uds',
+    'r_search_free', 'r_search_hit_new', 'r_search_keyword_free',
     'r_search_keyword_new', 'r_search_keyword_new_hex',
     'r_search_keyword_new_hexmask', 'r_search_keyword_new_regexp',
     'r_search_keyword_new_str', 'r_search_keyword_new_wide',
-    'r_search_kw_add', 'r_search_kw_reset', 'r_search_new',
-    'r_search_pattern_size', 'r_search_range_add',
+    'r_search_kw_add', 'r_search_kw_reset', 'r_search_maps',
+    'r_search_new', 'r_search_pattern_size', 'r_search_range_add',
     'r_search_range_reset', 'r_search_range_set', 'r_search_reset',
     'r_search_set_callback', 'r_search_set_distance',
-    'r_search_set_mode', 'r_search_set_string_limits',
-    'r_search_string_prepare_backward', 'r_search_strings',
-    'r_search_update', 'r_search_update_read', 'r_search_version',
-    'size_t', 'struct_ht_up_bucket_t', 'struct_ht_up_kv',
-    'struct_ht_up_options_t', 'struct_ht_up_t', 'struct_ls_iter_t',
-    'struct_ls_t', 'struct_r_cache_t', 'struct_r_core_bind_t',
+    'r_search_set_mode', 'r_search_set_read_cb',
+    'r_search_set_string_limits', 'r_search_string_prepare_backward',
+    'r_search_strings', 'r_search_update', 'r_search_update_read',
+    'r_search_version', 'size_t', 'struct_ht_up_bucket_t',
+    'struct_ht_up_kv', 'struct_ht_up_options_t', 'struct_ht_up_t',
+    'struct_ls_iter_t', 'struct_ls_t', 'struct_r_cache_t',
+    'struct_r_cons_bind_t', 'struct_r_core_bind_t',
     'struct_r_crbtree_node', 'struct_r_crbtree_t', 'struct_r_event_t',
     'struct_r_id_pool_t', 'struct_r_id_storage_t',
     'struct_r_interval_t', 'struct_r_io_bank_t', 'struct_r_io_bind_t',
@@ -829,4 +857,4 @@ __all__ = \
     'struct_r_queue_t', 'struct_r_search_hit_t',
     'struct_r_search_keyword_t', 'struct_r_search_t',
     'struct_r_search_uds_t', 'struct_r_skyline_t',
-    'struct_r_vector_t']
+    'struct_r_vector_t', 'uint32_t', 'uint64_t']
