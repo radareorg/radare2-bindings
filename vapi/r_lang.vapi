@@ -10,7 +10,7 @@ namespace Radare {
 		public bool @add(RLang.Plugin plugin);
 		public bool use(string name);
 		public void undef(string name);
-		public bool list();
+		public bool list(int mode);
 		public bool set_argv(int argc, char **argv);
 		public bool run(string code, int len);
 		public bool run_file(string file);

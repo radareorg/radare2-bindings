@@ -112,11 +112,11 @@ public class RAsm {
 		/**
 		 * The bytes
 		 */
-		// public RStrBuf buf;
+		public RStrBuf buf;
 		/**
 		 * The assembly representation.
 		 */
-		// public RStrBuf buf_asm;
+		public RStrBuf buf_asm;
 		// public string buf_asm;
 
 		/**

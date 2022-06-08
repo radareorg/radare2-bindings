@@ -1,4 +1,5 @@
 #include <r_cmd.h>
+#include <r_core.h>
 #include <r_lib.h>
 
 extern int mycall(void *user, const char *cmd);

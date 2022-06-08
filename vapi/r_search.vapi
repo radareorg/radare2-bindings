@@ -12,7 +12,6 @@ public class Radare.RSearch {
 	public void reset(int mode);
 // XXX must return bool?? or not? 3 state? or two?
 	public int update(uint64 from, uint8 *buf, long len);
-	// public int update_i(uint64 from, uint8 *buf, long len);
 	public RList<RSearch.Hit> find(uint64 addr, uint8 *buf, int len);
 
 	public bool kw_add(Keyword kw);

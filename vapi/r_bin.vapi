@@ -2,13 +2,17 @@
 
 namespace Radare {
 	[Compact]
-	[CCode (cheader_filename="r_bin.h,r_list.h,r_types_base.h", cname="RBinFileOptions", free_function="", cprefix="r_bin_")]
-	public class RBinFileOptions {
+	[CCode (cheader_filename="r_bin.h,r_list.h,r_types_base.h", cname="RBinFileOptions", free_function="", cprefix="r_bin_", destroy_function="")]
+	public struct RBinFileOptions {
+		string pluginname;
+		uint64 baseaddr; // where the linker maps the binary in memory
+		uint64 loadaddr; // starting physical address to read from the target file
+		// ut64 paddr; // offset
+		uint64 sz;
+		int xtr_idx; // load Nth binary
 		int rawstr;
-		uint64 baddr;
-		uint64 laddr;
-		uint64 paddr;
-		string plugname;
+		int fd;
+		string filename;
 	}
 	
 	[Compact]
@@ -19,7 +23,7 @@ namespace Radare {
 	}
 
 	[Compact]
-	[CCode (cheader_filename="r_bin.h,r_list.h,r_types_base.h", cname="RBin", free_function="r_bin_free", cprefix="r_bin_")]
+	[CCode (cheader_filename="r_bin.h,r_list.h,r_types_base.h", cname="RBin", free_function="r_bin_free", cprefix="r_bin_",destroy_function="")]
 	public class RBin {
 		[CCode (cprefix="R_BIN_SYM_")]
 		public enum Sym {
@@ -34,13 +38,13 @@ namespace Radare {
 		public int narch;
 
 		public RBin();
-		// public void iobind (RIO io);
+		public RIO.Bind iob;
 
 		public uint64 wr_scn_resize (string name, uint64 size);
 		public int wr_rpath_del ();
 		public int wr_output (string filename);
 
-		public int open(string file, RBinFileOptions opts);
+		public int open(string file, ref RBinFileOptions opts);
 		public RBuffer create(string plugin_name,uint8 *code, int codelen, uint8 *data, int datalen, RBinArchOptions *opt);
 		public int use_arch(string arch, int bits, string name);
 		public int select(string arch, int bits, string name);

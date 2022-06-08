@@ -26,13 +26,13 @@ public class RAsmExample
 		if (st.disassemble(out op, buf, 3) <1) {
 			stderr.printf ("internal error\n");
 		} else {
-			stdout.printf ("disasm: %s\n", (string)op.buf_asm);
+			stdout.printf ("disasm: %s\n", op.get_asm());
 		}
 		RAsm.Code? code = st.massemble(buf2);
 		if (code == null) {
 			stderr.printf("internal error\n");
 		} else {
-			stdout.printf("asm: %s\n", code.buf_hex);
+			stdout.printf("asm: %s\n", code.get_hex ());
 		}
 
 /*

@@ -1,6 +1,7 @@
 include ../../config.mk
 
-all: config lang regs sc hash socket search list plugin.${SOEXT}
+# all: config lang regs sc hash socket search list plugin.${SOEXT}
+all: core asm bin lang regs sc hash socket search list plugin.${SOEXT}
 	@true
 
 all2: bin lang core asmsearch bwdisassemble regs hash sc socket asm search db io list rgot plugin.${SOEXT}

@@ -3,15 +3,18 @@
 using Radare;
 
 public void main (string[] args) { 
-	if (args.length != 2)
+	if (args.length != 2) {
 		error ("Usage: %s <file>\n", args[0]);
-
+	}
 	var path = args[1];
 	var io = new RIO ();
 	var desc = io.open(path,0,0);
+	var bfo = RBinFileOptions();
 	var bin = new RBin ();
-	bin.iobind (io);
-	if (bin.load (args[1], 0,0,0,desc.fd,0) != 1)
+	bin.iob.bind (io);
+	bfo.fd = desc.fd;
+	// if (bin.load (args[1], 0,0,0,desc.fd,0) != 1)
+	if (bin.open (args[1], ref bfo) != 1)
 		error ("Cannot open binary file\n");
 
 	uint64 baddr = bin.get_baddr();

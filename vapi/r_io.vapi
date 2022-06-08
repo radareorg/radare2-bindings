@@ -18,6 +18,15 @@ namespace Radare {
 			EXEC = 2,
 		}
 
+		public struct Bind {
+			int init;
+			public RIO *io;
+			// RIODescUse desc_use;
+			// ...
+			[CCode(cname="r_io_bind", free_function="")]
+			public void bind(RIO *io);
+		}
+
 		[CCode (cprefix="R_IO_SEEK_")]
 		public enum Seek {
 			SET = 0,
@@ -38,8 +47,8 @@ namespace Radare {
 		 * flags: See Radare.Io.Flags
 		 * mode: ...
 		 */
-/*
 		public RIO.Desc open(string uri, int flags, int mode);
+/*
 		public RIO.Desc open_as(string urihandler, string path, int flags, int mode);
 		public int redirect(string uri);
 		public void use_fd(int fd);

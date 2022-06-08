@@ -1,8 +1,6 @@
 # radare2 language bindings
 
-| Service | Badge |
-|----------|---------------------------------------------------------------------|
-| **TravisCI** 	| [![Build Status](https://travis-ci.com/radareorg/radare2-bindings.svg?branch=master)](https://travis-ci.com/radareorg/radare2-bindings)|
+[![Python r2libr bindings 🚀](https://github.com/radareorg/radare2-bindings/actions/workflows/generate_bindings.yml/badge.svg)](https://github.com/radareorg/radare2-bindings/actions/workflows/generate_bindings.yml)
 
 This repository contains the native bindings generated with Valabind to use the radare2 APIs.
 
@@ -14,6 +12,7 @@ This directory contains the code necessary to use the r2 api from your
 favourite language.
 
 It supports a large list of programming languages:
+
 - Python
 - JavaScript
 - Java
@@ -22,6 +21,7 @@ It supports a large list of programming languages:
 - Perl
 - Lua
 - Vala
+- Rust
 - NewLisp
 - Guile
 - OCaml

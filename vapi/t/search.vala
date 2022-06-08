@@ -18,7 +18,7 @@ public class SearchExample {
 		print ("string: \"%s\"\n", buf);
 		print ("search: \"%s\"\n", "lib");
 		print ("length: %ld\n", buf.length);
-		s.update_i(0LL, (uint8*)buf, buf.length);
+		s.update(0LL, (uint8*)buf, buf.length);
 		s = null;
 	}
 }
