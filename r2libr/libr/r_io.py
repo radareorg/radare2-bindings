@@ -248,7 +248,7 @@ RIOUndoWrite = struct_r_io_undo_w_t
 class struct_r_io_t(Structure):
     pass
 
-class struct_r_id_storage_t(Structure):
+class struct_r_event_t(Structure):
     pass
 
 class struct_ls_t(Structure):
@@ -260,8 +260,35 @@ class struct_r_io_desc_t(Structure):
 class struct_r_cache_t(Structure):
     pass
 
-class struct_r_event_t(Structure):
+class struct_r_id_storage_t(Structure):
     pass
+
+class struct_r_skyline_t(Structure):
+    pass
+
+class struct_r_vector_t(Structure):
+    pass
+
+struct_r_vector_t._pack_ = 1 # source:False
+struct_r_vector_t._fields_ = [
+    ('a', ctypes.POINTER(None)),
+    ('len', ctypes.c_uint64),
+    ('capacity', ctypes.c_uint64),
+    ('elem_size', ctypes.c_uint64),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
+    ('free_user', ctypes.POINTER(None)),
+]
+
+struct_r_skyline_t._pack_ = 1 # source:False
+struct_r_skyline_t._fields_ = [
+    ('v', struct_r_vector_t),
+]
+
+class struct_r_pvector_t(Structure):
+    _pack_ = 1 # source:False
+    _fields_ = [
+    ('v', struct_r_vector_t),
+     ]
 
 class struct_r_core_bind_t(Structure):
     pass
@@ -287,33 +314,6 @@ struct_r_core_bind_t._fields_ = [
     ('syncDebugMaps', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(None))),
     ('pjWithEncoding', ctypes.CFUNCTYPE(ctypes.POINTER(None), ctypes.POINTER(None))),
 ]
-
-class struct_r_pvector_t(Structure):
-    pass
-
-class struct_r_vector_t(Structure):
-    pass
-
-struct_r_vector_t._pack_ = 1 # source:False
-struct_r_vector_t._fields_ = [
-    ('a', ctypes.POINTER(None)),
-    ('len', ctypes.c_uint64),
-    ('capacity', ctypes.c_uint64),
-    ('elem_size', ctypes.c_uint64),
-    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
-    ('free_user', ctypes.POINTER(None)),
-]
-
-struct_r_pvector_t._pack_ = 1 # source:False
-struct_r_pvector_t._fields_ = [
-    ('v', struct_r_vector_t),
-]
-
-class struct_r_skyline_t(Structure):
-    _pack_ = 1 # source:False
-    _fields_ = [
-    ('v', struct_r_vector_t),
-     ]
 
 struct_r_io_t._pack_ = 1 # source:False
 struct_r_io_t._fields_ = [
@@ -358,10 +358,10 @@ struct_r_io_t._fields_ = [
     ('PADDING_5', ctypes.c_ubyte * 7),
 ]
 
-class struct_r_io_plugin_t(Structure):
+class struct_ht_up_t(Structure):
     pass
 
-class struct_ht_up_t(Structure):
+class struct_r_io_plugin_t(Structure):
     pass
 
 struct_r_io_desc_t._pack_ = 1 # source:False
@@ -1069,7 +1069,7 @@ r_io_plugin_write_at.argtypes = [ctypes.POINTER(struct_r_io_desc_t), uint64_t, c
 r_io_plugin_resolve = _libr_io.r_io_plugin_resolve
 r_io_plugin_resolve.restype = ctypes.POINTER(struct_r_io_plugin_t)
 r_io_plugin_resolve.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char), ctypes.c_bool]
-r_io_plugin_get_default = _libraries['FIXME_STUB'].r_io_plugin_get_default
+r_io_plugin_get_default = _libr_io.r_io_plugin_get_default
 r_io_plugin_get_default.restype = ctypes.POINTER(struct_r_io_plugin_t)
 r_io_plugin_get_default.argtypes = [ctypes.POINTER(struct_r_io_t), ctypes.POINTER(ctypes.c_char), ctypes.c_bool]
 r_io_undo_init = _libr_io.r_io_undo_init

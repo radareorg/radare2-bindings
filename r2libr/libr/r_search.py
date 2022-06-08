@@ -258,32 +258,19 @@ class struct_r_search_t(Structure):
 class struct_r_list_t(Structure):
     pass
 
-class struct_r_cons_bind_t(Structure):
-    pass
-
-struct_r_cons_bind_t._pack_ = 1 # source:False
-struct_r_cons_bind_t._fields_ = [
-    ('get_size', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
-    ('get_cursor', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
-    ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
-    ('is_breaked', ctypes.CFUNCTYPE(ctypes.c_bool)),
-    ('cb_flush', ctypes.CFUNCTYPE(None)),
-    ('cb_grep', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
-]
-
 class struct_r_io_bind_t(Structure):
     pass
 
 class struct_r_io_t(Structure):
     pass
 
+class struct_r_io_map_t(Structure):
+    pass
+
 class struct_r_io_desc_t(Structure):
     pass
 
 class struct_r_io_bank_t(Structure):
-    pass
-
-class struct_r_io_map_t(Structure):
     pass
 
 struct_r_io_bind_t._pack_ = 1 # source:False
@@ -322,6 +309,19 @@ struct_r_io_bind_t._fields_ = [
     ('map_add', ctypes.CFUNCTYPE(ctypes.POINTER(struct_r_io_map_t), ctypes.POINTER(struct_r_io_t), ctypes.c_int32, ctypes.c_int32, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)),
     ('v2p', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
     ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
+]
+
+class struct_r_cons_bind_t(Structure):
+    pass
+
+struct_r_cons_bind_t._pack_ = 1 # source:False
+struct_r_cons_bind_t._fields_ = [
+    ('get_size', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
+    ('get_cursor', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_int32))),
+    ('cb_printf', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(ctypes.c_char))),
+    ('is_breaked', ctypes.CFUNCTYPE(ctypes.c_bool)),
+    ('cb_flush', ctypes.CFUNCTYPE(None)),
+    ('cb_grep', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
 ]
 
 struct_r_search_t._pack_ = 1 # source:False
@@ -375,17 +375,38 @@ struct_r_list_iter_t._fields_ = [
     ('p', ctypes.POINTER(struct_r_list_iter_t)),
 ]
 
-class struct_r_cache_t(Structure):
+class struct_r_event_t(Structure):
     pass
 
 class struct_r_id_storage_t(Structure):
     pass
 
-class struct_r_event_t(Structure):
-    pass
-
 class struct_ls_t(Structure):
     pass
+
+class struct_r_cache_t(Structure):
+    pass
+
+class struct_r_skyline_t(Structure):
+    pass
+
+class struct_r_vector_t(Structure):
+    pass
+
+struct_r_vector_t._pack_ = 1 # source:False
+struct_r_vector_t._fields_ = [
+    ('a', ctypes.POINTER(None)),
+    ('len', ctypes.c_uint64),
+    ('capacity', ctypes.c_uint64),
+    ('elem_size', ctypes.c_uint64),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
+    ('free_user', ctypes.POINTER(None)),
+]
+
+struct_r_skyline_t._pack_ = 1 # source:False
+struct_r_skyline_t._fields_ = [
+    ('v', struct_r_vector_t),
+]
 
 class struct_r_core_bind_t(Structure):
     pass
@@ -435,27 +456,6 @@ struct_r_io_undo_t._fields_ = [
     ('undos', ctypes.c_int32),
     ('redos', ctypes.c_int32),
     ('seek', struct_r_io_undos_t * 64),
-]
-
-class struct_r_skyline_t(Structure):
-    pass
-
-class struct_r_vector_t(Structure):
-    pass
-
-struct_r_vector_t._pack_ = 1 # source:False
-struct_r_vector_t._fields_ = [
-    ('a', ctypes.POINTER(None)),
-    ('len', ctypes.c_uint64),
-    ('capacity', ctypes.c_uint64),
-    ('elem_size', ctypes.c_uint64),
-    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None), ctypes.POINTER(None))),
-    ('free_user', ctypes.POINTER(None)),
-]
-
-struct_r_skyline_t._pack_ = 1 # source:False
-struct_r_skyline_t._fields_ = [
-    ('v', struct_r_vector_t),
 ]
 
 class struct_r_pvector_t(Structure):
