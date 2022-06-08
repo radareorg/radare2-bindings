@@ -2,6 +2,8 @@
 name: Generate bindings for r2libr 🚀
 
 on:
+  push:
+  pull_request:
 
 jobs:
   vala:
