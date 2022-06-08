@@ -680,13 +680,7 @@ class struct_r_debug_plugin_t(Structure):
 class struct_r_event_t(Structure):
     pass
 
-class struct_r_anal_t(Structure):
-    pass
-
 class struct_r_egg_t(Structure):
-    pass
-
-class struct_pj_t(Structure):
     pass
 
 class struct_r_reg_t(Structure):
@@ -701,7 +695,13 @@ class struct_r_num_t(Structure):
 class struct_r_anal_op_t(Structure):
     pass
 
+class struct_r_anal_t(Structure):
+    pass
+
 class struct_r_bp_t(Structure):
+    pass
+
+class struct_pj_t(Structure):
     pass
 
 class struct_r_io_bind_t(Structure):
@@ -896,10 +896,10 @@ struct_c__SA_dict._fields_ = [
 class struct_cdb_make(Structure):
     pass
 
-class struct_cdb_hplist(Structure):
+class struct_cdb_hp(Structure):
     pass
 
-class struct_cdb_hp(Structure):
+class struct_cdb_hplist(Structure):
     pass
 
 class struct_buffer(Structure):
@@ -1303,10 +1303,10 @@ struct_r_event_t._fields_ = [
     ('PADDING_1', ctypes.c_ubyte * 4),
 ]
 
-class struct_r_crbtree_t(Structure):
+class struct_r_crbtree_node(Structure):
     pass
 
-class struct_r_crbtree_node(Structure):
+class struct_r_crbtree_t(Structure):
     pass
 
 struct_r_io_bank_t._pack_ = 1 # source:False
@@ -1494,16 +1494,16 @@ struct_r_buffer_methods_t._fields_ = [
 class struct_r_anal_esil_t(Structure):
     pass
 
-class struct_r_print_t(Structure):
-    pass
-
 class struct_r_anal_plugin_t(Structure):
     pass
 
-class struct_r_anal_range_t(Structure):
+class struct_r_print_t(Structure):
     pass
 
 class struct_r_rb_node_t(Structure):
+    pass
+
+class struct_r_anal_range_t(Structure):
     pass
 
 class struct_r_anal_esil_plugin_t(Structure):
@@ -1512,12 +1512,16 @@ class struct_r_anal_esil_plugin_t(Structure):
 class struct_r_syscall_t(Structure):
     pass
 
-class struct_r_anal_hint_cb_t(Structure):
+class struct_r_interval_tree_t(Structure):
     pass
 
-struct_r_anal_hint_cb_t._pack_ = 1 # source:False
-struct_r_anal_hint_cb_t._fields_ = [
-    ('on_bits', ctypes.CFUNCTYPE(None, ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_bool)),
+class struct_r_interval_node_t(Structure):
+    pass
+
+struct_r_interval_tree_t._pack_ = 1 # source:False
+struct_r_interval_tree_t._fields_ = [
+    ('root', ctypes.POINTER(struct_r_interval_node_t)),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
 ]
 
 class struct_r_anal_options_t(Structure):
@@ -1557,6 +1561,14 @@ struct_r_anal_options_t._fields_ = [
     ('tailcall', ctypes.c_int32),
     ('retpoline', ctypes.c_bool),
     ('PADDING_3', ctypes.c_ubyte * 3),
+]
+
+class struct_r_anal_hint_cb_t(Structure):
+    pass
+
+struct_r_anal_hint_cb_t._pack_ = 1 # source:False
+struct_r_anal_hint_cb_t._fields_ = [
+    ('on_bits', ctypes.CFUNCTYPE(None, ctypes.POINTER(struct_r_anal_t), ctypes.c_uint64, ctypes.c_int32, ctypes.c_bool)),
 ]
 
 
@@ -1640,18 +1652,6 @@ struct_r_bin_bind_t._fields_ = [
     ('demangle', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_bin_file_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64, ctypes.c_bool)),
     ('visibility', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
-]
-
-class struct_r_interval_tree_t(Structure):
-    pass
-
-class struct_r_interval_node_t(Structure):
-    pass
-
-struct_r_interval_tree_t._pack_ = 1 # source:False
-struct_r_interval_tree_t._fields_ = [
-    ('root', ctypes.POINTER(struct_r_interval_node_t)),
-    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
 ]
 
 class struct_r_anal_callbacks_t(Structure):
@@ -1760,10 +1760,10 @@ struct_r_rb_node_t._fields_ = [
     ('PADDING_0', ctypes.c_ubyte * 7),
 ]
 
-class struct__IO_FILE(Structure):
+class struct_r_syscall_port_t(Structure):
     pass
 
-class struct_r_syscall_port_t(Structure):
+class struct__IO_FILE(Structure):
     pass
 
 class struct_r_syscall_item_t(Structure):
@@ -1785,13 +1785,13 @@ struct_r_syscall_t._fields_ = [
     ('PADDING_1', ctypes.c_ubyte * 4),
 ]
 
+class struct__IO_marker(Structure):
+    pass
+
 class struct__IO_wide_data(Structure):
     pass
 
 class struct__IO_codecvt(Structure):
-    pass
-
-class struct__IO_marker(Structure):
     pass
 
 struct__IO_FILE._pack_ = 1 # source:False
@@ -2530,10 +2530,10 @@ struct_r_anal_plugin_t._fields_ = [
     ('mnemonics', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.c_bool)),
 ]
 
-class struct_r_anal_value_t(Structure):
+class struct_r_anal_switch_obj_t(Structure):
     pass
 
-class struct_r_anal_switch_obj_t(Structure):
+class struct_r_anal_value_t(Structure):
     pass
 
 
@@ -3066,10 +3066,10 @@ struct_r_print_zoom_t._fields_ = [
     ('mode', ctypes.c_int32),
 ]
 
-class struct_r_cons_context_t(Structure):
+class struct_r_line_t(Structure):
     pass
 
-class struct_r_line_t(Structure):
+class struct_r_cons_context_t(Structure):
     pass
 
 class struct_termios(Structure):
@@ -3454,21 +3454,6 @@ struct_r_line_buffer_t._fields_ = [
     ('length', ctypes.c_int32),
 ]
 
-class struct_r_line_comp_t(Structure):
-    pass
-
-struct_r_line_comp_t._pack_ = 1 # source:False
-struct_r_line_comp_t._fields_ = [
-    ('opt', ctypes.c_bool),
-    ('PADDING_0', ctypes.c_ubyte * 7),
-    ('args_limit', ctypes.c_uint64),
-    ('quit', ctypes.c_bool),
-    ('PADDING_1', ctypes.c_ubyte * 7),
-    ('args', struct_r_pvector_t),
-    ('run', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_line_comp_t), ctypes.POINTER(struct_r_line_buffer_t), c__EA_RLinePromptType, ctypes.POINTER(None))),
-    ('run_user', ctypes.POINTER(None)),
-]
-
 class struct_r_line_hist_t(Structure):
     pass
 
@@ -3482,6 +3467,21 @@ struct_r_line_hist_t._fields_ = [
     ('autosave', ctypes.c_int32),
     ('do_setup_match', ctypes.c_bool),
     ('PADDING_0', ctypes.c_ubyte * 7),
+]
+
+class struct_r_line_comp_t(Structure):
+    pass
+
+struct_r_line_comp_t._pack_ = 1 # source:False
+struct_r_line_comp_t._fields_ = [
+    ('opt', ctypes.c_bool),
+    ('PADDING_0', ctypes.c_ubyte * 7),
+    ('args_limit', ctypes.c_uint64),
+    ('quit', ctypes.c_bool),
+    ('PADDING_1', ctypes.c_ubyte * 7),
+    ('args', struct_r_pvector_t),
+    ('run', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_line_comp_t), ctypes.POINTER(struct_r_line_buffer_t), c__EA_RLinePromptType, ctypes.POINTER(None))),
+    ('run_user', ctypes.POINTER(None)),
 ]
 
 struct_r_line_t._pack_ = 1 # source:False
@@ -3579,17 +3579,6 @@ struct_r_interval_node_t._fields_ = [
 ]
 
 
-# values for enumeration 'PJEncodingNum'
-PJEncodingNum__enumvalues = {
-    0: 'PJ_ENCODING_NUM_DEFAULT',
-    1: 'PJ_ENCODING_NUM_STR',
-    2: 'PJ_ENCODING_NUM_HEX',
-}
-PJ_ENCODING_NUM_DEFAULT = 0
-PJ_ENCODING_NUM_STR = 1
-PJ_ENCODING_NUM_HEX = 2
-PJEncodingNum = ctypes.c_uint32 # enum
-
 # values for enumeration 'PJEncodingStr'
 PJEncodingStr__enumvalues = {
     0: 'PJ_ENCODING_STR_DEFAULT',
@@ -3604,6 +3593,17 @@ PJ_ENCODING_STR_HEX = 2
 PJ_ENCODING_STR_ARRAY = 3
 PJ_ENCODING_STR_STRIP = 4
 PJEncodingStr = ctypes.c_uint32 # enum
+
+# values for enumeration 'PJEncodingNum'
+PJEncodingNum__enumvalues = {
+    0: 'PJ_ENCODING_NUM_DEFAULT',
+    1: 'PJ_ENCODING_NUM_STR',
+    2: 'PJ_ENCODING_NUM_HEX',
+}
+PJ_ENCODING_NUM_DEFAULT = 0
+PJ_ENCODING_NUM_STR = 1
+PJ_ENCODING_NUM_HEX = 2
+PJEncodingNum = ctypes.c_uint32 # enum
 struct_pj_t._pack_ = 1 # source:False
 struct_pj_t._fields_ = [
     ('sb', struct_c__SA_RStrBuf),
@@ -4114,25 +4114,6 @@ r_debug_reg_get.argtypes = [ctypes.POINTER(struct_r_debug_t), ctypes.POINTER(cty
 class struct__utX(Structure):
     pass
 
-class struct__ut128(Structure):
-    pass
-
-struct__ut128._pack_ = 1 # source:False
-struct__ut128._fields_ = [
-    ('Low', ctypes.c_uint64),
-    ('High', ctypes.c_int64),
-]
-
-class struct__ut96(Structure):
-    pass
-
-struct__ut96._pack_ = 1 # source:False
-struct__ut96._fields_ = [
-    ('Low', ctypes.c_uint64),
-    ('High', ctypes.c_uint32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
-]
-
 class struct__ut80(Structure):
     pass
 
@@ -4144,11 +4125,32 @@ struct__ut80._fields_ = [
 ]
 
 class struct__ut256(Structure):
-    _pack_ = 1 # source:False
-    _fields_ = [
+    pass
+
+class struct__ut128(Structure):
+    pass
+
+struct__ut128._pack_ = 1 # source:False
+struct__ut128._fields_ = [
+    ('Low', ctypes.c_uint64),
+    ('High', ctypes.c_int64),
+]
+
+struct__ut256._pack_ = 1 # source:False
+struct__ut256._fields_ = [
     ('Low', struct__ut128),
     ('High', struct__ut128),
-     ]
+]
+
+class struct__ut96(Structure):
+    pass
+
+struct__ut96._pack_ = 1 # source:False
+struct__ut96._fields_ = [
+    ('Low', ctypes.c_uint64),
+    ('High', ctypes.c_uint32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
 
 struct__utX._pack_ = 1 # source:False
 struct__utX._fields_ = [

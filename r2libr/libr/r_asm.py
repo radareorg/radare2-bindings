@@ -303,9 +303,6 @@ class struct_r_asm_t(Structure):
 class struct_ht_pp_t(Structure):
     pass
 
-class struct_r_num_t(Structure):
-    pass
-
 class struct_r_parse_t(Structure):
     pass
 
@@ -313,6 +310,9 @@ class struct_r_arch_config_t(Structure):
     pass
 
 class struct_r_syscall_t(Structure):
+    pass
+
+class struct_r_num_t(Structure):
     pass
 
 class struct_sdb_t(Structure):
@@ -354,9 +354,6 @@ class struct_r_anal_t(Structure):
 class struct_r_anal_op_t(Structure):
     pass
 
-class struct_r_anal_hint_t(Structure):
-    pass
-
 
 # values for enumeration 'c__EA_RAnalOpMask'
 c__EA_RAnalOpMask__enumvalues = {
@@ -376,6 +373,9 @@ R_ANAL_OP_MASK_OPEX = 8
 R_ANAL_OP_MASK_DISASM = 16
 R_ANAL_OP_MASK_ALL = 31
 c__EA_RAnalOpMask = ctypes.c_uint32 # enum
+class struct_r_anal_hint_t(Structure):
+    pass
+
 class struct_r_anal_function_t(Structure):
     pass
 
@@ -902,10 +902,10 @@ struct_r_bin_plugin_t._fields_ = [
     ('user', ctypes.POINTER(None)),
 ]
 
-class struct_ls_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
-class struct_sdb_gperf_t(Structure):
+class struct_ls_t(Structure):
     pass
 
 class struct_cdb(Structure):
@@ -929,10 +929,10 @@ struct_cdb._fields_ = [
 class struct_cdb_make(Structure):
     pass
 
-class struct_cdb_hp(Structure):
+class struct_cdb_hplist(Structure):
     pass
 
-class struct_cdb_hplist(Structure):
+class struct_cdb_hp(Structure):
     pass
 
 class struct_buffer(Structure):
@@ -1410,13 +1410,16 @@ struct_r_bin_section_t._fields_ = [
     ('is_segment', ctypes.c_bool),
 ]
 
-class struct_r_anal_plugin_t(Structure):
+class struct_r_reg_t(Structure):
     pass
 
 class struct_r_anal_esil_plugin_t(Structure):
     pass
 
 class struct_r_rb_node_t(Structure):
+    pass
+
+class struct_r_anal_plugin_t(Structure):
     pass
 
 class struct_r_anal_range_t(Structure):
@@ -1428,16 +1431,25 @@ class struct_r_anal_esil_t(Structure):
 class struct_r_print_t(Structure):
     pass
 
-class struct_r_reg_t(Structure):
-    pass
-
-class struct_r_flag_bind_t(Structure):
+class struct_r_flag_item_t(Structure):
     pass
 
 class struct_r_flag_t(Structure):
     pass
 
-class struct_r_flag_item_t(Structure):
+class struct_r_interval_tree_t(Structure):
+    pass
+
+class struct_r_interval_node_t(Structure):
+    pass
+
+struct_r_interval_tree_t._pack_ = 1 # source:False
+struct_r_interval_tree_t._fields_ = [
+    ('root', ctypes.POINTER(struct_r_interval_node_t)),
+    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
+]
+
+class struct_r_flag_bind_t(Structure):
     pass
 
 class struct_r_space_t(Structure):
@@ -1541,18 +1553,6 @@ struct_r_spaces_t._fields_ = [
     ('spaces', ctypes.POINTER(struct_r_crbtree_t)),
     ('spacestack', ctypes.POINTER(struct_r_list_t)),
     ('event', ctypes.POINTER(struct_r_event_t)),
-]
-
-class struct_r_interval_tree_t(Structure):
-    pass
-
-class struct_r_interval_node_t(Structure):
-    pass
-
-struct_r_interval_tree_t._pack_ = 1 # source:False
-struct_r_interval_tree_t._fields_ = [
-    ('root', ctypes.POINTER(struct_r_interval_node_t)),
-    ('free', ctypes.CFUNCTYPE(None, ctypes.POINTER(None))),
 ]
 
 struct_r_anal_t._pack_ = 1 # source:False
@@ -1927,10 +1927,10 @@ struct_r_flag_item_t._fields_ = [
 class struct_r_anal_esil_handler_t(Structure):
     pass
 
-class struct_r_anal_reil(Structure):
+class struct_r_anal_esil_trace_t(Structure):
     pass
 
-class struct_r_anal_esil_trace_t(Structure):
+class struct_r_anal_reil(Structure):
     pass
 
 class struct_r_anal_esil_callbacks_t(Structure):
@@ -2080,10 +2080,10 @@ struct_r_anal_plugin_t._fields_ = [
     ('mnemonics', ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_char), ctypes.POINTER(struct_r_anal_t), ctypes.c_int32, ctypes.c_bool)),
 ]
 
-class struct_r_anal_switch_obj_t(Structure):
+class struct_r_anal_value_t(Structure):
     pass
 
-class struct_r_anal_value_t(Structure):
+class struct_r_anal_switch_obj_t(Structure):
     pass
 
 
@@ -2504,10 +2504,10 @@ struct_r_anal_range_t._fields_ = [
     ('rb', struct_r_rb_node_t),
 ]
 
-class struct_r_print_zoom_t(Structure):
+class struct_r_charset_t(Structure):
     pass
 
-class struct_r_charset_t(Structure):
+class struct_r_print_zoom_t(Structure):
     pass
 
 class struct_r_cons_t(Structure):
@@ -2967,12 +2967,6 @@ class struct_r_hud_t(Structure):
 class struct_r_selection_widget_t(Structure):
     pass
 
-class struct_r_line_comp_t(Structure):
-    pass
-
-class struct_r_line_buffer_t(Structure):
-    pass
-
 
 # values for enumeration 'c__EA_RLinePromptType'
 c__EA_RLinePromptType__enumvalues = {
@@ -2984,6 +2978,12 @@ R_LINE_PROMPT_DEFAULT = 0
 R_LINE_PROMPT_OFFSET = 1
 R_LINE_PROMPT_FILE = 2
 c__EA_RLinePromptType = ctypes.c_uint32 # enum
+class struct_r_line_comp_t(Structure):
+    pass
+
+class struct_r_line_buffer_t(Structure):
+    pass
+
 struct_r_line_comp_t._pack_ = 1 # source:False
 struct_r_line_comp_t._fields_ = [
     ('opt', ctypes.c_bool),

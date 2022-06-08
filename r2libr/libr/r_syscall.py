@@ -265,13 +265,13 @@ struct__IO_FILE._fields_ = [
     ('_unused2', ctypes.c_char * 20),
 ]
 
+class struct_sdb_gperf_t(Structure):
+    pass
+
 class struct_ls_t(Structure):
     pass
 
 class struct_ht_pp_t(Structure):
-    pass
-
-class struct_sdb_gperf_t(Structure):
     pass
 
 class struct_c__SA_dict(Structure):
@@ -328,10 +328,10 @@ struct_cdb._fields_ = [
 class struct_cdb_make(Structure):
     pass
 
-class struct_cdb_hp(Structure):
+class struct_cdb_hplist(Structure):
     pass
 
-class struct_cdb_hplist(Structure):
+class struct_cdb_hp(Structure):
     pass
 
 class struct_buffer(Structure):

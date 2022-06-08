@@ -394,19 +394,19 @@ struct_ht_up_kv._fields_ = [
     ('value_len', ctypes.c_uint32),
 ]
 
-class struct_ls_t(Structure):
+class struct_sdb_gperf_t(Structure):
     pass
 
-class struct_sdb_gperf_t(Structure):
+class struct_ls_t(Structure):
     pass
 
 class struct_cdb_make(Structure):
     pass
 
-class struct_cdb_hp(Structure):
+class struct_cdb_hplist(Structure):
     pass
 
-class struct_cdb_hplist(Structure):
+class struct_cdb_hp(Structure):
     pass
 
 class struct_buffer(Structure):

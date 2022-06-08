@@ -524,16 +524,6 @@ c_bool__enumvalues = r_th_lock_type_t__enumvalues
 class struct_r_th_lock_t(Structure):
     pass
 
-class struct_r_th_lock_t_0(Structure):
-    pass
-
-struct_r_th_lock_t_0._pack_ = 1 # source:False
-struct_r_th_lock_t_0._fields_ = [
-    ('active', ctypes.c_bool, 1),
-    ('type', c_bool, 7),
-    ('PADDING_0', ctypes.c_uint32, 24),
-]
-
 class union_c__UA_pthread_mutex_t(Union):
     pass
 
@@ -567,6 +557,16 @@ union_c__UA_pthread_mutex_t._fields_ = [
     ('__size', ctypes.c_char * 40),
     ('__align', ctypes.c_int64),
     ('PADDING_0', ctypes.c_ubyte * 32),
+]
+
+class struct_r_th_lock_t_0(Structure):
+    pass
+
+struct_r_th_lock_t_0._pack_ = 1 # source:False
+struct_r_th_lock_t_0._fields_ = [
+    ('active', ctypes.c_bool, 1),
+    ('type', c_bool, 7),
+    ('PADDING_0', ctypes.c_uint32, 24),
 ]
 
 struct_r_th_lock_t._pack_ = 1 # source:False
@@ -4357,32 +4357,6 @@ r_str_tokenize.argtypes = [ctypes.POINTER(ctypes.c_char), RTokenizerCallback, ct
 r_axml_decode = _libr_util.r_axml_decode
 r_axml_decode.restype = ctypes.POINTER(ctypes.c_char)
 r_axml_decode.argtypes = [ctypes.POINTER(ctypes.c_ubyte), uint64_t]
-class struct_r_anal_graph_node_info_t(Structure):
-    pass
-
-struct_r_anal_graph_node_info_t._pack_ = 1 # source:False
-struct_r_anal_graph_node_info_t._fields_ = [
-    ('title', ctypes.POINTER(ctypes.c_char)),
-    ('body', ctypes.POINTER(ctypes.c_char)),
-    ('offset', ctypes.c_uint64),
-]
-
-RGraphNodeInfo = struct_r_anal_graph_node_info_t
-r_graph_free_node_info = _libr_util.r_graph_free_node_info
-r_graph_free_node_info.restype = None
-r_graph_free_node_info.argtypes = [ctypes.POINTER(None)]
-r_graph_create_node_info = _libr_util.r_graph_create_node_info
-r_graph_create_node_info.restype = ctypes.POINTER(struct_r_anal_graph_node_info_t)
-r_graph_create_node_info.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), uint64_t]
-r_graph_add_node_info = _libr_util.r_graph_add_node_info
-r_graph_add_node_info.restype = ctypes.POINTER(struct_r_graph_node_t)
-r_graph_add_node_info.argtypes = [ctypes.POINTER(struct_r_graph_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), uint64_t]
-r_graph_drawable_to_dot = _libr_util.r_graph_drawable_to_dot
-r_graph_drawable_to_dot.restype = ctypes.POINTER(ctypes.c_char)
-r_graph_drawable_to_dot.argtypes = [ctypes.POINTER(struct_r_graph_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
-r_graph_drawable_to_json = _libr_util.r_graph_drawable_to_json
-r_graph_drawable_to_json.restype = None
-r_graph_drawable_to_json.argtypes = [ctypes.POINTER(struct_r_graph_t), ctypes.POINTER(struct_pj_t), ctypes.c_bool]
 
 # values for enumeration 'r_json_type_t'
 r_json_type_t__enumvalues = {
@@ -4470,6 +4444,32 @@ r_json_get.argtypes = [ctypes.POINTER(struct_r_json_t), ctypes.POINTER(ctypes.c_
 r_json_item = _libr_util.r_json_item
 r_json_item.restype = ctypes.POINTER(struct_r_json_t)
 r_json_item.argtypes = [ctypes.POINTER(struct_r_json_t), size_t]
+class struct_r_anal_graph_node_info_t(Structure):
+    pass
+
+struct_r_anal_graph_node_info_t._pack_ = 1 # source:False
+struct_r_anal_graph_node_info_t._fields_ = [
+    ('title', ctypes.POINTER(ctypes.c_char)),
+    ('body', ctypes.POINTER(ctypes.c_char)),
+    ('offset', ctypes.c_uint64),
+]
+
+RGraphNodeInfo = struct_r_anal_graph_node_info_t
+r_graph_free_node_info = _libr_util.r_graph_free_node_info
+r_graph_free_node_info.restype = None
+r_graph_free_node_info.argtypes = [ctypes.POINTER(None)]
+r_graph_create_node_info = _libr_util.r_graph_create_node_info
+r_graph_create_node_info.restype = ctypes.POINTER(struct_r_anal_graph_node_info_t)
+r_graph_create_node_info.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), uint64_t]
+r_graph_add_node_info = _libr_util.r_graph_add_node_info
+r_graph_add_node_info.restype = ctypes.POINTER(struct_r_graph_node_t)
+r_graph_add_node_info.argtypes = [ctypes.POINTER(struct_r_graph_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), uint64_t]
+r_graph_drawable_to_dot = _libr_util.r_graph_drawable_to_dot
+r_graph_drawable_to_dot.restype = ctypes.POINTER(ctypes.c_char)
+r_graph_drawable_to_dot.argtypes = [ctypes.POINTER(struct_r_graph_t), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
+r_graph_drawable_to_json = _libr_util.r_graph_drawable_to_json
+r_graph_drawable_to_json.restype = None
+r_graph_drawable_to_json.argtypes = [ctypes.POINTER(struct_r_graph_t), ctypes.POINTER(struct_pj_t), ctypes.c_bool]
 class struct_c__SA_RBraile(Structure):
     pass
 
@@ -4505,16 +4505,16 @@ RPrintZoom = struct_r_print_zoom_t
 class struct_r_print_t(Structure):
     pass
 
-class struct_r_charset_t(Structure):
+class struct_r_cons_t(Structure):
     pass
 
-class struct_r_arch_config_t(Structure):
+class struct_r_charset_t(Structure):
     pass
 
 class struct_r_reg_t(Structure):
     pass
 
-class struct_r_cons_t(Structure):
+class struct_r_arch_config_t(Structure):
     pass
 
 class struct_r_cons_bind_t(Structure):
@@ -4975,6 +4975,88 @@ struct_r_cons_t._fields_ = [
 class struct_r_stack_t(Structure):
     pass
 
+class struct_r_cons_printable_palette_t(Structure):
+    pass
+
+struct_r_cons_printable_palette_t._pack_ = 1 # source:False
+struct_r_cons_printable_palette_t._fields_ = [
+    ('b0x00', ctypes.POINTER(ctypes.c_char)),
+    ('b0x7f', ctypes.POINTER(ctypes.c_char)),
+    ('b0xff', ctypes.POINTER(ctypes.c_char)),
+    ('args', ctypes.POINTER(ctypes.c_char)),
+    ('bin', ctypes.POINTER(ctypes.c_char)),
+    ('btext', ctypes.POINTER(ctypes.c_char)),
+    ('call', ctypes.POINTER(ctypes.c_char)),
+    ('cjmp', ctypes.POINTER(ctypes.c_char)),
+    ('cmp', ctypes.POINTER(ctypes.c_char)),
+    ('comment', ctypes.POINTER(ctypes.c_char)),
+    ('usercomment', ctypes.POINTER(ctypes.c_char)),
+    ('creg', ctypes.POINTER(ctypes.c_char)),
+    ('flag', ctypes.POINTER(ctypes.c_char)),
+    ('fline', ctypes.POINTER(ctypes.c_char)),
+    ('floc', ctypes.POINTER(ctypes.c_char)),
+    ('flow', ctypes.POINTER(ctypes.c_char)),
+    ('flow2', ctypes.POINTER(ctypes.c_char)),
+    ('fname', ctypes.POINTER(ctypes.c_char)),
+    ('help', ctypes.POINTER(ctypes.c_char)),
+    ('input', ctypes.POINTER(ctypes.c_char)),
+    ('invalid', ctypes.POINTER(ctypes.c_char)),
+    ('jmp', ctypes.POINTER(ctypes.c_char)),
+    ('label', ctypes.POINTER(ctypes.c_char)),
+    ('math', ctypes.POINTER(ctypes.c_char)),
+    ('mov', ctypes.POINTER(ctypes.c_char)),
+    ('nop', ctypes.POINTER(ctypes.c_char)),
+    ('num', ctypes.POINTER(ctypes.c_char)),
+    ('offset', ctypes.POINTER(ctypes.c_char)),
+    ('other', ctypes.POINTER(ctypes.c_char)),
+    ('pop', ctypes.POINTER(ctypes.c_char)),
+    ('prompt', ctypes.POINTER(ctypes.c_char)),
+    ('bgprompt', ctypes.POINTER(ctypes.c_char)),
+    ('push', ctypes.POINTER(ctypes.c_char)),
+    ('crypto', ctypes.POINTER(ctypes.c_char)),
+    ('reg', ctypes.POINTER(ctypes.c_char)),
+    ('reset', ctypes.POINTER(ctypes.c_char)),
+    ('ret', ctypes.POINTER(ctypes.c_char)),
+    ('swi', ctypes.POINTER(ctypes.c_char)),
+    ('trap', ctypes.POINTER(ctypes.c_char)),
+    ('ucall', ctypes.POINTER(ctypes.c_char)),
+    ('ujmp', ctypes.POINTER(ctypes.c_char)),
+    ('ai_read', ctypes.POINTER(ctypes.c_char)),
+    ('ai_write', ctypes.POINTER(ctypes.c_char)),
+    ('ai_exec', ctypes.POINTER(ctypes.c_char)),
+    ('ai_seq', ctypes.POINTER(ctypes.c_char)),
+    ('ai_ascii', ctypes.POINTER(ctypes.c_char)),
+    ('ai_unmap', ctypes.POINTER(ctypes.c_char)),
+    ('gui_cflow', ctypes.POINTER(ctypes.c_char)),
+    ('gui_dataoffset', ctypes.POINTER(ctypes.c_char)),
+    ('gui_background', ctypes.POINTER(ctypes.c_char)),
+    ('gui_alt_background', ctypes.POINTER(ctypes.c_char)),
+    ('gui_border', ctypes.POINTER(ctypes.c_char)),
+    ('wordhl', ctypes.POINTER(ctypes.c_char)),
+    ('linehl', ctypes.POINTER(ctypes.c_char)),
+    ('func_var', ctypes.POINTER(ctypes.c_char)),
+    ('func_var_type', ctypes.POINTER(ctypes.c_char)),
+    ('func_var_addr', ctypes.POINTER(ctypes.c_char)),
+    ('widget_bg', ctypes.POINTER(ctypes.c_char)),
+    ('widget_sel', ctypes.POINTER(ctypes.c_char)),
+    ('graph_box', ctypes.POINTER(ctypes.c_char)),
+    ('graph_box2', ctypes.POINTER(ctypes.c_char)),
+    ('graph_box3', ctypes.POINTER(ctypes.c_char)),
+    ('graph_box4', ctypes.POINTER(ctypes.c_char)),
+    ('graph_diff_match', ctypes.POINTER(ctypes.c_char)),
+    ('graph_diff_unmatch', ctypes.POINTER(ctypes.c_char)),
+    ('graph_diff_unknown', ctypes.POINTER(ctypes.c_char)),
+    ('graph_diff_new', ctypes.POINTER(ctypes.c_char)),
+    ('graph_true', ctypes.POINTER(ctypes.c_char)),
+    ('graph_false', ctypes.POINTER(ctypes.c_char)),
+    ('graph_trufae', ctypes.POINTER(ctypes.c_char)),
+    ('graph_traced', ctypes.POINTER(ctypes.c_char)),
+    ('graph_current', ctypes.POINTER(ctypes.c_char)),
+    ('rainbow', ctypes.POINTER(ctypes.POINTER(ctypes.c_char))),
+    ('rainbow_sz', ctypes.c_int32),
+    ('PADDING_0', ctypes.c_ubyte * 4),
+]
+
 class struct_r_cons_grep_t(Structure):
     pass
 
@@ -5108,88 +5190,6 @@ struct_r_cons_palette_t._fields_ = [
     ('graph_diff_unmatch', struct_rcolor_t),
     ('graph_diff_unknown', struct_rcolor_t),
     ('graph_diff_new', struct_rcolor_t),
-]
-
-class struct_r_cons_printable_palette_t(Structure):
-    pass
-
-struct_r_cons_printable_palette_t._pack_ = 1 # source:False
-struct_r_cons_printable_palette_t._fields_ = [
-    ('b0x00', ctypes.POINTER(ctypes.c_char)),
-    ('b0x7f', ctypes.POINTER(ctypes.c_char)),
-    ('b0xff', ctypes.POINTER(ctypes.c_char)),
-    ('args', ctypes.POINTER(ctypes.c_char)),
-    ('bin', ctypes.POINTER(ctypes.c_char)),
-    ('btext', ctypes.POINTER(ctypes.c_char)),
-    ('call', ctypes.POINTER(ctypes.c_char)),
-    ('cjmp', ctypes.POINTER(ctypes.c_char)),
-    ('cmp', ctypes.POINTER(ctypes.c_char)),
-    ('comment', ctypes.POINTER(ctypes.c_char)),
-    ('usercomment', ctypes.POINTER(ctypes.c_char)),
-    ('creg', ctypes.POINTER(ctypes.c_char)),
-    ('flag', ctypes.POINTER(ctypes.c_char)),
-    ('fline', ctypes.POINTER(ctypes.c_char)),
-    ('floc', ctypes.POINTER(ctypes.c_char)),
-    ('flow', ctypes.POINTER(ctypes.c_char)),
-    ('flow2', ctypes.POINTER(ctypes.c_char)),
-    ('fname', ctypes.POINTER(ctypes.c_char)),
-    ('help', ctypes.POINTER(ctypes.c_char)),
-    ('input', ctypes.POINTER(ctypes.c_char)),
-    ('invalid', ctypes.POINTER(ctypes.c_char)),
-    ('jmp', ctypes.POINTER(ctypes.c_char)),
-    ('label', ctypes.POINTER(ctypes.c_char)),
-    ('math', ctypes.POINTER(ctypes.c_char)),
-    ('mov', ctypes.POINTER(ctypes.c_char)),
-    ('nop', ctypes.POINTER(ctypes.c_char)),
-    ('num', ctypes.POINTER(ctypes.c_char)),
-    ('offset', ctypes.POINTER(ctypes.c_char)),
-    ('other', ctypes.POINTER(ctypes.c_char)),
-    ('pop', ctypes.POINTER(ctypes.c_char)),
-    ('prompt', ctypes.POINTER(ctypes.c_char)),
-    ('bgprompt', ctypes.POINTER(ctypes.c_char)),
-    ('push', ctypes.POINTER(ctypes.c_char)),
-    ('crypto', ctypes.POINTER(ctypes.c_char)),
-    ('reg', ctypes.POINTER(ctypes.c_char)),
-    ('reset', ctypes.POINTER(ctypes.c_char)),
-    ('ret', ctypes.POINTER(ctypes.c_char)),
-    ('swi', ctypes.POINTER(ctypes.c_char)),
-    ('trap', ctypes.POINTER(ctypes.c_char)),
-    ('ucall', ctypes.POINTER(ctypes.c_char)),
-    ('ujmp', ctypes.POINTER(ctypes.c_char)),
-    ('ai_read', ctypes.POINTER(ctypes.c_char)),
-    ('ai_write', ctypes.POINTER(ctypes.c_char)),
-    ('ai_exec', ctypes.POINTER(ctypes.c_char)),
-    ('ai_seq', ctypes.POINTER(ctypes.c_char)),
-    ('ai_ascii', ctypes.POINTER(ctypes.c_char)),
-    ('ai_unmap', ctypes.POINTER(ctypes.c_char)),
-    ('gui_cflow', ctypes.POINTER(ctypes.c_char)),
-    ('gui_dataoffset', ctypes.POINTER(ctypes.c_char)),
-    ('gui_background', ctypes.POINTER(ctypes.c_char)),
-    ('gui_alt_background', ctypes.POINTER(ctypes.c_char)),
-    ('gui_border', ctypes.POINTER(ctypes.c_char)),
-    ('wordhl', ctypes.POINTER(ctypes.c_char)),
-    ('linehl', ctypes.POINTER(ctypes.c_char)),
-    ('func_var', ctypes.POINTER(ctypes.c_char)),
-    ('func_var_type', ctypes.POINTER(ctypes.c_char)),
-    ('func_var_addr', ctypes.POINTER(ctypes.c_char)),
-    ('widget_bg', ctypes.POINTER(ctypes.c_char)),
-    ('widget_sel', ctypes.POINTER(ctypes.c_char)),
-    ('graph_box', ctypes.POINTER(ctypes.c_char)),
-    ('graph_box2', ctypes.POINTER(ctypes.c_char)),
-    ('graph_box3', ctypes.POINTER(ctypes.c_char)),
-    ('graph_box4', ctypes.POINTER(ctypes.c_char)),
-    ('graph_diff_match', ctypes.POINTER(ctypes.c_char)),
-    ('graph_diff_unmatch', ctypes.POINTER(ctypes.c_char)),
-    ('graph_diff_unknown', ctypes.POINTER(ctypes.c_char)),
-    ('graph_diff_new', ctypes.POINTER(ctypes.c_char)),
-    ('graph_true', ctypes.POINTER(ctypes.c_char)),
-    ('graph_false', ctypes.POINTER(ctypes.c_char)),
-    ('graph_trufae', ctypes.POINTER(ctypes.c_char)),
-    ('graph_traced', ctypes.POINTER(ctypes.c_char)),
-    ('graph_current', ctypes.POINTER(ctypes.c_char)),
-    ('rainbow', ctypes.POINTER(ctypes.POINTER(ctypes.c_char))),
-    ('rainbow_sz', ctypes.c_int32),
-    ('PADDING_0', ctypes.c_ubyte * 4),
 ]
 
 struct_r_cons_context_t._pack_ = 1 # source:False
