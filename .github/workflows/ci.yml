@@ -17,7 +17,8 @@ jobs:
       run: sudo apt install -y valac
     - name: Build and run some tests
       run: |
-        ./configure
+        ./configure --prefix=/usr
+        sudo make -C vapi install
         make -C vapi/t
   swig-python:
     runs-on: ubuntu-20.04
@@ -29,9 +30,11 @@ jobs:
     - name: Install valabind and swig
       run: |
         sudo apt install -y swig valac
-        r2pm -cgi valabind
+        r2pm -ci valabind
     - name: Configure
       run: ./configure
+    - name: Test valabind
+      run: r2pm -r valabind --version
     - name: Build swig bindings
       run: r2pm -r make -C python
     - name: Build dlang bindings

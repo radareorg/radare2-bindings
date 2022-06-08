@@ -10,13 +10,15 @@ static void dosearch(string pattern) {
 	var baddr = c.bin.get_baddr ();
 	/* Iterate over sections and search in the executable ones */
 	foreach (var scn in c.bin.get_sections ()) {
-		if ((scn.srwx & 0x1) == 0)
+		if ((scn.perm & 1) == 0)
 			continue;
-		var from= baddr + scn.rva;
+		var from = baddr + scn.vaddr;
 		var to = from + scn.size;
-		foreach (var hit in c.asm_strsearch (pattern, from, to))
+/*
+		foreach (var hit in c.asm_strsearch (pattern, from, to, 0, 0, 0, 0))
 			print ("0x%08"+uint64.FORMAT_MODIFIER+"x - %s (%i)\n",
 					hit.addr, hit.code, hit.len);
+*/
 	}
 }
 

@@ -1,7 +1,6 @@
 include ../../config.mk
 
-# all: config lang regs sc hash socket search list plugin.${SOEXT}
-TESTS=core asm lang regs sc hash
+TESTS=core asm lang regs sc hash sc
 ALLTESTS=$(TESTS) bin socket search list
 
 all: $(ALLTESTS)
@@ -19,6 +18,9 @@ plugin.${SOEXT}:
 
 config:
 	valac --vapidir=.. cfg.vala --pkg r_config --pkg r_util --pkg r_db
+
+code_search:
+	valac --vapidir=.. code_search.vala --pkg r_core --pkg r_bin
 
 rgot:
 	valac --vapidir=.. rgot.vala --pkg r_bin --pkg r_util
@@ -46,13 +48,13 @@ genie:
 	valac --vapidir=.. --pkg r_search --pkg libr search.gs
 
 io:
-	valac --vapidir=${PWD}/.. --pkg r_io io.vala
+	valac --vapidir=.. --pkg r_io io.vala
 
 db:
-	valac --vapidir=${PWD}/.. --pkg r_db db.vala
+	valac --vapidir=.. --pkg r_db db.vala
 
 sc:
-	valac --vapidir=${PWD}/.. sc.vala --pkg r_syscall --pkg r_util
+	valac --vapidir=.. sc.vala --pkg r_syscall --pkg r_util
 
 core:
 	valac --vapidir=.. core.vala --pkg r_asm --pkg r_anal --pkg r_core --pkg r_cons --pkg r_bp
@@ -64,19 +66,19 @@ bwdisassemble:
 	valac --vapidir=.. bwdisassemble.vala --pkg r_core --pkg r_bin -o bwdisassemble
 
 search:
-	valac --vapidir=${PWD}/.. search.vala --pkg r_search --pkg r_util
+	valac --vapidir=.. search.vala --pkg r_search --pkg r_util
 
 asm:
 	valac --vapidir=.. --pkg r_asm asm.vala
 
 bin:
-	valac --vapidir=${PWD}/.. bin.vala --pkg r_bin --pkg r_util
+	valac --vapidir=.. bin.vala --pkg r_bin --pkg r_util
 
 hash:
-	valac --vapidir=${PWD}/.. hash.vala --pkg r_hash
+	valac --vapidir=.. hash.vala --pkg r_hash
 
 socket:
-	valac --vapidir=${PWD}/.. socket.vala --pkg r_socket --pkg posix
+	valac --vapidir=.. socket.vala --pkg r_socket --pkg posix
 
 clean:
 	-rm -f `ls *.c | grep -v wrap` hash sc *.o *.h core socket asm search bin io rgot reloc asmsearch bwdisassemble

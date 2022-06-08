@@ -150,7 +150,7 @@ public class RCore {
 
 	/* asm */
 	//public static RCore.AsmHit asm_hit_new();
-	// public RList<RCore.AsmHit> asm_strsearch(string input, uint64 from, uint64 to, int maxhits, int regexp);
+	// public RList<RCore.AsmHit> asm_strsearch(string input, uint64 from, uint64 to, int maxhits, int regexp, int a, int b);
 	public RList<RCore.AsmHit> asm_bwdisassemble(uint64 addr, int n, int len);
 
 /*
