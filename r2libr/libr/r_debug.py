@@ -1494,10 +1494,10 @@ struct_r_buffer_methods_t._fields_ = [
 class struct_r_anal_esil_t(Structure):
     pass
 
-class struct_r_anal_plugin_t(Structure):
+class struct_r_print_t(Structure):
     pass
 
-class struct_r_print_t(Structure):
+class struct_r_anal_plugin_t(Structure):
     pass
 
 class struct_r_rb_node_t(Structure):

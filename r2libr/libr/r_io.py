@@ -622,10 +622,10 @@ RIOSubMap = struct_r_io_submap_t
 class struct_r_io_bank_t(Structure):
     pass
 
-class struct_r_crbtree_node(Structure):
+class struct_r_crbtree_t(Structure):
     pass
 
-class struct_r_crbtree_t(Structure):
+class struct_r_crbtree_node(Structure):
     pass
 
 struct_r_io_bank_t._pack_ = 1 # source:False

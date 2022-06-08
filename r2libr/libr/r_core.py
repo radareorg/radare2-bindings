@@ -614,6 +614,9 @@ class struct_r_bin_t(Structure):
 class struct_r_asm_t(Structure):
     pass
 
+class struct_r_fs_shell_t(Structure):
+    pass
+
 class struct_r_buf_t(Structure):
     pass
 
@@ -621,9 +624,6 @@ class struct_r_lang_t(Structure):
     pass
 
 class struct_r_num_t(Structure):
-    pass
-
-class struct_r_fs_shell_t(Structure):
     pass
 
 class struct_r_egg_t(Structure):
@@ -775,17 +775,6 @@ class struct_r_bin_file_t(Structure):
 class struct_r_id_storage_t(Structure):
     pass
 
-class struct_r_str_constpool_t(Structure):
-    pass
-
-class struct_ht_pp_t(Structure):
-    pass
-
-struct_r_str_constpool_t._pack_ = 1 # source:False
-struct_r_str_constpool_t._fields_ = [
-    ('ht', ctypes.POINTER(struct_ht_pp_t)),
-]
-
 class struct_r_io_bind_t(Structure):
     pass
 
@@ -847,6 +836,17 @@ struct_r_cons_bind_t._fields_ = [
     ('is_breaked', ctypes.CFUNCTYPE(ctypes.c_bool)),
     ('cb_flush', ctypes.CFUNCTYPE(None)),
     ('cb_grep', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
+]
+
+class struct_r_str_constpool_t(Structure):
+    pass
+
+class struct_ht_pp_t(Structure):
+    pass
+
+struct_r_str_constpool_t._pack_ = 1 # source:False
+struct_r_str_constpool_t._fields_ = [
+    ('ht', ctypes.POINTER(struct_ht_pp_t)),
 ]
 
 struct_r_bin_t._pack_ = 1 # source:False
