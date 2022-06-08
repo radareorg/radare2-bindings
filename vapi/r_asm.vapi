@@ -109,15 +109,18 @@ public class RAsm {
 		 */
 		public int payload;
 
+/*
+ XXX valabind doesnt support inner structs that are not pointers
 		/**
 		 * The bytes
-		 */
+		 *
 		public RStrBuf buf;
+
 		/**
 		 * The assembly representation.
-		 */
+		 *
 		public RStrBuf buf_asm;
-		// public string buf_asm;
+*/
 
 		/**
 		 * Retrieves the hexadecimal representation of the instruction.
@@ -151,15 +154,6 @@ public class RAsm {
 	}
 
 	/**
-	 * The bit size.
-	 */
-	public int bits;
-	/**
-	 * Whether it's assuming big endian or little endian.
-	 * See [[http://en.wikipedia.org/wiki/Endianness]]
-	 */
-	public bool big_endian;
-	/**
 	 * The syntax.
 	 */
 	// public Syntax syntax;
@@ -172,11 +166,13 @@ public class RAsm {
 
 	public RAsm();
 	public bool use(string name);
+/*
 	public bool set_arch(string name, int bits);
 	public bool set_bits(int bits);
 	public bool set_syntax(Syntax syntax);
 	public bool set_pc(uint64 addr);
 	public bool set_big_endian(bool big);
+*/
 	// TODO: Use Code? instead of op??
 	public int disassemble(out Op op, uint8* buf, int length);
 	/**

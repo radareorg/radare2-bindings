@@ -1,36 +1,45 @@
-# radare2 language bindings
+# radare2 API bindings
 
-[![Python r2libr bindings 🚀](https://github.com/radareorg/radare2-bindings/actions/workflows/generate_bindings.yml/badge.svg)](https://github.com/radareorg/radare2-bindings/actions/workflows/generate_bindings.yml)
+* pip install r2libr [![Python r2libr bindings 🚀](https://github.com/radareorg/radare2-bindings/actions/workflows/generate_bindings.yml/badge.svg)](https://github.com/radareorg/radare2-bindings/actions/workflows/generate_bindings.yml)
+* Vala / Swig CI [![vala swig ci🚀](https://github.com/radareorg/radare2-bindings/actions/workflows/ci.yml/badge.svg)](https://github.com/radareorg/radare2-bindings/actions/workflows/ci.yml)
 
 This repository contains the native bindings generated with Valabind to use the radare2 APIs.
 
-The r2pipe implementations has been moved into a separate [repository](https://github.com/radare/radare2-r2pipe).
+If you are looking for the `r2pipe` bindings, check this [repository](https://github.com/radare/radare2-r2pipe).
 
 ## Description
 
-This directory contains the code necessary to use the r2 api from your
-favourite language.
+This directory contains the code necessary to use the r2 api from your favourite language.
 
-It supports a large list of programming languages:
+Supported target languages:
 
-- Python
-- JavaScript
-- Java
-- Go
-- Ruby
-- Perl
-- Lua
-- Vala
-- Rust
-- NewLisp
-- Guile
-- OCaml
+* Python
+  * [python-swig](python)
+  * [r2libr](r2libr)
+  * [ctypes](ctypes)
+  * `genbind.py -o /tmp/r2bindings-output -l python`
+* JavaScript
+  * [node-ffi](node-ffi)
+  * [node-swig](node-swig)
+* Java
+  * [jna](jna) Pure Java for FFI
+  * [java](java) JNI native bindings
+* Go
+* Ruby
+* Perl
+* Lua
+* Vala
+* Rust
+  * `genbind.py -o /tmp/r2bindings-output -l rust `
+* NewLisp
+* Guile
+* OCaml
 
 And some other experimental bindings are for:
 
-- GIR
-- C++
-- C#
+* GIR
+* C++
+* C#
 
 This package also contains the vdoc/ subdirectory which contains the
 rules used to generate all [interactive html documentation](https://radare.org/vdoc).

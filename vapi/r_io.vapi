@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2009-2011 pancake<nopcode.org> */
+/* radare - LGPL - Copyright 2009-2022 pancake<nopcode.org> */
 
 namespace Radare {
 	[Compact]
@@ -18,14 +18,15 @@ namespace Radare {
 			EXEC = 2,
 		}
 
+		[CCode (cname="r_io_bind_t")]
 		public struct Bind {
 			int init;
 			public RIO *io;
 			// RIODescUse desc_use;
 			// ...
-			[CCode(cname="r_io_bind", free_function="")]
-			public void bind(RIO *io);
 		}
+		[CCode(cname="r_io_bind")]
+		public void bind(RIO.Bind *iobind);
 
 		[CCode (cprefix="R_IO_SEEK_")]
 		public enum Seek {

@@ -1,8 +1,12 @@
 include ../../config.mk
 
 # all: config lang regs sc hash socket search list plugin.${SOEXT}
-all: core asm bin lang regs sc hash socket search list plugin.${SOEXT}
-	@true
+TESTS=core asm lang regs sc hash
+ALLTESTS=$(TESTS) bin socket search list
+
+all: $(ALLTESTS)
+	$(MAKE) plugin.$(SOEXT)
+	for a in $(TESTS) ; do echo ==$$a ; ./$$a || exit 1 ; done
 
 all2: bin lang core asmsearch bwdisassemble regs hash sc socket asm search db io list rgot plugin.${SOEXT}
 	@true

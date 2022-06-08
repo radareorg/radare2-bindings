@@ -1,0 +1,24 @@
+
+name: Generate bindings for r2libr 🚀
+
+on:
+
+jobs:
+  vala:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Install r2
+      run: git clone https://github.com/radareorg/radare2 && CFLAGS=-O0 radare2/sys/install.sh
+    - name: Build and run some tests
+      run: make -C vapi/t
+  swig-python:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Install r2
+      run: git clone https://github.com/radareorg/radare2 && CFLAGS=-O0 radare2/sys/install.sh
+    - name: Install valabind and swig
+      run: |
+        apt install -y swig valac
+        r2pm -cgi valabind
+    - name: Build wwig bindings
+      run: make -C python
