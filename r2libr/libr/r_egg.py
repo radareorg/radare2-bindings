@@ -570,10 +570,10 @@ class struct_r_io_t(Structure):
 class struct_r_io_bank_t(Structure):
     pass
 
-class struct_r_io_map_t(Structure):
+class struct_r_io_desc_t(Structure):
     pass
 
-class struct_r_io_desc_t(Structure):
+class struct_r_io_map_t(Structure):
     pass
 
 struct_r_io_bind_t._pack_ = 1 # source:False
@@ -1496,10 +1496,10 @@ class struct_r_rb_node_t(Structure):
 class struct_r_print_t(Structure):
     pass
 
-class struct_r_anal_esil_plugin_t(Structure):
+class struct_r_reg_t(Structure):
     pass
 
-class struct_r_reg_t(Structure):
+class struct_r_anal_esil_plugin_t(Structure):
     pass
 
 class struct_r_anal_esil_t(Structure):
@@ -2680,10 +2680,10 @@ struct_r_print_zoom_t._fields_ = [
     ('mode', ctypes.c_int32),
 ]
 
-class struct_r_cons_context_t(Structure):
+class struct_r_line_t(Structure):
     pass
 
-class struct_r_line_t(Structure):
+class struct_r_cons_context_t(Structure):
     pass
 
 class struct_c__SA_RConsCursorPos(Structure):

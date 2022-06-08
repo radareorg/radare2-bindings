@@ -608,22 +608,22 @@ class struct_c__SA_RTable(Structure):
 class struct_r_cmd_t(Structure):
     pass
 
-class struct_r_bin_t(Structure):
-    pass
-
-class struct_r_asm_t(Structure):
-    pass
-
-class struct_r_fs_shell_t(Structure):
-    pass
-
 class struct_r_buf_t(Structure):
     pass
 
 class struct_r_lang_t(Structure):
     pass
 
+class struct_r_asm_t(Structure):
+    pass
+
+class struct_r_bin_t(Structure):
+    pass
+
 class struct_r_num_t(Structure):
+    pass
+
+class struct_r_fs_shell_t(Structure):
     pass
 
 class struct_r_egg_t(Structure):
@@ -775,6 +775,17 @@ class struct_r_bin_file_t(Structure):
 class struct_r_id_storage_t(Structure):
     pass
 
+class struct_r_str_constpool_t(Structure):
+    pass
+
+class struct_ht_pp_t(Structure):
+    pass
+
+struct_r_str_constpool_t._pack_ = 1 # source:False
+struct_r_str_constpool_t._fields_ = [
+    ('ht', ctypes.POINTER(struct_ht_pp_t)),
+]
+
 class struct_r_io_bind_t(Structure):
     pass
 
@@ -836,17 +847,6 @@ struct_r_cons_bind_t._fields_ = [
     ('is_breaked', ctypes.CFUNCTYPE(ctypes.c_bool)),
     ('cb_flush', ctypes.CFUNCTYPE(None)),
     ('cb_grep', ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_char))),
-]
-
-class struct_r_str_constpool_t(Structure):
-    pass
-
-class struct_ht_pp_t(Structure):
-    pass
-
-struct_r_str_constpool_t._pack_ = 1 # source:False
-struct_r_str_constpool_t._fields_ = [
-    ('ht', ctypes.POINTER(struct_ht_pp_t)),
 ]
 
 struct_r_bin_t._pack_ = 1 # source:False
@@ -2671,6 +2671,15 @@ struct_r_anal_callbacks_t._fields_ = [
     ('on_fcn_bb_new', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(struct_r_anal_t), ctypes.POINTER(None), ctypes.POINTER(struct_r_anal_function_t), ctypes.POINTER(struct_r_anal_bb_t))),
 ]
 
+
+# values for enumeration 'c__EA_RAnalCPPABI'
+c__EA_RAnalCPPABI__enumvalues = {
+    0: 'R_ANAL_CPP_ABI_ITANIUM',
+    1: 'R_ANAL_CPP_ABI_MSVC',
+}
+R_ANAL_CPP_ABI_ITANIUM = 0
+R_ANAL_CPP_ABI_MSVC = 1
+c__EA_RAnalCPPABI = ctypes.c_uint32 # enum
 class struct_r_flag_bind_t(Structure):
     pass
 
@@ -2695,15 +2704,6 @@ struct_r_flag_bind_t._fields_ = [
     ('pop_fs', ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.POINTER(struct_r_flag_t))),
 ]
 
-
-# values for enumeration 'c__EA_RAnalCPPABI'
-c__EA_RAnalCPPABI__enumvalues = {
-    0: 'R_ANAL_CPP_ABI_ITANIUM',
-    1: 'R_ANAL_CPP_ABI_MSVC',
-}
-R_ANAL_CPP_ABI_ITANIUM = 0
-R_ANAL_CPP_ABI_MSVC = 1
-c__EA_RAnalCPPABI = ctypes.c_uint32 # enum
 class struct_r_bin_bind_t(Structure):
     pass
 

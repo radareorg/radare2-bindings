@@ -270,10 +270,10 @@ class struct_sdb_t(Structure):
 class struct_r_spaces_t(Structure):
     pass
 
-class struct_r_crbtree_t(Structure):
+class struct_r_event_t(Structure):
     pass
 
-class struct_r_event_t(Structure):
+class struct_r_crbtree_t(Structure):
     pass
 
 struct_r_spaces_t._pack_ = 1 # source:False

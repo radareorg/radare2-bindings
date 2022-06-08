@@ -300,6 +300,9 @@ RAsmEqu = struct_c__SA_RAsmEqu
 class struct_r_asm_t(Structure):
     pass
 
+class struct_ht_pp_t(Structure):
+    pass
+
 class struct_r_parse_t(Structure):
     pass
 
@@ -310,9 +313,6 @@ class struct_r_syscall_t(Structure):
     pass
 
 class struct_r_num_t(Structure):
-    pass
-
-class struct_ht_pp_t(Structure):
     pass
 
 class struct_sdb_t(Structure):
@@ -2507,10 +2507,10 @@ struct_r_anal_range_t._fields_ = [
 class struct_r_print_zoom_t(Structure):
     pass
 
-class struct_r_cons_t(Structure):
+class struct_r_charset_t(Structure):
     pass
 
-class struct_r_charset_t(Structure):
+class struct_r_cons_t(Structure):
     pass
 
 struct_r_print_t._pack_ = 1 # source:False
@@ -2600,10 +2600,10 @@ struct_r_print_zoom_t._fields_ = [
     ('mode', ctypes.c_int32),
 ]
 
-class struct_r_cons_context_t(Structure):
+class struct_r_line_t(Structure):
     pass
 
-class struct_r_line_t(Structure):
+class struct_r_cons_context_t(Structure):
     pass
 
 class struct_termios(Structure):

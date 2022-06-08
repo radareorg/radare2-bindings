@@ -400,9 +400,6 @@ struct_c__SA_RAnalMetaUserItem._fields_ = [
 class struct_r_anal_esil_t(Structure):
     pass
 
-class struct_sdb_t(Structure):
-    pass
-
 class struct_r_print_t(Structure):
     pass
 
@@ -410,6 +407,9 @@ class struct_r_list_t(Structure):
     pass
 
 class struct_r_event_t(Structure):
+    pass
+
+class struct_sdb_t(Structure):
     pass
 
 class struct_r_reg_t(Structure):
@@ -499,10 +499,10 @@ class struct_r_io_bind_t(Structure):
 class struct_r_io_t(Structure):
     pass
 
-class struct_r_io_desc_t(Structure):
+class struct_r_io_map_t(Structure):
     pass
 
-class struct_r_io_map_t(Structure):
+class struct_r_io_desc_t(Structure):
     pass
 
 class struct_r_io_bank_t(Structure):
@@ -1929,13 +1929,13 @@ struct_r_bin_section_t._fields_ = [
     ('is_segment', ctypes.c_bool),
 ]
 
+class struct_r_anal_esil_trace_t(Structure):
+    pass
+
 class struct_r_anal_esil_handler_t(Structure):
     pass
 
 class struct_r_anal_reil(Structure):
-    pass
-
-class struct_r_anal_esil_trace_t(Structure):
     pass
 
 class struct_r_anal_esil_callbacks_t(Structure):
