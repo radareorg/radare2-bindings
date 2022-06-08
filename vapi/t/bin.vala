@@ -11,7 +11,7 @@ public void main (string[] args) {
 	var desc = io.open(path,0,0);
 	var bfo = RBinFileOptions();
 	var bin = new RBin ();
-	bin.iob.bind (io);
+	// bin.iob.bind (io);
 	bfo.fd = desc.fd;
 	// if (bin.load (args[1], 0,0,0,desc.fd,0) != 1)
 	if (bin.open (args[1], ref bfo) != 1)

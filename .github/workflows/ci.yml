@@ -9,22 +9,30 @@ jobs:
   vala:
     runs-on: ubuntu-20.04
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Install r2
-      run: git clone https://github.com/radareorg/radare2 && CFLAGS=-O0 radare2/sys/install.sh
+      run: git clone https://github.com/radareorg/radare2 && CFLAGS=-O0 radare2/sys/install.sh /usr
     - name: Install vala
       run: sudo apt install -y valac
     - name: Build and run some tests
-      run: make -C vapi/t
+      run: |
+        ./configure
+        make -C vapi/t
   swig-python:
     runs-on: ubuntu-20.04
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Install r2
-      run: git clone https://github.com/radareorg/radare2 && CFLAGS=-O0 radare2/sys/install.sh
+      run: git clone https://github.com/radareorg/radare2 && CFLAGS=-O0 radare2/sys/install.sh /usr
     - name: Install valabind and swig
       run: |
         sudo apt install -y swig valac
         r2pm -cgi valabind
+    - name: Configure
+      run: ./configure
     - name: Build swig bindings
-      run: make -C python
+      run: r2pm -r make -C python
     - name: Build dlang bindings
-      run: make -C dlang
+      run: r2pm -r make -C dlang

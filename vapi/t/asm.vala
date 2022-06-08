@@ -8,11 +8,11 @@ public class RAsmExample
 	{
 		RAsm st = new RAsm();
 		st.use("x86.olly");
+/*
 		st.set_syntax(RAsm.Syntax.INTEL);
 		st.set_bits(32);
 		st.set_big_endian(false);
 		st.set_pc(0x8048000);
-/*
 		st.set_parser(RAsm.Parser.PSEUDO,
 			(st) => {
 				stdout.printf("pseudo: %s --> %s\n", st.buf_asm, (string)st.aux);

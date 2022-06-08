@@ -59,61 +59,29 @@ no extra dependencies apart from the language libraries and C++ compiler.
 
 Fortunely, all those dependencies can be installed with r2pm:
 ```sh
-r2pm -i vala swig valabind
+r2pm -cgi vala swig valabind
 ```
 
-### Building by hand
+### Source build
 
 To get install all dependencies do the following steps in order:
 
-  * Install swig and git from repository
-    (ensure you don't have vala installed from package)
+  * Install vala and swig from your distro
 
 ```sh
-arch$ sudo pacman -S swig git
-deb$ sudo apt install swig git
+arch$ sudo pacman -S swig valac
+deb$ sudo apt install -y swig valac
+mac$ brew install swig valac
 ```
 
-  * Install [latest release](https://live.gnome.org/Vala) of Vala from tarball
+Or install
 
-```sh
-./configure --prefix=/usr
-make
-sudo make install
-```
-  * Clone vala compiler from git repository:
-
-```sh
-$ git clone https://gitlab.gnome.org/GNOME/vala
-$ cd vala
-$ sh autogen.sh --prefix=/usr
-$ make
-$ sudo make install
-```
+  * Install [latest release](https://live.gnome.org/Vala) of Vala from tarball or git
   * Fetch valabind from the repository:
 
 ```sh
-$ git clone git://github.com/radare/valabind.git
+$ git clone https://github.com/radare/valabind
 $ cd valabind
-$ make
-$ sudo make install PREFIX=/usr
-```
-
-## To keep bindings up-to-date
-
-When changes are done in libr an ABI break can occur. The bindings will require
-to be recompiled to work again.
-
-It's recommendable to keep your system always up to date, and upgrade vala
-and valabind from git.
-```sh
-$ cd vala
-$ git pull
-$ make
-$ sudo make install
-
-$ cd ../valabind
-$ git pull
 $ make
 $ sudo make install PREFIX=/usr
 ```
@@ -128,11 +96,12 @@ If you compile from the repo you need the latest version of valabind and then:
 You can select the languages you want to compile with `--enable={list-of-langs}`
 ```
 ./configure --prefix=/usr --enable=python
+make
 ```
 
-## r2libr
+## r2libr (python)
 
-r2libr is python bindings generated from source with all `libr` dynamic libraries bundled in a wheel.
+r2libr are the most complete **python bindings** generated from source with all `libr` dynamic libraries bundled in a wheel.
 
 You may have a try without the need to install radare2:
 
