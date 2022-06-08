@@ -12,7 +12,7 @@ jobs:
     - name: Install r2
       run: git clone https://github.com/radareorg/radare2 && CFLAGS=-O0 radare2/sys/install.sh
     - name: Install vala
-      run: apt install -y valac
+      run: sudo apt install -y valac
     - name: Build and run some tests
       run: make -C vapi/t
   swig-python:
@@ -22,7 +22,7 @@ jobs:
       run: git clone https://github.com/radareorg/radare2 && CFLAGS=-O0 radare2/sys/install.sh
     - name: Install valabind and swig
       run: |
-        apt install -y swig valac
+        sudo apt install -y swig valac
         r2pm -cgi valabind
     - name: Build swig bindings
       run: make -C python
