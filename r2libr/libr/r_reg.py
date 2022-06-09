@@ -565,19 +565,6 @@ r_reg_get_value.argtypes = [ctypes.POINTER(struct_r_reg_t), ctypes.POINTER(struc
 class struct__utX(Structure):
     pass
 
-class struct__ut80(Structure):
-    pass
-
-struct__ut80._pack_ = 1 # source:False
-struct__ut80._fields_ = [
-    ('Low', ctypes.c_uint64),
-    ('High', ctypes.c_uint16),
-    ('PADDING_0', ctypes.c_ubyte * 6),
-]
-
-class struct__ut256(Structure):
-    pass
-
 class struct__ut128(Structure):
     pass
 
@@ -585,12 +572,6 @@ struct__ut128._pack_ = 1 # source:False
 struct__ut128._fields_ = [
     ('Low', ctypes.c_uint64),
     ('High', ctypes.c_int64),
-]
-
-struct__ut256._pack_ = 1 # source:False
-struct__ut256._fields_ = [
-    ('Low', struct__ut128),
-    ('High', struct__ut128),
 ]
 
 class struct__ut96(Structure):
@@ -602,6 +583,23 @@ struct__ut96._fields_ = [
     ('High', ctypes.c_uint32),
     ('PADDING_0', ctypes.c_ubyte * 4),
 ]
+
+class struct__ut80(Structure):
+    pass
+
+struct__ut80._pack_ = 1 # source:False
+struct__ut80._fields_ = [
+    ('Low', ctypes.c_uint64),
+    ('High', ctypes.c_uint16),
+    ('PADDING_0', ctypes.c_ubyte * 6),
+]
+
+class struct__ut256(Structure):
+    _pack_ = 1 # source:False
+    _fields_ = [
+    ('Low', struct__ut128),
+    ('High', struct__ut128),
+     ]
 
 struct__utX._pack_ = 1 # source:False
 struct__utX._fields_ = [

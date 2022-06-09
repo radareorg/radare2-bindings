@@ -375,9 +375,6 @@ struct_r_list_iter_t._fields_ = [
     ('p', ctypes.POINTER(struct_r_list_iter_t)),
 ]
 
-class struct_r_cache_t(Structure):
-    pass
-
 class struct_r_event_t(Structure):
     pass
 
@@ -385,6 +382,9 @@ class struct_r_id_storage_t(Structure):
     pass
 
 class struct_ls_t(Structure):
+    pass
+
+class struct_r_cache_t(Structure):
     pass
 
 class struct_r_skyline_t(Structure):
@@ -676,10 +676,10 @@ struct_r_event_t._fields_ = [
     ('PADDING_1', ctypes.c_ubyte * 4),
 ]
 
-class struct_r_crbtree_t(Structure):
+class struct_r_crbtree_node(Structure):
     pass
 
-class struct_r_crbtree_node(Structure):
+class struct_r_crbtree_t(Structure):
     pass
 
 struct_r_io_bank_t._pack_ = 1 # source:False
