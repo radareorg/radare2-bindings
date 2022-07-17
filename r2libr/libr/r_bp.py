@@ -337,16 +337,16 @@ struct_r_io_bind_t._fields_ = [
     ('p2v', ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(struct_r_io_t), ctypes.c_uint64)),
 ]
 
-class struct_r_cache_t(Structure):
+class struct_r_event_t(Structure):
     pass
 
 class struct_r_id_storage_t(Structure):
     pass
 
-class struct_ls_t(Structure):
+class struct_r_cache_t(Structure):
     pass
 
-class struct_r_event_t(Structure):
+class struct_ls_t(Structure):
     pass
 
 class struct_r_io_undo_t(Structure):
@@ -444,10 +444,10 @@ struct_r_io_t._fields_ = [
     ('PADDING_5', ctypes.c_ubyte * 7),
 ]
 
-class struct_ht_up_t(Structure):
+class struct_r_io_plugin_t(Structure):
     pass
 
-class struct_r_io_plugin_t(Structure):
+class struct_ht_up_t(Structure):
     pass
 
 struct_r_io_desc_t._pack_ = 1 # source:False
