@@ -255,16 +255,16 @@ RFlagItem = struct_r_flag_item_t
 class struct_r_flag_t(Structure):
     pass
 
-class struct_sdb_t(Structure):
+class struct_r_num_t(Structure):
     pass
 
-class struct_ht_pp_t(Structure):
+class struct_sdb_t(Structure):
     pass
 
 class struct_r_skiplist_t(Structure):
     pass
 
-class struct_r_num_t(Structure):
+class struct_ht_pp_t(Structure):
     pass
 
 class struct_r_spaces_t(Structure):
@@ -454,10 +454,10 @@ struct_cdb._fields_ = [
 class struct_cdb_make(Structure):
     pass
 
-class struct_cdb_hp(Structure):
+class struct_cdb_hplist(Structure):
     pass
 
-class struct_cdb_hplist(Structure):
+class struct_cdb_hp(Structure):
     pass
 
 class struct_buffer(Structure):

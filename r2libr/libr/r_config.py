@@ -231,10 +231,10 @@ r_config_node_type.argtypes = [ctypes.POINTER(struct_r_config_node_t)]
 class struct_r_config_t(Structure):
     pass
 
-class struct_ht_pp_t(Structure):
+class struct_r_num_t(Structure):
     pass
 
-class struct_r_num_t(Structure):
+class struct_ht_pp_t(Structure):
     pass
 
 struct_r_config_t._pack_ = 1 # source:False
