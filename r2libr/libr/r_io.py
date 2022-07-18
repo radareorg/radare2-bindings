@@ -251,13 +251,13 @@ class struct_r_io_t(Structure):
 class struct_r_cache_t(Structure):
     pass
 
-class struct_r_event_t(Structure):
+class struct_ls_t(Structure):
     pass
 
 class struct_r_id_storage_t(Structure):
     pass
 
-class struct_ls_t(Structure):
+class struct_r_event_t(Structure):
     pass
 
 class struct_r_io_desc_t(Structure):
