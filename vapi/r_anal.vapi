@@ -360,8 +360,8 @@ namespace Radare {
 			public uint64 val;
 			public int64 stackptr;
 			public bool refptr;
-			public Value src[3];
-			public Value dst;
+			// public Value src[3];
+			// public Value dst;
 			// SWIG FAIL // public RStrBuf esil;
 			//TODO public uint64 ref;
 		}
