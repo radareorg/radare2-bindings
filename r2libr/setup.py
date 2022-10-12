@@ -45,12 +45,17 @@ def clean_builds():
 def radare2_exists():
     return (Path(ROOT_DIR) / "radare2" / ".git").exists()
 
-def meson_exists():
+def meson_exists_old():
     try:
         import mesonbuild
         return True
     except ImportError:
         return False
+
+def meson_exists():
+    if os.system("meson --version") == 0:
+        return True
+    return False
 
 # Meson seems not to play well with macOS and radare2
 # assumes that users will install the whole project to system.
