@@ -10,6 +10,8 @@ fn main() {
     // shared library.
     println!("cargo:rustc-link-lib=r_io");
     println!("cargo:rustc-link-lib=r_asm");
+    println!("cargo:rustc-link-lib=r_arch");
+    println!("cargo:rustc-link-lib=r_esil");
     println!("cargo:rustc-link-lib=r_anal");
     println!("cargo:rustc-link-lib=r_search");
     println!("cargo:rustc-link-lib=r_util");

@@ -2,7 +2,7 @@
 name = "r2api"
 license = "MIT"
 description = "rust bindings for the radare2 native APIs"
-version = "5.6.1"
+version = "5.8.0"
 edition = "2021"
 links = "r_core"
 build = "build.rs"

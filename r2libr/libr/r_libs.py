@@ -7,6 +7,7 @@ from pathlib import Path
 
 _libr_name = [
     "r_anal",
+    "r_arch",
     "r_asm",
     "r_bin",
     "r_bp",

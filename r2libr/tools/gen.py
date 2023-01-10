@@ -12,6 +12,7 @@ import os
 
 libs = [
     "anal",
+    "arch",
     "asm",
     "bin",
     "bp",
@@ -37,14 +38,13 @@ libs = [
 ]
 
 def gen_clang_include_args(builddir):
+    includes = []
     def _impl(dir: Path):
         includes.append(dir)
         for child in dir.iterdir():
             if child.is_dir() and child not in includes:
                 _impl(child)
-    include_root = Path(builddir) / "include" / "libr"
-    includes = []
-    _impl(include_root)
+    _impl(Path(builddir) / "include" / "libr")
     return [f"-I{str(p.resolve())}" for p in includes]
 
 def verbose_call(*args, **kwargs):

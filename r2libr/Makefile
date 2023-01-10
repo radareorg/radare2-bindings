@@ -1,6 +1,12 @@
 all: radare2
 	python setup.py build
 
+clean:
+	rm -rf build
+
+mrproper: clean
+	rm -rf dist
+
 install:
 	python setup.py install
 
