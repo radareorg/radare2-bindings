@@ -9,6 +9,8 @@ BINDGEN_FLAGS+=--allowlist-function='r_.*'
 BINDGEN_FLAGS+=--allowlist-function='sdb_.*'
 BINDGEN_FLAGS+=--blocklist-item=IPPORT_RESERVED
 
+# BINDGEN_FLAGS+= --opaque-type 'std::.*'
+
 all:
 	$(BINDGEN) $(BINDGEN_FLAGS) $(R2INC)/libr/$(R2LIB).h -- $(CFLAGS) > src/lib.rs
 	$(CARGO) build

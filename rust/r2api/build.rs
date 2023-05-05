@@ -6,8 +6,16 @@ use std::path::PathBuf;
 // use pkgconfig module
 
 fn main() {
-    // Tell cargo to tell rustc to link the system bzip2
-    // shared library.
+    // Tell cargo to statically link to the radare2-build static lib
+    #[cfg(feature = "static")]
+    {
+    // TODO: this ../radare2-bild path should be dynamically constructed
+    // println!("cargo:rustc-link-search=../radare2-build/radare2/libr/");
+    // println!("cargo:rustc-link-lib=r");
+    println!("cargo:rustc-link-arg=../radare2-build/radare2/libr/libr.a");
+    }
+    #[cfg(not(feature = "static"))]
+    {
     println!("cargo:rustc-link-lib=r_io");
     println!("cargo:rustc-link-lib=r_asm");
     println!("cargo:rustc-link-lib=r_arch");
@@ -24,6 +32,7 @@ fn main() {
     println!("cargo:rustc-link-lib=r_socket");
     println!("cargo:rustc-link-lib=r_fs");
     println!("cargo:rustc-link-lib=r_cons");
+    }
 
     // Tell cargo to invalidate the built crate whenever the wrapper changes
     println!("cargo:rerun-if-changed=wrapper.h");

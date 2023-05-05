@@ -10,7 +10,12 @@ macro_rules! c_str {
 
 
 fn main() {
-    println!("Hello RCore");
+	/*
+	let c = r_core::new();
+	c.cmd("?e hello world");
+	c.free();
+	*/
+
     unsafe {
         let c = r_core_new();
         let pangram = "?E Hello World\x00".as_ptr() as *const i8;
