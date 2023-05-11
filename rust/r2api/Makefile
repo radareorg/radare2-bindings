@@ -12,6 +12,7 @@ BINDGEN_FLAGS+=--blocklist-item=IPPORT_RESERVED
 # BINDGEN_FLAGS+= --opaque-type 'std::.*'
 
 all:
+	cargo fmt
 	$(BINDGEN) $(BINDGEN_FLAGS) $(R2INC)/libr/$(R2LIB).h -- $(CFLAGS) > src/lib.rs
 	$(CARGO) build
 	$(CARGO) run
