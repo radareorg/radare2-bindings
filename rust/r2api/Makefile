@@ -1,22 +1,14 @@
-R2LIB=r_core
-BINDGEN=bindgen
 CARGO=cargo
 
-CFLAGS+=$(shell pkg-config --cflags $(R2LIB))
-R2INC=$(shell pkg-config --variable=includedir $(R2LIB))
-
-BINDGEN_FLAGS+=--allowlist-function='r_.*'
-BINDGEN_FLAGS+=--allowlist-function='sdb_.*'
-BINDGEN_FLAGS+=--blocklist-item=IPPORT_RESERVED
-BINDGEN_FLAGS+=--with-derive-default
-
-# BINDGEN_FLAGS+= --opaque-type 'std::.*'
+.PHONY: all test_static pub
 
 all:
-	cargo fmt
-	$(BINDGEN) $(BINDGEN_FLAGS) $(R2INC)/libr/$(R2LIB).h -- $(CFLAGS) > src/lib.rs
+	$(CARGO) fmt
 	$(CARGO) build
 	$(CARGO) run
 
+test_static:
+	$(CARGO) run --features=static
+
 pub:
-	$(CARGO) publish --allow-dirty
+	$(CARGO) publish

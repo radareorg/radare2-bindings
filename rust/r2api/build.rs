@@ -1,36 +1,53 @@
-extern crate bindgen;
+// Copyright 2024 pancake, terorie
+//
+// Parts of this build config (the pkg-config stuff) were copied
+// from Mozilla's neqo-crypto from here:
+// https://github.com/mozilla/neqo/blob/main/neqo-crypto/build.rs
+//
+// Their original license terms are:
+// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
+// option. This file may not be copied, modified, or distributed
+// except according to those terms.
 
 use std::env;
 use std::path::PathBuf;
-// use pkgconfig module
+use std::process::Command;
 
 fn main() {
-    // Tell cargo to statically link to the radare2-build static lib
+    let mut pkgconf_args = vec!["--cflags", "--libs"];
+
     #[cfg(feature = "static")]
-    {
-        // TODO: this ../radare2-bild path should be dynamically constructed
-        // println!("cargo:rustc-link-search=../radare2-build/radare2/libr/");
-        // println!("cargo:rustc-link-lib=r");
-        println!("cargo:rustc-link-arg=../radare2-build/radare2/libr/libr.a");
-    }
-    #[cfg(not(feature = "static"))]
-    {
-        println!("cargo:rustc-link-lib=r_io");
-        println!("cargo:rustc-link-lib=r_asm");
-        println!("cargo:rustc-link-lib=r_arch");
-        println!("cargo:rustc-link-lib=r_esil");
-        println!("cargo:rustc-link-lib=r_anal");
-        println!("cargo:rustc-link-lib=r_search");
-        println!("cargo:rustc-link-lib=r_util");
-        println!("cargo:rustc-link-lib=r_reg");
-        println!("cargo:rustc-link-lib=r_debug");
-        println!("cargo:rustc-link-lib=r_lang");
-        println!("cargo:rustc-link-lib=r_bin");
-        println!("cargo:rustc-link-lib=r_syscall");
-        println!("cargo:rustc-link-lib=r_core");
-        println!("cargo:rustc-link-lib=r_socket");
-        println!("cargo:rustc-link-lib=r_fs");
-        println!("cargo:rustc-link-lib=r_cons");
+    pkgconf_args.push("--static");
+
+    pkgconf_args.push("r_core");
+
+    let cfg = Command::new("pkg-config")
+        .args(pkgconf_args)
+        .output()
+        .expect("Can't find r_core")
+        .stdout;
+    let cfg_str = String::from_utf8(cfg).unwrap();
+
+    let mut flags: Vec<String> = Vec::new();
+    for f in cfg_str.split(' ') {
+        if let Some(include) = f.strip_prefix("-I") {
+            flags.push(String::from(f));
+            println!("cargo:include={include}");
+        } else if let Some(path) = f.strip_prefix("-L") {
+            println!("cargo:rustc-link-search=native={path}");
+        } else if let Some(lib) = f.strip_prefix("-l") {
+            // Work around bug where pkg-config provides dylibs even if --static is passed
+            let skip = cfg!(feature = "static") && lib.starts_with("r_");
+            if !skip {
+                println!("cargo:rustc-link-lib=dylib={lib}");
+            }
+        } else if f.ends_with(".a") {
+            println!("cargo:rustc-link-arg={f}")
+        } else {
+            println!("cargo:warning=Unknown flag from pkg-config: {f}");
+        }
     }
 
     // Tell cargo to invalidate the built crate whenever the wrapper changes
@@ -45,7 +62,11 @@ fn main() {
         .header("wrapper.h")
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
+        .allowlist_function("r_.*")
+        .allowlist_function("sdb_.*")
+        .blocklist_item("IPPORT_RESERVED")
+        .clang_args(flags)
         .derive_default(true)
         // Finish the builder and generate the bindings.
         .generate()
