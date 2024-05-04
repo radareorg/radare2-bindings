@@ -8,6 +8,7 @@ R2INC=$(shell pkg-config --variable=includedir $(R2LIB))
 BINDGEN_FLAGS+=--allowlist-function='r_.*'
 BINDGEN_FLAGS+=--allowlist-function='sdb_.*'
 BINDGEN_FLAGS+=--blocklist-item=IPPORT_RESERVED
+BINDGEN_FLAGS+=--with-derive-default
 
 # BINDGEN_FLAGS+= --opaque-type 'std::.*'
 
