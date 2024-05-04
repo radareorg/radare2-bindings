@@ -2,14 +2,14 @@
 name = "r2api"
 license = "MIT"
 description = "rust bindings for the radare2 native APIs"
-version = "5.8.6"
+version = "5.9.0"
 edition = "2021"
 links = "r_core"
 build = "build.rs"
 
 [build-dependencies]
-pkg-config = "0.3.16"
-bindgen = "0.53.1"
+pkg-config = "0.3.30"
+bindgen = "0.69.4"
 
 [features]
 static = []
