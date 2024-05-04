@@ -39,3 +39,20 @@ jobs:
       run: r2pm -r make -C python
     - name: Build dlang bindings
       run: r2pm -r make -C dlang
+  rust:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install r2
+        run: git clone https://github.com/radareorg/radare2 && CFLAGS=-O0 radare2/sys/install.sh /usr
+      - name: Build
+        run: cargo build
+        working-directory: rust/r2api
+      - name: Test (dynamic)
+        run: cargo run
+        working-directory: rust/r2api
+      # Uncomment when radare2 pkg-config is no longer broken
+      #- name: Test (static)
+      #  run: cargo run --features=static
+      #  working-directory: rust/r2api
