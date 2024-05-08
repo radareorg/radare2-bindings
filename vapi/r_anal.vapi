@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2010-2018 - pancake */
+/* radare - LGPL - Copyright 2010-2024 - pancake */
 
 /* this vapi is broken as shit... we need to rename some stuff here ..
    if we can just avoid to use cname CCode attribute... */
@@ -342,8 +342,10 @@ namespace Radare {
 		// public Block bb_from_offset (uint64 addr);
 
 		[Compact]
-		[CCode (cprefix="r_anal_op_", cname="RAnalOp")]
+		[CCode (cprefix="r_anal_op_", free_function="r_anal_op_free", cname="RAnalOp")]
 		public class Op {
+			[CCode (cname = "r_anal_op_new")]
+			public Op ();
 			public string mnemonic;
 			public uint64 addr;
 			public int type;

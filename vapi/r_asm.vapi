@@ -1,3 +1,4 @@
+/* radare - LGPL - Copyright 2010-2024 - pancake */
 
 namespace Radare {
 /**
@@ -92,49 +93,6 @@ public class RAsm {
 	}
 
 	/**
-	 * Represents assembly opcodes.
-	 */
-	[CCode (cname="RAsmOp", destroy_function="", unref_function="")]
-	public struct Op {
-		/**
-		 * The instruction length.
-		 */
-		public int size;
-		/**
-		 * The instruction size in bits
-		 */
-		public int bitsize;
-		/**
-		 * The instruction payload.
-		 */
-		public int payload;
-
-/*
- XXX valabind doesnt support inner structs that are not pointers
-		/**
-		 * The bytes
-		 *
-		public RStrBuf buf;
-
-		/**
-		 * The assembly representation.
-		 *
-		public RStrBuf buf_asm;
-*/
-
-		/**
-		 * Retrieves the hexadecimal representation of the instruction.
-		 * @return the actual opcode, in hexadecimal.
-		 */
-		public string get_hex();
-		/**
-		 * Retrieves the assembly representation of the instruction.
-		 * @return such representation.
-		 */
-		public string get_asm();
-	}
-
-	/**
 	 * Models decompiled assembly code.
 	 */
 	[Compact]
@@ -174,11 +132,11 @@ public class RAsm {
 	public bool set_big_endian(bool big);
 */
 	// TODO: Use Code? instead of op??
-	public int disassemble(out Op op, uint8* buf, int length);
+	public int disassemble(RAnal.Op op, uint8* buf, int length);
 	/**
 	 * Assemble provided instruction into an Op, returns instruction size in bytes.
 	 */
-	public int assemble(out Op op, string buf);
+	public int assemble(RAnal.Op op, string buf);
 	public Code? mdisassemble(uint8 *buf, int length);
 	public Code? massemble(string buf);
 	// public Code? assemble_file(string file);

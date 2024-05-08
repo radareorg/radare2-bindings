@@ -69,13 +69,14 @@ search:
 	valac --vapidir=.. search.vala --pkg r_search --pkg r_util
 
 asm:
-	valac --vapidir=.. --pkg r_asm asm.vala
+	#valac --vapidir=.. --pkg r_asm asm.vala
+	valac --vapidir=.. --pkg r_anal --pkg r_asm --pkg r_syscall asm.vala
 
 bin:
 	valac --vapidir=.. bin.vala --pkg r_bin --pkg r_util
 
 hash:
-	valac --vapidir=.. hash.vala --pkg r_hash
+	valac --vapidir=.. hash.vala --pkg r_crypto
 
 socket:
 	valac --vapidir=.. socket.vala --pkg r_socket --pkg posix

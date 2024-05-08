@@ -20,13 +20,13 @@ public class RAsmExample
 			}, pseudo);
 */
 
-		RAsm.Op op;
+		RAnal.Op op = new RAnal.Op();
 		uint8 *buf = "\x83\xe4\xf0";
 		string buf2 = "jmp _foo;nop;nop;nop;_foo:push eax";
-		if (st.disassemble(out op, buf, 3) <1) {
+		if (st.disassemble(op, buf, 3) <1) {
 			stderr.printf ("internal error\n");
 		} else {
-			stdout.printf ("disasm: %s\n", op.get_asm());
+			stdout.printf ("disasm: %s\n", op.mnemonic);
 		}
 		RAsm.Code? code = st.massemble(buf2);
 		if (code == null) {

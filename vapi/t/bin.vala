@@ -14,15 +14,18 @@ public void main (string[] args) {
 	// bin.iob.bind (io);
 	bfo.fd = desc.fd;
 	// if (bin.load (args[1], 0,0,0,desc.fd,0) != 1)
-	if (bin.open (args[1], ref bfo) != 1)
+	if (bin.open (args[1], ref bfo) != 1) {
 		error ("Cannot open binary file\n");
+	}
 
 	uint64 baddr = bin.get_baddr();
 	print ("Base addr: 0x%08"+uint64.FORMAT_MODIFIER+"x\n", baddr);
+	/*
 	foreach (var sym in bin.get_symbols ())
 		print ("0x%08"+uint64.FORMAT_MODIFIER+"x - %s\n",
 			baddr+sym.vaddr, sym.name);
 	foreach (var sec in bin.get_sections())
 		print ("0x%08"+uint64.FORMAT_MODIFIER+"x - %s\n",
 			baddr+sec.vaddr, sec.name);
+			*/
 }
