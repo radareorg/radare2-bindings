@@ -33,7 +33,7 @@ public class RAsm {
 	/**
 	 * The supported assembler syntax variations.
 	 */
-	[CCode (cprefix="R_ASM_SYNTAX_", cname="int")]
+	[CCode (cprefix="R_ARCH_SYNTAX_", cname="int")]
 	public enum Syntax {
 		/**
 		 * Use default syntax provided by the disassembler
@@ -126,11 +126,11 @@ public class RAsm {
 	public bool use(string name);
 /*
 	public bool set_arch(string name, int bits);
-	public bool set_bits(int bits);
-	public bool set_syntax(Syntax syntax);
-	public bool set_pc(uint64 addr);
-	public bool set_big_endian(bool big);
 */
+	public bool set_pc(uint64 addr);
+	public bool set_bits(int bits);
+	public bool set_big_endian(bool big);
+	public bool set_syntax(Syntax syntax);
 	// TODO: Use Code? instead of op??
 	public int disassemble(RAnal.Op op, uint8* buf, int length);
 	/**

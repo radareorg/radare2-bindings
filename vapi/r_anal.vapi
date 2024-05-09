@@ -14,7 +14,7 @@ namespace Radare {
 //		public RList<MetaItem> meta;
 		public RList<Refline> reflines;
 		public RReg reg;
-		public RSyscall syscall;
+		// public RSyscall syscall;
 
 		/* bindiffing options
 		-- THIS IS PRIVATE --

@@ -26,7 +26,7 @@ namespace Radare {
 	}
 #endif
 	[Compact]
-	[CCode (cheader_filename="r_util.h", lower_case_cprefix="r_strbuf_", cname="RStrBuf", init_function="", unref_function="")]
+	[CCode (cheader_filename="r_util.h", lower_case_cprefix="r_strbuf_", cname="RStrBuf", unref_function="")]
 	public class RStrBuf {
 		public void init ();
 		public RStrBuf (string str);

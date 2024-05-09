@@ -1,6 +1,6 @@
 include ../../config.mk
 
-TESTS=core asm lang regs sc hash sc
+TESTS=core asm asm2 lang regs sc hash sc
 ALLTESTS=$(TESTS) bin socket search list
 
 all: $(ALLTESTS)
@@ -71,6 +71,9 @@ search:
 asm:
 	#valac --vapidir=.. --pkg r_asm asm.vala
 	valac --vapidir=.. --pkg r_anal --pkg r_asm --pkg r_syscall asm.vala
+
+asm2:
+	valac asm2.gs --pkg r_asm --pkg r_anal --vapidir=..
 
 bin:
 	valac --vapidir=.. bin.vala --pkg r_bin --pkg r_util

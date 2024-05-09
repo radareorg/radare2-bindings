@@ -8,9 +8,9 @@ public class RAsmExample
 	{
 		RAsm st = new RAsm();
 		st.use("x86.olly");
+		st.set_bits(32);
 /*
 		st.set_syntax(RAsm.Syntax.INTEL);
-		st.set_bits(32);
 		st.set_big_endian(false);
 		st.set_pc(0x8048000);
 		st.set_parser(RAsm.Parser.PSEUDO,
@@ -21,7 +21,7 @@ public class RAsmExample
 */
 
 		RAnal.Op op = new RAnal.Op();
-		uint8 *buf = "\x83\xe4\xf0";
+		uint8 *buf = (uint8*)"\x83\xe4\xf0";
 		string buf2 = "jmp _foo;nop;nop;nop;_foo:push eax";
 		if (st.disassemble(op, buf, 3) <1) {
 			stderr.printf ("internal error\n");
