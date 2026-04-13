@@ -53,6 +53,7 @@ public class Radare.RReg {
 	public static int get_name_idx(string type);
 	public static int type_by_name(string str);
 
+	[CCode (cname="r_reg_type_tostring")]
 	public static unowned string? get_type(int idx);
 
 	public uint64 get_value(Item item);

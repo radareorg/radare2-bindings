@@ -14,7 +14,7 @@ fn main() {
         r_core_cmd0(c, static_cstr!("?E Hello World"));
         r_core_cmd0(c, static_cstr!("b"));
         r_core_cmd0(c, static_cstr!("?e woot"));
-        r_cons_flush();
+        r_cons_flush((*c).cons);
         r_core_free(c);
     }
 }

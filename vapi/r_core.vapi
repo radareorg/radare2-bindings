@@ -2,7 +2,7 @@
 
 namespace Radare {
 [Compact]
-[CCode (cheader_filename="r_flag.h,r_anal.h,r_core.h,r_bin.h,r_parse.h,r_lang.h,r_sign.h,r_reg.h,r_list.h,r_types_base.h", cname="RCore", free_function="r_core_free", cprefix="r_core_")]
+[CCode (cheader_filename="r_flag.h,r_anal.h,r_core.h,r_bin.h,r_lang.h,r_sign.h,r_reg.h,r_list.h,r_types_base.h", cname="RCore", free_function="r_core_free", cprefix="r_core_")]
 public class RCore {
 	/**
 	 * RBin instance
@@ -49,7 +49,6 @@ public class RCore {
 	public RCmd rcmd;
 	public RAnal anal;
 	public RAsm rasm;
-	public RParse parser;
 	public RPrint print;
 	public RLang lang;
 

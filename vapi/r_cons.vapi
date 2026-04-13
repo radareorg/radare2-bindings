@@ -54,7 +54,7 @@ namespace Radare {
 		public static void strcat(string str);
 		public static void write(string str, int len);
 		public static void newline();
-		public static void flush();
+		public static void flush(RCons cons);
 		public static void filter();
 		public static void visual_flush();
 		//public static void visual_write(unowned string buf);

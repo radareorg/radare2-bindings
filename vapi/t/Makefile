@@ -79,7 +79,7 @@ bin:
 	valac --vapidir=.. bin.vala --pkg r_bin --pkg r_util
 
 hash:
-	valac --vapidir=.. hash.vala --pkg r_crypto
+	valac --vapidir=.. hash.vala --pkg r_crypto --pkg r_core
 
 socket:
 	valac --vapidir=.. socket.vala --pkg r_socket --pkg posix

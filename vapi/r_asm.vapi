@@ -138,6 +138,7 @@ public class RAsm {
 	 */
 	public int assemble(RAnal.Op op, string buf);
 	public Code? mdisassemble(uint8 *buf, int length);
+	[CCode (cname="r_asm_assemble")]
 	public Code? massemble(string buf);
 	// public Code? assemble_file(string file);
 

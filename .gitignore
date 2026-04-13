@@ -1,6 +1,6 @@
 *._d
 *._o
-*.[ao]
+*.[aod]
 *.so
 *.i
 *.exe
@@ -35,3 +35,4 @@ ocaml/r_*.ml*
 r2pipe/dotnet/**/*.snk
 config.log
 *.dSYM
+**/target

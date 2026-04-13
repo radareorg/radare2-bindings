@@ -19,7 +19,7 @@ cd ${LNG}
 echo "Build ${MOD} `pkg-config --libs ${MOD}`"
 
 case "${LNG}" in
-*node*|ctypes)
+*node*|ctypes|python)
 	VBMODE=''
 ;;
 java)

@@ -1,18 +1,32 @@
-
-name: Generate bindings for r2libr 🚀
+name: Test bindings
 
 on:
   push:
+    paths:
+      - 'vapi/**'
+      - 'python/**'
+      - 'dlang/**'
+      - 'rust/**'
+      - 'configure'
+      - 'Makefile'
   pull_request:
+    paths:
+      - 'vapi/**'
+      - 'python/**'
+      - 'dlang/**'
+      - 'rust/**'
+      - 'configure'
+      - 'Makefile'
+  workflow_dispatch:
 
 jobs:
   vala:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Install r2
-      run: git clone https://github.com/radareorg/radare2 && CFLAGS=-O0 radare2/sys/install.sh /usr
+      uses: radareorg/github-actions@v1
     - name: Install vala
       run: sudo apt install -y valac
     - name: Build and run some tests
@@ -21,15 +35,16 @@ jobs:
         sudo make -C vapi install
         make -C vapi/t
   swig-python:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Install r2
-      run: git clone https://github.com/radareorg/radare2 && CFLAGS=-O0 radare2/sys/install.sh /usr
+      uses: radareorg/github-actions@v1
     - name: Install valabind and swig
       run: |
         sudo apt install -y swig valac
+        r2pm -U
         r2pm -ci valabind
     - name: Configure
       run: ./configure
@@ -40,12 +55,12 @@ jobs:
     - name: Build dlang bindings
       run: r2pm -r make -C dlang
   rust:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - name: Install r2
-        run: git clone https://github.com/radareorg/radare2 && CFLAGS=-O0 radare2/sys/install.sh /usr
+        uses: radareorg/github-actions@v1
       - name: Build
         run: cargo build
         working-directory: rust/r2api
