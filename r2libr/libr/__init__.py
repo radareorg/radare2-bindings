@@ -1,4 +1,5 @@
 from .r_anal import *
+from .r_arch import *
 from .r_asm import *
 from .r_bin import *
 from .r_bp import *
@@ -10,7 +11,6 @@ from .r_debug import *
 from .r_egg import *
 from .r_flag import *
 from .r_fs import *
-from .r_hash import *
 from .r_io import *
 from .r_lang import *
 from .r_magic import *
