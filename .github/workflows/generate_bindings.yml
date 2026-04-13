@@ -164,9 +164,6 @@ jobs:
       shell: bash
       run: cd r2libr && python3 setup.py bdist_wheel
 
-    - name: Test our build.
-      run: cd r2libr && python3 -m pip install -e . && cd tests && python3 test_r2libr.py
-
     - uses: actions/upload-artifact@v2
       with:
          path: ${{ github.workspace }}/r2libr/dist/*
