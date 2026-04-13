@@ -1,5 +1,3 @@
-import distutils.sysconfig
-import pkg_resources
 import sys
 import os
 import ctypes
