@@ -13,23 +13,23 @@ on:
 
 jobs:
   generate:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - name: Set up system path for python libs.
       run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Set up python and libclang.
-      run: sudo apt update && sudo apt install python3 python3-pip libclang-11-dev -y
-    
+      run: sudo apt update && sudo apt install python3 python3-pip libclang1-19 -y
+
     - name: Set up (a specific version) ctypeslib.
-      run: python3 -m pip install https://github.com/wtdcode/ctypeslib/archive/187171e5c2366d683e4b98943b919c9e379d2cd0.zip
-    
+      run: python3 -m pip install ctypeslib2==2.4.0
+
     - name: Checkout the repo.
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         submodules: recursive
         ref: master
-    
+
     - name: Setup Ninja.
       uses: seanmiddleditch/gha-setup-ninja@master
 
@@ -38,13 +38,13 @@ jobs:
 
     - name: Build radare2.
       run: cd r2libr && env BINDINGS=1 python3 setup.py build
-    
+
     - name: Generate bindings.
       run: cd r2libr/tools && python3 gen.py -O ../libr/ -B ../radare2/pyr2installdir/
 
     - name: Test bindings.
       run: cd r2libr && python3 -m pip install -e . && cd tests && python3 test_r2libr.py
-    
+
     - name: Set up git.
       run: git config --global user.email mio@lazym.io && git config --global user.name mio
 
@@ -55,7 +55,7 @@ jobs:
       run: mkdir -p ~/.ssh && echo "$BINDINGS_DEPLOY_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa && ssh-keyscan github.com >> ~/.ssh/known_hosts && git status && git remote add orig git@github.com:radareorg/radare2-bindings.git && git push orig
       env:
         BINDINGS_DEPLOY_KEY: ${{ secrets.BINDINGS_DEPLOY_KEY }}
-  
+
   test:
     needs: [generate]
     runs-on: ${{ matrix.os }}
@@ -68,7 +68,7 @@ jobs:
     - name: Set up system path for python libs.
       run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
 
@@ -76,7 +76,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-    
+
     - name: Setup Ninja.
       uses: seanmiddleditch/gha-setup-ninja@master
 
@@ -89,7 +89,7 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-    
+
     - name: Set up MSVC CMD x86.
       if: matrix.os == 'windows-latest' && matrix.platform == 'x32'
       uses: ilammy/msvc-dev-cmd@v1
@@ -103,10 +103,10 @@ jobs:
       if: matrix.os == 'windows-latest'
       shell: cmd
       run: del /f "C:\Program Files\Git\mingw64\bin\link.exe"
-    
+
     - name: Test our build.
       run: cd r2libr && python3 -m pip install -e . && cd tests && python3 test_r2libr.py
-  
+
   build:
     needs: [test]
     if: startsWith(github.ref, 'refs/tags')
@@ -120,7 +120,7 @@ jobs:
     - name: Set up system path for python libs.
       run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
 
@@ -128,7 +128,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-    
+
     - name: Setup Ninja.
       uses: seanmiddleditch/gha-setup-ninja@master
 
@@ -141,7 +141,7 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-    
+
     - name: Set up MSVC CMD x86.
       if: matrix.os == 'windows-latest' && matrix.platform == 'x32'
       uses: ilammy/msvc-dev-cmd@v1
@@ -158,15 +158,15 @@ jobs:
       run: |
           del /f "C:\Program Files\Git\mingw64\bin\link.exe"
           cd r2libr && python3 setup.py bdist_wheel
-      
+
     - name: Build distribution 📦.
       if: matrix.os != 'windows-latest'
       shell: bash
       run: cd r2libr && python3 setup.py bdist_wheel
-    
+
     - name: Test our build.
       run: cd r2libr && python3 -m pip install -e . && cd tests && python3 test_r2libr.py
-  
+
     - uses: actions/upload-artifact@v2
       with:
          path: ${{ github.workspace }}/r2libr/dist/*
