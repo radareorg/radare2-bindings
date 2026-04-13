@@ -13,6 +13,8 @@ on:
 
 jobs:
   generate:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
     - name: Set up system path for python libs.
@@ -46,15 +48,13 @@ jobs:
       run: cd r2libr && python3 -m pip install -e . && cd tests && python3 test_r2libr.py
 
     - name: Set up git.
-      run: git config --global user.email mio@lazym.io && git config --global user.name mio
+      run: git config --global user.email "github-actions[bot]@users.noreply.github.com" && git config --global user.name "github-actions[bot]"
 
     - name: Commit new bindings.
       run: git status | grep -q "changes"  && git add -u && git commit -m "r2libr generated on `date`"
 
     - name: Push new bindings
-      run: mkdir -p ~/.ssh && echo "$BINDINGS_DEPLOY_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa && ssh-keyscan github.com >> ~/.ssh/known_hosts && git status && git remote add orig git@github.com:radareorg/radare2-bindings.git && git push orig
-      env:
-        BINDINGS_DEPLOY_KEY: ${{ secrets.BINDINGS_DEPLOY_KEY }}
+      run: git push origin HEAD:master
 
   test:
     needs: [generate]
