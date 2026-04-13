@@ -1,7 +1,7 @@
 *._d
 *._o
 *.[aod]
-*.so
+*.so*
 *.i
 *.exe
 *.obj
@@ -14,6 +14,9 @@
 .*.swp
 .*.swo
 *.un~
+venv/
+**/build/
+**/*.egg-info
 !r2pipe/dlang/*.d
 r2pipe/swift/main
 r2pipe/swift/Carthage

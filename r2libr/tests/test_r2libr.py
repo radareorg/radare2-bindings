@@ -11,7 +11,7 @@ else:
     example_file = b"/bin/ls"
 
 class R2LIBRTest(unittest.TestCase):
-    
+
     def __get_r_core(self):
         r2c = libr.r_core.r_core_new()
         fh = libr.r_core.r_core_file_open(r2c, ctypes.create_string_buffer(example_file), 0b101, 0)
@@ -33,25 +33,26 @@ class R2LIBRTest(unittest.TestCase):
         r2c = self.__get_r_core()
         libr.r_core.r_core_cmd_str(r2c, ctypes.create_string_buffer(b"ieq"))
         libr.r_core.r_core_cmd_str(r2c, ctypes.create_string_buffer(b"aaa"))
-        # Workaround for multiple declarations in sources.
-        r2anal = ctypes.cast(ctypes.addressof(r2c.contents.anal.contents), ctypes.POINTER(libr.r_anal.struct_r_anal_t))
+        r2anal = ctypes.cast(ctypes.addressof(r2c.contents.anal.contents), libr.r_anal.r_anal_xrefs_count.argtypes[0])
         print(f"We have {libr.r_anal.r_anal_xrefs_count(r2anal)} xrefs!")
 
     def test_r_asm(self):
         buffer = b"\x90\x90\x90"
         buffer = ctypes.cast(buffer, ctypes.POINTER(ctypes.c_ubyte))
         r2c = self.__get_r_core()
-        r2asm = ctypes.cast(r2c.contents.rasm, ctypes.POINTER(libr.r_asm.struct_r_asm_t))
+        r2asm = ctypes.cast(r2c.contents.rasm, libr.r_asm.r_asm_mdisassemble.argtypes[0])
         asmcode = libr.r_asm.r_asm_mdisassemble(r2asm, buffer, 3)
         disasm_output = ctypes.string_at(asmcode.contents.assembly).decode('utf-8')
         self.assertEqual(disasm_output, "nop\nnop\nnop\n")
 
     def test_r_util_json(self):
-        json_str = b'{"key" : "value"}'
-        rjson = libr.r_util.r_json_parse(json_str)
-        rjson = libr.r_util.r_json_get(rjson, b"key")
-        value = ctypes.string_at(rjson.contents.str_value).decode("utf-8")
-        self.assertEqual(value, "value")
+        pj = libr.r_util.pj_new()
+        libr.r_util.pj_o(pj)
+        libr.r_util.pj_ks(pj, ctypes.create_string_buffer(b"key"), ctypes.create_string_buffer(b"value"))
+        libr.r_util.pj_end(pj)
+        result = ctypes.string_at(libr.r_util.pj_string(pj)).decode("utf-8")
+        libr.r_util.pj_free(pj)
+        self.assertEqual(result, '{"key":"value"}')
 
     def test_r_util_utf8(self):
         u8 = '\u4e91'
