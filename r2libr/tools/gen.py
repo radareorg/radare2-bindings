@@ -19,6 +19,7 @@ libs = [
     "config",
     "cons",
     "core",
+    "crypto",
     "debug",
     "egg",
     "flag",
@@ -33,7 +34,6 @@ libs = [
     "socket",
     "syscall",
     "util",
-    "muta",
 ]
 
 def gen_clang_include_args(builddir):
@@ -83,7 +83,7 @@ def post_handle(binding_content, lib_name):
     # Import all r2libs.
     binding_content = binding_content.replace("import ctypes", "import ctypes\n" + "\n".join([f"from .r_libs import r_{_lib} as _libr_{_lib}" for _lib in libs]))
     # Remove the redundant assignment
-    # e.g. 
+    # e.g.
     # _libr_core = ctypes.CDLL('/path/to/libr_core.so.5.2.0-git')
     for _lib in libs:
         binding_content = re.sub(rf".*ctypes.CDLL.*{libs_path[_lib].name}.*\n", "", binding_content)
@@ -91,7 +91,7 @@ def post_handle(binding_content, lib_name):
     # e.g.
     # TARGET arch is: ['arg1', 'arg2']
     binding_content = re.sub(rf".*TARGET arch is.*\n", "", binding_content)
-    
+
     return binding_content
 
 # We have to expand r_util manually.
@@ -139,7 +139,7 @@ def handle_lib(lib, pargs):
     else:
         fpath = str(Path(pargs.build) / "include" / "libr" / f"r_{lib}.h")
     binding = clang2py_parse_header(pargs, fpath)
-    
+
     binding = post_handle(binding, lib)
     with open(Path(pargs.output) / f"r_{lib}.py", "w+") as f:
         f.write(binding)
