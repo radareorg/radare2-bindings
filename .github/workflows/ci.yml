@@ -43,9 +43,8 @@ jobs:
       uses: radareorg/github-actions@v1
     - name: Install valabind and swig
       run: |
-        sudo apt install -y swig valac
-        r2pm -U
-        r2pm -ci valabind
+        sudo apt install -y swig valac libvala-dev
+        r2pm -Uci valabind
     - name: Configure
       run: ./configure
     - name: Test valabind
