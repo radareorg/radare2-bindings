@@ -4534,22 +4534,6 @@ struct__IO_FILE._fields_ = [
 __FILE = struct__IO_FILE
 FILE = struct__IO_FILE
 _IO_lock_t = None
-cookie_read_function_t = ctypes.CFUNCTYPE(ctypes.c_int64, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64)
-cookie_write_function_t = ctypes.CFUNCTYPE(ctypes.c_int64, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64)
-cookie_seek_function_t = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_int64), ctypes.c_int32)
-cookie_close_function_t = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None))
-class struct__IO_cookie_io_functions_t(Structure):
-    pass
-
-struct__IO_cookie_io_functions_t._pack_ = 1 # source:False
-struct__IO_cookie_io_functions_t._fields_ = [
-    ('read', ctypes.CFUNCTYPE(ctypes.c_int64, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64)),
-    ('write', ctypes.CFUNCTYPE(ctypes.c_int64, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), ctypes.c_uint64)),
-    ('seek', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None), ctypes.POINTER(ctypes.c_int64), ctypes.c_int32)),
-    ('close', ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.POINTER(None))),
-]
-
-cookie_io_functions_t = struct__IO_cookie_io_functions_t
 va_list = struct___va_list_tag * 1
 fpos_t = struct__G_fpos64_t
 stdin = ctypes.POINTER(struct__IO_FILE)() # Variable ctypes.POINTER(struct__IO_FILE)
@@ -4634,12 +4618,6 @@ try:
 except AttributeError:
     pass
 try:
-    fopencookie = _libraries['FIXME_STUB'].fopencookie
-    fopencookie.restype = ctypes.POINTER(struct__IO_FILE)
-    fopencookie.argtypes = [ctypes.POINTER(None), ctypes.POINTER(ctypes.c_char), cookie_io_functions_t]
-except AttributeError:
-    pass
-try:
     fmemopen = _libraries['FIXME_STUB'].fmemopen
     fmemopen.restype = ctypes.POINTER(struct__IO_FILE)
     fmemopen.argtypes = [ctypes.POINTER(None), size_t, ctypes.POINTER(ctypes.c_char)]
@@ -4721,24 +4699,6 @@ try:
     vsnprintf = _libraries['FIXME_STUB'].vsnprintf
     vsnprintf.restype = ctypes.c_int32
     vsnprintf.argtypes = [ctypes.POINTER(ctypes.c_char), size_t, ctypes.POINTER(ctypes.c_char), __gnuc_va_list]
-except AttributeError:
-    pass
-try:
-    vasprintf = _libraries['FIXME_STUB'].vasprintf
-    vasprintf.restype = ctypes.c_int32
-    vasprintf.argtypes = [ctypes.POINTER(ctypes.POINTER(ctypes.c_char)), ctypes.POINTER(ctypes.c_char), __gnuc_va_list]
-except AttributeError:
-    pass
-try:
-    __asprintf = _libraries['FIXME_STUB'].__asprintf
-    __asprintf.restype = ctypes.c_int32
-    __asprintf.argtypes = [ctypes.POINTER(ctypes.POINTER(ctypes.c_char)), ctypes.POINTER(ctypes.c_char)]
-except AttributeError:
-    pass
-try:
-    asprintf = _libraries['FIXME_STUB'].asprintf
-    asprintf.restype = ctypes.c_int32
-    asprintf.argtypes = [ctypes.POINTER(ctypes.POINTER(ctypes.c_char)), ctypes.POINTER(ctypes.c_char)]
 except AttributeError:
     pass
 try:
@@ -5210,12 +5170,6 @@ try:
 except AttributeError:
     pass
 try:
-    strchrnul = _libraries['FIXME_STUB'].strchrnul
-    strchrnul.restype = ctypes.POINTER(ctypes.c_char)
-    strchrnul.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int32]
-except AttributeError:
-    pass
-try:
     strcspn = _libraries['FIXME_STUB'].strcspn
     strcspn.restype = ctypes.c_uint64
     strcspn.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
@@ -5255,30 +5209,6 @@ try:
     strtok_r = _libraries['FIXME_STUB'].strtok_r
     strtok_r.restype = ctypes.POINTER(ctypes.c_char)
     strtok_r.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.POINTER(ctypes.c_char))]
-except AttributeError:
-    pass
-try:
-    strcasestr = _libraries['FIXME_STUB'].strcasestr
-    strcasestr.restype = ctypes.POINTER(ctypes.c_char)
-    strcasestr.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
-except AttributeError:
-    pass
-try:
-    memmem = _libraries['FIXME_STUB'].memmem
-    memmem.restype = ctypes.POINTER(None)
-    memmem.argtypes = [ctypes.POINTER(None), size_t, ctypes.POINTER(None), size_t]
-except AttributeError:
-    pass
-try:
-    __mempcpy = _libraries['FIXME_STUB'].__mempcpy
-    __mempcpy.restype = ctypes.POINTER(None)
-    __mempcpy.argtypes = [ctypes.POINTER(None), ctypes.POINTER(None), size_t]
-except AttributeError:
-    pass
-try:
-    mempcpy = _libraries['FIXME_STUB'].mempcpy
-    mempcpy.restype = ctypes.POINTER(None)
-    mempcpy.argtypes = [ctypes.POINTER(None), ctypes.POINTER(None), size_t]
 except AttributeError:
     pass
 try:
@@ -5423,18 +5353,6 @@ try:
     stpncpy = _libraries['FIXME_STUB'].stpncpy
     stpncpy.restype = ctypes.POINTER(ctypes.c_char)
     stpncpy.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), size_t]
-except AttributeError:
-    pass
-try:
-    strlcpy = _libraries['FIXME_STUB'].strlcpy
-    strlcpy.restype = size_t
-    strlcpy.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), size_t]
-except AttributeError:
-    pass
-try:
-    strlcat = _libraries['FIXME_STUB'].strlcat
-    strlcat.restype = size_t
-    strlcat.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), size_t]
 except AttributeError:
     pass
 class struct_flock(Structure):
@@ -11885,7 +11803,6 @@ c__Ea_SEGV_MAPERR__enumvalues = {
     7: 'SEGV_ADIPERR',
     8: 'SEGV_MTEAERR',
     9: 'SEGV_MTESERR',
-    10: 'SEGV_CPERR',
 }
 SEGV_MAPERR = 1
 SEGV_ACCERR = 2
@@ -11896,7 +11813,6 @@ SEGV_ADIDERR = 6
 SEGV_ADIPERR = 7
 SEGV_MTEAERR = 8
 SEGV_MTESERR = 9
-SEGV_CPERR = 10
 c__Ea_SEGV_MAPERR = ctypes.c_uint32 # enum
 
 # values for enumeration 'c__Ea_BUS_ADRALN'
@@ -16886,18 +16802,6 @@ try:
     wcsncpy = _libraries['FIXME_STUB'].wcsncpy
     wcsncpy.restype = ctypes.POINTER(ctypes.c_int32)
     wcsncpy.argtypes = [ctypes.POINTER(ctypes.c_int32), ctypes.POINTER(ctypes.c_int32), size_t]
-except AttributeError:
-    pass
-try:
-    wcslcpy = _libraries['FIXME_STUB'].wcslcpy
-    wcslcpy.restype = size_t
-    wcslcpy.argtypes = [ctypes.POINTER(ctypes.c_int32), ctypes.POINTER(ctypes.c_int32), size_t]
-except AttributeError:
-    pass
-try:
-    wcslcat = _libraries['FIXME_STUB'].wcslcat
-    wcslcat.restype = size_t
-    wcslcat.argtypes = [ctypes.POINTER(ctypes.c_int32), ctypes.POINTER(ctypes.c_int32), size_t]
 except AttributeError:
     pass
 try:
@@ -24244,7 +24148,6 @@ c__Ea_IPPROTO_IP__enumvalues = {
     98: 'IPPROTO_ENCAP',
     103: 'IPPROTO_PIM',
     108: 'IPPROTO_COMP',
-    115: 'IPPROTO_L2TP',
     132: 'IPPROTO_SCTP',
     136: 'IPPROTO_UDPLITE',
     137: 'IPPROTO_MPLS',
@@ -24274,7 +24177,6 @@ IPPROTO_BEETPH = 94
 IPPROTO_ENCAP = 98
 IPPROTO_PIM = 103
 IPPROTO_COMP = 108
-IPPROTO_L2TP = 115
 IPPROTO_SCTP = 132
 IPPROTO_UDPLITE = 136
 IPPROTO_MPLS = 137
@@ -25237,7 +25139,7 @@ struct_tcp_md5sig._fields_ = [
     ('tcpm_flags', ctypes.c_ubyte),
     ('tcpm_prefixlen', ctypes.c_ubyte),
     ('tcpm_keylen', ctypes.c_uint16),
-    ('tcpm_ifindex', ctypes.c_int32),
+    ('__tcpm_pad', ctypes.c_uint32),
     ('tcpm_key', ctypes.c_ubyte * 80),
 ]
 
@@ -28276,25 +28178,25 @@ __all__ = \
     'IPPROTO_ETHERNET', 'IPPROTO_FRAGMENT', 'IPPROTO_GRE',
     'IPPROTO_HOPOPTS', 'IPPROTO_ICMP', 'IPPROTO_ICMPV6',
     'IPPROTO_IDP', 'IPPROTO_IGMP', 'IPPROTO_IP', 'IPPROTO_IPIP',
-    'IPPROTO_IPV6', 'IPPROTO_L2TP', 'IPPROTO_MAX', 'IPPROTO_MH',
-    'IPPROTO_MPLS', 'IPPROTO_MPTCP', 'IPPROTO_MTP', 'IPPROTO_NONE',
-    'IPPROTO_PIM', 'IPPROTO_PUP', 'IPPROTO_RAW', 'IPPROTO_ROUTING',
-    'IPPROTO_RSVP', 'IPPROTO_SCTP', 'IPPROTO_TCP', 'IPPROTO_TP',
-    'IPPROTO_UDP', 'IPPROTO_UDPLITE', 'ITIMER_PROF', 'ITIMER_REAL',
-    'ITIMER_VIRTUAL', 'LEVADD', 'LEVDEL', 'LEVEND', 'LEVNOP',
-    'LEVSUB', 'LINE_FALSE', 'LINE_NONE', 'LINE_NOSYM_HORIZ',
-    'LINE_NOSYM_VERT', 'LINE_TRUE', 'LINE_UNCJMP', 'MSG_BATCH',
-    'MSG_CMSG_CLOEXEC', 'MSG_CONFIRM', 'MSG_CTRUNC', 'MSG_DONTROUTE',
-    'MSG_DONTWAIT', 'MSG_EOR', 'MSG_ERRQUEUE', 'MSG_FASTOPEN',
-    'MSG_FIN', 'MSG_MORE', 'MSG_NOSIGNAL', 'MSG_OOB', 'MSG_PEEK',
-    'MSG_PROXY', 'MSG_RST', 'MSG_SYN', 'MSG_TRUNC', 'MSG_WAITALL',
-    'MSG_WAITFORONE', 'MSG_ZEROCOPY', 'PAL_00', 'PAL_7F',
-    'PAL_ADDRESS', 'PAL_CALL', 'PAL_CHANGED', 'PAL_CMP',
-    'PAL_DEFAULT', 'PAL_FF', 'PAL_HEADER', 'PAL_JUMP', 'PAL_LINES0',
-    'PAL_LINES1', 'PAL_LINES2', 'PAL_METADATA', 'PAL_NOP',
-    'PAL_PRINTABLE', 'PAL_PROMPT', 'PAL_PUSH', 'PAL_RET', 'PAL_TRAP',
-    'PANEL_EDGE_BOTTOM', 'PANEL_EDGE_NONE', 'PANEL_EDGE_RIGHT',
-    'PANEL_FUN_NOFUN', 'PANEL_FUN_SAKURA', 'PANEL_FUN_SNOW',
+    'IPPROTO_IPV6', 'IPPROTO_MAX', 'IPPROTO_MH', 'IPPROTO_MPLS',
+    'IPPROTO_MPTCP', 'IPPROTO_MTP', 'IPPROTO_NONE', 'IPPROTO_PIM',
+    'IPPROTO_PUP', 'IPPROTO_RAW', 'IPPROTO_ROUTING', 'IPPROTO_RSVP',
+    'IPPROTO_SCTP', 'IPPROTO_TCP', 'IPPROTO_TP', 'IPPROTO_UDP',
+    'IPPROTO_UDPLITE', 'ITIMER_PROF', 'ITIMER_REAL', 'ITIMER_VIRTUAL',
+    'LEVADD', 'LEVDEL', 'LEVEND', 'LEVNOP', 'LEVSUB', 'LINE_FALSE',
+    'LINE_NONE', 'LINE_NOSYM_HORIZ', 'LINE_NOSYM_VERT', 'LINE_TRUE',
+    'LINE_UNCJMP', 'MSG_BATCH', 'MSG_CMSG_CLOEXEC', 'MSG_CONFIRM',
+    'MSG_CTRUNC', 'MSG_DONTROUTE', 'MSG_DONTWAIT', 'MSG_EOR',
+    'MSG_ERRQUEUE', 'MSG_FASTOPEN', 'MSG_FIN', 'MSG_MORE',
+    'MSG_NOSIGNAL', 'MSG_OOB', 'MSG_PEEK', 'MSG_PROXY', 'MSG_RST',
+    'MSG_SYN', 'MSG_TRUNC', 'MSG_WAITALL', 'MSG_WAITFORONE',
+    'MSG_ZEROCOPY', 'PAL_00', 'PAL_7F', 'PAL_ADDRESS', 'PAL_CALL',
+    'PAL_CHANGED', 'PAL_CMP', 'PAL_DEFAULT', 'PAL_FF', 'PAL_HEADER',
+    'PAL_JUMP', 'PAL_LINES0', 'PAL_LINES1', 'PAL_LINES2',
+    'PAL_METADATA', 'PAL_NOP', 'PAL_PRINTABLE', 'PAL_PROMPT',
+    'PAL_PUSH', 'PAL_RET', 'PAL_TRAP', 'PANEL_EDGE_BOTTOM',
+    'PANEL_EDGE_NONE', 'PANEL_EDGE_RIGHT', 'PANEL_FUN_NOFUN',
+    'PANEL_FUN_SAKURA', 'PANEL_FUN_SNOW',
     'PANEL_LAYOUT_DEFAULT_DYNAMIC', 'PANEL_LAYOUT_DEFAULT_STATIC',
     'PANEL_LAYOUT_HORIZONTAL', 'PANEL_LAYOUT_NONE',
     'PANEL_LAYOUT_VERTICAL', 'PANEL_MODE_DEFAULT', 'PANEL_MODE_HELP',
@@ -28529,9 +28431,9 @@ __all__ = \
     'R_TOKEN_MATH', 'R_TOKEN_NONE', 'R_TOKEN_STRING', 'R_TOKEN_WORD',
     'R_TYPE_BASIC', 'R_TYPE_ENUM', 'R_TYPE_STRUCT', 'R_TYPE_TYPEDEF',
     'R_TYPE_UNION', 'SCM_RIGHTS', 'SEGV_ACCADI', 'SEGV_ACCERR',
-    'SEGV_ADIDERR', 'SEGV_ADIPERR', 'SEGV_BNDERR', 'SEGV_CPERR',
-    'SEGV_MAPERR', 'SEGV_MTEAERR', 'SEGV_MTESERR', 'SEGV_PKUERR',
-    'SHUT_RD', 'SHUT_RDWR', 'SHUT_WR', 'SIGEV_NONE', 'SIGEV_SIGNAL',
+    'SEGV_ADIDERR', 'SEGV_ADIPERR', 'SEGV_BNDERR', 'SEGV_MAPERR',
+    'SEGV_MTEAERR', 'SEGV_MTESERR', 'SEGV_PKUERR', 'SHUT_RD',
+    'SHUT_RDWR', 'SHUT_WR', 'SIGEV_NONE', 'SIGEV_SIGNAL',
     'SIGEV_THREAD', 'SIGEV_THREAD_ID', 'SI_ASYNCIO', 'SI_ASYNCNL',
     'SI_DETHREAD', 'SI_KERNEL', 'SI_MESGQ', 'SI_QUEUE', 'SI_SIGIO',
     'SI_TIMER', 'SI_TKILL', 'SI_USER', 'SOCK_CLOEXEC', 'SOCK_DCCP',
@@ -28691,16 +28593,16 @@ __all__ = \
     '_SC_XOPEN_XCU_VERSION', '_SC_XOPEN_XPG2', '_SC_XOPEN_XPG3',
     '_SC_XOPEN_XPG4', '__FILE', '__acos', '__acosf', '__acosh',
     '__acoshf', '__acoshl', '__acosl', '__asin', '__asinf', '__asinh',
-    '__asinhf', '__asinhl', '__asinl', '__asprintf', '__assert',
-    '__assert_fail', '__assert_perror_fail', '__atan', '__atan2',
-    '__atan2f', '__atan2l', '__atanf', '__atanh', '__atanhf',
-    '__atanhl', '__atanl', '__atomic_wide_counter', '__blkcnt64_t',
-    '__blkcnt_t', '__blksize_t', '__bswap_16', '__bswap_32',
-    '__bswap_64', '__caddr_t', '__cbrt', '__cbrtf', '__cbrtl',
-    '__ceil', '__ceilf', '__ceill', '__clock_t', '__clockid_t',
-    '__cmsg_nxthdr', '__compar_fn_t', '__copysign', '__copysignf',
-    '__copysignl', '__cos', '__cosf', '__cosh', '__coshf', '__coshl',
-    '__cosl', '__cpu_mask', '__ctype_b_loc', '__ctype_get_mb_cur_max',
+    '__asinhf', '__asinhl', '__asinl', '__assert', '__assert_fail',
+    '__assert_perror_fail', '__atan', '__atan2', '__atan2f',
+    '__atan2l', '__atanf', '__atanh', '__atanhf', '__atanhl',
+    '__atanl', '__atomic_wide_counter', '__blkcnt64_t', '__blkcnt_t',
+    '__blksize_t', '__bswap_16', '__bswap_32', '__bswap_64',
+    '__caddr_t', '__cbrt', '__cbrtf', '__cbrtl', '__ceil', '__ceilf',
+    '__ceill', '__clock_t', '__clockid_t', '__cmsg_nxthdr',
+    '__compar_fn_t', '__copysign', '__copysignf', '__copysignl',
+    '__cos', '__cosf', '__cosh', '__coshf', '__coshl', '__cosl',
+    '__cpu_mask', '__ctype_b_loc', '__ctype_get_mb_cur_max',
     '__ctype_tolower_loc', '__ctype_toupper_loc', '__daddr_t',
     '__daylight', '__dev_t', '__drem', '__dremf', '__dreml',
     '__environ', '__erf', '__erfc', '__erfcf', '__erfcl', '__erff',
@@ -28745,12 +28647,12 @@ __all__ = \
     '__log1pl', '__log2', '__log2f', '__log2l', '__logb', '__logbf',
     '__logbl', '__logf', '__logl', '__lrint', '__lrintf', '__lrintl',
     '__lround', '__lroundf', '__lroundl', '__mbrlen', '__mbstate_t',
-    '__memcmpeq', '__mempcpy', '__mode_t', '__modf', '__modff',
-    '__modfl', '__nan', '__nanf', '__nanl', '__nearbyint',
-    '__nearbyintf', '__nearbyintl', '__nextafter', '__nextafterf',
-    '__nextafterl', '__nexttoward', '__nexttowardf', '__nexttowardl',
-    '__nlink_t', '__off64_t', '__off_t', '__once_flag', '__overflow',
-    '__pid_t', '__pow', '__powf', '__powl', '__pthread_list_t',
+    '__memcmpeq', '__mode_t', '__modf', '__modff', '__modfl', '__nan',
+    '__nanf', '__nanl', '__nearbyint', '__nearbyintf', '__nearbyintl',
+    '__nextafter', '__nextafterf', '__nextafterl', '__nexttoward',
+    '__nexttowardf', '__nexttowardl', '__nlink_t', '__off64_t',
+    '__off_t', '__once_flag', '__overflow', '__pid_t', '__pow',
+    '__powf', '__powl', '__pthread_list_t',
     '__pthread_register_cancel', '__pthread_slist_t',
     '__pthread_unregister_cancel', '__pthread_unwind_buf_t',
     '__pthread_unwind_next', '__quad_t', '__remainder',
@@ -28783,23 +28685,22 @@ __all__ = \
     'adjtime', 'alarm', 'aligned_alloc', 'alloca', 'alphasort',
     'arc4random', 'arc4random_buf', 'arc4random_uniform', 'asctime',
     'asctime_r', 'asin', 'asinf', 'asinh', 'asinhf', 'asinhl',
-    'asinl', 'asn1_setformat', 'asprintf', 'at_quick_exit', 'atan',
-    'atan2', 'atan2f', 'atan2l', 'atanf', 'atanh', 'atanhf', 'atanhl',
-    'atanl', 'atexit', 'atof', 'atoi', 'atol', 'atoll', 'bcmp',
-    'bcopy', 'bind', 'bindresvport', 'bindresvport6', 'blkcnt_t',
-    'blksize_t', 'brk', 'bsearch', 'btowc', 'buffer', 'buffer_bget',
-    'buffer_copy', 'buffer_feed', 'buffer_flush', 'buffer_get',
-    'buffer_init', 'buffer_peek', 'buffer_put', 'buffer_putalign',
-    'buffer_putflush', 'buffer_seek', 'bzero', 'c__Ea_ALPHA_RESET',
-    'c__Ea_BUS_ADRALN', 'c__Ea_CLD_EXITED', 'c__Ea_DT_UNKNOWN',
-    'c__Ea_FPE_INTDIV', 'c__Ea_FP_NAN', 'c__Ea_ILL_ILLOPC',
-    'c__Ea_IPPORT_ECHO', 'c__Ea_IPPROTO_HOPOPTS', 'c__Ea_IPPROTO_IP',
-    'c__Ea_LINE_NONE', 'c__Ea_MSG_OOB', 'c__Ea_PAL_PROMPT',
-    'c__Ea_POLL_IN', 'c__Ea_PTHREAD_CANCEL_DEFERRED',
-    'c__Ea_PTHREAD_CANCEL_ENABLE', 'c__Ea_PTHREAD_CREATE_JOINABLE',
-    'c__Ea_PTHREAD_INHERIT_SCHED', 'c__Ea_PTHREAD_MUTEX_STALLED',
-    'c__Ea_PTHREAD_MUTEX_TIMED_NP', 'c__Ea_PTHREAD_PRIO_NONE',
-    'c__Ea_PTHREAD_PROCESS_PRIVATE',
+    'asinl', 'asn1_setformat', 'at_quick_exit', 'atan', 'atan2',
+    'atan2f', 'atan2l', 'atanf', 'atanh', 'atanhf', 'atanhl', 'atanl',
+    'atexit', 'atof', 'atoi', 'atol', 'atoll', 'bcmp', 'bcopy',
+    'bind', 'bindresvport', 'bindresvport6', 'blkcnt_t', 'blksize_t',
+    'brk', 'bsearch', 'btowc', 'buffer', 'buffer_bget', 'buffer_copy',
+    'buffer_feed', 'buffer_flush', 'buffer_get', 'buffer_init',
+    'buffer_peek', 'buffer_put', 'buffer_putalign', 'buffer_putflush',
+    'buffer_seek', 'bzero', 'c__Ea_ALPHA_RESET', 'c__Ea_BUS_ADRALN',
+    'c__Ea_CLD_EXITED', 'c__Ea_DT_UNKNOWN', 'c__Ea_FPE_INTDIV',
+    'c__Ea_FP_NAN', 'c__Ea_ILL_ILLOPC', 'c__Ea_IPPORT_ECHO',
+    'c__Ea_IPPROTO_HOPOPTS', 'c__Ea_IPPROTO_IP', 'c__Ea_LINE_NONE',
+    'c__Ea_MSG_OOB', 'c__Ea_PAL_PROMPT', 'c__Ea_POLL_IN',
+    'c__Ea_PTHREAD_CANCEL_DEFERRED', 'c__Ea_PTHREAD_CANCEL_ENABLE',
+    'c__Ea_PTHREAD_CREATE_JOINABLE', 'c__Ea_PTHREAD_INHERIT_SCHED',
+    'c__Ea_PTHREAD_MUTEX_STALLED', 'c__Ea_PTHREAD_MUTEX_TIMED_NP',
+    'c__Ea_PTHREAD_PRIO_NONE', 'c__Ea_PTHREAD_PROCESS_PRIVATE',
     'c__Ea_PTHREAD_RWLOCK_PREFER_READER_NP',
     'c__Ea_PTHREAD_SCOPE_SYSTEM', 'c__Ea_RAP_PACKET_OPEN',
     'c__Ea_R_ARCH_SYNTAX_NONE', 'c__Ea_R_CONS_ATTR_BOLD',
@@ -28819,47 +28720,44 @@ __all__ = \
     'clock_getcpuclockid', 'clock_getres', 'clock_gettime',
     'clock_nanosleep', 'clock_settime', 'clock_t', 'clockid_t',
     'close', 'closedir', 'closefrom', 'confstr', 'connect',
-    'cookie_close_function_t', 'cookie_io_functions_t',
-    'cookie_read_function_t', 'cookie_seek_function_t',
-    'cookie_write_function_t', 'copysign', 'copysignf', 'copysignl',
-    'cos', 'cosf', 'cosh', 'coshf', 'coshl', 'cosl', 'cpu_set_t',
-    'creat', 'crypt', 'ctermid', 'ctime', 'ctime_r', 'daddr_t',
-    'daemon', 'daylight', 'dev_t', 'dict', 'dict_add', 'dict_del',
-    'dict_fini', 'dict_foreach', 'dict_free', 'dict_freecb',
-    'dict_get', 'dict_getr', 'dict_getu', 'dict_hash', 'dict_init',
-    'dict_new', 'dict_set', 'dict_stats', 'dicti', 'dictkv',
-    'dictkv_cb', 'difftime', 'dirfd', 'div', 'div_t', 'double_t',
-    'dprintf', 'drand48', 'drand48_r', 'drem', 'dremf', 'dreml',
-    'dup', 'dup2', 'dysize', 'ecvt', 'ecvt_r', 'endhostent',
-    'endnetent', 'endnetgrent', 'endprotoent', 'endrpcent',
-    'endservent', 'endusershell', 'erand48', 'erand48_r', 'erf',
-    'erfc', 'erfcf', 'erfcl', 'erff', 'erfl', 'execl', 'execle',
-    'execlp', 'execv', 'execve', 'execvp', 'exit', 'exp', 'exp2',
-    'exp2f', 'exp2l', 'expf', 'expl', 'explicit_bzero', 'expm1',
-    'expm1f', 'expm1l', 'fabs', 'fabsf', 'fabsl', 'faccessat',
-    'fchdir', 'fchmod', 'fchmodat', 'fchown', 'fchownat', 'fclose',
-    'fcntl', 'fcvt', 'fcvt_r', 'fd_mask', 'fd_set', 'fdatasync',
-    'fdim', 'fdimf', 'fdiml', 'fdopen', 'fdopendir', 'feof',
-    'feof_unlocked', 'ferror', 'ferror_unlocked', 'fexecve', 'fflush',
-    'fflush_unlocked', 'ffs', 'ffsl', 'ffsll', 'fgetc',
-    'fgetc_unlocked', 'fgetpos', 'fgets', 'fgetwc', 'fgetws',
-    'fileno', 'fileno_unlocked', 'finite', 'finitef', 'finitel',
-    'float_t', 'flockfile', 'floor', 'floorf', 'floorl', 'fma',
-    'fmaf', 'fmal', 'fmax', 'fmaxf', 'fmaxl', 'fmemopen', 'fmin',
-    'fminf', 'fminl', 'fmod', 'fmodf', 'fmodl', 'fopen',
-    'fopencookie', 'fork', 'fpathconf', 'fpos_t', 'fpregset_t',
-    'fprintf', 'fputc', 'fputc_unlocked', 'fputs', 'fputwc', 'fputws',
-    'fread', 'fread_unlocked', 'free', 'freeaddrinfo', 'freopen',
-    'frexp', 'frexpf', 'frexpl', 'fsblkcnt_t', 'fscanf', 'fseek',
-    'fseeko', 'fsetpos', 'fsfilcnt_t', 'fsid_t', 'fstat', 'fstatat',
-    'fsync', 'ftell', 'ftello', 'ftruncate', 'ftrylockfile',
-    'funlockfile', 'futimens', 'futimes', 'fwide', 'fwprintf',
-    'fwrite', 'fwrite_unlocked', 'fwscanf', 'gai_strerror', 'gamma',
-    'gammaf', 'gammal', 'gcvt', 'getaddrinfo', 'getc',
-    'getc_unlocked', 'getchar', 'getchar_unlocked', 'getcwd',
-    'getdelim', 'getdirentries', 'getdomainname', 'getdtablesize',
-    'getegid', 'getentropy', 'getenv', 'geteuid', 'getgid',
-    'getgroups', 'gethostbyaddr', 'gethostbyaddr_r', 'gethostbyname',
+    'copysign', 'copysignf', 'copysignl', 'cos', 'cosf', 'cosh',
+    'coshf', 'coshl', 'cosl', 'cpu_set_t', 'creat', 'crypt',
+    'ctermid', 'ctime', 'ctime_r', 'daddr_t', 'daemon', 'daylight',
+    'dev_t', 'dict', 'dict_add', 'dict_del', 'dict_fini',
+    'dict_foreach', 'dict_free', 'dict_freecb', 'dict_get',
+    'dict_getr', 'dict_getu', 'dict_hash', 'dict_init', 'dict_new',
+    'dict_set', 'dict_stats', 'dicti', 'dictkv', 'dictkv_cb',
+    'difftime', 'dirfd', 'div', 'div_t', 'double_t', 'dprintf',
+    'drand48', 'drand48_r', 'drem', 'dremf', 'dreml', 'dup', 'dup2',
+    'dysize', 'ecvt', 'ecvt_r', 'endhostent', 'endnetent',
+    'endnetgrent', 'endprotoent', 'endrpcent', 'endservent',
+    'endusershell', 'erand48', 'erand48_r', 'erf', 'erfc', 'erfcf',
+    'erfcl', 'erff', 'erfl', 'execl', 'execle', 'execlp', 'execv',
+    'execve', 'execvp', 'exit', 'exp', 'exp2', 'exp2f', 'exp2l',
+    'expf', 'expl', 'explicit_bzero', 'expm1', 'expm1f', 'expm1l',
+    'fabs', 'fabsf', 'fabsl', 'faccessat', 'fchdir', 'fchmod',
+    'fchmodat', 'fchown', 'fchownat', 'fclose', 'fcntl', 'fcvt',
+    'fcvt_r', 'fd_mask', 'fd_set', 'fdatasync', 'fdim', 'fdimf',
+    'fdiml', 'fdopen', 'fdopendir', 'feof', 'feof_unlocked', 'ferror',
+    'ferror_unlocked', 'fexecve', 'fflush', 'fflush_unlocked', 'ffs',
+    'ffsl', 'ffsll', 'fgetc', 'fgetc_unlocked', 'fgetpos', 'fgets',
+    'fgetwc', 'fgetws', 'fileno', 'fileno_unlocked', 'finite',
+    'finitef', 'finitel', 'float_t', 'flockfile', 'floor', 'floorf',
+    'floorl', 'fma', 'fmaf', 'fmal', 'fmax', 'fmaxf', 'fmaxl',
+    'fmemopen', 'fmin', 'fminf', 'fminl', 'fmod', 'fmodf', 'fmodl',
+    'fopen', 'fork', 'fpathconf', 'fpos_t', 'fpregset_t', 'fprintf',
+    'fputc', 'fputc_unlocked', 'fputs', 'fputwc', 'fputws', 'fread',
+    'fread_unlocked', 'free', 'freeaddrinfo', 'freopen', 'frexp',
+    'frexpf', 'frexpl', 'fsblkcnt_t', 'fscanf', 'fseek', 'fseeko',
+    'fsetpos', 'fsfilcnt_t', 'fsid_t', 'fstat', 'fstatat', 'fsync',
+    'ftell', 'ftello', 'ftruncate', 'ftrylockfile', 'funlockfile',
+    'futimens', 'futimes', 'fwide', 'fwprintf', 'fwrite',
+    'fwrite_unlocked', 'fwscanf', 'gai_strerror', 'gamma', 'gammaf',
+    'gammal', 'gcvt', 'getaddrinfo', 'getc', 'getc_unlocked',
+    'getchar', 'getchar_unlocked', 'getcwd', 'getdelim',
+    'getdirentries', 'getdomainname', 'getdtablesize', 'getegid',
+    'getentropy', 'getenv', 'geteuid', 'getgid', 'getgroups',
+    'gethostbyaddr', 'gethostbyaddr_r', 'gethostbyname',
     'gethostbyname2', 'gethostbyname2_r', 'gethostbyname_r',
     'gethostent', 'gethostent_r', 'gethostid', 'gethostname',
     'getitimer', 'getline', 'getloadavg', 'getlogin', 'getlogin_r',
@@ -28920,57 +28818,57 @@ __all__ = \
     'lutimes', 'malloc', 'max_align_t', 'mblen', 'mbrlen', 'mbrtowc',
     'mbsinit', 'mbsnrtowcs', 'mbsrtowcs', 'mbstate_t', 'mbstowcs',
     'mbtowc', 'mcontext_t', 'memccpy', 'memchr', 'memcmp', 'memcpy',
-    'memmem', 'memmove', 'mempcpy', 'memset', 'mkdir', 'mkdirat',
-    'mkdtemp', 'mkfifo', 'mkfifoat', 'mknod', 'mknodat', 'mkstemp',
-    'mkstemps', 'mktemp', 'mktime', 'mode_t', 'modf', 'modff',
-    'modfl', 'mrand48', 'mrand48_r', 'nan', 'nanf', 'nanl',
-    'nanosleep', 'nearbyint', 'nearbyintf', 'nearbyintl', 'nextafter',
-    'nextafterf', 'nextafterl', 'nexttoward', 'nexttowardf',
-    'nexttowardl', 'nfds_t', 'nice', 'nlink_t', 'nrand48',
-    'nrand48_r', 'ntohl', 'ntohs', 'off_t', 'on_exit', 'open',
-    'open_memstream', 'open_wmemstream', 'openat', 'opendir',
-    'optarg', 'opterr', 'optind', 'optopt', 'pathconf', 'pause',
-    'pclose', 'perror', 'pid_t', 'pipe', 'pj_N', 'pj_a', 'pj_b',
-    'pj_d', 'pj_drain', 'pj_end', 'pj_f', 'pj_free', 'pj_i', 'pj_j',
-    'pj_k', 'pj_kN', 'pj_ka', 'pj_kb', 'pj_kd', 'pj_kf', 'pj_ki',
-    'pj_kn', 'pj_knull', 'pj_ko', 'pj_kr', 'pj_kraw', 'pj_ks', 'pj_n',
-    'pj_ne', 'pj_new', 'pj_new_with_encoding', 'pj_null', 'pj_o',
-    'pj_r', 'pj_raw', 'pj_reset', 'pj_s', 'pj_se', 'pj_string',
-    'poll', 'popen', 'posix_fadvise', 'posix_fallocate',
-    'posix_memalign', 'pow', 'powf', 'powl', 'pread', 'printf',
-    'profil', 'pselect', 'psiginfo', 'psignal', 'pthread_atfork',
-    'pthread_attr_destroy', 'pthread_attr_getdetachstate',
-    'pthread_attr_getguardsize', 'pthread_attr_getinheritsched',
-    'pthread_attr_getschedparam', 'pthread_attr_getschedpolicy',
-    'pthread_attr_getscope', 'pthread_attr_getstack',
-    'pthread_attr_getstackaddr', 'pthread_attr_getstacksize',
-    'pthread_attr_init', 'pthread_attr_setdetachstate',
-    'pthread_attr_setguardsize', 'pthread_attr_setinheritsched',
-    'pthread_attr_setschedparam', 'pthread_attr_setschedpolicy',
-    'pthread_attr_setscope', 'pthread_attr_setstack',
-    'pthread_attr_setstackaddr', 'pthread_attr_setstacksize',
-    'pthread_attr_t', 'pthread_barrier_destroy',
-    'pthread_barrier_init', 'pthread_barrier_t',
-    'pthread_barrier_wait', 'pthread_barrierattr_destroy',
-    'pthread_barrierattr_getpshared', 'pthread_barrierattr_init',
-    'pthread_barrierattr_setpshared', 'pthread_barrierattr_t',
-    'pthread_cancel', 'pthread_cond_broadcast',
-    'pthread_cond_destroy', 'pthread_cond_init',
-    'pthread_cond_signal', 'pthread_cond_t', 'pthread_cond_timedwait',
-    'pthread_cond_wait', 'pthread_condattr_destroy',
-    'pthread_condattr_getclock', 'pthread_condattr_getpshared',
-    'pthread_condattr_init', 'pthread_condattr_setclock',
-    'pthread_condattr_setpshared', 'pthread_condattr_t',
-    'pthread_create', 'pthread_detach', 'pthread_equal',
-    'pthread_exit', 'pthread_getcpuclockid', 'pthread_getschedparam',
-    'pthread_getspecific', 'pthread_join', 'pthread_key_create',
-    'pthread_key_delete', 'pthread_key_t', 'pthread_kill',
-    'pthread_mutex_consistent', 'pthread_mutex_destroy',
-    'pthread_mutex_getprioceiling', 'pthread_mutex_init',
-    'pthread_mutex_lock', 'pthread_mutex_setprioceiling',
-    'pthread_mutex_t', 'pthread_mutex_timedlock',
-    'pthread_mutex_trylock', 'pthread_mutex_unlock',
-    'pthread_mutexattr_destroy', 'pthread_mutexattr_getprioceiling',
+    'memmove', 'memset', 'mkdir', 'mkdirat', 'mkdtemp', 'mkfifo',
+    'mkfifoat', 'mknod', 'mknodat', 'mkstemp', 'mkstemps', 'mktemp',
+    'mktime', 'mode_t', 'modf', 'modff', 'modfl', 'mrand48',
+    'mrand48_r', 'nan', 'nanf', 'nanl', 'nanosleep', 'nearbyint',
+    'nearbyintf', 'nearbyintl', 'nextafter', 'nextafterf',
+    'nextafterl', 'nexttoward', 'nexttowardf', 'nexttowardl',
+    'nfds_t', 'nice', 'nlink_t', 'nrand48', 'nrand48_r', 'ntohl',
+    'ntohs', 'off_t', 'on_exit', 'open', 'open_memstream',
+    'open_wmemstream', 'openat', 'opendir', 'optarg', 'opterr',
+    'optind', 'optopt', 'pathconf', 'pause', 'pclose', 'perror',
+    'pid_t', 'pipe', 'pj_N', 'pj_a', 'pj_b', 'pj_d', 'pj_drain',
+    'pj_end', 'pj_f', 'pj_free', 'pj_i', 'pj_j', 'pj_k', 'pj_kN',
+    'pj_ka', 'pj_kb', 'pj_kd', 'pj_kf', 'pj_ki', 'pj_kn', 'pj_knull',
+    'pj_ko', 'pj_kr', 'pj_kraw', 'pj_ks', 'pj_n', 'pj_ne', 'pj_new',
+    'pj_new_with_encoding', 'pj_null', 'pj_o', 'pj_r', 'pj_raw',
+    'pj_reset', 'pj_s', 'pj_se', 'pj_string', 'poll', 'popen',
+    'posix_fadvise', 'posix_fallocate', 'posix_memalign', 'pow',
+    'powf', 'powl', 'pread', 'printf', 'profil', 'pselect',
+    'psiginfo', 'psignal', 'pthread_atfork', 'pthread_attr_destroy',
+    'pthread_attr_getdetachstate', 'pthread_attr_getguardsize',
+    'pthread_attr_getinheritsched', 'pthread_attr_getschedparam',
+    'pthread_attr_getschedpolicy', 'pthread_attr_getscope',
+    'pthread_attr_getstack', 'pthread_attr_getstackaddr',
+    'pthread_attr_getstacksize', 'pthread_attr_init',
+    'pthread_attr_setdetachstate', 'pthread_attr_setguardsize',
+    'pthread_attr_setinheritsched', 'pthread_attr_setschedparam',
+    'pthread_attr_setschedpolicy', 'pthread_attr_setscope',
+    'pthread_attr_setstack', 'pthread_attr_setstackaddr',
+    'pthread_attr_setstacksize', 'pthread_attr_t',
+    'pthread_barrier_destroy', 'pthread_barrier_init',
+    'pthread_barrier_t', 'pthread_barrier_wait',
+    'pthread_barrierattr_destroy', 'pthread_barrierattr_getpshared',
+    'pthread_barrierattr_init', 'pthread_barrierattr_setpshared',
+    'pthread_barrierattr_t', 'pthread_cancel',
+    'pthread_cond_broadcast', 'pthread_cond_destroy',
+    'pthread_cond_init', 'pthread_cond_signal', 'pthread_cond_t',
+    'pthread_cond_timedwait', 'pthread_cond_wait',
+    'pthread_condattr_destroy', 'pthread_condattr_getclock',
+    'pthread_condattr_getpshared', 'pthread_condattr_init',
+    'pthread_condattr_setclock', 'pthread_condattr_setpshared',
+    'pthread_condattr_t', 'pthread_create', 'pthread_detach',
+    'pthread_equal', 'pthread_exit', 'pthread_getcpuclockid',
+    'pthread_getschedparam', 'pthread_getspecific', 'pthread_join',
+    'pthread_key_create', 'pthread_key_delete', 'pthread_key_t',
+    'pthread_kill', 'pthread_mutex_consistent',
+    'pthread_mutex_destroy', 'pthread_mutex_getprioceiling',
+    'pthread_mutex_init', 'pthread_mutex_lock',
+    'pthread_mutex_setprioceiling', 'pthread_mutex_t',
+    'pthread_mutex_timedlock', 'pthread_mutex_trylock',
+    'pthread_mutex_unlock', 'pthread_mutexattr_destroy',
+    'pthread_mutexattr_getprioceiling',
     'pthread_mutexattr_getprotocol', 'pthread_mutexattr_getpshared',
     'pthread_mutexattr_getrobust', 'pthread_mutexattr_gettype',
     'pthread_mutexattr_init', 'pthread_mutexattr_setprioceiling',
@@ -29705,26 +29603,25 @@ __all__ = \
     'srand48', 'srand48_r', 'srandom', 'srandom_r', 'sscanf',
     'ssignal', 'ssize_t', 'stack_t', 'stat', 'stderr', 'stdin',
     'stdout', 'stpcpy', 'stpncpy', 'str_operation', 'strcasecmp',
-    'strcasecmp_l', 'strcasestr', 'strcat', 'strchr', 'strchrnul',
-    'strcmp', 'strcoll', 'strcoll_l', 'strcpy', 'strcspn', 'strdup',
-    'strerror', 'strerror_l', 'strerror_r', 'strftime', 'strftime_l',
-    'strlcat', 'strlcpy', 'strlen', 'strncasecmp', 'strncasecmp_l',
-    'strncat', 'strncmp', 'strncpy', 'strndup', 'strnlen', 'strpbrk',
-    'strrchr', 'strsep', 'strsignal', 'strspn', 'strstr', 'strtod',
-    'strtof', 'strtoimax', 'strtok', 'strtok_r', 'strtol', 'strtold',
-    'strtoll', 'strtoq', 'strtoul', 'strtoull', 'strtoumax',
-    'strtouq', 'struct_R2Pipe', 'struct_RConsCursorPos',
-    'struct_RConsPixel', 'struct_RIORap', 'struct_RListInfo',
-    'struct_RModal', 'struct_RNumCalcValue', 'struct_RPanelsSnow',
-    'struct_RStrBuf', 'struct_RString', 'struct_RStrpool',
-    'struct_RSysInfo', 'struct_RTable', 'struct_RTableColumn',
-    'struct_RTableColumnType', 'struct_RTableRow',
-    'struct_RThreadChannel', 'struct_RThreadChannelMessage',
-    'struct_RThreadChannelPromise', 'struct_RUtfBlock',
-    'struct_SdbJsonString', 'struct_SpcAttributeTypeAndOptionalValue',
-    'struct_SpcDigestInfo', 'struct_SpcIndirectDataContent',
-    'struct__G_fpos64_t', 'struct__G_fpos_t', 'struct__IO_FILE',
-    'struct__IO_codecvt', 'struct__IO_cookie_io_functions_t',
+    'strcasecmp_l', 'strcat', 'strchr', 'strcmp', 'strcoll',
+    'strcoll_l', 'strcpy', 'strcspn', 'strdup', 'strerror',
+    'strerror_l', 'strerror_r', 'strftime', 'strftime_l', 'strlen',
+    'strncasecmp', 'strncasecmp_l', 'strncat', 'strncmp', 'strncpy',
+    'strndup', 'strnlen', 'strpbrk', 'strrchr', 'strsep', 'strsignal',
+    'strspn', 'strstr', 'strtod', 'strtof', 'strtoimax', 'strtok',
+    'strtok_r', 'strtol', 'strtold', 'strtoll', 'strtoq', 'strtoul',
+    'strtoull', 'strtoumax', 'strtouq', 'struct_R2Pipe',
+    'struct_RConsCursorPos', 'struct_RConsPixel', 'struct_RIORap',
+    'struct_RListInfo', 'struct_RModal', 'struct_RNumCalcValue',
+    'struct_RPanelsSnow', 'struct_RStrBuf', 'struct_RString',
+    'struct_RStrpool', 'struct_RSysInfo', 'struct_RTable',
+    'struct_RTableColumn', 'struct_RTableColumnType',
+    'struct_RTableRow', 'struct_RThreadChannel',
+    'struct_RThreadChannelMessage', 'struct_RThreadChannelPromise',
+    'struct_RUtfBlock', 'struct_SdbJsonString',
+    'struct_SpcAttributeTypeAndOptionalValue', 'struct_SpcDigestInfo',
+    'struct_SpcIndirectDataContent', 'struct__G_fpos64_t',
+    'struct__G_fpos_t', 'struct__IO_FILE', 'struct__IO_codecvt',
     'struct__IO_marker', 'struct__IO_wide_data',
     'struct___atomic_wide_counter___value32',
     'struct___cancel_jmp_buf_tag', 'struct___dirstream',
@@ -29896,19 +29793,18 @@ __all__ = \
     'ushort', 'usleep', 'ust16', 'ust32', 'ust64', 'ut128', 'ut256',
     'ut27', 'ut32_pack', 'ut32_pack_big', 'ut32_unpack', 'ut80',
     'ut96', 'utAny', 'utX', 'utimensat', 'utimes', 'uut16', 'uut32',
-    'uut64', 'va_list', 'valloc', 'vasprintf', 'vdprintf', 'vfork',
-    'vfprintf', 'vfscanf', 'vfwprintf', 'vfwscanf', 'vhangup',
-    'vprintf', 'vscanf', 'vsnprintf', 'vsprintf', 'vsscanf',
-    'vswprintf', 'vswscanf', 'vwprintf', 'vwscanf', 'wait', 'wait3',
-    'wait4', 'waitid', 'waitpid', 'wchar_t', 'wcpcpy', 'wcpncpy',
-    'wcrtomb', 'wcscasecmp', 'wcscasecmp_l', 'wcscat', 'wcschr',
-    'wcscmp', 'wcscoll', 'wcscoll_l', 'wcscpy', 'wcscspn', 'wcsdup',
-    'wcsftime', 'wcslcat', 'wcslcpy', 'wcslen', 'wcsncasecmp',
-    'wcsncasecmp_l', 'wcsncat', 'wcsncmp', 'wcsncpy', 'wcsnlen',
-    'wcsnrtombs', 'wcspbrk', 'wcsrchr', 'wcsrtombs', 'wcsspn',
-    'wcsstr', 'wcstod', 'wcstof', 'wcstoimax', 'wcstok', 'wcstol',
-    'wcstold', 'wcstoll', 'wcstombs', 'wcstoul', 'wcstoull',
-    'wcstoumax', 'wcsxfrm', 'wcsxfrm_l', 'wctob', 'wctomb', 'wint_t',
-    'wmemchr', 'wmemcmp', 'wmemcpy', 'wmemmove', 'wmemset', 'wprintf',
-    'write', 'wscanf', 'y0', 'y0f', 'y0l', 'y1', 'y1f', 'y1l', 'yn',
-    'ynf', 'ynl']
+    'uut64', 'va_list', 'valloc', 'vdprintf', 'vfork', 'vfprintf',
+    'vfscanf', 'vfwprintf', 'vfwscanf', 'vhangup', 'vprintf',
+    'vscanf', 'vsnprintf', 'vsprintf', 'vsscanf', 'vswprintf',
+    'vswscanf', 'vwprintf', 'vwscanf', 'wait', 'wait3', 'wait4',
+    'waitid', 'waitpid', 'wchar_t', 'wcpcpy', 'wcpncpy', 'wcrtomb',
+    'wcscasecmp', 'wcscasecmp_l', 'wcscat', 'wcschr', 'wcscmp',
+    'wcscoll', 'wcscoll_l', 'wcscpy', 'wcscspn', 'wcsdup', 'wcsftime',
+    'wcslen', 'wcsncasecmp', 'wcsncasecmp_l', 'wcsncat', 'wcsncmp',
+    'wcsncpy', 'wcsnlen', 'wcsnrtombs', 'wcspbrk', 'wcsrchr',
+    'wcsrtombs', 'wcsspn', 'wcsstr', 'wcstod', 'wcstof', 'wcstoimax',
+    'wcstok', 'wcstol', 'wcstold', 'wcstoll', 'wcstombs', 'wcstoul',
+    'wcstoull', 'wcstoumax', 'wcsxfrm', 'wcsxfrm_l', 'wctob',
+    'wctomb', 'wint_t', 'wmemchr', 'wmemcmp', 'wmemcpy', 'wmemmove',
+    'wmemset', 'wprintf', 'write', 'wscanf', 'y0', 'y0f', 'y0l', 'y1',
+    'y1f', 'y1l', 'yn', 'ynf', 'ynl']
