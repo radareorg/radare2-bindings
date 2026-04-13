@@ -19,7 +19,6 @@ _libr_name = [
     "r_egg",
     "r_flag",
     "r_fs",
-    "r_hash",
     "r_io",
     "r_lang",
     "r_magic",
@@ -105,6 +104,7 @@ if _libraries is None:
     raise ImportError("Libr is not found on your system or your libr installation is corrupted.")
 
 r_anal = _libraries["r_anal"]
+r_arch = _libraries["r_arch"]
 r_asm = _libraries["r_asm"]
 r_bin = _libraries["r_bin"]
 r_bp = _libraries["r_bp"]
@@ -116,7 +116,6 @@ r_debug = _libraries["r_debug"]
 r_egg = _libraries["r_egg"]
 r_flag = _libraries["r_flag"]
 r_fs = _libraries["r_fs"]
-r_hash = _libraries["r_hash"]
 r_io = _libraries["r_io"]
 r_lang = _libraries["r_lang"]
 r_magic = _libraries["r_magic"]
