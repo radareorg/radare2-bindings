@@ -19,12 +19,10 @@ libs = [
     "config",
     "cons",
     "core",
-    "crypto",
     "debug",
     "egg",
     "flag",
     "fs",
-    "hash",
     "io",
     "lang",
     "magic",
@@ -35,6 +33,7 @@ libs = [
     "socket",
     "syscall",
     "util",
+    "muta",
 ]
 
 def gen_clang_include_args(builddir):
