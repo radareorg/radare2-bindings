@@ -192,9 +192,20 @@ class clean(_clean):
         clean_builds()
         return _clean.run(self)
 
+def libs_already_built():
+    if not LIBS_DIR.exists():
+        return False
+    glob = {
+        "linux": "*.so*",
+        "win32": "*.dll",
+        "darwin": "*.dylib",
+    }.get(sys.platform, "*.so")
+    return any(LIBS_DIR.glob(glob))
+
 class develop(_develop):
     def run(self):
-        build_radare2()
+        if not libs_already_built():
+            build_radare2()
         return _develop.run(self)
 
 class bdist_egg(_bdist_egg):
