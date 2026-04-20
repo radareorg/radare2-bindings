@@ -23,13 +23,11 @@ namespace Radare {
 		*/
 
 		public RAnal ();
-		public bool op_hexstr(uint64 addr, string hexstr);
 		public void diff_setup(bool doops, double thbb, double thfcn);
 		public void diff_setup_i(bool doops, int thbb, int thfcn);
 
-		public RList<RAnal.Ref> xrefs_get (uint64 addr);
-		public RList<RAnal.Ref> xrefs_get_from (uint64 addr);
-		//public RList<RAnal.Ref> xrefs_from(uint64 addr);
+		//public RList<RAnal.Ref> xrefs_get (uint64 addr);
+		//public RList<RAnal.Ref> xrefs_get_from (uint64 addr);
 
 		public unowned RList<unowned RAnal.Function> get_fcns();
 		// public Function get_fcn_at (uint64 addr, int type);
@@ -66,21 +64,19 @@ namespace Radare {
 		[CCode (cname="RAnalValue")]
 		public class Value {
 			public bool absolute;
-			public bool memref;
+			public int memref;
 			public uint64 @base;
 			public int64 delta;
 			public int64 imm;
 			public int mul;
-			//public uint16 sel;
-			public RReg.Item reg;
-			public RReg.Item regdelta;
+			public string reg;
+			public string regdelta;
 		}
 
 		[Compact]
 		[CCode (cname="RAnalCond")]
 		public class Cond {
 			public int type;
-			public Value arg[2];
 		}
 
 		[Compact]
@@ -390,7 +386,7 @@ namespace Radare {
 			// public short type;
 			// public string rets;
 			// public short fmod;
-			public string cc;
+			// public string cc;
 			// public string attr;
 
 			public uint64 addr;

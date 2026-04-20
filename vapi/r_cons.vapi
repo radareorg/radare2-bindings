@@ -1,13 +1,11 @@
-/* radare - LGPL - Copyright 2009-2015 - pancake */
+/* radare - LGPL - Copyright 2009-2026 - pancake */
 
 namespace Radare {
-	[CCode (cheader_filename="r_cons.h", cname="RCons", free_function="", unref_function="", cprefix="r_cons_")]
-	/* XXX: LEAK */
+	[CCode (cheader_filename="r_cons.h", cname="RCons", free_function="r_cons_free", unref_function="", cprefix="r_cons_")]
 	public class RCons {
-//		public RCons ();
+		public RCons ();
 		public static RCons singleton ();
 
-		static void free();
 		[CCode (cname="Color_RED")]
 		public const string RED;
 		[CCode (cname="Color_BLACK")]
@@ -26,65 +24,34 @@ namespace Radare {
 		public const string BLUE;
 		[CCode (cname="Color_GRAY")]
 		public const string GRAY;
-		/* TODO : add bold colors */
 
-		// public static bool is_interactive;
-		public static int lines;
-		public static bool echo;
-		public static int fix_rows;
-		public static int fix_columns;
-		public static int fdout;
-		public static bool eof();
+		public int pipe_open (string file, int fdn, int append);
+		public void pipe_close (int fd);
 
-		public static int pipe_open (string file, int fdn, bool append);
-		public static void pipe_close (int fd);
+		public void clear();
+		public void clear00();
+		public void reset();
+		public void gotoxy(int x, int y);
+		public void set_raw(bool is_raw);
 
-		/* size of terminal */
-		public static int rows;
-		public static int columns;
+		public void print(string str);
+		public void newline();
+		public void filter();
+		public void visual_flush();
+		public void flush();
 
-		public static void clear();
-		public static void clear00();
-		public static void reset();
-		public static void gotoxy(int x, int y);
-		public static void set_raw(bool b);
+		public int readchar();
+		public int any_key(string? msg=null);
+		public int get_size(out int rows);
 
-		/* output */
-		public static void printf(string fmt, ...);
-		public static void strcat(string str);
-		public static void write(string str, int len);
-		public static void newline();
-		public static void flush(RCons cons);
-		public static void filter();
-		public static void visual_flush();
-		//public static void visual_write(unowned string buf);
-
-		//public static int fgets(out string buf, int len, int argc, string argv[]);
-		/* input */
-		public static int readchar();
-		public static void any_key(string? msg=null);
-		public static int get_size(out int rows);
-		public static bool yesno(bool def, string fmt, ...);
-
-//		public static int html_print (string ptr);
-		public static int arrow_to_hjkl (int ch);
-		public static unowned string get_buffer ();
-		//public static void grep (string str);
-		//public static int grep_line (string str, int len);
-		//public static int grepbuf (string str, int len);
-		public static void invert (bool set, int color);
+		public int arrow_to_hjkl (int ch);
+		public void invert (int set, int color);
 	}
 	[Compact]
 	[CCode (cname="RLine", cheader_filename="r_cons.h", cprefix="r_line_", free_function="")]
 	public class RLine {
-		//public RLine();
-		public static RLine singleton();
-		public static bool readline (); //int argc, char **argv);
-		public static void set_prompt (string promp);
-
-		public static bool hist_load (string file);
-		public static bool hist_add (string line);
-		public static bool hist_save (string file);
-		//public static bool hist_label (string file);
+		public bool hist_load (string file);
+		public bool hist_add (string text);
+		public bool hist_save (string file);
 	}
 }

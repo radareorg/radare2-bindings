@@ -15,7 +15,7 @@ public class RCore {
 	/**
 	 * Current working offset
 	 */
-	public uint64 offset;
+	public uint64 addr;
 	/**
 	 * Size of the working block
 	 */
@@ -28,10 +28,8 @@ public class RCore {
 	 * Pointer to the first byte of the working block
 	 */
 	public uint8 *block;
-	public RBuffer *yank_buf;
 	public int tmpseek;
 	public bool vmode;
-	public int interrupted;
 
 	/**
 	 * RCons instance
@@ -107,7 +105,6 @@ public class RCore {
 	public unowned string disassemble_instr(uint64 addr, int l);
 	public unowned string disassemble_bytes(uint64 addr, int b);
 
-	public bool anal_all();
 	public int anal_search (uint64 from, uint64 to, uint64 ref, int mode);
 	public void anal_refs(string input);
 	// public int anal_bb(RAnal.Function fcn, uint64 at, int head);
@@ -127,7 +124,7 @@ public class RCore {
 	public int gdiff(RCore *c2);
 
 	public void rtr_pushout(string input);
-	public void rtr_list();
+	public void rtr_list(int mode);
 	public void rtr_add(string input);
 	public void rtr_remove(string input);
 	public void rtr_session(string input);
@@ -177,7 +174,7 @@ public class RCore {
 
 	[CCode (cname="RCoreSearchCallback")]
 	public delegate int SearchCallback (uint64 from, uint8 *buf, int len);
-	public bool search_cb(uint64 from, uint64 to, SearchCallback cb);
+	//public bool search_cb(uint64 from, uint64 to, SearchCallback cb);
 
 	/* files */
 	public RIO.Desc file_open(string file, int mode, uint64 loadaddr=0);

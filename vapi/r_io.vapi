@@ -110,9 +110,8 @@ namespace Radare {
 		public void wundo_new(uint64 off, uint8 *data, int len);
 		public void wundo_clear();
 		public int wundo_size();
-		public void wundo_list();
 		//public int wundo_apply(UndoWrite *u, int set);
-		public void wundo_apply_all(int set);
+		public bool wundo_apply_all(bool set);
 		public int wundo_set(int n, int set);
 
 /*
@@ -130,19 +129,6 @@ namespace Radare {
 		//public void undo_redo();
 		//public void undo_push();
 
-		/* plugin */
-		[Compact]
-		[CCode (cname="RIOPlugin", cprefix="r_io_plugin_", free_function="")]
-		public class Plugin {
-			string name;
-			string desc;
-			// TODO: lot of missing stuff here :)
-		}
-
-		/* TODO: make them methods of Plugin class ? */
-		public bool plugin_add(RIO.Plugin plugin);
-		//public int plugin_generate();
-		public void plugin_list();
 
 /*
 		[CCode (cname="RIOMap", cprefix="r_io_map_", free_function="", unref_function="")]

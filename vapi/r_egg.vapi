@@ -19,7 +19,7 @@ namespace Radare {
 		public int bits;
 		public uint32 os;
 		public REgg ();
-		public string to_string ();
+		public string tostring ();
 		public void reset ();
 		public bool setup (string arch, int bits, bool bigendian, string os);
 		public void load (string code, int fmt);

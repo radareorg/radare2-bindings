@@ -112,8 +112,9 @@ namespace Radare {
 	public delegate string RNumCallback2 (uint64 num, int *ok);
 
 	[Compact]
-	[CCode (cname="RBuffer", cheader_filename="r_util.h", cprefix="r_buf_", free_function="r_buf_free")]
+	[CCode (cname="RBuffer", cheader_filename="r_util.h", cprefix="r_buf_", free_function="r_buf_fini")]
 	public class RBuffer {
+		[CCode (cname="r_buf_new")]
 		public RBuffer();
 		public int read_at(uint64 addr, uint8 *buf, int len);
 		public int write_at(uint64 addr, uint8 *buf, int len);
@@ -133,7 +134,6 @@ namespace Radare {
 		public int length();
 		//public bool next();
 		public bool del_n(int n);
-		public bool get_top();
 		//public void push(owned G foo);
 		public unowned G pop();
 	}
@@ -205,14 +205,14 @@ namespace Radare {
 		//public string types_get(int idx);
 
 		/* lowlevel api */
-		public static void* dl_open(string libname);
+		public static void* dl_open(string libname, bool safe_mode);
 		public void* dl_sym(string symname);
 		public static bool dl_close(void *handler);
 		// public static bool dl_check_filename(string file);
 		/* handlers */
 	// we need delegates here (function pointerz)
 	//	public bool add_handler(int type, string desc, /* */, void* user);
-		public bool del_handler(int type);
+		//public bool del_handler(int type);
 		//public Plugin get_handler(int type);
 		//public struct Struct { }
 		/*

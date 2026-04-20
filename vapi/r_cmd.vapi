@@ -39,7 +39,7 @@ namespace Radare {
 	public class RCmd {
 		[CCode (has_target=false, cname="RCmdCallback")]
 		public delegate bool Callback (void *user, string cmd);
-		public RCmd ();
+		public RCmd (void *data = null);
 		public void set_data (void *data);
 		// public bool @add (string cmd, string desc, Callback cb);
 		/// public bool add_long (string cmd, string scmd, string desc);

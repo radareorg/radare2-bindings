@@ -1,8 +1,8 @@
-/* radare - LGPL - Copyright 2009-2016 - pancake */
+/* radare - LGPL - Copyright 2009-2026 - pancake */
 
 namespace SDB {
 	[Compact]
-	[CCode (cheader_filename="sdb.h", cname="Sdb", cprefix="sdb_", free_function="sdb_free")]
+	[CCode (cheader_filename="libr/sdb/sdb.h", cname="Sdb", cprefix="sdb_", free_function="sdb_free")]
 	public class Sdb {
 		/* lifecycle */
 		public Sdb (string? path=null, string? file=null, bool locked=false);

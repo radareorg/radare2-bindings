@@ -108,7 +108,7 @@ public class RAsm {
 		//public string buf_hex;
 		public string get_hex();
 		public string equ_replace(string s);
-		public bool set_equ(string k, string v);
+		public void set_equ(string k, string v);
 	}
 
 	/**
@@ -116,11 +116,6 @@ public class RAsm {
 	 */
 	// public Syntax syntax;
 	public uint64 pc;
-	/**
-	 * The list of active plugins.
-	 */
-	public RList<RAsm.Plugin> plugins;
-	public RList<RAsm.Plugin> get_plugins();
 
 	public RAsm();
 	public bool use(string name);
@@ -130,19 +125,19 @@ public class RAsm {
 	public bool set_pc(uint64 addr);
 	public bool set_bits(int bits);
 	public bool set_big_endian(bool big);
-	public bool set_syntax(Syntax syntax);
+	//public bool set_syntax(Syntax syntax);
 	// TODO: Use Code? instead of op??
 	public int disassemble(RAnal.Op op, uint8* buf, int length);
 	/**
-	 * Assemble provided instruction into an Op, returns instruction size in bytes.
+	 * Assemble the provided string into a Code block.
 	 */
-	public int assemble(RAnal.Op op, string buf);
+	public Code? assemble(string buf);
 	public Code? mdisassemble(uint8 *buf, int length);
 	[CCode (cname="r_asm_assemble")]
 	public Code? massemble(string buf);
 	// public Code? assemble_file(string file);
 
-	public string to_string(uint64 addr, uint8* buf, int len);
+	public string tostring(uint64 addr, uint8* buf, int len);
 	public uint8* from_string(uint64 addr, string str, out int len);
 
 	/* TODO: not directy defined here */
@@ -154,38 +149,6 @@ public class RAsm {
 	[Compact]
 	[CCode (cname="RAsmPlugin", destroy_function="", free_function="")]
 	public class Plugin {
-		/**
-		 * The plugin name.
-		 */
-		public string name;
-		/**
-		 * The architecture the plugin supports.
-		 */
-		public string arch;
-		/**
-		 * The CPUs the plugin supports.
-		 */
-		public string cpus;
-		/**
-		 * The plugin description.
-		 */
-		public string desc;
-		/**
-		 * The license for the plugin.
-		 */
-		public string license;
-		/**
-		 * The user data pointer;
-		 */
-		public void *user;
-		/**
-		 * Supported bit sizes.
-		 */
-		public int bits;
-		/**
-		 * The callback to be notified when the code is modified.
-		 */
-//		public RAsmModifyCallback modify;
 	}
 }
 }

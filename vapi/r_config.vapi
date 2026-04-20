@@ -13,7 +13,7 @@ namespace Radare {
 
 		public void lock (bool enable);
 		public void bump (string key);
-		public bool eval(string str, bool many);
+		//public string eval(string str, bool many, out bool error);
 		/**
 		 * Make the specific key read only, can't be modified
 		 */
@@ -43,7 +43,7 @@ namespace Radare {
 		uint64 i_value;
 
 		/* TODO: moar */
-		public string to_string();
+		public string tostring();
 		public void add_option(string option);
 		public void purge_options();
 	}

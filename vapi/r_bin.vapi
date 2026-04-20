@@ -1,4 +1,4 @@
-/* radare - LGPL - Copyright 2009-2015 - pancake */
+/* radare - LGPL - Copyright 2009-2026 - pancake */
 
 namespace Radare {
 	[Compact]
@@ -7,19 +7,26 @@ namespace Radare {
 		string pluginname;
 		uint64 baseaddr; // where the linker maps the binary in memory
 		uint64 loadaddr; // starting physical address to read from the target file
-		// ut64 paddr; // offset
 		uint64 sz;
 		int xtr_idx; // load Nth binary
 		int rawstr;
 		int fd;
 		string filename;
 	}
-	
+
 	[Compact]
 	[CCode (cname="RBinArchOptions", free_function="", cprefix="")]
 	public class RBinArchOptions {
 		string *arch;
 		int bits;
+	}
+
+	[Compact]
+	[CCode (cheader_filename="r_bin.h,r_list.h,r_types_base.h", cname="RBinName", free_function="", cprefix="r_bin_name_", destroy_function="")]
+	public class RBinName {
+		public string name;
+		public string oname;
+		public string fname;
 	}
 
 	[Compact]
@@ -45,24 +52,16 @@ namespace Radare {
 		public int wr_output (string filename);
 
 		public int open(string file, ref RBinFileOptions opts);
-		public RBuffer create(string plugin_name,uint8 *code, int codelen, uint8 *data, int datalen, RBinArchOptions *opt);
 		public int use_arch(string arch, int bits, string name);
 		public int select(string arch, int bits, string name);
-		// public int select_idx(string? name, int idx);
-		// public void list(int mode);
 		public uint64 get_baddr();
-		public RBin.Addr get_sym(int sym); // XXX: use RBin.Sym here ?
-		public unowned RList<unowned RBin.Addr> get_entries();
-		public unowned RList<unowned RBin.Field> get_fields();
-		// public unowned RList<unowned RBin.Import> get_imports();
+		public RBin.Addr get_sym(int sym);
+		//public unowned RList<unowned RBin.Addr> get_entries();
 		public unowned RList<unowned RBin.Section> get_sections();
 		public unowned RList<unowned RBin.String> get_strings();
 		public unowned RList<unowned RBin.Symbol> get_symbols();
-		// public unowned RList<unowned RBin.Reloc> get_relocs();
 		public unowned RList<unowned string> get_libs();
 		public unowned RBin.Info get_info();
-		public int addr2line(uint64 addr, ref string file, int len, out int line);
-		public string addr2text(uint64 addr, bool origin);
 
 		[Compact]
 		[CCode (cname="RBinFile", free_function="", ref_function="", unref_function="")]
@@ -71,30 +70,19 @@ namespace Radare {
 			public unowned string file;
 			public int size;
 			public uint64 offset;
-			public RBin.Object o;
-			// public Plugin curplugin;
+			public RBin.Object bo;
 		}
 
 		[CCode (cname="RBinPlugin", free_function="", ref_function="", unref_function="")]
 		public class Plugin {
 		}
 
-		[CCode (cname="RBinDwarfRow", free_function="", ref_function="", unref_function="")]
-		public class DwarfRow {
-			public uint64 address;
-			public string file;
-			public int line;
-			public int column;
-		}
-
 		[CCode (cname="RBinClass", free_function="", ref_function="", unref_function="")]
 		public class Class {
-			public string name;
-			public string super;
+			public RBinName name;
 			public int index;
 			public RList<Symbol> methods;
 			public RList<Field> fields;
-			public bool visibility;
 		}
 
 		[CCode (cname="RBinObject", free_function="", ref_function="", unref_function="")]
@@ -104,16 +92,12 @@ namespace Radare {
 			public RList<RBin.Section> sections;
 			public RList<RBin.Import> imports;
 			public RList<RBin.Symbol> symbols;
-			//public RList<RBin.Symbol> entries;
 			public RList<RBin.Addr> entries;
-			public RList<RBin.Field> fields;
 			public RList<RBin.Symbol> libs;
-			// public RList<RBin.Reloc> relocs;
 			public RList<RBin.String> strings;
 			public RList<RBin.Class> classes;
-			public RList<RBin.DwarfRow> lines;
 			public RBin.Info info;
-			public RBin.Addr binsym[4]; //
+			public RBin.Addr binsym[4];
 		}
 
 		[CCode (cname="RBinAddr", free_function="", ref_function="", unref_function="")]
@@ -124,35 +108,35 @@ namespace Radare {
 
 		[CCode (cname="RBinSection", free_function="", ref_function="", unref_function="")]
 		public class Section {
-			public char name[512]; // FIXME proper static strings w/o hardcoded size
+			public string name;
 			public uint64 size;
 			public uint64 vsize;
 			public uint64 vaddr;
 			public uint64 paddr;
-			public uint64 perm;
+			public uint32 perm;
 		}
 
 		[CCode (cname="RBinSymbol", free_function="", ref_function="", unref_function="")]
 		public class Symbol {
-			public string name; // FIXME proper static strings w/o hardcoded size
-			public string forwarder; // FIXME proper static strings w/o hardcoded size
-			public string bind; // FIXME proper static strings w/o hardcoded size
-			public string type; // FIXME proper static strings w/o hardcoded size
-			public string classname; // FIXME proper static strings w/o hardcoded size
+			public RBinName name;
+			public string forwarder;
+			public string bind;
+			public string type;
+			public string classname;
 			public uint64 vaddr;
 			public uint64 paddr;
-			public uint64 size;
-			public uint64 ordinal;
+			public uint32 size;
+			public uint32 ordinal;
 		}
 
 		[CCode (cname="RBinImport", free_function="", ref_function="", unref_function="")]
 		public class Import {
-			public string name; // FIXME proper static strings w/o hardcoded size
-			public string bind; // FIXME proper static strings w/o hardcoded size
-			public string type; // FIXME proper static strings w/o hardcoded size
-			public string classname; // FIXME proper static strings w/o hardcoded size
-			public string descriptor; // FIXME proper static strings w/o hardcoded size
-			public uint64 ordinal;
+			public RBinName name;
+			public string bind;
+			public string type;
+			public string classname;
+			public string descriptor;
+			public uint32 ordinal;
 		}
 
 
@@ -177,27 +161,27 @@ namespace Radare {
 
 		[CCode (cname="RBinInfo", free_function="", ref_function="", unref_function="")]
 		public class Info {
-			public string? file; // FIXME proper static strings w/o hardcoded size
-			public string? type; // FIXME proper static strings w/o hardcoded size
-			public string? bclass; // FIXME proper static strings w/o hardcoded size
-			public string? rclass; // FIXME proper static strings w/o hardcoded size
-			public string? arch; // FIXME proper static strings w/o hardcoded size
-			public string? machine; // FIXME proper static strings w/o hardcoded size
-			public string? os; // FIXME proper static strings w/o hardcoded size
-			public string? subsystem; // FIXME proper static strings w/o hardcoded size
-			public string? rpath; // FIXME proper static strings w/o hardcoded size
+			public string? file;
+			public string? type;
+			public string? bclass;
+			public string? rclass;
+			public string? arch;
+			public string? machine;
+			public string? os;
+			public string? subsystem;
+			public string? rpath;
 			public unowned string lang;
 			public int bits;
 			public bool has_va;
 			public bool has_pi;
-			public bool big_endian;
+			public int big_endian;
 			public uint64 dbg_info;
 		}
 
 		[Compact]
 		[CCode (cname="RBinString", free_function="", ref_function="", unref_function="")]
 		public class String {
-			public string @string; // FIXME proper static strings w/o hardcoded size
+			public string @string;
 			public uint64 vaddr;
 			public uint64 paddr;
 			public uint64 ordinal;
@@ -207,7 +191,7 @@ namespace Radare {
 		[Compact]
 		[CCode (cname="RBinField", free_function="", ref_function="", unref_function="")]
 		public class Field {
-			public string name; // FIXME proper static strings w/o hardcoded size
+			public RBinName name;
 			public uint64 vaddr;
 			public uint64 paddr;
 		}

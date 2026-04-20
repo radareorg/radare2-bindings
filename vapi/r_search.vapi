@@ -8,7 +8,7 @@ public class Radare.RSearch {
 	public RSearch (Mode mode);
 	public bool set_mode (Mode mode);
 //	public bool set_string_limits (uint32 min, uint32 max);
-	public bool begin();
+	public void begin();
 	public void reset(int mode);
 // XXX must return bool?? or not? 3 state? or two?
 	public int update(uint64 from, uint8 *buf, long len);

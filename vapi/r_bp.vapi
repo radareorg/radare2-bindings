@@ -12,7 +12,7 @@ public class Radare.RBreakpoint {
 	public unowned Item? get_at (uint64 addr);
 	public unowned Item add_sw (uint64 addr, int len, int rwx);
 	public unowned Item add_hw (uint64 addr, int len, int rwx);
-	public bool add_fault (uint64 addr, int len, int rwx);
+	public void add_fault (uint64 addr, int size, int perm);
 	// public int add_cond (string cond);
 	public bool del (uint64 addr);
 	// public bool del_cond (int idx);
@@ -24,7 +24,7 @@ public class Radare.RBreakpoint {
 	// public int recoil (uint64 addr);
 
 	/* TODO: deprecate the list() method.. language iterators should be enought */
-	public int list (bool rad);
+	public string list (int rad);
 
 	public void traptrace_enable (bool enable);
 	public void traptrace_reset (bool hard);

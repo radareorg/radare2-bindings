@@ -97,7 +97,7 @@ public class Radare.RDebug {
 	public void trace_reset ();
 	public void trace_at (string str);
 	//public RDebug.Tracepoint trace_get(uint64 addr);
-	public void trace_list(int mode, uint64 addr);
+	//public void trace_list(int mode, uint64 addr);
 	//public RDebug.Tracepoint trace_add(uint64 addr, int size);
 	public bool trace_tag (int tag);
 
@@ -172,24 +172,11 @@ public class Radare.RDebug {
 
 	[CCode (cname="RDebugTrace", free_function="", unref_function="")]
 	public class Trace {
-		RList<RDebug.Tracepoint> traces;
 		int count;
 		int enabled;
 		int tag;
 		int dup;
 		string addresses;
-	}
-
-	[Compact]
-	[CCode (cname="RDebugTracepoint", free_function="", unref_function="")]
-	public class Tracepoint {
-		uint64 addr;
-		uint64 tags;
-		int tag;
-		int size;
-		int count;
-		int times;
-		uint64 stamp;
 	}
 
 

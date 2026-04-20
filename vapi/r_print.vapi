@@ -20,10 +20,9 @@ public class Radare.RPrint {
 	public string hexpair (string str, int idx);
 	public void set_flags (int flags);
 	public void hexdump(uint64 addr, uint8* buf, int len, int baddr, int step, int foo);
-	public void hexpairs(uint64 addr, uint8 *buf, int len);
-	public void bytes(uint8* buf, int len, string fmt);
+	public string bytes(uint8* buf, int len, string fmt, char sep);
 	//public void @byte (string fmt, int idx, uint8 ch);
-	public void c(uint8 *buf, int len);
+	//public void c(uint8 *buf, int len);
 	public void raw(uint64 addr, uint8 *buf, int len, int lines);
 	public void cursor(int cur,int len, int set);
 	public void set_cursor(int curset, int ocursor, int cursor);

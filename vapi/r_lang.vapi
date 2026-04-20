@@ -7,7 +7,6 @@ namespace Radare {
 	public class RLang {
 		public RLang ();
 		public bool define(string type, string name, void* ptr);
-		public bool @add(RLang.Plugin plugin);
 		public bool use(string name);
 		public void undef(string name);
 		public bool set_argv(int argc, char **argv);
@@ -20,13 +19,8 @@ namespace Radare {
 		[Compact]
 		[CCode (cname="RLangPlugin", destroy_function="", free_function="" )]
 		public class Plugin {
-			public string name;
-			public string desc;
-			//public string *help;
 			// TODO: Add missing delegates
 		}
-
-		public Plugin cur;
 	}
 }
 

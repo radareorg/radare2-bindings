@@ -48,9 +48,6 @@ public class Radare.RReg {
 	/* TODO: use r_flist or r_list here */
 	//public KernelList<RReg.Item*> get_list(RReg.Type type);
 
-	public bool set_name(int role, string name);
-	public unowned string get_name(int role);
-	public static int get_name_idx(string type);
 	public static int type_by_name(string str);
 
 	[CCode (cname="r_reg_type_tostring")]
