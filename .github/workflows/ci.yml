@@ -7,6 +7,7 @@ on:
       - 'python/**'
       - 'dlang/**'
       - 'rust/**'
+      - 'go/**'
       - 'configure'
       - 'Makefile'
   pull_request:
@@ -15,6 +16,7 @@ on:
       - 'python/**'
       - 'dlang/**'
       - 'rust/**'
+      - 'go/**'
       - 'configure'
       - 'Makefile'
   workflow_dispatch:
@@ -53,6 +55,25 @@ jobs:
       run: r2pm -r make -C python
     - name: Build dlang bindings
       run: r2pm -r make -C dlang
+  go:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install r2
+      uses: radareorg/github-actions@v1
+    - name: Install go, swig, valac and valabind
+      run: |
+        sudo apt install -y golang swig valac libvala-dev
+        r2pm -Uci valabind
+    - name: Configure
+      run: ./configure
+    - name: Build go bindings
+      run: r2pm -r make -C go
+    - name: Run go hello world
+      run: r2pm -r make -C go hello
+    - name: Run r_bin test
+      run: r2pm -r make -C go rbintest
   rust:
     runs-on: ubuntu-latest
     steps:
