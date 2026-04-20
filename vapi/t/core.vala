@@ -9,8 +9,8 @@ print ("VERSION: "+Radare.R2_VERSION+"\n");
 	//stdout.printf("Filedescriptor: %d %d\n", f->fd->fd, a);
 	c.cmd("x", true);
 	c.cmd0("");
-	RCons.flush(c.cons);
+	c.cons.flush();
 	c.cmd0(".");
 	//c.cmd("x- 128 @ 33", false);
-	RCons.flush(c.cons);
+	c.cons.flush();
 }
