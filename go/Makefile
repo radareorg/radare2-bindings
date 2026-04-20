@@ -1,37 +1,39 @@
-LANG=go
-LANG_EXT=go
-LIBS_PFX=
+include ../config.mk
 
-include ../rules.mk
+# Modern go build: each module lives in its own package directory
+# under go/<mod>/, built with cgo via `go build`. `make` generates the
+# SWIG wrappers, stages them under the package directory with cgo
+# directives prepended, then runs `go build` on each package.
+MODULES=r_bin r_core r_asm r_io
 
-%.so:
-	@-test ../../libr/vapi/`echo $@|sed -e s,.so,.vapi,` -nt ${LIBS_PFX}$@ ; \
-	if [ ! $$? = 0 ]; then \
-	  if [ ! -e ${LIBS_PFX}$@ ]; then \
-            true ; \
-          else \
-            false ; \
-          fi ; \
-	fi ; \
-	. ./goenv.sh ; \
-	if [ $$? = 0 ]; then \
-	  (cd .. && sh do-swig.sh ${LANG} `echo $@ | sed -e s,.so,,`) ; \
-	  ./fixgoswig.sh `echo $@ | sed -e s,.so,.go,` ; \
-	  echo $${GOC} `echo $@ | sed -e s,.so,.go,` ; \
-	  $${GOC} `echo $@ | sed -e s,.so,.go,` ; \
-	  echo $${GOCC} $${GO_FLAGS} -I ${GOROOT}/pkg/$${GOOS}_$${GOARCH} `echo $@ | sed -e s,.so,_gc.c,` ; \
-	  $${GOCC} $${GO_FLAGS} -I ${GOROOT}/pkg/$${GOOS}_$${GOARCH} `echo $@ | sed -e s,.so,_gc.c,` ; \
-	  $${GOPACK} grc `echo $@ | sed -e s,.so,.a,` `echo $@ | sed -e s,.so,.$${GO_N},` `echo $@ | sed -e s,.so,_gc.$${GO_N},` ; \
-	fi
+all: $(MODULES)
 
-rbintest:
-	. ./goenv.sh ; \
-	$${GOC} -I . test-r_bin.go ; \
-	$${GOL} -L . test-r_bin.$${GO_N} ; \
-	LD_LIBRARY_PATH=. ./$${GO_N}.out /bin/ls
+define PKG_RULE
+.PHONY: $(1)
+$(1): $(1)/.stamp
 
-ibintest:
-	. ./goenv.sh ; \
-	$${GOC} test-r_bin.go ; \
-	$${GOL} test-r_bin.$${GO_N} ; \
-	./$${GO_N}.out /bin/ls
+$(1)/.stamp: ../vapi/$(1).vapi
+	cd .. && DIST=1 sh do-swig.sh go $(1)
+	mkdir -p $(1)
+	mv -f $(1).go $(1).i $(1)_wrap.cxx $(1)/
+	./inject-cgo.sh $(1)/$(1).go $(1)
+	printf 'module %s\n\ngo 1.21\n' $(1) > $(1)/go.mod
+	cd $(1) && go build ./...
+	touch $(1)/.stamp
+endef
+
+$(foreach m,$(MODULES),$(eval $(call PKG_RULE,$(m))))
+
+# Build and run a Go test program that links against the generated
+# bindings. Uses r_core because r_bin alone has no IO backend.
+rbintest test: $(MODULES)
+	cd test && go build -o test-r_bin . && ./test-r_bin /bin/ls
+
+hello: r_core
+	cd hello && go build -o hello . && ./hello
+
+clean:
+	rm -rf $(MODULES) test/test-r_bin hello/hello
+	rm -f r_*.go r_*_wrap.cxx r_*.i _r_*.so r_*.${SOEXT}
+
+.PHONY: all clean test rbintest hello

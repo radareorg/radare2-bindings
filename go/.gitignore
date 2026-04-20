@@ -1,0 +1,6 @@
+r_bin/
+r_core/
+r_asm/
+r_io/
+test/test-r_bin
+hello/hello
