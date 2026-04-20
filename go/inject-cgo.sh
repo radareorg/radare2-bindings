@@ -23,7 +23,7 @@ awk -v cflags="$CFLAGS" -v ldflags="$LDFLAGS" '
   BEGIN { inserted = 0 }
   /^\/\*$/ && !inserted {
     print
-    print "#cgo CXXFLAGS: " cflags " -Wno-unused-function -Wno-format-security"
+    print "#cgo CXXFLAGS: " cflags " -fpermissive -Wno-unused-function -Wno-format-security"
     print "#cgo LDFLAGS: " ldflags
     inserted = 1
     next
