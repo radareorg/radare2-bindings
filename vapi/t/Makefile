@@ -4,17 +4,10 @@ TESTS=core asm asm2 lang regs sc hash sc
 ALLTESTS=$(TESTS) bin socket search list
 
 all: $(ALLTESTS)
-	$(MAKE) plugin.$(SOEXT)
 	for a in $(TESTS) ; do echo ==$$a ; ./$$a || exit 1 ; done
 
-all2: bin lang core asmsearch bwdisassemble regs hash sc socket asm search db io list rgot plugin.${SOEXT}
+all2: bin lang core asmsearch bwdisassemble regs hash sc socket asm search db io list rgot
 	@true
-
-plugin.${SOEXT}:
-	valac plugin.vala pluginwrap.c \
-		--library=plugin -o plugin.${SOEXT} \
-		--Xcc=-shared --Xcc=-fPIC --vapidir=.. \
-		--pkg r_cmd --pkg r_util --pkg r_core
 
 config:
 	valac --vapidir=.. cfg.vala --pkg r_config --pkg r_util --pkg r_db

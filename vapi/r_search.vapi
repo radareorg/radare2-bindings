@@ -18,6 +18,11 @@ public class Radare.RSearch {
 	public void kw_reset();
 
 	public void set_callback(Callback cb, void *user);
+	public void set_distance(int dist);
+	public void pattern_size(int size);
+	public bool set_string_limits(uint32 min, uint32 max);
+
+	public int update_read(uint64 from, uint64 to);
 	//public int pattern_update(int size); // this is uint? long?
 	//public int set_pattern_size(int size); // this is uint? long?
 	//public int strings_update(uint64 addr, uint8 *buf, int len);
@@ -44,9 +49,16 @@ public class Radare.RSearch {
 		public int count;
 		public int type;
 
-		public Keyword.str (string str, string bmask, string data, bool icase = false);
-		//public Keyword.hex (string str, string bmask, string data);
-		public Keyword (uint8 *s, int sl, uint8 *b, int bl, string data);
+		public Keyword.str (string str, string? bmask, string? data, bool icase = false);
+		[CCode (cname="r_search_keyword_new_hexstr")]
+		public Keyword.hexstr (string xs, string? data);
+		[CCode (cname="r_search_keyword_new_hex")]
+		public Keyword.hex (string str, string? bmask, string? data);
+		[CCode (cname="r_search_keyword_new_hexmask")]
+		public Keyword.hexmask (string str, string? data);
+		[CCode (cname="r_search_keyword_new_regexp")]
+		public Keyword.regexp (string str, string? data);
+		public Keyword (uint8 *s, int sl, uint8 *b, int bl, string? data);
 	}
 
 	[Compact]

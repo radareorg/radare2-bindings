@@ -49,20 +49,31 @@ namespace Radare {
 		 * mode: ...
 		 */
 		public RIO.Desc open(string uri, int flags, int mode);
+		public RIO.Desc open_at(string uri, int flags, int mode, uint64 at);
+		public RIO.Desc open_nomap(string uri, int flags, int mode);
+
+		public bool read_at(uint64 addr, uint8 *buf, int len);
+		public int nread_at(uint64 addr, uint8 *buf, int len);
+		public bool write_at(uint64 addr, uint8 *buf, int len);
+		public int pread_at(uint64 paddr, uint8 *buf, int len);
+		public int pwrite_at(uint64 paddr, uint8 *buf, int len);
+		public uint64 seek(uint64 offset, int whence);
+		public unowned string system(string cmd);
+		public bool close();
+		public void close_all();
+		public uint64 size();
+		public bool resize(uint64 newsize);
+		public bool extend_at(uint64 addr, uint64 size);
+		public bool is_listener();
+		public bool shift(uint64 start, uint64 end, int64 move);
 /*
 		public RIO.Desc open_as(string urihandler, string path, int flags, int mode);
 		public int redirect(string uri);
 		public void use_fd(int fd);
 		public void use_desc(RIO.Desc desc);
 		public int read(out uint8 *buf, int len);
-		public int read_at(uint64 addr, uint8 *buf, int len);
 		public RBuffer *read_buf(uint64 addr, int len);
 		public int write(uint8 *buf, int len);
-		public int write_at(uint64 addr, uint8 *buf, int len);
-		public uint64 seek(uint64 addr, int whence);
-		public int system(string cmd);
-		public int close(RIO.Desc fd);
-		public uint64 size();
 */
 
 /*
@@ -145,12 +156,22 @@ namespace Radare {
 */
 
 		[Compact]
-		[CCode (cname="RIODesc",free_function="")]
+		[CCode (cname="RIODesc", cprefix="r_io_desc_", free_function="")]
 		public class Desc {
 			public int fd;
 			public int perm;
 			public string name;
 			RIO io;
+
+			public uint64 size();
+			public uint64 seek(uint64 offset, int whence);
+			public bool resize(uint64 newsize);
+			public unowned string system(string cmd);
+			public bool is_blockdevice();
+			public bool is_chardevice();
+			public bool is_dbg();
+			public int get_pid();
+			public int get_tid();
 		}
 /*
 		// int perms -> RIOPerm ?
