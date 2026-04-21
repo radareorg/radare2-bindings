@@ -53,16 +53,16 @@ public class Radare.RSearch {
 		public int count;
 		public int type;
 
-		public Keyword.str (string str, string bmask, string data, bool icase = false);
+		public Keyword.str (string str, string? bmask, string? data, bool icase = false);
 		[CCode (cname="r_search_keyword_new_hexstr")]
-		public Keyword.hexstr (string xs, string data);
+		public Keyword.hexstr (string xs, string? data);
 		[CCode (cname="r_search_keyword_new_hex")]
-		public Keyword.hex (string str, string bmask, string data);
+		public Keyword.hex (string str, string? bmask, string? data);
 		[CCode (cname="r_search_keyword_new_hexmask")]
-		public Keyword.hexmask (string str, string data);
+		public Keyword.hexmask (string str, string? data);
 		[CCode (cname="r_search_keyword_new_regexp")]
-		public Keyword.regexp (string str, string data);
-		public Keyword (uint8 *s, int sl, uint8 *b, int bl, string data);
+		public Keyword.regexp (string str, string? data);
+		public Keyword (uint8 *s, int sl, uint8 *b, int bl, string? data);
 	}
 
 	[Compact]
