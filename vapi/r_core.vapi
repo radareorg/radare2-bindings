@@ -90,6 +90,27 @@ public class RCore {
 	public int call(string cmd);
 	public int call_at(uint64 addr, string cmd);
 	public unowned string call_str_at(uint64 addr, string cmd);
+	public unowned string cmd_str_at(uint64 addr, string cmd);
+	/**
+	 * Execute commands read from a file
+	 */
+	public bool run_script(string file);
+	/**
+	 * Check if a project with the given name exists
+	 */
+	public bool is_project(string name);
+	/**
+	 * Check if the current project has unsaved changes
+	 */
+	public bool project_is_dirty();
+	/**
+	 * Wait for pending tasks to complete
+	 */
+	public void wait();
+	/**
+	 * Translate physical address to virtual address
+	 */
+	public uint64 pava(uint64 addr);
 
 	// XXX. must be const in .h public int cmd_foreach(string cmd, string each);
 	/**
@@ -138,6 +159,10 @@ public class RCore {
 	public int block_size(int size);
 	public int seek(uint64 addr, bool rb);
 	public int seek_align(uint64 addr, int count);
+	public int seek_size(uint64 addr, int bsize);
+	public int seek_base(string hex);
+	public bool extend_at(uint64 addr, int size);
+	public uint64 anal_address(uint64 addr);
 
 	public bool yank(uint64 addr, int len);
 	public bool yank_paste(uint64 addr, int len);

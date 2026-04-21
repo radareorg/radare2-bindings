@@ -34,6 +34,24 @@ namespace Radare {
 		// public Function get_fcn_in (uint64 addr, int type);
 		public void trace_bb (uint64 addr);
 
+		/**
+		 * Select the active anal plugin by name
+		 */
+		public bool use(string name);
+		public bool set_bits(int bits);
+		public bool set_os(string os);
+		public bool set_triplet(string os, string arch, int bits);
+		public bool set_reg_profile(string rp);
+		public string get_reg_profile();
+		public bool is_aligned(uint64 addr);
+		public uint64 get_bbaddr(uint64 addr);
+		public void add_import(string imp);
+		public void remove_import(string imp);
+		public void purge_imports();
+		public void purge();
+		[CCode (cname="r_anal_cmd")]
+		public string run_cmd(string cmd);
+
 		[Compact]
 		[CCode (cprefix="r_anal_case_", free_function="free", cname="RAnalCaseOp")]
 		public class CaseOp {
