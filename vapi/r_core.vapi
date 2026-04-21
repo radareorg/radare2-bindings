@@ -87,6 +87,9 @@ public class RCore {
 	public int cmd(string cmd, bool log);
 	public int cmd0(string cmd);
 	public void cmd_init ();
+	public int call(string cmd);
+	public int call_at(uint64 addr, string cmd);
+	public unowned string call_str_at(uint64 addr, string cmd);
 
 	// XXX. must be const in .h public int cmd_foreach(string cmd, string each);
 	/**

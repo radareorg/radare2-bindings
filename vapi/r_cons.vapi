@@ -5,6 +5,7 @@ namespace Radare {
 	public class RCons {
 		public RCons ();
 		public static RCons singleton ();
+		public static void thready ();
 
 		[CCode (cname="Color_RED")]
 		public const string RED;
