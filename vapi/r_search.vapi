@@ -21,11 +21,7 @@ public class Radare.RSearch {
 	public void set_distance(int dist);
 	public void pattern_size(int size);
 	public bool set_string_limits(uint32 min, uint32 max);
-	public int strings(uint32 min, uint32 max);
 
-	public int range_add(uint64 from, uint64 to);
-	public int range_set(uint64 from, uint64 to);
-	public int range_reset();
 	public int update_read(uint64 from, uint64 to);
 	//public int pattern_update(int size); // this is uint? long?
 	//public int set_pattern_size(int size); // this is uint? long?

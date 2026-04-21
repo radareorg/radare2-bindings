@@ -159,7 +159,6 @@ public class RCore {
 	public int block_size(int size);
 	public int seek(uint64 addr, bool rb);
 	public int seek_align(uint64 addr, int count);
-	public int seek_size(uint64 addr, int bsize);
 	public int seek_base(string hex);
 	public bool extend_at(uint64 addr, int size);
 	public uint64 anal_address(uint64 addr);

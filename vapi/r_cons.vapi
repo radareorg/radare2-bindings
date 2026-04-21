@@ -75,7 +75,7 @@ namespace Radare {
 		public void push ();
 		public bool pop ();
 
-		[CCode (cname="r_cons_grep")]
+		[CCode (cname="r_cons_grep_expression")]
 		public void grep_expr (string pattern);
 	}
 	[Compact]
