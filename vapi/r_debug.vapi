@@ -134,8 +134,21 @@ public class Radare.RDebug {
 		uint64 ptr;
 	}
 
-	[CCode (cname="int", cprefix="R_DBG_REASON_")]
+	[CCode (cname="int", cprefix="R_DEBUG_REASON_")]
 	public enum ReasonType {
+		NONE,
+		SIGNAL,
+		BREAKPOINT,
+		TRACEPOINT,
+		COND,
+		READERR,
+		STEP,
+		ABORT,
+		WRITERR,
+		DIVBYZERO,
+		ILLEGAL,
+		UNKNOWN,
+		ERROR,
 		NEW_PID,
 		NEW_TID,
 		NEW_LIB,
@@ -143,11 +156,13 @@ public class Radare.RDebug {
 		EXIT_TID,
 		EXIT_LIB,
 		TRAP,
-		ILL,
-		SIGNAL,
+		SWI,
+		INT,
 		FPU,
-		BP,
-		UNKNOWN
+		USERSUSP,
+		SEGFAULT,
+		STOPPED,
+		TERMINATED
 	}
 
 	[CCode (cname="RDebugFrame")]

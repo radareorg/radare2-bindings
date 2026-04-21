@@ -11,11 +11,11 @@ namespace Radare {
 		// public bool enforce_seek;
 		public uint64 off;
 
-		[CCode (cprefix="R_IO_")]
+		[CCode (cprefix="R_PERM_")]
 		public enum Perm {
-			READ = 0,
-			WRITE = 1,
-			EXEC = 2,
+			R = 4,
+			W = 2,
+			X = 1,
 		}
 
 		[CCode (cname="r_io_bind_t")]

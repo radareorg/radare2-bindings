@@ -52,7 +52,6 @@ namespace Radare {
 	public enum RConfigNodeType {
 		BOOL,
 		INT,
-		OFFT,
 		STR,
 		RO,
 		RW,

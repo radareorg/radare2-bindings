@@ -241,14 +241,19 @@ namespace Radare {
 		LANG,
 		ASM,
 		ANAL,
-		PARSE,
 		BIN,
+		BIN_XTR,
+		BIN_LDR,
 		BP,
 		SYSCALL,
 		FASTCALL,
 		CRYPTO,
 		CORE,
 		EGG,
+		FS,
+		ESIL,
+		ARCH,
+		MUTA,
 		LAST
 	}
 	[Compact]

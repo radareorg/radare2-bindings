@@ -98,15 +98,15 @@ namespace Radare {
 			ROOT
 		}
 
-		[CCode (cname="int", cprefix="R_ANAL_COND_")]
+		[CCode (cname="int", cprefix="R_ANAL_CONDTYPE_")]
 		public enum Cnd {
+			AL,
 			EQ,
 			NE,
 			GE,
 			GT,
 			LE,
 			LT,
-			AL,
 			NV
 		}
 
@@ -173,24 +173,7 @@ namespace Radare {
 			IMP
 		}
 
-		[CCode (cname="int", cprefix="R_ANAL_BB_TYPE_")]
-		public enum BlockType {
-			NULL,
-			HEAD,
-			BODY,
-			LAST,
-			FOOT,
-			SWITCH,
-			RET,
-			JMP,
-			COND,
-			CALL,
-			CMP,
-			LD,
-			ST,
-			BINOP,
-			TAIL
-		}
+		/* R_ANAL_BB_TYPE_* was removed from radare2 */
 
 		[CCode (cname="int", cprefix="R_ANAL_DIFF_TYPE_")]
 		public enum BlockDiff {
@@ -201,8 +184,11 @@ namespace Radare {
 
 		[CCode (cname="int", cprefix="R_ANAL_REFLINE_TYPE_")]
 		public enum ReflineType {
-			STYLE,
-			WIDE
+			UTF8,
+			WIDE,
+			MIDDLE_BEFORE,
+			MIDDLE_AFTER,
+			SPLIT
 		}
 
 		[CCode (cname="int", cprefix="R_ANAL_RET_")]
@@ -222,33 +208,37 @@ namespace Radare {
 			SET
 		}
 
-		[CCode (cname="int", cprefix="R_ANAL_DATA_")]
+		[CCode (cname="int", cprefix="R_ANAL_DATA_TYPE_")]
 		public enum Data {
 			NULL,
-			HEX,
-			STR,
-			CODE,
-			FUN,
-			STRUCT,
-			LAST
+			UNKNOWN,
+			STRING,
+			WIDE_STRING,
+			POINTER,
+			NUMBER,
+			INVALID,
+			HEADER,
+			SEQUENCE,
+			PATTERN,
+			ZERO
 		}
 
 		[CCode (cname="int", cprefix="R_ANAL_OP_FAMILY_")]
 		public enum OpFamily {
-			UNKNOWN,
 			CPU,
 			FPU,
-			MMX,
+			VEC,
 			PRIV,
+			CRYPTO,
+			THREAD,
+			VIRT,
+			SECURITY,
+			IO,
+			SIMD,
 			LAST
 		}
 
-		[CCode (cname="int", cprefix="R_ANAL_VAR_DIR_")]
-		public enum VarDir {
-			NONE,
-			IN,
-			OUT
-		}
+		/* R_ANAL_VAR_DIR_* was removed from radare2 */
 
 		[CCode (cname="int", cprefix="R_ANAL_OP_TYPE_")]
 		public enum OpType {
@@ -474,12 +464,7 @@ namespace Radare {
 */
 	}
 
-	[CCode (cname="int", cprefix="R_META_WHERE_")]
-	public enum MetaWhere {
-		PREV,
-		HERE,
-		NEXT
-	}
+	/* R_META_WHERE_* was removed from radare2 */
 
 	[CCode (cname="int", cprefix="R_META_TYPE_")]
 	public enum MetaType {
@@ -516,160 +501,5 @@ namespace Radare {
 	}
 */
 
-	/* r_anal_ex.h */
-	[CCode (cname="uint64", cprefix="R_ANAL_EX_")]
-	public enum ExOpType {
-		ILL_OP,
-		NULL_OP,
-		NOP,
-		STORE_OP,
-		LOAD_OP,
-		REG_OP,
-		OBJ_OP,
-		STACK_OP,
-		BIN_OP,
-		CODE_OP,
-		DATA_OP,
-		UNK_OP,
-		REP_OP,
-		COND_OP,
-	}
-
-	[CCode (cname="uint64", cprefix="R_ANAL_EX_TYPE_")]
-	public enum ExDataType {
-		REF_NULL,
-		REF_UNK,
-		REF,
-		SIGNED,
-		PRIM,
-		CONST,
-		STATIC,
-		VOLATILE,
-		PUBLIC,
-		BOOL,
-		BYTE,
-		SHORT,
-		INT32,
-		INT64,
-		FLOAT,
-		DOUBLE,
-	}
-
-	[CCode (cname="uint64", cprefix="R_ANAL_EX_CODEOP_")]
-	public enum ExCodeOp {
-		JMP,
-		CALL,
-		RET,
-		TRAP,
-		SWI,
-		IO,
-		LEAVE,
-		SWITCH,
-		CJMP,
-		EOB,
-		UCALL,
-		UJMP,
-	}
-
-	[CCode (cname="uint64", cprefix="R_ANAL_EX_BINOP_")]
-	public enum ExBinOp {
-		XCHG,
-		CMP,
-		ADD,
-		SUB,
-		MUL,
-		DIV,
-		SHR,
-		SHL,
-		SAL,
-		SAR,
-		OR,
-		AND,
-		XOR,
-		NOT,
-		MOD,
-		ROR,
-		ROL,
-	}
-
-	[CCode (cname="uint64", cprefix="R_ANAL_EX_OBJOP_")]
-	public enum ExObjOp {
-		CAST,
-		CHECK,
-		NEW,
-		DEL,
-		SIZE,
-	}
-
-	[CCode (cname="uint64", cprefix="R_ANAL_EX_LDST_")]
-	public enum ExLdStOp {
-		FROM_REF,
-		FROM_MEM,
-		FROM_REG,
-		FROM_STACK,
-		FROM_CONST,
-		FROM_VAR,
-		INDIRECT_REF,
-		INDIRECT_MEM,
-		INDIRECT_REG,
-		INDIRECT_STACK,
-		INDIRECT_IDX,
-		INDIRECT_VAR,
-		TO_REF,
-		TO_MEM,
-		TO_REG,
-		TO_STACK,
-		TO_VAR,
-		OP_PUSH,
-		OP_POP,
-		OP_MOV,
-		OP_EFF_ADDR,
-		OP_UPOP,
-		OP_UPUSH,
-		LOAD_FROM_CONST_REF_TO_STACK,
-		LOAD_FROM_CONST_TO_STACK,
-		LOAD_FROM_CONST_INDIRECT_TO_STACK,
-		LOAD_FROM_VAR_INDIRECT_TO_STACK,
-		LOAD_FROM_VAR_INDIRECT_TO_STACK_REF,
-		LOAD_FROM_VAR_TO_STACK,
-		LOAD_FROM_VAR_TO_STACK_REF,
-		LOAD_FROM_REF_INDIRECT_TO_STACK,
-		LOAD_FROM_REF_INDIRECT_TO_STACK_REF,
-		STORE_FROM_STACK_INDIRECT_TO_VAR,
-		STORE_FROM_STACK_INDIRECT_TO_VAR_REF,
-		STORE_FROM_STACK_TO_VAR,
-		STORE_FROM_STACK_TO_VAR_REF,
-		STORE_FROM_STACK_INDIRECT_TO_REF,
-		STORE_FROM_STACK_INDIRECT_TO_REF_REF,
-		LOAD_FROM_REF_TO_STACK,
-		LOAD_FROM_PRIM_VAR_TO_STACK,
-		LOAD_GET_STATIC,
-		STORE_PUT_STATIC,
-		LOAD_GET_FIELD,
-		STORE_PUT_FIELD,
-	}
-
-	[CCode (cname="uint64", cprefix="R_ANAL_EX_FMT_")]
-	public enum ExFmt {
-		EXEC,
-		DATA,
-		MIXED,
-	}
-
-	// public static uint64 ex_map_anal_ex_to_anal_op_type(uint64 ranal2_op_type);
-	// public static int ex_is_op_type_eop(uint64 x);
-	// public static uint32 ex_map_anal_ex_to_anal_bb_type (uint64 ranal2_op_type);
-	// public static void ex_clone_op_switch_to_bb (RAnal.Block *bb, RAnal.Op *op);
-	// public static void ex_update_bb_cfg_head_tail( RAnal.Block start, RAnal.Block head, RAnal.Block tail );
-
-	// public static int ex_bb_head_comparator(RAnal.Block a, RAnal.Block b);
-	// public static int ex_bb_address_comparator(RAnal.Block a, RAnal.Block b);
-
-
-//	public RList<RAnal.Block> ex_analyze( RAnal.State state, uint64 addr);
-//	public RList<RAnal.Block> ex_analysis_driver( RAnal.State state, uint64 addr);
-//	public void ex_op_to_bb(RAnal.State state, RAnal.Block bb, RAnal.Op op);
-//	public RAnal.Op ex_get_op(RAnal.State state, uint64 addr);
-//	public RAnal.Block ex_get_bb(RAnal.State state, uint64 addr);
-
+	/* r_anal_ex.h was removed from radare2; the enums below no longer exist */
 }

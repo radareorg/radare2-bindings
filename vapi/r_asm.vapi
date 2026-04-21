@@ -10,7 +10,7 @@ public class RAsm {
 	/**
 	 * Architectures supported.
 	 */
-	[CCode (cprefix="R_ASM_ARCH_", cname="int")]
+	[CCode (cprefix="R_SYS_ARCH_", cname="int")]
 	public enum Arch {
 		NONE,
 		X86,
@@ -20,14 +20,17 @@ public class RAsm {
 		JAVA,
 		MIPS,
 		SPARC,
-		CSR,
+		XAP,
 		MSIL,
 		OBJD,
 		BF,
 		SH,
+		AVR,
+		DALVIK,
 		Z80,
+		ARC,
 		I8080,
-		ARC
+		RAR
 	}
 
 	/**
@@ -61,36 +64,7 @@ public class RAsm {
 		JZ
 	}
 
-	/**
-	 * The different types of fields in opcodes.
-	 */
-	[CCode (cprefix="R_ASM_MOD_", cname="int")]
-	public enum Mod {
-		/**
-		 * A raw value, like 6DEF20h in {{{ mov eax, 6DEF20h }}}
-		 */
-		RAWVALUE,
-		/**
-		 * A literal value, as in {{{ push -1 }}}
-		 */
-		VALUE,
-		/**
-		 * The destination register. EBP in {{{ MOV EBP, ESP }}}
-		 */
-		DSTREG,
-		/**
-		 * The first source register. EBX in {{{ SUB EDX, EBX }}}
-		 */
-		SRCREG0,
-		/**
-		 * The second source register, for example in {{{ PUSHA AX, CX, DX }}}
-		 */
-		SRCREG1,
-		/**
-		 * The third source register.
-		 */
-		SRCREG2
-	}
+	/* R_ASM_MOD_* was removed from radare2 */
 
 	/**
 	 * Models decompiled assembly code.

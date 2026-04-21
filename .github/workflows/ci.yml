@@ -8,6 +8,7 @@ on:
       - 'dlang/**'
       - 'rust/**'
       - 'go/**'
+      - 'node-ffi/**'
       - 'configure'
       - 'Makefile'
   pull_request:
@@ -17,6 +18,7 @@ on:
       - 'dlang/**'
       - 'rust/**'
       - 'go/**'
+      - 'node-ffi/**'
       - 'configure'
       - 'Makefile'
   workflow_dispatch:
@@ -91,3 +93,24 @@ jobs:
       #- name: Test (static)
       #  run: cargo run --features=static
       #  working-directory: rust/r2api
+  node-ffi:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install r2
+      uses: radareorg/github-actions@v1
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: Install swig, valac and valabind
+      run: |
+        sudo apt install -y swig valac libvala-dev
+        r2pm -Uci valabind
+    - name: Configure
+      run: ./configure
+    - name: Generate node-ffi bindings
+      run: r2pm -r make -C node-ffi gen
+    - name: Run node-ffi hello smoke test
+      run: r2pm -r make -C node-ffi test

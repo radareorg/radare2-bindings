@@ -8,12 +8,14 @@ public class Radare.RReg {
 		GPR,
 		DRX,
 		FPU,
-		MMX,
-		XMM,
+		VEC64,
+		VEC128,
+		VEC256,
+		VEC512,
 		FLG,
 		SEG,
-		LAST,
-		ALL
+		PRI,
+		LAST
 	}
 
 	[Compact]
