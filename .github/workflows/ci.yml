@@ -69,9 +69,9 @@ jobs:
     - name: Install swig and python3
       run: sudo apt install -y swig python3 python3-dev
     - name: Build python-swig bindings
-      run: r2pm -r make -C python-swig
+      run: make -C python-swig
     - name: Run python-swig test
-      run: r2pm -r make -C python-swig test
+      run: make -C python-swig test
   go:
     runs-on: ubuntu-latest
     steps:
