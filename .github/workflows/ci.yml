@@ -2,6 +2,8 @@ name: Test bindings
 
 on:
   push:
+    branches:
+      - master
     paths:
       - 'vapi/**'
       - 'python/**'
