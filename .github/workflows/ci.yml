@@ -2,9 +2,12 @@ name: Test bindings
 
 on:
   push:
+    branches:
+      - master
     paths:
       - 'vapi/**'
       - 'python/**'
+      - 'python-swig/**'
       - 'dlang/**'
       - 'rust/**'
       - 'go/**'
@@ -15,6 +18,7 @@ on:
     paths:
       - 'vapi/**'
       - 'python/**'
+      - 'python-swig/**'
       - 'dlang/**'
       - 'rust/**'
       - 'go/**'
@@ -57,6 +61,19 @@ jobs:
       run: r2pm -r make -C python
     - name: Build dlang bindings
       run: r2pm -r make -C dlang
+  python-swig:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install r2
+      uses: radareorg/github-actions@v1
+    - name: Install swig and python3
+      run: sudo apt install -y swig python3 python3-dev
+    - name: Build python-swig bindings
+      run: make -C python-swig
+    - name: Run python-swig test
+      run: make -C python-swig test
   go:
     runs-on: ubuntu-latest
     steps:

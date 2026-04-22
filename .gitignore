@@ -3,6 +3,7 @@
 *.[aod]
 *.so*
 *.i
+!python-swig/r_core.i
 *.exe
 *.obj
 *.pc
